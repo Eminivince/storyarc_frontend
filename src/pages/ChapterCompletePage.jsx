@@ -1,0 +1,588 @@
+import { motion } from "framer-motion";
+import { useState } from "react";
+import { Link, useParams } from "react-router-dom";
+import Reveal from "../components/Reveal";
+import ReaderStateScreen from "../components/ReaderStateScreen";
+import { profileHref } from "../data/accountFlow";
+import {
+  buildChapterHref,
+  buildSearchHref,
+  buildStoryHref,
+} from "../data/readerFlow";
+import {
+  useChapterQuery,
+  useReaderStoriesQuery,
+  useStoryDetailsQuery,
+} from "../reader/readerHooks";
+
+const desktopReactionOptions = [
+  { label: "Loved it", icon: "favorite", color: "text-red-500" },
+  {
+    label: "Intense",
+    icon: "local_fire_department",
+    color: "text-orange-500",
+  },
+  {
+    label: "Funny",
+    icon: "sentiment_very_satisfied",
+    color: "text-blue-500",
+  },
+  { label: "Epic", icon: "auto_awesome", color: "text-fuchsia-500" },
+];
+
+const mobileReactionOptions = [
+  { label: "Love", icon: "favorite" },
+  { label: "Like", icon: "thumb_up" },
+  { label: "Good", icon: "sentiment_satisfied" },
+  { label: "Wow", icon: "auto_awesome" },
+];
+
+function LoadingState() {
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-background-light font-display text-slate-900 dark:bg-background-dark dark:text-slate-100">
+      <div className="text-center">
+        <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-4 border-primary/20 border-t-primary" />
+        <p className="text-sm font-medium text-slate-500 dark:text-slate-400">
+          Loading chapter wrap-up...
+        </p>
+      </div>
+    </div>
+  );
+}
+
+function getChapterCompleteErrorMessage(error) {
+  if (error?.status === 404) {
+    return "This chapter wrap-up is not available right now. Open the chapter directly from the story page and try again.";
+  }
+
+  return error?.message || "We could not load this chapter wrap-up right now.";
+}
+
+function formatCount(value) {
+  return Number(value ?? 0).toLocaleString();
+}
+
+function getRecommendedStories(stories, currentStorySlug, limit) {
+  return (stories ?? [])
+    .filter((story) => story.slug !== currentStorySlug)
+    .slice(0, limit);
+}
+
+function DesktopChapterComplete({
+  chapter,
+  nextHref,
+  nextLabel,
+  recommendations,
+  reviewCountLabel,
+  searchHref,
+  selectedReaction,
+  setSelectedReaction,
+  story,
+}) {
+  return (
+    <div className="hidden min-h-screen bg-background-light font-display text-slate-900 dark:bg-background-dark dark:text-slate-100 md:block">
+      <div className="relative flex min-h-screen flex-col overflow-x-hidden bg-background-light dark:bg-background-dark">
+        <header className="flex items-center justify-between border-b border-primary/20 px-6 py-4 lg:px-40">
+          <Link className="flex items-center gap-4 text-primary" to="/dashboard">
+            <div className="h-6 w-6">
+              <svg fill="currentColor" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+                <path d="M44 11.2727C44 14.0109 39.8386 16.3957 33.69 17.6364C39.8386 18.877 44 21.2618 44 24C44 26.7382 39.8386 29.123 33.69 30.3636C39.8386 31.6043 44 33.9891 44 36.7273C44 40.7439 35.0457 44 24 44C12.9543 44 4 40.7439 4 36.7273C4 33.9891 8.16144 31.6043 14.31 30.3636C8.16144 29.123 4 26.7382 4 24C4 21.2618 8.16144 18.877 14.31 17.6364C8.16144 16.3957 4 14.0109 4 11.2727C4 7.25611 12.9543 4 24 4C35.0457 4 44 7.25611 44 11.2727Z" />
+              </svg>
+            </div>
+            <h2 className="text-xl font-bold tracking-tight text-slate-900 dark:text-white">
+              StoryArc
+            </h2>
+          </Link>
+
+          <div className="flex gap-3">
+            <button
+              className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary transition-colors hover:bg-primary/20"
+              type="button"
+            >
+              <span className="material-symbols-outlined">share</span>
+            </button>
+            <Link
+              className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary transition-colors hover:bg-primary/20"
+              to={buildStoryHref(story.slug)}
+            >
+              <span className="material-symbols-outlined">menu_book</span>
+            </Link>
+          </div>
+        </header>
+
+        <main className="flex flex-1 flex-col items-center px-6 py-10 lg:px-40">
+          <div className="w-full max-w-[960px]">
+            <Reveal className="mb-12 text-center">
+              <span className="text-sm font-bold uppercase tracking-widest text-primary">
+                End of Chapter {chapter.chapterNumber}
+              </span>
+              <h1 className="mb-3 mt-2 text-4xl font-extrabold">What did you think?</h1>
+              <p className="text-sm text-slate-500 dark:text-primary/60">
+                You finished "{chapter.chapterTitle}" from {story.title}.
+              </p>
+
+              <div className="mt-8 flex flex-col items-center justify-center gap-10 rounded-xl border border-primary/10 bg-primary/5 p-8 md:flex-row">
+                <div className="flex flex-col items-center gap-2">
+                  <p className="text-5xl font-black leading-tight">
+                    {story.rating.toFixed(1)}
+                  </p>
+                  <div className="flex gap-1 text-primary">
+                    {["star", "star", "star", "star", "star_half"].map((icon) => (
+                      <span
+                        className={`material-symbols-outlined ${icon !== "star_half" ? "fill-1" : ""}`}
+                        key={icon}
+                      >
+                        {icon}
+                      </span>
+                    ))}
+                  </div>
+                  <p className="text-sm font-medium text-slate-500 dark:text-primary/60">
+                    {reviewCountLabel} reviews
+                  </p>
+                </div>
+
+                <div className="h-px w-full bg-primary/20 md:h-20 md:w-px" />
+
+                <div className="flex flex-wrap justify-center gap-4">
+                  {desktopReactionOptions.map((reaction) => (
+                    <button
+                      className={`group flex flex-col items-center gap-2 rounded-xl border px-5 py-3 transition-all ${
+                        selectedReaction === reaction.label
+                          ? "border-primary bg-background-light dark:bg-background-dark"
+                          : "border-primary/20 bg-background-light dark:bg-background-dark"
+                      }`}
+                      key={reaction.label}
+                      onClick={() => setSelectedReaction(reaction.label)}
+                      type="button"
+                    >
+                      <span
+                        className={`material-symbols-outlined transition-transform group-hover:scale-110 ${reaction.color}`}
+                      >
+                        {reaction.icon}
+                      </span>
+                      <span className="text-xs font-bold text-slate-500 dark:text-primary/80">
+                        {reaction.label}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </Reveal>
+
+            <Reveal className="mb-16 flex justify-center">
+              <motion.div whileHover={{ scale: 1.02 }}>
+                <Link
+                  className="group flex h-16 min-w-[320px] items-center justify-between overflow-hidden rounded-xl bg-primary px-8 text-lg font-bold text-background-dark shadow-xl shadow-primary/10"
+                  to={nextHref}
+                >
+                  <span>{nextLabel}</span>
+                  <span className="material-symbols-outlined transition-transform group-hover:translate-x-1">
+                    arrow_forward
+                  </span>
+                </Link>
+              </motion.div>
+            </Reveal>
+
+            <Reveal className="mb-12 grid gap-4 md:grid-cols-4">
+              <div className="rounded-2xl border border-primary/10 bg-primary/5 p-4">
+                <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">
+                  Story
+                </p>
+                <p className="mt-2 text-lg font-bold">{story.title}</p>
+              </div>
+              <div className="rounded-2xl border border-primary/10 bg-primary/5 p-4">
+                <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">
+                  Reads
+                </p>
+                <p className="mt-2 text-lg font-bold">{story.readsLabel}</p>
+              </div>
+              <div className="rounded-2xl border border-primary/10 bg-primary/5 p-4">
+                <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">
+                  Chapters
+                </p>
+                <p className="mt-2 text-lg font-bold">{story.chapterCount}</p>
+              </div>
+              <div className="rounded-2xl border border-primary/10 bg-primary/5 p-4">
+                <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">
+                  Status
+                </p>
+                <p className="mt-2 text-lg font-bold">{story.status}</p>
+              </div>
+            </Reveal>
+
+            <Reveal className="border-t border-primary/10 pt-12">
+              <div className="mb-8 flex items-center justify-between">
+                <h3 className="text-2xl font-bold">You Might Also Like</h3>
+                <Link className="text-sm font-bold text-primary hover:underline" to={searchHref}>
+                  View all
+                </Link>
+              </div>
+
+              {recommendations.length ? (
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+                  {recommendations.map((item, index) => (
+                    <Link className="group cursor-pointer" key={item.slug} to={buildStoryHref(item.slug)}>
+                      <motion.article
+                        initial={{ opacity: 0, y: 24 }}
+                        transition={{ delay: index * 0.06, duration: 0.35 }}
+                        whileHover={{ y: -6 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ amount: 0.2, once: true }}
+                      >
+                        <div className="relative mb-4 aspect-[2/3] w-full overflow-hidden rounded-xl border border-primary/10 shadow-lg">
+                          <img
+                            alt={item.title}
+                            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                            src={item.coverImage}
+                          />
+                          <div className="absolute inset-0 flex items-end bg-gradient-to-t from-background-dark/80 to-transparent p-4 opacity-0 transition-opacity group-hover:opacity-100">
+                            <span className="rounded-full bg-primary p-2 text-background-dark">
+                              <span className="material-symbols-outlined">menu_book</span>
+                            </span>
+                          </div>
+                        </div>
+                        <h4 className="text-lg font-bold leading-tight transition-colors group-hover:text-primary">
+                          {item.title}
+                        </h4>
+                        <p className="mt-1 text-sm font-medium text-slate-500 dark:text-primary/60">
+                          {item.genreLabel} • {item.averageRating.toFixed(1)} ★
+                        </p>
+                      </motion.article>
+                    </Link>
+                  ))}
+                </div>
+              ) : (
+                <div className="rounded-2xl border border-primary/10 bg-primary/5 p-6 text-center">
+                  <h4 className="text-lg font-bold">No recommendations yet</h4>
+                  <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
+                    Open the catalog to keep exploring live stories.
+                  </p>
+                </div>
+              )}
+            </Reveal>
+          </div>
+        </main>
+
+        <footer className="border-t border-primary/10 bg-black/20 px-6 py-8">
+          <div className="mx-auto flex max-w-[960px] flex-col items-center justify-between gap-4 text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-primary/40 md:flex-row">
+            <p>© 2024 StoryArc Media</p>
+            <div className="flex gap-6">
+              <a className="transition-colors hover:text-primary" href="#">
+                Privacy
+              </a>
+              <a className="transition-colors hover:text-primary" href="#">
+                Terms
+              </a>
+              <a className="transition-colors hover:text-primary" href="#">
+                Support
+              </a>
+            </div>
+          </div>
+        </footer>
+      </div>
+    </div>
+  );
+}
+
+function MobileChapterComplete({
+  chapter,
+  chapterHref,
+  nextHref,
+  nextLabel,
+  recommendations,
+  reviewCountLabel,
+  searchHref,
+  selectedReaction,
+  setSelectedReaction,
+  story,
+}) {
+  return (
+    <div className="relative mx-auto flex min-h-screen w-full max-w-md flex-col overflow-x-hidden bg-background-light font-display text-slate-900 dark:bg-background-dark dark:text-slate-100 md:hidden">
+      <header className="sticky top-0 z-10 flex items-center justify-between border-b border-primary/10 bg-background-light/90 p-4 backdrop-blur-md dark:bg-background-dark/90">
+        <Link
+          className="flex h-10 w-10 items-center justify-center text-slate-900 dark:text-slate-100"
+          to={chapterHref}
+        >
+          <span className="material-symbols-outlined">arrow_back</span>
+        </Link>
+        <h2 className="flex-1 text-center text-lg font-bold tracking-tight">
+          Chapter {chapter.chapterNumber} Complete
+        </h2>
+        <div className="flex w-10 items-center justify-end">
+          <button className="flex items-center justify-center rounded-lg text-slate-900 dark:text-slate-100" type="button">
+            <span className="material-symbols-outlined">share</span>
+          </button>
+        </div>
+      </header>
+
+      <main className="flex-1 pb-24">
+        <Reveal as="section" className="px-4 pb-6 pt-8 text-center">
+          <div className="mb-4 inline-flex h-20 w-20 items-center justify-center rounded-full bg-primary/20">
+            <span className="material-symbols-outlined text-5xl text-primary">
+              check_circle
+            </span>
+          </div>
+          <h2 className="mb-2 text-3xl font-black leading-tight">Great Reading!</h2>
+          <p className="text-sm text-slate-600 dark:text-slate-400">
+            You finished "{chapter.chapterTitle}" from {story.title}.
+          </p>
+        </Reveal>
+
+        <Reveal as="section" className="border-y border-primary/10 bg-primary/5 px-4 py-6">
+          <h3 className="mb-4 text-center text-lg font-bold">What did you think?</h3>
+          <div className="mb-6 flex items-center justify-around">
+            {mobileReactionOptions.map((reaction) => (
+              <button
+                className="group flex flex-col items-center gap-2"
+                key={reaction.label}
+                onClick={() => setSelectedReaction(reaction.label)}
+                type="button"
+              >
+                <div
+                  className={`flex h-12 w-12 items-center justify-center rounded-full transition-colors ${
+                    selectedReaction === reaction.label
+                      ? "bg-primary/20"
+                      : "bg-slate-200 dark:bg-slate-800"
+                  }`}
+                >
+                  <span
+                    className={`material-symbols-outlined transition-colors ${
+                      selectedReaction === reaction.label
+                        ? "text-primary"
+                        : "text-slate-500 dark:text-slate-400"
+                    }`}
+                  >
+                    {reaction.icon}
+                  </span>
+                </div>
+                <p className="text-xs font-bold text-slate-500 dark:text-slate-400">
+                  {reaction.label}
+                </p>
+              </button>
+            ))}
+          </div>
+
+          <div className="flex flex-col items-center gap-3">
+            <div className="flex gap-1">
+              {Array.from({ length: 5 }).map((_, index) => (
+                <span
+                  className={`material-symbols-outlined text-primary ${
+                    index < Math.round(story.rating) ? "fill-1" : "text-slate-300 dark:text-slate-600"
+                  }`}
+                  key={index}
+                >
+                  star
+                </span>
+              ))}
+            </div>
+            <p className="text-sm text-slate-500 dark:text-slate-400">
+              {story.rating.toFixed(1)} average across {reviewCountLabel} reviews
+            </p>
+          </div>
+        </Reveal>
+
+        <Reveal as="section" className="flex flex-col gap-3 p-4">
+          <Link
+            className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-4 font-bold text-background-dark shadow-lg shadow-primary/20 transition-transform active:scale-95"
+            to={nextHref}
+          >
+            {nextLabel}
+            <span className="material-symbols-outlined">arrow_forward</span>
+          </Link>
+          <Link
+            className="flex w-full items-center justify-center gap-2 rounded-xl bg-slate-200 py-4 font-bold text-slate-900 dark:bg-slate-800 dark:text-slate-100"
+            to={buildStoryHref(story.slug)}
+          >
+            <span className="material-symbols-outlined">menu_book</span>
+            Back to Story
+          </Link>
+        </Reveal>
+
+        <Reveal as="section" className="py-6">
+          <div className="mb-4 flex items-center justify-between px-4">
+            <h3 className="text-lg font-bold">You Might Also Like</h3>
+            <Link className="text-sm font-semibold text-primary" to={searchHref}>
+              View all
+            </Link>
+          </div>
+
+          {recommendations.length ? (
+            <div className="no-scrollbar flex gap-4 overflow-x-auto px-4 pb-4">
+              {recommendations.map((item) => (
+                <Link className="w-32 flex-none" key={item.slug} to={buildStoryHref(item.slug)}>
+                  <div className="mb-2 aspect-[2/3] overflow-hidden rounded-lg bg-slate-200 shadow-md dark:bg-slate-800">
+                    <img alt={item.title} className="h-full w-full object-cover" src={item.coverImage} />
+                  </div>
+                  <p className="truncate text-sm font-bold">{item.title}</p>
+                  <p className="truncate text-xs text-slate-500 dark:text-slate-400">
+                    {item.authorName}
+                  </p>
+                </Link>
+              ))}
+            </div>
+          ) : (
+            <div className="px-4">
+              <div className="rounded-2xl border border-primary/10 bg-primary/5 p-4 text-center">
+                <p className="text-sm text-slate-500 dark:text-slate-400">
+                  Live recommendations will appear here as more stories land in the catalog.
+                </p>
+              </div>
+            </div>
+          )}
+        </Reveal>
+
+        <Reveal as="section" className="mb-10 px-4 py-6">
+          <div className="rounded-2xl border border-primary/10 bg-background-light p-4 dark:bg-slate-800/50">
+            <div className="space-y-4">
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <p className="text-3xl font-black leading-tight">{story.rating.toFixed(1)}</p>
+                  <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                    Global average
+                  </p>
+                </div>
+                <div className="text-right">
+                  <p className="text-sm font-bold">{reviewCountLabel}</p>
+                  <p className="text-xs uppercase tracking-[0.18em] text-slate-400">
+                    Reviews
+                  </p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-3 gap-3 text-center">
+                <div className="rounded-xl border border-primary/10 bg-primary/5 p-3">
+                  <p className="text-lg font-bold">{story.readsLabel}</p>
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                    Reads
+                  </p>
+                </div>
+                <div className="rounded-xl border border-primary/10 bg-primary/5 p-3">
+                  <p className="text-lg font-bold">{story.chapterCount}</p>
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                    Chapters
+                  </p>
+                </div>
+                <div className="rounded-xl border border-primary/10 bg-primary/5 p-3">
+                  <p className="text-lg font-bold">{story.status}</p>
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                    Status
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </Reveal>
+      </main>
+
+      <nav className="fixed bottom-0 left-0 right-0 mx-auto flex max-w-md items-center justify-between border-t border-primary/10 bg-background-light/95 px-4 py-3 backdrop-blur-md dark:bg-background-dark/95">
+        <Link className="flex flex-col items-center gap-1 text-primary" to="/dashboard">
+          <span className="material-symbols-outlined fill-1">home</span>
+          <span className="text-[10px] font-bold">Home</span>
+        </Link>
+        <Link className="flex flex-col items-center gap-1 text-slate-400" to={buildStoryHref(story.slug)}>
+          <span className="material-symbols-outlined">library_books</span>
+          <span className="text-[10px] font-bold">Story</span>
+        </Link>
+        <Link className="flex flex-col items-center gap-1 text-slate-400" to={searchHref}>
+          <span className="material-symbols-outlined">explore</span>
+          <span className="text-[10px] font-bold">Discover</span>
+        </Link>
+        <Link className="flex flex-col items-center gap-1 text-slate-400" to={profileHref}>
+          <span className="material-symbols-outlined">person</span>
+          <span className="text-[10px] font-bold">Profile</span>
+        </Link>
+      </nav>
+    </div>
+  );
+}
+
+export default function ChapterCompletePage() {
+  const { storySlug, chapterSlug } = useParams();
+  const chapterQuery = useChapterQuery(storySlug, chapterSlug);
+  const storyQuery = useStoryDetailsQuery(storySlug);
+  const story = storyQuery.data?.story ?? null;
+  const chapter = chapterQuery.data?.chapter ?? null;
+  const primaryGenre = story?.genres?.[0] ?? "";
+  const recommendationsQuery = useReaderStoriesQuery({
+    genre: primaryGenre || undefined,
+  });
+  const [desktopReaction, setDesktopReaction] = useState("Loved it");
+  const [mobileReaction, setMobileReaction] = useState("Love");
+  const recommendations = getRecommendedStories(
+    recommendationsQuery.data?.stories,
+    story?.slug ?? null,
+    4,
+  );
+
+  if (chapterQuery.isLoading || storyQuery.isLoading) {
+    return <LoadingState />;
+  }
+
+  if (chapterQuery.isError || storyQuery.isError || !chapter || !story) {
+    return (
+      <ReaderStateScreen
+        ctaLabel="Back to Dashboard"
+        ctaTo="/dashboard"
+        description={getChapterCompleteErrorMessage(
+          chapterQuery.error ?? storyQuery.error,
+        )}
+        secondaryLabel="Open Story"
+        secondaryTo={buildStoryHref(storySlug)}
+        title="Chapter Wrap-Up Unavailable"
+        tone="error"
+      />
+    );
+  }
+
+  const chapterHref = buildChapterHref(story.slug, chapter.chapterSlug);
+
+  if (chapter.isLocked || chapter.accessState !== "READABLE") {
+    return (
+      <ReaderStateScreen
+        ctaLabel="Open Chapter"
+        ctaTo={chapterHref}
+        description="Open the chapter first, then return here after you finish reading."
+        secondaryLabel="Back to Story"
+        secondaryTo={buildStoryHref(story.slug)}
+        title="Finish the Chapter First"
+      />
+    );
+  }
+
+  const nextHref = chapter.nextChapter
+    ? buildChapterHref(story.slug, chapter.nextChapter.chapterSlug)
+    : buildStoryHref(story.slug);
+  const nextLabel = chapter.nextChapter
+    ? `Continue to Chapter ${chapter.nextChapter.chapterNumber}`
+    : "Back to Story";
+  const searchHref = buildSearchHref(primaryGenre || "Fantasy");
+  const reviewCountLabel = formatCount(story.reviewCount);
+
+  return (
+    <>
+      <DesktopChapterComplete
+        chapter={chapter}
+        nextHref={nextHref}
+        nextLabel={nextLabel}
+        recommendations={recommendations.slice(0, 3)}
+        reviewCountLabel={reviewCountLabel}
+        searchHref={searchHref}
+        selectedReaction={desktopReaction}
+        setSelectedReaction={setDesktopReaction}
+        story={story}
+      />
+      <MobileChapterComplete
+        chapter={chapter}
+        chapterHref={chapterHref}
+        nextHref={nextHref}
+        nextLabel={nextLabel}
+        recommendations={recommendations}
+        reviewCountLabel={reviewCountLabel}
+        searchHref={searchHref}
+        selectedReaction={mobileReaction}
+        setSelectedReaction={setMobileReaction}
+        story={story}
+      />
+    </>
+  );
+}

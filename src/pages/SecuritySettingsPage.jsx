@@ -1,0 +1,368 @@
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import AccountNotice from "../components/AccountNotice";
+import AccountSettingsNav from "../components/AccountSettingsNav";
+import { AppDesktopSidebar, AppMobileTabBar } from "../components/AppShellNav";
+import Reveal from "../components/Reveal";
+import { useAccount } from "../context/AccountContext";
+import {
+  mfaChooseHref,
+  mfaSuccessHref,
+  profileHref,
+  securityCheckItems,
+  securitySessions,
+} from "../data/accountFlow";
+
+function PasswordForm({ fields, onChange, onSubmit, stacked = false }) {
+  const layoutClass = stacked ? "grid gap-4" : "grid gap-4 md:grid-cols-2";
+
+  return (
+    <section className="rounded-3xl border border-primary/10 bg-white/80 p-6 dark:bg-primary/5">
+      <div className="mb-6">
+        <h2 className="text-xl font-bold">Password</h2>
+        <p className="text-sm text-slate-500 dark:text-slate-400">
+          Update your password to keep the account secure.
+        </p>
+      </div>
+
+      <div className={layoutClass}>
+        <label className="flex flex-col gap-2">
+          <span className="text-sm font-medium text-slate-500 dark:text-slate-400">
+            Current Password
+          </span>
+          <input
+            className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 focus:border-primary focus:ring-primary dark:border-primary/10 dark:bg-background-dark/60"
+            name="currentPassword"
+            onChange={onChange}
+            placeholder="••••••••"
+            type="password"
+            value={fields.currentPassword}
+          />
+        </label>
+
+        {!stacked ? <div /> : null}
+
+        <label className="flex flex-col gap-2">
+          <span className="text-sm font-medium text-slate-500 dark:text-slate-400">
+            New Password
+          </span>
+          <input
+            className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 focus:border-primary focus:ring-primary dark:border-primary/10 dark:bg-background-dark/60"
+            name="newPassword"
+            onChange={onChange}
+            placeholder="••••••••"
+            type="password"
+            value={fields.newPassword}
+          />
+        </label>
+
+        <label className="flex flex-col gap-2">
+          <span className="text-sm font-medium text-slate-500 dark:text-slate-400">
+            Confirm Password
+          </span>
+          <input
+            className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 focus:border-primary focus:ring-primary dark:border-primary/10 dark:bg-background-dark/60"
+            name="confirmPassword"
+            onChange={onChange}
+            placeholder="••••••••"
+            type="password"
+            value={fields.confirmPassword}
+          />
+        </label>
+      </div>
+
+      <div className="mt-5 flex justify-end">
+        <button
+          className="rounded-2xl bg-primary px-5 py-3 text-sm font-bold text-background-dark transition-opacity hover:opacity-90"
+          onClick={onSubmit}
+          type="button"
+        >
+          Update Password
+        </button>
+      </div>
+    </section>
+  );
+}
+
+function TwoFactorSection({ enabled }) {
+  const badgeClasses = enabled
+    ? "bg-emerald-500/15 text-emerald-500"
+    : "bg-red-500/15 text-red-500";
+
+  return (
+    <section className="rounded-3xl border border-primary/10 bg-white/80 p-6 dark:bg-primary/5">
+      <div className="mb-6 flex items-start justify-between gap-4">
+        <div>
+          <h2 className="text-xl font-bold">Two-Factor Authentication</h2>
+          <p className="text-sm text-slate-500 dark:text-slate-400">
+            Add an authenticator app or SMS code before premium purchases are approved.
+          </p>
+        </div>
+        <span className={`rounded-full px-3 py-1 text-xs font-bold uppercase ${badgeClasses}`}>
+          {enabled ? "Enabled" : "Disabled"}
+        </span>
+      </div>
+
+      <div className="rounded-2xl border border-dashed border-primary/30 bg-primary/5 p-4">
+        <div className="flex items-start gap-4">
+          <div className="rounded-full bg-primary/15 p-3 text-primary">
+            <span className="material-symbols-outlined">app_shortcut</span>
+          </div>
+          <div className="min-w-0 flex-1">
+            <h3 className="font-bold">Authenticator App</h3>
+            <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+              Use Google Authenticator, Authy, or 1Password to generate secure codes.
+            </p>
+            <Link
+              className="mt-4 inline-flex rounded-2xl border-2 border-primary px-4 py-2 text-sm font-bold text-primary transition-colors hover:bg-primary hover:text-background-dark"
+              to={enabled ? mfaSuccessHref : mfaChooseHref}
+            >
+              {enabled ? "Manage 2FA" : "Setup Authenticator"}
+            </Link>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function SessionsSection({ onRevoke }) {
+  return (
+    <section className="rounded-3xl border border-primary/10 bg-white/80 p-6 dark:bg-primary/5">
+      <div className="mb-6">
+        <h2 className="text-xl font-bold">Active Sessions</h2>
+        <p className="text-sm text-slate-500 dark:text-slate-400">
+          Review every device that has recently accessed your account.
+        </p>
+      </div>
+
+      <div className="space-y-3">
+        {securitySessions.map((session) => (
+          <div
+            className="flex items-center justify-between gap-4 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 dark:border-primary/10 dark:bg-background-dark/50"
+            key={session.id}
+          >
+            <div className="flex items-center gap-4">
+              <div className="rounded-2xl bg-primary/10 p-3 text-primary">
+                <span className="material-symbols-outlined">{session.icon}</span>
+              </div>
+              <div>
+                <div className="flex flex-wrap items-center gap-2">
+                  <p className="font-bold">{session.device}</p>
+                  {session.current ? (
+                    <span className="rounded-full bg-emerald-500/15 px-2 py-0.5 text-[10px] font-bold uppercase text-emerald-500">
+                      Current
+                    </span>
+                  ) : null}
+                </div>
+                <p className="text-sm text-slate-500 dark:text-slate-400">
+                  {session.location}
+                </p>
+                <p className="text-xs text-slate-400">{session.lastActive}</p>
+              </div>
+            </div>
+
+            <button
+              className={`rounded-xl px-3 py-2 text-xs font-bold uppercase tracking-widest ${
+                session.current
+                  ? "bg-primary/10 text-primary"
+                  : "bg-red-500/10 text-red-500 transition-colors hover:bg-red-500/15"
+              }`}
+              onClick={() => onRevoke(session)}
+              type="button"
+            >
+              {session.current ? "Secured" : "Revoke"}
+            </button>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function DesktopSecuritySettings({
+  clearNotice,
+  fields,
+  mfaEnabled,
+  notice,
+  onChange,
+  onRevoke,
+  onSubmit,
+  profile,
+}) {
+  return (
+    <div className="hidden min-h-screen bg-background-light font-display text-slate-900 dark:bg-background-dark dark:text-slate-100 md:block">
+      <div className="flex min-h-screen">
+        <AppDesktopSidebar avatar={profile.avatar} memberName={profile.displayName} />
+
+        <main className="flex-1 overflow-y-auto p-6 lg:p-10">
+          <div className="mx-auto max-w-6xl space-y-8">
+            <Reveal>
+              <div>
+                <p className="text-sm font-bold uppercase tracking-[0.3em] text-primary">
+                  Trust Layer
+                </p>
+                <h1 className="mt-3 text-4xl font-black tracking-tight">Security Settings</h1>
+                <p className="mt-2 max-w-2xl text-base text-slate-500 dark:text-slate-400">
+                  Manage your password, authentication methods, and active sessions in one
+                  place.
+                </p>
+              </div>
+            </Reveal>
+
+            <AccountNotice notice={notice} onDismiss={clearNotice} />
+
+            <div className="grid gap-8 lg:grid-cols-[16rem_minmax(0,1fr)]">
+              <AccountSettingsNav />
+
+              <div className="space-y-6">
+                <Reveal>
+                  <PasswordForm fields={fields} onChange={onChange} onSubmit={onSubmit} />
+                </Reveal>
+                <Reveal>
+                  <TwoFactorSection enabled={mfaEnabled} />
+                </Reveal>
+                <Reveal>
+                  <SessionsSection onRevoke={onRevoke} />
+                </Reveal>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  );
+}
+
+function MobileSecuritySettings({
+  clearNotice,
+  fields,
+  mfaEnabled,
+  notice,
+  onChange,
+  onRevoke,
+  onSubmit,
+}) {
+  return (
+    <div className="min-h-screen bg-background-light font-display text-slate-900 dark:bg-background-dark dark:text-slate-100 md:hidden">
+      <div className="relative flex h-screen flex-col overflow-hidden">
+        <header className="flex items-center border-b border-primary/10 px-4 py-4">
+          <Link
+            className="flex size-10 items-center justify-center rounded-full transition-colors hover:bg-primary/10"
+            to={profileHref}
+          >
+            <span className="material-symbols-outlined">arrow_back</span>
+          </Link>
+          <div className="ml-3">
+            <p className="text-[11px] font-bold uppercase tracking-widest text-primary">
+              Trust Layer
+            </p>
+            <h1 className="text-xl font-bold">Security Settings</h1>
+          </div>
+        </header>
+
+        <main className="flex-1 overflow-y-auto pb-28">
+          <div className="space-y-6 px-4 py-5">
+            <AccountNotice notice={notice} onDismiss={clearNotice} />
+            <AccountSettingsNav />
+
+            <section className="rounded-3xl border border-primary/20 bg-primary/10 p-4">
+              <div className="flex items-start gap-3">
+                <span className="material-symbols-outlined text-primary">shield</span>
+                <div>
+                  <h2 className="font-bold text-primary">Security Checkup</h2>
+                  <div className="mt-2 space-y-1">
+                    {securityCheckItems.map((item) => (
+                      <p className="text-sm text-slate-600 dark:text-slate-300" key={item.label}>
+                        <span className="font-semibold text-slate-900 dark:text-slate-100">
+                          {item.label}:
+                        </span>{" "}
+                        {item.detail}
+                      </p>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <PasswordForm fields={fields} onChange={onChange} onSubmit={onSubmit} stacked />
+            <TwoFactorSection enabled={mfaEnabled} />
+            <SessionsSection onRevoke={onRevoke} />
+          </div>
+        </main>
+
+        <AppMobileTabBar />
+      </div>
+    </div>
+  );
+}
+
+export default function SecuritySettingsPage() {
+  const { clearNotice, mfa, notice, profile, showNotice } = useAccount();
+  const [fields, setFields] = useState({
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: "",
+  });
+
+  function handleChange(event) {
+    const { name, value } = event.target;
+
+    setFields((current) => ({
+      ...current,
+      [name]: value,
+    }));
+  }
+
+  function handleSubmit() {
+    if (!fields.currentPassword || !fields.newPassword || !fields.confirmPassword) {
+      showNotice("Complete every password field before saving.", "info");
+      return;
+    }
+
+    if (fields.newPassword !== fields.confirmPassword) {
+      showNotice("New password and confirmation do not match.", "info");
+      return;
+    }
+
+    setFields({
+      currentPassword: "",
+      newPassword: "",
+      confirmPassword: "",
+    });
+    showNotice("Password updated successfully.");
+  }
+
+  function handleRevoke(session) {
+    showNotice(
+      session.current
+        ? `${session.device} is your current secured device.`
+        : `${session.device} session revoked.`,
+      session.current ? "info" : "success",
+    );
+  }
+
+  return (
+    <>
+      <DesktopSecuritySettings
+        clearNotice={clearNotice}
+        fields={fields}
+        mfaEnabled={mfa.enabled}
+        notice={notice}
+        onChange={handleChange}
+        onRevoke={handleRevoke}
+        onSubmit={handleSubmit}
+        profile={profile}
+      />
+      <MobileSecuritySettings
+        clearNotice={clearNotice}
+        fields={fields}
+        mfaEnabled={mfa.enabled}
+        notice={notice}
+        onChange={handleChange}
+        onRevoke={handleRevoke}
+        onSubmit={handleSubmit}
+      />
+    </>
+  );
+}

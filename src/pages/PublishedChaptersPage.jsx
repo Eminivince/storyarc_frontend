@@ -1,0 +1,296 @@
+import { useEffect } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import AccountNotice from "../components/AccountNotice";
+import { AppDesktopSidebar, AppMobileTabBar } from "../components/AppShellNav";
+import ReaderStateScreen from "../components/ReaderStateScreen";
+import Reveal from "../components/Reveal";
+import RouteLoadingScreen from "../components/RouteLoadingScreen";
+import { useCreator } from "../context/CreatorContext";
+import {
+  authorDashboardHref,
+  creatorStoryCreateHref,
+  getCreatorChapterEditorHref,
+  getCreatorPublishedChaptersHref,
+  getCreatorScheduledChaptersHref,
+  getCreatorStoryManagementHref,
+  getCreatorVolumeManagerHref,
+} from "../data/creatorFlow";
+
+function getChapterEditHref(storySlug, chapterId) {
+  return chapterId
+    ? `${getCreatorChapterEditorHref(storySlug)}?chapterId=${chapterId}`
+    : getCreatorChapterEditorHref(storySlug);
+}
+
+function DesktopPublishedChapters({ clearNotice, notice, onArchive, story }) {
+  return (
+    <div className="hidden min-h-screen bg-background-light font-display text-slate-900 dark:bg-background-dark dark:text-slate-100 md:block">
+      <div className="flex h-screen overflow-hidden">
+        <AppDesktopSidebar mode="creator" storySlug={story.slug} />
+
+        <main className="flex min-w-0 flex-1 flex-col overflow-hidden">
+          <header className="flex h-16 items-center justify-between border-b border-slate-200 bg-background-light/50 px-8 backdrop-blur-md dark:border-primary/10 dark:bg-background-dark/50">
+            <div className="flex max-w-xl flex-1 items-center gap-4">
+              <label className="relative w-full">
+                <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-sm text-slate-400">search</span>
+                <input
+                  className="w-full rounded-lg border-none bg-slate-100 py-2 pl-10 pr-4 text-sm focus:ring-1 focus:ring-primary dark:bg-primary/5"
+                  placeholder="Search chapters, stories or tags..."
+                  type="text"
+                />
+              </label>
+            </div>
+            <div className="flex items-center gap-4">
+              <button className="relative flex size-10 items-center justify-center rounded-lg transition-colors hover:bg-slate-100 dark:hover:bg-primary/10" type="button">
+                <span className="material-symbols-outlined text-slate-600 dark:text-slate-400">notifications</span>
+                <span className="absolute right-2 top-2 size-2 rounded-full bg-primary" />
+              </button>
+              <Link
+                className="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-bold text-background-dark transition-opacity hover:opacity-90"
+                to={getChapterEditHref(story.slug)}
+              >
+                <span className="material-symbols-outlined text-sm">add</span>
+                Create New Chapter
+              </Link>
+            </div>
+          </header>
+
+          <div className="flex-1 overflow-y-auto p-8">
+            <AccountNotice notice={notice} onDismiss={clearNotice} />
+
+            <div className="mb-8 mt-6 flex flex-col justify-between gap-4 md:flex-row md:items-end">
+              <div>
+                <nav className="mb-2 flex gap-2 text-xs font-medium uppercase tracking-wider text-primary">
+                  <span>My Stories</span>
+                  <span>/</span>
+                  <span className="text-slate-500">{story.title}</span>
+                </nav>
+                <h1 className="mb-2 text-4xl font-black tracking-tight">Published Chapters</h1>
+                <p className="max-w-2xl text-slate-500 dark:text-slate-400">
+                  Manage your active narrative arcs and monitor reader engagement across all published installments of your series.
+                </p>
+              </div>
+              <div className="flex rounded-lg bg-slate-100 p-1 dark:bg-primary/10">
+                <button className="rounded-md bg-white px-4 py-1.5 text-sm font-bold text-slate-900 shadow-sm dark:bg-primary dark:text-background-dark" type="button">
+                  All Chapters
+                </button>
+                <button className="rounded-md px-4 py-1.5 text-sm font-bold text-slate-500 transition-colors hover:text-primary dark:text-slate-400" type="button">
+                  Drafts
+                </button>
+                <button className="rounded-md px-4 py-1.5 text-sm font-bold text-slate-500 transition-colors hover:text-primary dark:text-slate-400" type="button">
+                  Archived
+                </button>
+              </div>
+            </div>
+
+            <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm dark:border-primary/10 dark:bg-primary/5">
+              <div className="overflow-x-auto">
+                <table className="w-full border-collapse text-left">
+                  <thead>
+                    <tr className="border-b border-slate-200 bg-slate-50 dark:border-primary/10 dark:bg-primary/10">
+                      {["Chapter Title", "Status", "Reads", "Likes", "Comments", "Actions"].map((label, index) => (
+                        <th
+                          className={`px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-primary/70 ${index >= 2 && index <= 4 ? "text-center" : ""} ${index === 5 ? "text-right" : ""}`}
+                          key={label}
+                        >
+                          {label}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-200 dark:divide-primary/10">
+                    {story.publishedChapters.map((chapter) => (
+                      <tr className="group transition-colors hover:bg-slate-50 dark:hover:bg-primary/5" key={chapter.id}>
+                        <td className="px-6 py-5">
+                          <div className="flex items-center gap-3">
+                            <div className="flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-slate-200 dark:border-primary/20 dark:bg-primary/20">
+                              <img alt={chapter.title} className="size-full object-cover" src={chapter.coverImage} />
+                            </div>
+                            <div>
+                              <p className="text-sm font-bold">{chapter.title}</p>
+                              <p className="text-xs text-slate-500 dark:text-slate-400">{chapter.publishedAt}</p>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-6 py-5">
+                          <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-100 px-2.5 py-0.5 text-xs font-bold text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400">
+                            <span className="size-1.5 rounded-full bg-emerald-500" />
+                            {chapter.status}
+                          </span>
+                        </td>
+                        <td className="px-6 py-5 text-center font-medium">{chapter.reads}</td>
+                        <td className="px-6 py-5 text-center font-medium">{chapter.likes}</td>
+                        <td className="px-6 py-5 text-center font-medium">{chapter.comments}</td>
+                        <td className="px-6 py-5 text-right">
+                          <div className="flex justify-end gap-2">
+                            <Link
+                              className="p-2 text-slate-400 transition-colors hover:text-primary"
+                              to={getChapterEditHref(story.slug, chapter.chapterId)}
+                            >
+                              <span className="material-symbols-outlined text-xl">edit_note</span>
+                            </Link>
+                            <button className="p-2 text-slate-400 transition-colors hover:text-red-400" onClick={() => onArchive(chapter.title)} type="button">
+                              <span className="material-symbols-outlined text-xl">archive</span>
+                            </button>
+                            <button className="p-2 text-slate-400 transition-colors hover:text-slate-600 dark:hover:text-slate-100" type="button">
+                              <span className="material-symbols-outlined text-xl">more_vert</span>
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  );
+}
+
+function MobilePublishedChapters({ clearNotice, notice, onArchive, story }) {
+  return (
+    <div className="min-h-screen bg-background-light font-display text-slate-900 dark:bg-background-dark dark:text-slate-100 md:hidden">
+      <header className="sticky top-0 z-10 border-b border-primary/10 bg-background-light px-4 py-4 dark:bg-background-dark">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <Link className="material-symbols-outlined text-slate-900 dark:text-slate-100" to={getCreatorStoryManagementHref(story.slug)}>
+              arrow_back
+            </Link>
+            <h2 className="text-lg font-bold tracking-tight">Published Chapters</h2>
+          </div>
+          <button className="rounded-full p-2 transition-colors hover:bg-primary/10" type="button">
+            <span className="material-symbols-outlined text-primary">more_vert</span>
+          </button>
+        </div>
+        <div className="mt-4">
+          <label className="relative flex items-center w-full">
+            <span className="material-symbols-outlined absolute left-3 text-slate-400 dark:text-slate-500">search</span>
+            <input
+              className="h-11 w-full rounded-lg border-none bg-slate-200 pl-10 pr-4 text-slate-900 placeholder:text-slate-500 focus:ring-2 focus:ring-primary dark:bg-primary/10 dark:text-slate-100"
+              placeholder="Search chapters..."
+              type="text"
+            />
+          </label>
+        </div>
+        <div className="no-scrollbar mt-4 flex gap-6 overflow-x-auto">
+          <button className="border-b-[3px] border-primary pb-3 pt-2 text-sm font-bold text-primary" type="button">
+            All Chapters
+          </button>
+          <button className="border-b-[3px] border-transparent pb-3 pt-2 text-sm font-bold text-slate-500" type="button">
+            Drafts
+          </button>
+          <button className="border-b-[3px] border-transparent pb-3 pt-2 text-sm font-bold text-slate-500" type="button">
+            Archived
+          </button>
+        </div>
+      </header>
+
+      <main className="space-y-3 p-4 pb-28">
+        <AccountNotice notice={notice} onDismiss={clearNotice} />
+
+        <div className="mb-2 flex items-center justify-between">
+          <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-500">Published ({story.publishedChapters.length})</h3>
+          <span className="material-symbols-outlined text-sm text-slate-500">filter_list</span>
+        </div>
+
+        {story.publishedChapters.map((chapter) => (
+          <Reveal className="flex flex-col gap-3 rounded-xl border border-primary/10 bg-white p-4 shadow-sm dark:bg-primary/5" key={chapter.id}>
+            <div className="flex items-start justify-between">
+              <div className="space-y-1">
+                <h4 className="font-bold">{chapter.title}</h4>
+                <span className="inline-flex items-center rounded bg-emerald-100 px-2 py-0.5 text-xs font-medium text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400">
+                  <span className="mr-1.5 h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                  {chapter.status}
+                </span>
+              </div>
+              <div className="flex gap-1">
+                <Link
+                  className="p-1.5 text-slate-400 transition-colors hover:text-primary"
+                  to={getChapterEditHref(story.slug, chapter.chapterId)}
+                >
+                  <span className="material-symbols-outlined text-lg">edit</span>
+                </Link>
+                <button className="p-1.5 text-slate-400 transition-colors hover:text-primary" onClick={() => onArchive(chapter.title)} type="button">
+                  <span className="material-symbols-outlined text-lg">download</span>
+                </button>
+              </div>
+            </div>
+            <div className="flex items-center gap-4 text-xs font-medium text-slate-500">
+              <div className="flex items-center gap-1">
+                <span className="material-symbols-outlined text-base">visibility</span>
+                <span>{chapter.reads} Reads</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <span className="material-symbols-outlined text-base">favorite</span>
+                <span>{chapter.likes} Likes</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <span className="material-symbols-outlined text-base">chat_bubble</span>
+                <span>{chapter.comments}</span>
+              </div>
+            </div>
+          </Reveal>
+        ))}
+      </main>
+
+      <AppMobileTabBar mode="creator" storySlug={story.slug} />
+    </div>
+  );
+}
+
+export default function PublishedChaptersPage() {
+  const navigate = useNavigate();
+  const { storySlug } = useParams();
+  const {
+    clearCreatorNotice,
+    creatorNotice,
+    enterWriterMode,
+    getStory,
+    isStudioLoading,
+    setActiveStory,
+    showCreatorNotice,
+  } = useCreator();
+
+  const story = getStory(storySlug);
+
+  useEffect(() => {
+    enterWriterMode();
+
+    if (storySlug) {
+      setActiveStory(storySlug);
+    }
+  }, [storySlug]);
+
+  function handleArchive(chapterTitle) {
+    showCreatorNotice(`${chapterTitle} was archived from the live shelf.`);
+    navigate(getCreatorStoryManagementHref(story.slug));
+  }
+
+  if (!story && isStudioLoading) {
+    return <RouteLoadingScreen />;
+  }
+
+  if (!story) {
+    return (
+      <ReaderStateScreen
+        ctaLabel="Create A Story"
+        ctaTo={creatorStoryCreateHref}
+        description="That story is not currently available in your published library."
+        secondaryLabel="Back To Dashboard"
+        secondaryTo={authorDashboardHref}
+        title="Story Not Found"
+        tone="error"
+      />
+    );
+  }
+
+  return (
+    <>
+      <DesktopPublishedChapters clearNotice={clearCreatorNotice} notice={creatorNotice} onArchive={handleArchive} story={story} />
+      <MobilePublishedChapters clearNotice={clearCreatorNotice} notice={creatorNotice} onArchive={handleArchive} story={story} />
+    </>
+  );
+}

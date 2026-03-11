@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="storyarc-favicon-gradient" x1="10%" x2="90%" y1="10%" y2="90%">
+      <stop offset="0%" stop-color="#f8cf57" />
+      <stop offset="100%" stop-color="#f97316" />
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="16" fill="#140f08" />
+  <path
+    d="M18 18.5C18 16.6 19.6 15 21.5 15H46v31.5c0 1.9-1.6 3.5-3.5 3.5H18V18.5Z"
+    fill="url(#storyarc-favicon-gradient)"
+  />
+  <path
+    d="M21 18.5c0-1.1.9-2 2-2h18v28.5c0 1.1-.9 2-2 2H21V18.5Z"
+    fill="#fff7df"
+    opacity="0.88"
+  />
+  <path
+    d="M26 25h10M26 31h10M26 37h8"
+    stroke="#a54a12"
+    stroke-linecap="round"
+    stroke-width="3"
+  />
+  <path
+    d="M41 18.5h3.5c.8 0 1.5.7 1.5 1.5v23.5c0 1.9-1.6 3.5-3.5 3.5H41V18.5Z"
+    fill="#f59e0b"
+  />
+</svg>
