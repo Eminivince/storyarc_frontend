@@ -4,6 +4,8 @@ import { Link } from "react-router-dom";
 import AccountNotice from "../components/AccountNotice";
 import { AppDesktopSidebar, AppMobileTabBar } from "../components/AppShellNav";
 import Reveal from "../components/Reveal";
+import RouteLoadingScreen from "../components/RouteLoadingScreen";
+import SkeletonBlock from "../components/SkeletonBlock";
 import { profileHref } from "../data/accountFlow";
 import {
   createSupportTicket,
@@ -33,6 +35,66 @@ function HelpCatalogState({ message }) {
   );
 }
 
+function SupportTicketsSkeleton() {
+  return (
+    <div className="space-y-3">
+      {Array.from({ length: 3 }).map((_, index) => (
+        <div
+          className="rounded-2xl border border-primary/10 bg-white p-5 shadow-sm dark:bg-[#27241b]"
+          key={index}
+        >
+          <div className="flex items-start justify-between gap-4">
+            <div className="w-full space-y-3">
+              <SkeletonBlock className="h-5 w-2/3" />
+              <SkeletonBlock className="h-3 w-1/3" />
+            </div>
+            <SkeletonBlock className="h-6 w-16 rounded-full" />
+          </div>
+          <SkeletonBlock className="mt-4 h-3 w-24" />
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function HelpCategorySkeleton() {
+  return (
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      {Array.from({ length: 4 }).map((_, index) => (
+        <div
+          className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-[#393528] dark:bg-[#27241b]"
+          key={index}
+        >
+          <SkeletonBlock className="h-12 w-12 rounded-lg bg-primary/20 dark:bg-primary/15" />
+          <div className="mt-4 space-y-3">
+            <SkeletonBlock className="h-4 w-3/4" />
+            <SkeletonBlock className="h-3 w-full" />
+            <SkeletonBlock className="h-3 w-5/6" />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function HelpArticleSkeleton() {
+  return (
+    <div className="space-y-3">
+      {Array.from({ length: 4 }).map((_, index) => (
+        <div
+          className="rounded-lg border border-slate-200 bg-white p-4 dark:border-[#393528] dark:bg-[#27241b]"
+          key={index}
+        >
+          <SkeletonBlock className="h-4 w-2/3" />
+          <SkeletonBlock className="mt-2 h-3 w-1/4" />
+          <SkeletonBlock className="mt-3 h-3 w-full" />
+          <SkeletonBlock className="mt-2 h-3 w-4/5" />
+        </div>
+      ))}
+    </div>
+  );
+}
+
 function SupportTicketsPanel({ isLoading, tickets }) {
   return (
     <section className="mb-16">
@@ -41,7 +103,7 @@ function SupportTicketsPanel({ isLoading, tickets }) {
         Recent Tickets
       </h3>
       {isLoading ? (
-        <HelpCatalogState message="Loading your support history..." />
+        <SupportTicketsSkeleton />
       ) : tickets.length ? (
         <div className="space-y-3">
           {tickets.slice(0, 3).map((ticket) => (
@@ -133,7 +195,7 @@ function DesktopHelp({
                 Support Categories
               </h3>
               {isLoadingContent ? (
-                <HelpCatalogState message="Loading help categories..." />
+                <HelpCategorySkeleton />
               ) : helpError ? (
                 <HelpCatalogState
                   message={helpError.message || "The help center could not be loaded right now."}
@@ -176,7 +238,7 @@ function DesktopHelp({
                 Popular Articles
               </h3>
               {isLoadingContent ? (
-                <HelpCatalogState message="Loading help articles..." />
+                <HelpArticleSkeleton />
               ) : helpError ? (
                 <HelpCatalogState
                   message={helpError.message || "The article catalog could not be loaded right now."}
@@ -336,7 +398,7 @@ function MobileHelp({
         <section className="px-4 py-4">
           <h3 className="mb-4 text-lg font-bold">Categories</h3>
           {isLoadingContent ? (
-            <HelpCatalogState message="Loading help categories..." />
+            <HelpCategorySkeleton />
           ) : helpError ? (
             <HelpCatalogState
               message={helpError.message || "The help center could not be loaded right now."}
@@ -377,7 +439,7 @@ function MobileHelp({
             </span>
           </div>
           {isLoadingContent ? (
-            <HelpCatalogState message="Loading help articles..." />
+            <HelpArticleSkeleton />
           ) : helpError ? (
             <HelpCatalogState
               message={helpError.message || "The article catalog could not be loaded right now."}
@@ -521,6 +583,15 @@ export default function HelpSupportPage() {
   const primarySupportAction =
     supportActions.find((action) => action.primary) ?? supportActions[0] ?? null;
   const tickets = supportTicketsQuery.data?.tickets ?? [];
+
+  if (
+    helpCenterQuery.isPending &&
+    !helpCenterQuery.data &&
+    supportTicketsQuery.isPending &&
+    !supportTicketsQuery.data
+  ) {
+    return <RouteLoadingScreen />;
+  }
 
   function clearNotice() {
     setNotice(null);

@@ -2,6 +2,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
 import ReaderStateScreen from "../components/ReaderStateScreen";
+import RouteLoadingScreen from "../components/RouteLoadingScreen";
 import { useOnboarding } from "../context/OnboardingContext";
 import {
   buildChapterHref,
@@ -68,14 +69,7 @@ function mapPreferenceToTheme(value) {
 }
 
 function LoadingState() {
-  return (
-    <div className="flex min-h-screen items-center justify-center bg-background-dark text-slate-100">
-      <div className="text-center">
-        <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-4 border-primary/20 border-t-primary" />
-        <p className="text-sm font-medium text-slate-400">Opening chapter...</p>
-      </div>
-    </div>
-  );
+  return <RouteLoadingScreen />;
 }
 
 function getChapterErrorMessage(error) {

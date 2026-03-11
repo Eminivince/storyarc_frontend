@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import ReaderStateScreen from "../components/ReaderStateScreen";
+import RouteLoadingScreen from "../components/RouteLoadingScreen";
 import Reveal from "../components/Reveal";
 import { useMonetization } from "../context/MonetizationContext";
 import { useToast } from "../context/ToastContext";
@@ -520,13 +521,7 @@ export default function LockedChapterPage() {
   const premiumLabel = hasPremium ? "Premium Active" : "Subscribe to Premium";
 
   if (isLoading) {
-    return (
-      <ReaderStateScreen
-        description="Checking chapter access and live unlock pricing."
-        title="Loading Chapter Access"
-        tone="loading"
-      />
-    );
+    return <RouteLoadingScreen />;
   }
 
   if (isError || !story || !chapter) {

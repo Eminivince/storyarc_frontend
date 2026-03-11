@@ -4,21 +4,13 @@ import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { AppDesktopSidebar, AppMobileTabBar } from "../components/AppShellNav";
 import ReaderStateScreen from "../components/ReaderStateScreen";
 import Reveal from "../components/Reveal";
+import RouteLoadingScreen from "../components/RouteLoadingScreen";
 import { buildSearchHref, buildStoryHref } from "../data/readerFlow";
 import { useCreator } from "../context/CreatorContext";
 import { useReaderSearchQuery } from "../reader/readerHooks";
 
 function LoadingState() {
-  return (
-    <div className="flex min-h-[40vh] items-center justify-center">
-      <div className="text-center">
-        <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-4 border-primary/20 border-t-primary" />
-        <p className="text-sm font-medium text-slate-500 dark:text-slate-400">
-          Searching the catalog...
-        </p>
-      </div>
-    </div>
-  );
+  return <RouteLoadingScreen />;
 }
 
 function EmptyState({ query }) {

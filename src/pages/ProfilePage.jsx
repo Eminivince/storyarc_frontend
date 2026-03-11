@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import AccountNotice from "../components/AccountNotice";
 import { AppDesktopSidebar, AppMobileTabBar } from "../components/AppShellNav";
 import Reveal from "../components/Reveal";
+import SkeletonBlock from "../components/SkeletonBlock";
 import UserAvatar from "../components/UserAvatar";
 import { useAccount } from "../context/AccountContext";
 import {
@@ -41,7 +42,39 @@ function SectionEmptyState({
   );
 }
 
-function ProfileStatsGrid({ items, mobile = false }) {
+function ProfileStatsGrid({ isLoading = false, items, mobile = false }) {
+  if (isLoading && !items.length) {
+    if (mobile) {
+      return (
+        <div className="flex flex-wrap gap-3 px-4 py-3">
+          {Array.from({ length: 4 }).map((_, index) => (
+            <div
+              className="flex min-w-[80px] flex-1 basis-[fit-content] flex-col gap-2 rounded-xl border border-slate-200 bg-white/50 p-3 dark:border-primary/20 dark:bg-primary/5"
+              key={index}
+            >
+              <SkeletonBlock className="mx-auto h-6 w-12" />
+              <SkeletonBlock className="mx-auto h-3 w-14" />
+            </div>
+          ))}
+        </div>
+      );
+    }
+
+    return (
+      <section className="mb-10 grid grid-cols-2 gap-4 lg:grid-cols-4">
+        {Array.from({ length: 4 }).map((_, index) => (
+          <div
+            className="rounded-xl border border-slate-200 bg-white p-5 text-center dark:border-white/10 dark:bg-white/5"
+            key={index}
+          >
+            <SkeletonBlock className="mx-auto h-7 w-16" />
+            <SkeletonBlock className="mx-auto mt-2 h-3 w-20" />
+          </div>
+        ))}
+      </section>
+    );
+  }
+
   if (!items.length) {
     return null;
   }
@@ -81,7 +114,114 @@ function ProfileStatsGrid({ items, mobile = false }) {
   );
 }
 
+function ProfileMediaSkeleton({ mobile = false }) {
+  if (mobile) {
+    return (
+      <div className="rounded-xl border border-slate-200 bg-white p-4 dark:border-primary/20 dark:bg-primary/5">
+        <div className="flex gap-4">
+          <SkeletonBlock className="h-32 w-24 flex-shrink-0 rounded-lg" />
+          <div className="flex flex-1 flex-col justify-between">
+            <div className="space-y-2">
+              <SkeletonBlock className="h-5 w-3/4" />
+              <SkeletonBlock className="h-4 w-1/2" />
+            </div>
+            <div className="space-y-3">
+              <SkeletonBlock className="h-3 w-full" />
+              <SkeletonBlock className="h-2 w-full rounded-full" />
+              <SkeletonBlock className="h-8 w-full rounded-lg bg-primary/20 dark:bg-primary/15" />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-white/10 dark:bg-white/5">
+      <div className="flex gap-6">
+        <SkeletonBlock className="h-36 w-24 flex-shrink-0 rounded-lg" />
+        <div className="flex flex-1 flex-col justify-center space-y-3">
+          <SkeletonBlock className="h-5 w-1/2" />
+          <SkeletonBlock className="h-4 w-1/3" />
+          <SkeletonBlock className="h-3 w-full" />
+          <SkeletonBlock className="h-2 w-full rounded-full" />
+          <SkeletonBlock className="h-8 w-36 rounded-lg bg-primary/20 dark:bg-primary/15" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ProfileShelfSkeleton({ mobile = false }) {
+  if (mobile) {
+    return (
+      <div className="no-scrollbar flex gap-3 overflow-x-auto pb-2">
+        {Array.from({ length: 3 }).map((_, index) => (
+          <div className="w-32 flex-shrink-0" key={index}>
+            <SkeletonBlock className="aspect-[2/3] w-full rounded-xl" />
+            <SkeletonBlock className="mt-2 h-4 w-3/4" />
+            <SkeletonBlock className="mt-1 h-3 w-1/2" />
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  return (
+    <div className="grid grid-cols-2 gap-6 sm:grid-cols-3">
+      {Array.from({ length: 3 }).map((_, index) => (
+        <div key={index}>
+          <SkeletonBlock className="mb-3 aspect-[2/3] w-full rounded-xl" />
+          <SkeletonBlock className="h-4 w-3/4" />
+          <SkeletonBlock className="mt-1 h-3 w-1/2" />
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function ActivitySkeleton({ mobile = false }) {
+  return (
+    <div className="space-y-4">
+      {Array.from({ length: mobile ? 3 : 4 }).map((_, index) => (
+        <div
+          className={
+            mobile
+              ? "flex items-start gap-3"
+              : "rounded-xl border border-slate-200 bg-white p-4 dark:border-white/10 dark:bg-white/5"
+          }
+          key={index}
+        >
+          <SkeletonBlock className="h-8 w-8 flex-shrink-0 rounded-full bg-primary/20 dark:bg-primary/15" />
+          <div className="flex-1 space-y-2">
+            <SkeletonBlock className="h-3 w-20" />
+            <SkeletonBlock className="h-4 w-4/5" />
+            <SkeletonBlock className="h-3 w-2/3" />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 function DesktopCurrentReading({ currentReading, isLoading }) {
+  if (isLoading && !currentReading) {
+    return (
+      <Reveal>
+        <div className="mb-6 flex items-center justify-between">
+          <h3 className="text-xl font-bold">Currently Reading</h3>
+          <Link
+            className="text-xs font-bold uppercase tracking-widest text-primary hover:underline"
+            to="/dashboard"
+          >
+            View Library
+          </Link>
+        </div>
+        <ProfileMediaSkeleton />
+      </Reveal>
+    );
+  }
+
   return (
     <Reveal>
       <div className="mb-6 flex items-center justify-between">
@@ -137,11 +277,7 @@ function DesktopCurrentReading({ currentReading, isLoading }) {
         </div>
       ) : (
         <SectionEmptyState
-          body={
-            isLoading
-              ? "Loading your reading progress."
-              : "Start a story and your active read will appear here."
-          }
+          body={"Start a story and your active read will appear here."}
           ctaHref={buildSearchHref("")}
           ctaLabel="Explore Stories"
           title="Nothing in progress yet"
@@ -152,6 +288,20 @@ function DesktopCurrentReading({ currentReading, isLoading }) {
 }
 
 function MobileCurrentReading({ currentReading, isLoading }) {
+  if (isLoading && !currentReading) {
+    return (
+      <div className="px-4 py-4">
+        <h3 className="mb-4 flex items-center gap-2 text-lg font-bold">
+          <span className="material-symbols-outlined text-primary">
+            auto_stories
+          </span>
+          Currently Reading
+        </h3>
+        <ProfileMediaSkeleton mobile />
+      </div>
+    );
+  }
+
   return (
     <div className="px-4 py-4">
       <h3 className="mb-4 flex items-center gap-2 text-lg font-bold">
@@ -203,11 +353,7 @@ function MobileCurrentReading({ currentReading, isLoading }) {
         </div>
       ) : (
         <SectionEmptyState
-          body={
-            isLoading
-              ? "Loading your reading progress."
-              : "Pick a story from the library to start building your reading history."
-          }
+          body={"Pick a story from the library to start building your reading history."}
           ctaHref={buildSearchHref("")}
           ctaLabel="Explore Stories"
           title="Nothing in progress yet"
@@ -218,6 +364,23 @@ function MobileCurrentReading({ currentReading, isLoading }) {
 }
 
 function DesktopReadingList({ isLoading, readingList }) {
+  if (isLoading && !readingList.length) {
+    return (
+      <Reveal>
+        <div className="mb-6 flex items-center justify-between">
+          <h3 className="text-xl font-bold">Reading List</h3>
+          <Link
+            className="text-xs font-bold uppercase tracking-widest text-primary hover:underline"
+            to={buildSearchHref("")}
+          >
+            Explore
+          </Link>
+        </div>
+        <ProfileShelfSkeleton />
+      </Reveal>
+    );
+  }
+
   return (
     <Reveal>
       <div className="mb-6 flex items-center justify-between">
@@ -258,11 +421,7 @@ function DesktopReadingList({ isLoading, readingList }) {
         </div>
       ) : (
         <SectionEmptyState
-          body={
-            isLoading
-              ? "Loading your saved stories."
-              : "Bookmark chapters and they will show up here as your reading list."
-          }
+          body={"Bookmark chapters and they will show up here as your reading list."}
           ctaHref={buildSearchHref("")}
           ctaLabel="Find Stories"
           icon="bookmark"
@@ -274,6 +433,26 @@ function DesktopReadingList({ isLoading, readingList }) {
 }
 
 function MobileReadingList({ isLoading, readingList }) {
+  if (isLoading && !readingList.length) {
+    return (
+      <div className="px-4 py-4">
+        <div className="mb-4 flex items-center justify-between">
+          <h3 className="flex items-center gap-2 text-lg font-bold">
+            <span className="material-symbols-outlined text-primary">bookmark</span>
+            Reading List
+          </h3>
+          <Link
+            className="text-[11px] font-bold uppercase tracking-widest text-primary"
+            to={buildSearchHref("")}
+          >
+            Explore
+          </Link>
+        </div>
+        <ProfileShelfSkeleton mobile />
+      </div>
+    );
+  }
+
   return (
     <div className="px-4 py-4">
       <div className="mb-4 flex items-center justify-between">
@@ -314,11 +493,7 @@ function MobileReadingList({ isLoading, readingList }) {
         </div>
       ) : (
         <SectionEmptyState
-          body={
-            isLoading
-              ? "Loading your saved stories."
-              : "Bookmark chapters to build a real reading list."
-          }
+          body={"Bookmark chapters to build a real reading list."}
           ctaHref={buildSearchHref("")}
           ctaLabel="Browse Stories"
           icon="bookmark"
@@ -330,14 +505,14 @@ function MobileReadingList({ isLoading, readingList }) {
 }
 
 function RecentActivityList({ isLoading, items, mobile = false }) {
+  if (isLoading && !items.length) {
+    return <ActivitySkeleton mobile={mobile} />;
+  }
+
   if (!items.length) {
     return (
       <SectionEmptyState
-        body={
-          isLoading
-            ? "Loading your recent activity."
-            : "Your account activity will appear here as you read, bookmark, and check in."
-        }
+        body={"Your account activity will appear here as you read, bookmark, and check in."}
         icon="history"
         title="No activity yet"
       />
@@ -464,7 +639,7 @@ function DesktopProfile({
               </Link>
             </header>
 
-            <ProfileStatsGrid items={profileStats} />
+            <ProfileStatsGrid isLoading={isAccountLoading} items={profileStats} />
 
             <div className="mb-8 overflow-x-auto border-b border-slate-200 dark:border-white/10">
               <div className="flex gap-10">
@@ -603,7 +778,7 @@ function MobileProfile({
             </Link>
           </div>
 
-          <ProfileStatsGrid items={profileStats} mobile />
+          <ProfileStatsGrid isLoading={isAccountLoading} items={profileStats} mobile />
 
           <div className="mt-2 pb-3">
             <div className="flex justify-between border-b border-slate-200 px-4 dark:border-primary/10">

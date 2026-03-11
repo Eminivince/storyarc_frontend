@@ -4,6 +4,8 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import AccountNotice from "../components/AccountNotice";
 import Reveal from "../components/Reveal";
 import ReaderStateScreen from "../components/ReaderStateScreen";
+import RouteLoadingScreen from "../components/RouteLoadingScreen";
+import SkeletonBlock from "../components/SkeletonBlock";
 import { useMonetization } from "../context/MonetizationContext";
 import { useToast } from "../context/ToastContext";
 import { buildGiftSendingHref } from "../data/communityFlow";
@@ -51,14 +53,29 @@ function CreatorAvatar({ authorImage, authorName }) {
 }
 
 function LoadingState() {
+  return <RouteLoadingScreen />;
+}
+
+function GiftCatalogSkeleton({ mobile = false }) {
+  const items = mobile ? 4 : 4;
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background-light font-display text-slate-900 dark:bg-background-dark dark:text-slate-100">
-      <div className="text-center">
-        <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-4 border-primary/20 border-t-primary" />
-        <p className="text-sm font-medium text-slate-500 dark:text-slate-400">
-          Loading gift options...
-        </p>
-      </div>
+    <div className={mobile ? "grid grid-cols-2 gap-3" : "grid gap-4 sm:grid-cols-2"}>
+      {Array.from({ length: items }).map((_, index) => (
+        <div
+          className={`rounded-3xl border border-primary/10 p-4 ${
+            mobile ? "bg-primary/5" : "bg-white/80 dark:bg-primary/5"
+          }`}
+          key={index}
+        >
+          <SkeletonBlock className="aspect-square w-full rounded-2xl" />
+          <div className="mt-4 space-y-2">
+            <SkeletonBlock className="h-4 w-3/4" />
+            <SkeletonBlock className="h-3 w-1/3" />
+            {!mobile ? <SkeletonBlock className="h-3 w-full" /> : null}
+          </div>
+        </div>
+      ))}
     </div>
   );
 }
@@ -136,7 +153,7 @@ function DesktopGiftSending({
             </div>
 
             {isCatalogLoading ? (
-              <GiftCatalogNotice message="Loading live gift options..." />
+              <GiftCatalogSkeleton />
             ) : catalogError ? (
               <GiftCatalogNotice
                 message={catalogError.message || "The gift catalog could not be loaded right now."}
@@ -304,7 +321,7 @@ function MobileGiftSending({
                 </span>
               </div>
               {isCatalogLoading ? (
-                <GiftCatalogNotice message="Loading live gift options..." />
+                <GiftCatalogSkeleton mobile />
               ) : catalogError ? (
                 <GiftCatalogNotice
                   message={catalogError.message || "The gift catalog could not be loaded right now."}

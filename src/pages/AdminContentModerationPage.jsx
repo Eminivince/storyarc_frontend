@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useDeferredValue, useMemo, useState } from "react";
 import AdminPageLayout from "../components/AdminPageLayout";
 import Reveal from "../components/Reveal";
+import SkeletonBlock from "../components/SkeletonBlock";
 import {
   approveCreatorApplication,
   listAdminCreatorApplications,
@@ -272,9 +273,29 @@ export default function AdminContentModerationPage() {
 
         <div className="mt-6 space-y-4">
           {creatorApplicationsQuery.isPending ? (
-            <div className="rounded-3xl border border-dashed border-primary/20 bg-slate-50 px-5 py-8 text-sm text-slate-500 dark:bg-background-dark/50 dark:text-slate-400">
-              Loading creator applications...
-            </div>
+            Array.from({ length: 3 }).map((_, index) => (
+              <div
+                className="rounded-3xl border border-primary/10 bg-slate-50 p-5 dark:bg-background-dark/50"
+                key={index}
+              >
+                <div className="flex items-start justify-between gap-4">
+                  <div className="space-y-3">
+                    <SkeletonBlock className="h-5 w-44" />
+                    <SkeletonBlock className="h-3 w-28" />
+                  </div>
+                  <SkeletonBlock className="h-8 w-24 rounded-full" />
+                </div>
+                <div className="mt-5 grid gap-3 sm:grid-cols-3">
+                  <SkeletonBlock className="h-20 w-full rounded-2xl" />
+                  <SkeletonBlock className="h-20 w-full rounded-2xl" />
+                  <SkeletonBlock className="h-20 w-full rounded-2xl" />
+                </div>
+                <div className="mt-5 flex gap-3">
+                  <SkeletonBlock className="h-10 w-28 rounded-xl bg-primary/20 dark:bg-primary/15" />
+                  <SkeletonBlock className="h-10 w-28 rounded-xl" />
+                </div>
+              </div>
+            ))
           ) : creatorApplicationsQuery.isError ? (
             <div className="rounded-3xl border border-dashed border-rose-500/20 bg-rose-500/10 px-5 py-8 text-sm text-rose-600 dark:text-rose-300">
               {creatorApplicationsQuery.error.message ||

@@ -3,6 +3,7 @@ import { useMemo, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import ReaderStateScreen from "../components/ReaderStateScreen";
 import Reveal from "../components/Reveal";
+import RouteLoadingScreen from "../components/RouteLoadingScreen";
 import { buildGiftSendingHref } from "../data/communityFlow";
 import {
   buildChapterHref,
@@ -19,16 +20,7 @@ function getStoryErrorMessage(error) {
 }
 
 function LoadingState() {
-  return (
-    <div className="flex min-h-[50vh] items-center justify-center">
-      <div className="text-center">
-        <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-4 border-primary/20 border-t-primary" />
-        <p className="text-sm font-medium text-slate-500 dark:text-slate-400">
-          Loading story details...
-        </p>
-      </div>
-    </div>
-  );
+  return <RouteLoadingScreen />;
 }
 
 function StoryAction({ children, to, tone = "primary" }) {

@@ -1,6 +1,8 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import Reveal from "../components/Reveal";
+import RouteLoadingScreen from "../components/RouteLoadingScreen";
+import SkeletonBlock from "../components/SkeletonBlock";
 import {
   buildChapterHref,
   buildSearchHref,
@@ -75,6 +77,25 @@ function LiveCatalogNotice({ message }) {
     <div className="rounded-2xl border border-primary/10 bg-primary/5 p-6 text-center">
       <h4 className="text-lg font-bold">Live catalog unavailable</h4>
       <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">{message}</p>
+    </div>
+  );
+}
+
+function HomeTrendingSkeleton({ mobile = false }) {
+  const items = mobile ? 3 : 4;
+
+  return (
+    <div className={mobile ? "no-scrollbar flex gap-4 overflow-x-auto px-4" : "no-scrollbar flex gap-6 overflow-x-auto pb-6"}>
+      {Array.from({ length: items }).map((_, index) => (
+        <div
+          className={mobile ? "w-44 flex-none" : "w-64 flex-shrink-0"}
+          key={index}
+        >
+          <SkeletonBlock className={mobile ? "aspect-[3/4] w-full rounded-xl" : "aspect-[2/3] w-full rounded-2xl"} />
+          <SkeletonBlock className="mt-3 h-4 w-3/4" />
+          <SkeletonBlock className="mt-2 h-3 w-1/2" />
+        </div>
+      ))}
     </div>
   );
 }
@@ -273,7 +294,7 @@ function DesktopHome({
                 </Link>
               </div>
               {isHomeLoading ? (
-                <LiveCatalogNotice message="Loading the latest featured shelves..." />
+                <HomeTrendingSkeleton />
               ) : homeError ? (
                 <LiveCatalogNotice message={getHomeErrorMessage(homeError)} />
               ) : trendingStories.length ? (
@@ -706,9 +727,7 @@ function MobileHome({
             </Link>
           </div>
           {isHomeLoading ? (
-            <div className="px-4">
-              <LiveCatalogNotice message="Loading the live trending shelf..." />
-            </div>
+            <HomeTrendingSkeleton mobile />
           ) : homeError ? (
             <div className="px-4">
               <LiveCatalogNotice message={getHomeErrorMessage(homeError)} />
@@ -908,6 +927,10 @@ function MobileHome({
 
 export default function HomePage() {
   const { data, error, isLoading } = useReaderHomeQuery();
+
+  if (isLoading && !data) {
+    return <RouteLoadingScreen />;
+  }
 
   return (
     <>
