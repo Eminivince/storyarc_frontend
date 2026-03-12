@@ -153,13 +153,13 @@ export default function RichTextEditor({
           label="Block quote"
           onClick={() => editor?.chain().focus().toggleBlockquote().run()}
         />
-        {/* <ToolbarButton
+        <ToolbarButton
           active={Boolean(editor?.isActive("link"))}
           disabled={!editor}
           icon="link"
           label="Link"
           onClick={handleSetLink}
-        /> */}
+        />
         <div className="mx-1 h-5 w-px bg-white/10" />
         <ToolbarButton
           disabled={!editor?.can().chain().focus().undo().run()}
