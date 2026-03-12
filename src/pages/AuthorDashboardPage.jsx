@@ -5,6 +5,7 @@ import Reveal from "../components/Reveal";
 import UserAvatar from "../components/UserAvatar";
 import { useAuth } from "../context/AuthContext";
 import { useCreator } from "../context/CreatorContext";
+import { profileHref } from "../data/accountFlow";
 import {
   creatorStoryCreateHref,
   getCreatorChapterEditorHref,
@@ -385,7 +386,7 @@ function MobileAuthorDashboard({
     <div className="min-h-screen bg-background-light font-display text-slate-900 dark:bg-[#0F0E0C] dark:text-slate-100 md:hidden">
       <div className="relative flex h-screen flex-col overflow-hidden">
         <header className="flex items-center justify-between border-b border-slate-200 bg-background-light px-4 py-3 dark:border-primary/10 dark:bg-[#0F0E0C]">
-          <div className="flex min-w-0 items-center gap-2.5">
+          <Link className="flex min-w-0 items-center gap-2.5" to={profileHref}>
             <div className="relative size-9 shrink-0 rounded-full border-2 border-primary p-0.5">
               <UserAvatar
                 className="size-full rounded-full"
@@ -403,7 +404,7 @@ function MobileAuthorDashboard({
                 Pro Creator
               </span>
             </div>
-          </div>
+          </Link>
           <div className="flex shrink-0 gap-1.5">
             <button className="flex size-9 items-center justify-center rounded-full bg-slate-100 text-slate-700 dark:bg-primary/10 dark:text-primary" type="button">
               <span className="material-symbols-outlined text-lg">notifications</span>

@@ -591,7 +591,7 @@ function MobileChapterEditor({
         <span className="material-symbols-outlined text-2xl">settings</span>
       </button>
 
-      <div className="fixed bottom-24 left-1/2 z-40 flex w-[90%] max-w-md -translate-x-1/2 items-center justify-around rounded-xl border border-slate-200 bg-white/90 p-1.5 shadow-2xl backdrop-blur-xl dark:border-slate-700 dark:bg-slate-800/90">
+      {/* <div className="fixed bottom-24 left-1/2 z-40 flex w-[90%] max-w-md -translate-x-1/2 items-center justify-around rounded-xl border border-slate-200 bg-white/90 p-1.5 shadow-2xl backdrop-blur-xl dark:border-slate-700 dark:bg-slate-800/90">
         {["format_bold", "format_italic", "format_list_bulleted", "image"].map(
           (icon) => (
             <button
@@ -613,7 +613,7 @@ function MobileChapterEditor({
             <span className="material-symbols-outlined text-lg">{icon}</span>
           </button>
         ))}
-      </div>
+      </div> */}
 
       <div className="pointer-events-none fixed inset-0 z-[70] md:hidden">
         <button

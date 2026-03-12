@@ -161,10 +161,10 @@ function getCreatorConfig(storySlug) {
         href: getCreatorStoryManagementHref(storySlug),
       },
       {
-        id: "queue",
-        icon: "schedule",
-        label: "Queue",
-        href: getCreatorScheduledChaptersHref(storySlug),
+        id: "read",
+        icon: "menu_book",
+        label: "Read",
+        href: "/dashboard",
       },
       {
         id: "community",
@@ -173,10 +173,10 @@ function getCreatorConfig(storySlug) {
         href: creatorCommunityHref,
       },
       {
-        id: "profile",
-        icon: "account_circle",
-        label: "Profile",
-        href: profileHref,
+        id: "queue",
+        icon: "schedule",
+        label: "Queue",
+        href: getCreatorScheduledChaptersHref(storySlug),
       },
     ],
   };
@@ -592,7 +592,7 @@ export function AppMobileTabBar({
   topGenre,
 }) {
   const { pathname } = useLocation();
-  const { activeStorySlug, enterWriterMode, getCreatorEntryHref, stories } = useCreator();
+  const { activeStorySlug, enterReaderMode, enterWriterMode, getCreatorEntryHref, stories } = useCreator();
   let config = getReaderConfig(topGenre, getCreatorEntryHref());
   const resolvedCreatorStorySlug = resolveCreatorStorySlug(
     storySlug,
@@ -629,7 +629,13 @@ export function AppMobileTabBar({
             icon={item.icon}
             key={item.label}
             label={item.label}
-            onClick={mode === "reader" && item.id === "write" ? enterWriterMode : undefined}
+            onClick={
+              mode === "reader" && item.id === "write"
+                ? enterWriterMode
+                : mode === "creator" && item.id === "read"
+                  ? enterReaderMode
+                  : undefined
+            }
           />
         ))}
       </div>

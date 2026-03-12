@@ -150,80 +150,80 @@ function DesktopPublishedChapters({ onArchive, story }) {
 function MobilePublishedChapters({ onArchive, story }) {
   return (
     <div className="min-h-screen bg-background-light font-display text-slate-900 dark:bg-background-dark dark:text-slate-100 md:hidden">
-      <header className="sticky top-0 z-10 border-b border-primary/10 bg-background-light px-4 py-4 dark:bg-background-dark">
+      <header className="sticky top-0 z-10 border-b border-primary/10 bg-background-light px-4 py-3 dark:bg-background-dark">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Link className="material-symbols-outlined text-slate-900 dark:text-slate-100" to={getCreatorStoryManagementHref(story.slug)}>
-              arrow_back
+          <div className="flex min-w-0 items-center gap-2">
+            <Link className="flex size-9 shrink-0 items-center justify-center rounded-lg transition-colors hover:bg-slate-200 dark:hover:bg-primary/10" to={getCreatorStoryManagementHref(story.slug)}>
+              <span className="material-symbols-outlined text-xl text-slate-900 dark:text-slate-100">arrow_back</span>
             </Link>
-            <h2 className="text-lg font-bold tracking-tight">Published Chapters</h2>
+            <h2 className="truncate text-base font-bold tracking-tight">Published Chapters</h2>
           </div>
-          <button className="rounded-full p-2 transition-colors hover:bg-primary/10" type="button">
-            <span className="material-symbols-outlined text-primary">more_vert</span>
+          <button className="flex size-9 shrink-0 items-center justify-center rounded-lg transition-colors hover:bg-primary/10" type="button">
+            <span className="material-symbols-outlined text-lg text-primary">more_vert</span>
           </button>
         </div>
-        <div className="mt-4">
-          <label className="relative flex items-center w-full">
-            <span className="material-symbols-outlined absolute left-3 text-slate-400 dark:text-slate-500">search</span>
+        <div className="mt-3">
+          <label className="relative flex w-full items-center">
+            <span className="material-symbols-outlined absolute left-2.5 text-base text-slate-400 dark:text-slate-500">search</span>
             <input
-              className="h-11 w-full rounded-lg border-none bg-slate-200 pl-10 pr-4 text-slate-900 placeholder:text-slate-500 focus:ring-2 focus:ring-primary dark:bg-primary/10 dark:text-slate-100"
+              className="h-9 w-full rounded-lg border-none bg-slate-200 pl-9 pr-3 text-sm placeholder:text-slate-500 focus:ring-2 focus:ring-primary dark:bg-primary/10 dark:text-slate-100"
               placeholder="Search chapters..."
               type="text"
             />
           </label>
         </div>
-        <div className="no-scrollbar mt-4 flex gap-6 overflow-x-auto">
-          <button className="border-b-[3px] border-primary pb-3 pt-2 text-sm font-bold text-primary" type="button">
+        <div className="no-scrollbar mt-3 flex gap-4 overflow-x-auto">
+          <button className="whitespace-nowrap border-b-2 border-primary pb-2 pt-1.5 text-xs font-bold text-primary" type="button">
             All Chapters
           </button>
-          <button className="border-b-[3px] border-transparent pb-3 pt-2 text-sm font-bold text-slate-500" type="button">
+          <button className="whitespace-nowrap border-b-2 border-transparent pb-2 pt-1.5 text-xs font-bold text-slate-500" type="button">
             Drafts
           </button>
-          <button className="border-b-[3px] border-transparent pb-3 pt-2 text-sm font-bold text-slate-500" type="button">
+          <button className="whitespace-nowrap border-b-2 border-transparent pb-2 pt-1.5 text-xs font-bold text-slate-500" type="button">
             Archived
           </button>
         </div>
       </header>
 
-      <main className="space-y-3 p-4 pb-28">
-        <div className="mb-2 flex items-center justify-between">
-          <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-500">Published ({story.publishedChapters.length})</h3>
-          <span className="material-symbols-outlined text-sm text-slate-500">filter_list</span>
+      <main className="space-y-2 px-4 py-3 pb-28">
+        <div className="mb-1.5 flex items-center justify-between">
+          <h3 className="text-[10px] font-bold uppercase tracking-widest text-slate-500">Published ({story.publishedChapters.length})</h3>
+          <span className="material-symbols-outlined text-base text-slate-500">filter_list</span>
         </div>
 
         {story.publishedChapters.map((chapter) => (
-          <Reveal className="flex flex-col gap-3 rounded-xl border border-primary/10 bg-white p-4 shadow-sm dark:bg-primary/5" key={chapter.id}>
-            <div className="flex items-start justify-between">
-              <div className="space-y-1">
-                <h4 className="font-bold">{chapter.title}</h4>
-                <span className="inline-flex items-center rounded bg-emerald-100 px-2 py-0.5 text-xs font-medium text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400">
-                  <span className="mr-1.5 h-1.5 w-1.5 rounded-full bg-emerald-500" />
+          <Reveal className="flex flex-col gap-2 rounded-xl border border-primary/10 bg-white p-3 shadow-sm dark:bg-primary/5" key={chapter.id}>
+            <div className="flex items-start justify-between gap-2">
+              <div className="min-w-0 flex-1 space-y-0.5">
+                <h4 className="truncate text-sm font-bold">{chapter.title}</h4>
+                <span className="inline-flex items-center rounded bg-emerald-100 px-1.5 py-0.5 text-[10px] font-medium text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400">
+                  <span className="mr-1 size-1 rounded-full bg-emerald-500" />
                   {chapter.status}
                 </span>
               </div>
-              <div className="flex gap-1">
+              <div className="flex shrink-0 gap-0.5">
                 <Link
-                  className="p-1.5 text-slate-400 transition-colors hover:text-primary"
+                  className="flex size-8 items-center justify-center rounded-lg text-slate-400 transition-colors hover:bg-slate-100 hover:text-primary dark:hover:bg-primary/10"
                   to={getChapterEditHref(story.slug, chapter.chapterId)}
                 >
-                  <span className="material-symbols-outlined text-lg">edit</span>
+                  <span className="material-symbols-outlined text-base">edit</span>
                 </Link>
-                <button className="p-1.5 text-slate-400 transition-colors hover:text-primary" onClick={() => onArchive(chapter.title)} type="button">
-                  <span className="material-symbols-outlined text-lg">download</span>
+                <button className="flex size-8 items-center justify-center rounded-lg text-slate-400 transition-colors hover:bg-slate-100 hover:text-primary dark:hover:bg-primary/10" onClick={() => onArchive(chapter.title)} type="button">
+                  <span className="material-symbols-outlined text-base">archive</span>
                 </button>
               </div>
             </div>
-            <div className="flex items-center gap-4 text-xs font-medium text-slate-500">
-              <div className="flex items-center gap-1">
-                <span className="material-symbols-outlined text-base">visibility</span>
-                <span>{chapter.reads} Reads</span>
+            <div className="flex items-center gap-3 text-[10px] font-medium text-slate-500">
+              <div className="flex items-center gap-0.5">
+                <span className="material-symbols-outlined text-sm">visibility</span>
+                <span>{chapter.reads}</span>
               </div>
-              <div className="flex items-center gap-1">
-                <span className="material-symbols-outlined text-base">favorite</span>
-                <span>{chapter.likes} Likes</span>
+              <div className="flex items-center gap-0.5">
+                <span className="material-symbols-outlined text-sm">favorite</span>
+                <span>{chapter.likes}</span>
               </div>
-              <div className="flex items-center gap-1">
-                <span className="material-symbols-outlined text-base">chat_bubble</span>
+              <div className="flex items-center gap-0.5">
+                <span className="material-symbols-outlined text-sm">chat_bubble</span>
                 <span>{chapter.comments}</span>
               </div>
             </div>
