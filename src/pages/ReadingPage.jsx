@@ -9,6 +9,7 @@ import {
   buildLockedChapterHref,
   buildReportChapterHref,
   buildStoryHref,
+  readerLibraryHref,
 } from "../data/readerFlow";
 import { useToast } from "../context/ToastContext";
 import {
@@ -171,7 +172,7 @@ function DesktopReader({
     <div className={`hidden min-h-screen font-display antialiased selection:bg-primary/30 md:block ${theme.shell}`}>
       <header className={`sticky top-0 z-50 border-b backdrop-blur-md ${theme.chrome}`}>
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
-          <Link className="flex items-center gap-4 text-primary" to="/dashboard">
+          <Link className="flex items-center gap-4 text-primary" to={readerLibraryHref}>
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-background-dark">
               <span className="material-symbols-outlined">auto_stories</span>
             </div>
@@ -183,7 +184,7 @@ function DesktopReader({
               <Link className="text-sm font-medium transition-colors hover:text-primary" to={buildStoryHref(story.slug)}>
                 Story
               </Link>
-              <Link className="text-sm font-medium transition-colors hover:text-primary" to="/dashboard">
+              <Link className="text-sm font-medium transition-colors hover:text-primary" to={readerLibraryHref}>
                 Library
               </Link>
             </nav>
@@ -792,8 +793,8 @@ export default function ReadingPage() {
   if (isError || !story || !chapter) {
     return (
       <ReaderStateScreen
-        ctaLabel="Back to Dashboard"
-        ctaTo="/dashboard"
+        ctaLabel="Back to Library"
+        ctaTo={readerLibraryHref}
         description={getChapterErrorMessage(error)}
         secondaryLabel={storySlug ? "Open Story" : "Browse Stories"}
         secondaryTo={storySlug ? buildStoryHref(storySlug) : "/search?q=Fantasy"}
@@ -835,7 +836,7 @@ export default function ReadingPage() {
 
   const nextHref = chapter.nextChapter
     ? buildChapterHref(story.slug, chapter.nextChapter.chapterSlug)
-    : "/dashboard";
+    : readerLibraryHref;
   const nextLabel = chapter.nextChapter ? chapter.nextChapter.title : "Back to Library";
 
   async function handleBookmarkToggle() {

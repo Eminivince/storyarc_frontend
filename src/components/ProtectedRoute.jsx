@@ -1,6 +1,11 @@
 import { Navigate, useLocation } from "react-router-dom";
-import { getDefaultSignedInPath, getOnboardingEntryPath } from "../auth/authRouting";
+import {
+  getDefaultSignedInPath,
+  getOnboardingEntryPath,
+  isUnauthenticatedRoute,
+} from "../auth/authRouting";
 import { useAuth } from "../context/AuthContext";
+import PageLoadingSpinner from "./PageLoadingSpinner";
 import RouteLoadingScreen from "./RouteLoadingScreen";
 
 export default function ProtectedRoute({ access, children }) {
@@ -12,7 +17,11 @@ export default function ProtectedRoute({ access, children }) {
   }
 
   if (isBootstrapping && (hasStoredSession || access.kind !== "public")) {
-    return <RouteLoadingScreen />;
+    return isUnauthenticatedRoute(location.pathname) ? (
+      <PageLoadingSpinner />
+    ) : (
+      <RouteLoadingScreen />
+    );
   }
 
   if (access.kind === "guest") {

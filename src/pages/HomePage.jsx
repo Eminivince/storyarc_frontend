@@ -1,13 +1,9 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import Reveal from "../components/Reveal";
-import RouteLoadingScreen from "../components/RouteLoadingScreen";
-import SkeletonBlock from "../components/SkeletonBlock";
-import {
-  buildChapterHref,
-  buildSearchHref,
-  buildStoryHref,
-} from "../data/readerFlow";
+import LoadingSpinner from "../components/LoadingSpinner";
+import PageLoadingSpinner from "../components/PageLoadingSpinner";
+import { buildSearchHref, buildStoryHref } from "../data/readerFlow";
 import { useReaderHomeQuery } from "../reader/readerHooks";
 
 const desktopReaderFeatures = [
@@ -60,42 +56,11 @@ function getHomeErrorMessage(error) {
   return error?.message || "We could not load the live homepage catalog right now.";
 }
 
-function getFeaturedStoryHref(featuredStory) {
-  if (!featuredStory) {
-    return "/auth";
-  }
-
-  if (featuredStory.firstChapterSlug) {
-    return buildChapterHref(featuredStory.slug, featuredStory.firstChapterSlug);
-  }
-
-  return buildStoryHref(featuredStory.slug);
-}
-
 function LiveCatalogNotice({ message }) {
   return (
     <div className="rounded-2xl border border-primary/10 bg-primary/5 p-6 text-center">
       <h4 className="text-lg font-bold">Live catalog unavailable</h4>
       <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">{message}</p>
-    </div>
-  );
-}
-
-function HomeTrendingSkeleton({ mobile = false }) {
-  const items = mobile ? 3 : 4;
-
-  return (
-    <div className={mobile ? "no-scrollbar flex gap-4 overflow-x-auto px-4" : "no-scrollbar flex gap-6 overflow-x-auto pb-6"}>
-      {Array.from({ length: items }).map((_, index) => (
-        <div
-          className={mobile ? "w-44 flex-none" : "w-64 flex-shrink-0"}
-          key={index}
-        >
-          <SkeletonBlock className={mobile ? "aspect-[3/4] w-full rounded-xl" : "aspect-[2/3] w-full rounded-2xl"} />
-          <SkeletonBlock className="mt-3 h-4 w-3/4" />
-          <SkeletonBlock className="mt-2 h-3 w-1/2" />
-        </div>
-      ))}
     </div>
   );
 }
@@ -107,8 +72,9 @@ function DesktopHome({
   isHomeLoading,
   trendingStories,
 }) {
-  const featuredHref = getFeaturedStoryHref(featuredStory);
-  const trendingHref = buildSearchHref(featuredStory?.genres?.[0] ?? "");
+  const trendingHref = buildSearchHref(
+    trendingStories[0]?.genreLabel ?? featuredStory?.genres?.[0],
+  );
 
   return (
     <div className="hidden bg-background-light text-slate-900 dark:bg-background-dark dark:text-slate-100 md:block">
@@ -191,42 +157,27 @@ function DesktopHome({
               <div className="relative flex min-h-[500px] flex-col items-center justify-center overflow-hidden rounded-3xl bg-slate-900 p-6 text-center dark:bg-primary/5 md:min-h-[600px] md:p-12">
                 <div className="absolute inset-0 z-0 opacity-60 mix-blend-overlay">
                   <img
-                    alt={featuredStory ? featuredStory.title : "Mystical library with floating magical books and golden light"}
+                    alt="Mystical library with floating magical books and golden light"
                     className="h-full w-full object-cover"
-                    src={featuredStory?.bannerImage || featuredStory?.coverImage || "https://lh3.googleusercontent.com/aida-public/AB6AXuD2fSowUokhR7_eUhHeI9ZZSDcameWfMGEwYO46U1RnaTCn3BGvrVRJ3Jak1O4z0HR1wcx2cBrWRegfF8TusiUMi0j539SWwdTbJA2HBzArMLi5usEo1rVYbwFGqEgCpHngxVont_SIvS9XFWwg0j-oFwFm07uRoBrYsMWUGdSU1clB_k2ck7NKMfmszlxbWXBKC_dsJGRpsBmA321I8eB3AnXbPb2tumpIYYvV6LX-rLLmyRCecWV1zsP1xFU4EC7700G0yD-6jFc"}
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuD2fSowUokhR7_eUhHeI9ZZSDcameWfMGEwYO46U1RnaTCn3BGvrVRJ3Jak1O4z0HR1wcx2cBrWRegfF8TusiUMi0j539SWwdTbJA2HBzArMLi5usEo1rVYbwFGqEgCpHngxVont_SIvS9XFWwg0j-oFwFm07uRoBrYsMWUGdSU1clB_k2ck7NKMfmszlxbWXBKC_dsJGRpsBmA321I8eB3AnXbPb2tumpIYYvV6LX-rLLmyRCecWV1zsP1xFU4EC7700G0yD-6jFc"
                   />
                 </div>
                 <div className="absolute inset-0 z-[1] bg-gradient-to-t from-background-dark via-background-dark/40 to-transparent" />
 
                 <Reveal className="relative z-10 max-w-3xl" distance={18}>
                   <span className="mb-6 inline-block rounded-full bg-primary px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-background-dark">
-                    {featuredStory ? "Featured Story" : "Discover the Extraordinary"}
+                    Discover the Extraordinary
                   </span>
                   <h1 className="mb-6 text-4xl font-extrabold leading-[1.1] tracking-tight text-white md:text-7xl">
-                    {featuredStory ? (
-                      <>
-                        {featuredStory.title}{" "}
-                        <span className="italic text-primary">
-                          is live now
-                        </span>
-                      </>
-                    ) : (
-                      <>
-                        Your next epic adventure{" "}
-                        <span className="italic text-primary">begins here</span>
-                      </>
-                    )}
+                    <>
+                      Your next epic adventure{" "}
+                      <span className="italic text-primary">begins here</span>
+                    </>
                   </h1>
                   <p className="mb-10 text-lg font-light leading-relaxed text-slate-200 md:text-xl">
-                    {featuredStory
-                      ? `${featuredStory.authorName} • ${featuredStory.genres.join(" • ")} • ${featuredStory.readsLabel} reads`
-                      : "Immerse yourself in thousands of worlds crafted by the world's most talented independent storytellers."}
+                    Immerse yourself in thousands of worlds crafted by the
+                    world's most talented independent storytellers.
                   </p>
-                  {featuredStory ? (
-                    <p className="mx-auto mb-10 max-w-2xl text-sm leading-relaxed text-slate-300 md:text-base">
-                      {featuredStory.shortSynopsis}
-                    </p>
-                  ) : null}
                   <div className="flex flex-col justify-center gap-4 sm:flex-row">
                     <motion.div
                       className="flex"
@@ -239,12 +190,12 @@ function DesktopHome({
                     >
                       <Link
                         className="flex h-14 min-w-[180px] items-center justify-center gap-2 rounded-xl bg-primary px-8 text-lg font-bold text-background-dark"
-                        to={featuredHref}
+                        to="/auth"
                       >
                         <span className="material-symbols-outlined">
                           auto_stories
                         </span>
-                        {featuredStory ? "Read Featured Story" : "Start Reading"}
+                        Start Reading
                       </Link>
                     </motion.div>
                     <motion.div
@@ -255,12 +206,10 @@ function DesktopHome({
                     >
                       <Link
                         className="flex h-14 min-w-[180px] items-center justify-center gap-2 rounded-xl border border-white/20 bg-white/10 px-8 text-lg font-bold text-white backdrop-blur-sm"
-                        to={featuredStory ? trendingHref : "/creator"}
+                        to="/creator"
                       >
-                        <span className="material-symbols-outlined">
-                          {featuredStory ? "trending_up" : "edit_note"}
-                        </span>
-                        {featuredStory ? "Browse Trending" : "Start Writing"}
+                        <span className="material-symbols-outlined">edit_note</span>
+                        Start Writing
                       </Link>
                     </motion.div>
                   </div>
@@ -294,7 +243,9 @@ function DesktopHome({
                 </Link>
               </div>
               {isHomeLoading ? (
-                <HomeTrendingSkeleton />
+                <div className="flex items-center justify-center py-12">
+                  <LoadingSpinner size={48} />
+                </div>
               ) : homeError ? (
                 <LiveCatalogNotice message={getHomeErrorMessage(homeError)} />
               ) : trendingStories.length ? (
@@ -620,8 +571,9 @@ function MobileHome({
   isHomeLoading,
   trendingStories,
 }) {
-  const featuredHref = getFeaturedStoryHref(featuredStory);
-  const trendingHref = buildSearchHref(featuredStory?.genres?.[0] ?? "");
+  const trendingHref = buildSearchHref(
+    trendingStories[0]?.genreLabel ?? featuredStory?.genres?.[0],
+  );
 
   return (
     <div className="bg-background-light font-display text-slate-900 transition-colors duration-300 dark:bg-background-dark dark:text-slate-100 md:hidden">
@@ -647,40 +599,29 @@ function MobileHome({
         </div>
       </header>
 
-      <main className="pb-24">
+      <main className="pb-12">
         <section className="relative overflow-hidden px-4 pb-12 pt-6">
           <div className="absolute inset-0 z-0">
             <div className="absolute inset-0 z-10 bg-gradient-to-b from-transparent via-background-dark/60 to-background-dark" />
             <img
-              alt={featuredStory ? featuredStory.title : "Cinematic library with floating golden dust particles"}
+              alt="Cinematic library with floating golden dust particles"
               className="h-[500px] w-full object-cover opacity-60"
-              src={featuredStory?.bannerImage || featuredStory?.coverImage || "https://lh3.googleusercontent.com/aida-public/AB6AXuDyG3r-EEqU5bPZ3D4VuFlRhBHyo0Zlzsul6dXbaf0fxAUbYZO2h-ZmSJ0HF-fjDs8AYWBrxfUkZx9o2k4kG1ZR4u8-jW1rPgkHf68KLW_vpAD-qP1RimgElRNH5ZcJ0Kah-KQl2RmgiWqVf6A1Ox5nHW4qvkXTZVz7iER6ljXaVu39hbBmufRdaxnG47EAS70l86R9zI2cu4ciBYoNLIZWhy0Qjbe6Vb-bzEa6-It1y3qmmA6ys-o4ayuGHAnhNpYsYMwXKOz2xaY"}
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuDyG3r-EEqU5bPZ3D4VuFlRhBHyo0Zlzsul6dXbaf0fxAUbYZO2h-ZmSJ0HF-fjDs8AYWBrxfUkZx9o2k4kG1ZR4u8-jW1rPgkHf68KLW_vpAD-qP1RimgElRNH5ZcJ0Kah-KQl2RmgiWqVf6A1Ox5nHW4qvkXTZVz7iER6ljXaVu39hbBmufRdaxnG47EAS70l86R9zI2cu4ciBYoNLIZWhy0Qjbe6Vb-bzEa6-It1y3qmmA6ys-o4ayuGHAnhNpYsYMwXKOz2xaY"
             />
           </div>
           <Reveal className="relative z-20 mt-32 flex flex-col items-center space-y-6 text-center">
             <div className="inline-flex items-center rounded-full border border-primary/30 bg-primary/20 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-primary">
-              {featuredStory ? "Featured Story" : "The Future of Narrative"}
+              The Future of Narrative
             </div>
             <h2 className="text-4xl font-extrabold leading-tight tracking-tight">
-              {featuredStory ? (
-                <>
-                  {featuredStory.title}
-                  <br />
-                  <span className="italic text-primary">
-                    just dropped
-                  </span>
-                </>
-              ) : (
-                <>
-                  Enter Your Next <br />
-                  <span className="italic text-primary">Great Story</span>
-                </>
-              )}
+              <>
+                Enter Your Next <br />
+                <span className="italic text-primary">Great Story</span>
+              </>
             </h2>
             <p className="mx-auto max-w-xs text-sm text-slate-400">
-              {featuredStory
-                ? `${featuredStory.authorName} • ${featuredStory.shortSynopsis}`
-                : "Immerse yourself in worlds crafted by AI intelligence and boundless human imagination."}
+              Immerse yourself in worlds crafted by AI intelligence and
+              boundless human imagination.
             </p>
             <div className="flex w-full flex-col gap-3 pt-4">
               <motion.div
@@ -689,10 +630,10 @@ function MobileHome({
               >
                 <Link
                   className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-4 font-bold text-background-dark shadow-lg shadow-primary/20"
-                  to={featuredHref}
+                  to="/auth"
                 >
                   <span className="material-symbols-outlined">auto_stories</span>
-                  {featuredStory ? "Read Featured Story" : "Start Reading"}
+                  Start Reading
                 </Link>
               </motion.div>
               <motion.div
@@ -701,12 +642,10 @@ function MobileHome({
               >
                 <Link
                   className="flex w-full items-center justify-center gap-2 rounded-xl border border-slate-100/20 bg-slate-100/10 py-4 font-bold text-slate-100 backdrop-blur-sm"
-                  to={featuredStory ? trendingHref : "/creator"}
+                  to="/creator"
                 >
-                  <span className="material-symbols-outlined">
-                    {featuredStory ? "trending_up" : "edit_note"}
-                  </span>
-                  {featuredStory ? "Browse Trending" : "Start Writing"}
+                  <span className="material-symbols-outlined">edit_note</span>
+                  Start Writing
                 </Link>
               </motion.div>
             </div>
@@ -727,7 +666,9 @@ function MobileHome({
             </Link>
           </div>
           {isHomeLoading ? (
-            <HomeTrendingSkeleton mobile />
+            <div className="flex items-center justify-center py-12">
+              <LoadingSpinner size={48} />
+            </div>
           ) : homeError ? (
             <div className="px-4">
               <LiveCatalogNotice message={getHomeErrorMessage(homeError)} />
@@ -899,28 +840,6 @@ function MobileHome({
         </footer>
       </main>
 
-      <nav className="safe-area-inset-bottom fixed bottom-0 left-0 right-0 z-50 flex items-center justify-between border-t border-slate-100/10 bg-background-dark/95 px-6 pt-3 backdrop-blur-xl">
-        <a className="flex flex-col items-center gap-1 text-primary" href="#">
-          <span className="material-symbols-outlined fill-1">home</span>
-          <span className="text-[10px] font-bold">Home</span>
-        </a>
-        <a className="flex flex-col items-center gap-1 text-slate-500" href="#">
-          <span className="material-symbols-outlined">explore</span>
-          <span className="text-[10px] font-medium">Explore</span>
-        </a>
-        <a className="flex flex-col items-center gap-1 text-slate-500" href="#">
-          <span className="material-symbols-outlined">library_books</span>
-          <span className="text-[10px] font-medium">Library</span>
-        </a>
-        <a className="flex flex-col items-center gap-1 text-slate-500" href="#">
-          <span className="material-symbols-outlined">draw</span>
-          <span className="text-[10px] font-medium">Studio</span>
-        </a>
-        <Link className="flex flex-col items-center gap-1 text-slate-500" to="/about">
-          <span className="material-symbols-outlined">info</span>
-          <span className="text-[10px] font-medium">About</span>
-        </Link>
-      </nav>
     </div>
   );
 }
@@ -929,7 +848,7 @@ export default function HomePage() {
   const { data, error, isLoading } = useReaderHomeQuery();
 
   if (isLoading && !data) {
-    return <RouteLoadingScreen />;
+    return <PageLoadingSpinner />;
   }
 
   return (

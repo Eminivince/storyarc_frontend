@@ -4,6 +4,7 @@ import { Link, useParams } from "react-router-dom";
 import Reveal from "../components/Reveal";
 import ReaderStateScreen from "../components/ReaderStateScreen";
 import RouteLoadingScreen from "../components/RouteLoadingScreen";
+import { useToast } from "../context/ToastContext";
 import { profileHref } from "../data/accountFlow";
 import {
   buildChapterHref,
@@ -14,6 +15,7 @@ import {
   useChapterQuery,
   useReaderStoriesQuery,
   useStoryDetailsQuery,
+  useUpdateStoryRatingMutation,
 } from "../reader/readerHooks";
 
 const desktopReactionOptions = [
@@ -60,10 +62,76 @@ function getRecommendedStories(stories, currentStorySlug, limit) {
     .slice(0, limit);
 }
 
+function AverageStars({ rating, starClassName = "text-primary" }) {
+  return (
+    <div className="flex gap-1">
+      {Array.from({ length: 5 }).map((_, index) => (
+        <span
+          className={`material-symbols-outlined ${index < Math.round(rating) ? `fill-1 ${starClassName}` : "text-slate-300 dark:text-slate-600"}`}
+          key={index}
+        >
+          star
+        </span>
+      ))}
+    </div>
+  );
+}
+
+function RatingStars({
+  currentRating,
+  disabled,
+  onRate,
+  sizeClassName = "text-3xl",
+}) {
+  return (
+    <div className="flex items-center justify-center gap-1">
+      {Array.from({ length: 5 }).map((_, index) => {
+        const value = index + 1;
+
+        return (
+          <button
+            aria-label={`Rate this book ${value} star${value === 1 ? "" : "s"}`}
+            className={`material-symbols-outlined transition-colors ${
+              value <= currentRating
+                ? "fill-1 text-primary"
+                : "text-slate-300 dark:text-slate-600"
+            } ${sizeClassName} ${disabled ? "cursor-not-allowed opacity-70" : "hover:text-primary"}`}
+            disabled={disabled}
+            key={value}
+            onClick={() => onRate(value)}
+            type="button"
+          >
+            star
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+function getRatingHelperText(story) {
+  if (!story) {
+    return "";
+  }
+
+  if (story.canRate) {
+    return story.userRating
+      ? `Your rating is ${story.userRating}/5. Tap a star to update it.`
+      : "You finished the book. Tap a star to rate it.";
+  }
+
+  return (
+    story.ratingEligibilityMessage ??
+    "Finish the full book and unlock every chapter before rating."
+  );
+}
+
 function DesktopChapterComplete({
   chapter,
+  isSubmittingRating,
   nextHref,
   nextLabel,
+  onRate,
   recommendations,
   reviewCountLabel,
   searchHref,
@@ -118,19 +186,21 @@ function DesktopChapterComplete({
                   <p className="text-5xl font-black leading-tight">
                     {story.rating.toFixed(1)}
                   </p>
-                  <div className="flex gap-1 text-primary">
-                    {["star", "star", "star", "star", "star_half"].map((icon) => (
-                      <span
-                        className={`material-symbols-outlined ${icon !== "star_half" ? "fill-1" : ""}`}
-                        key={icon}
-                      >
-                        {icon}
-                      </span>
-                    ))}
-                  </div>
+                  <AverageStars rating={story.rating} starClassName="text-primary" />
                   <p className="text-sm font-medium text-slate-500 dark:text-primary/60">
                     {reviewCountLabel} reviews
                   </p>
+                  <div className="mt-3 space-y-2 text-center">
+                    <RatingStars
+                      currentRating={story.userRating ?? 0}
+                      disabled={!story.canRate || isSubmittingRating}
+                      onRate={onRate}
+                      sizeClassName="text-2xl"
+                    />
+                    <p className="max-w-[260px] text-xs font-semibold leading-relaxed text-slate-500 dark:text-primary/60">
+                      {getRatingHelperText(story)}
+                    </p>
+                  </div>
                 </div>
 
                 <div className="h-px w-full bg-primary/20 md:h-20 md:w-px" />
@@ -279,8 +349,10 @@ function DesktopChapterComplete({
 function MobileChapterComplete({
   chapter,
   chapterHref,
+  isSubmittingRating,
   nextHref,
   nextLabel,
+  onRate,
   recommendations,
   reviewCountLabel,
   searchHref,
@@ -355,21 +427,21 @@ function MobileChapterComplete({
           </div>
 
           <div className="flex flex-col items-center gap-3">
-            <div className="flex gap-1">
-              {Array.from({ length: 5 }).map((_, index) => (
-                <span
-                  className={`material-symbols-outlined text-primary ${
-                    index < Math.round(story.rating) ? "fill-1" : "text-slate-300 dark:text-slate-600"
-                  }`}
-                  key={index}
-                >
-                  star
-                </span>
-              ))}
-            </div>
+            <AverageStars rating={story.rating} starClassName="text-primary" />
             <p className="text-sm text-slate-500 dark:text-slate-400">
               {story.rating.toFixed(1)} average across {reviewCountLabel} reviews
             </p>
+            <div className="space-y-2 text-center">
+              <RatingStars
+                currentRating={story.userRating ?? 0}
+                disabled={!story.canRate || isSubmittingRating}
+                onRate={onRate}
+                sizeClassName="text-2xl"
+              />
+              <p className="max-w-[280px] text-xs font-semibold leading-relaxed text-slate-500 dark:text-slate-400">
+                {getRatingHelperText(story)}
+              </p>
+            </div>
           </div>
         </Reveal>
 
@@ -490,8 +562,10 @@ function MobileChapterComplete({
 
 export default function ChapterCompletePage() {
   const { storySlug, chapterSlug } = useParams();
+  const { showToast } = useToast();
   const chapterQuery = useChapterQuery(storySlug, chapterSlug);
   const storyQuery = useStoryDetailsQuery(storySlug);
+  const updateStoryRatingMutation = useUpdateStoryRatingMutation(storySlug);
   const story = storyQuery.data?.story ?? null;
   const chapter = chapterQuery.data?.chapter ?? null;
   const primaryGenre = story?.genres?.[0] ?? "";
@@ -550,12 +624,35 @@ export default function ChapterCompletePage() {
   const searchHref = buildSearchHref(primaryGenre || "Fantasy");
   const reviewCountLabel = formatCount(story.reviewCount);
 
+  async function handleRate(nextRating) {
+    if (!story?.canRate || updateStoryRatingMutation.isPending) {
+      return;
+    }
+
+    try {
+      await updateStoryRatingMutation.mutateAsync({ rating: nextRating });
+      showToast("Your book rating has been saved.", {
+        title: "Rating updated",
+      });
+    } catch (error) {
+      showToast(
+        error?.message || "We could not save your rating right now.",
+        {
+          title: "Rating failed",
+          tone: "error",
+        },
+      );
+    }
+  }
+
   return (
     <>
       <DesktopChapterComplete
         chapter={chapter}
+        isSubmittingRating={updateStoryRatingMutation.isPending}
         nextHref={nextHref}
         nextLabel={nextLabel}
+        onRate={handleRate}
         recommendations={recommendations.slice(0, 3)}
         reviewCountLabel={reviewCountLabel}
         searchHref={searchHref}
@@ -566,8 +663,10 @@ export default function ChapterCompletePage() {
       <MobileChapterComplete
         chapter={chapter}
         chapterHref={chapterHref}
+        isSubmittingRating={updateStoryRatingMutation.isPending}
         nextHref={nextHref}
         nextLabel={nextLabel}
+        onRate={handleRate}
         recommendations={recommendations}
         reviewCountLabel={reviewCountLabel}
         searchHref={searchHref}

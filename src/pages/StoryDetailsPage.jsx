@@ -4,12 +4,16 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import ReaderStateScreen from "../components/ReaderStateScreen";
 import Reveal from "../components/Reveal";
 import RouteLoadingScreen from "../components/RouteLoadingScreen";
+import { useToast } from "../context/ToastContext";
 import { buildGiftSendingHref } from "../data/communityFlow";
 import {
   buildChapterHref,
   buildSearchHref,
 } from "../data/readerFlow";
-import { useStoryDetailsQuery } from "../reader/readerHooks";
+import {
+  useStoryDetailsQuery,
+  useUpdateStoryRatingMutation,
+} from "../reader/readerHooks";
 
 function getStoryErrorMessage(error) {
   if (error?.status === 404) {
@@ -36,6 +40,77 @@ function StoryAction({ children, to, tone = "primary" }) {
   );
 }
 
+function RatingStars({ currentRating, disabled, onRate }) {
+  return (
+    <div className="flex items-center gap-1">
+      {Array.from({ length: 5 }).map((_, index) => {
+        const value = index + 1;
+
+        return (
+          <button
+            aria-label={`Rate this book ${value} star${value === 1 ? "" : "s"}`}
+            className={`material-symbols-outlined text-2xl transition-colors ${
+              value <= currentRating
+                ? "fill-1 text-primary"
+                : "text-slate-300 dark:text-slate-600"
+            } ${disabled ? "cursor-not-allowed opacity-70" : "hover:text-primary"}`}
+            disabled={disabled}
+            key={value}
+            onClick={() => onRate(value)}
+            type="button"
+          >
+            star
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+function getRatingHelperText(story) {
+  if (story.canRate) {
+    return story.userRating
+      ? `Your rating is ${story.userRating}/5. Tap a star to update it.`
+      : "You finished this book. Tap a star to rate it.";
+  }
+
+  return (
+    story.ratingEligibilityMessage ??
+    "Unlock every chapter and finish the book before rating."
+  );
+}
+
+function StoryRatingPanel({ isSubmittingRating, onRate, story }) {
+  return (
+    <div className="rounded-3xl border border-primary/10 bg-white p-5 dark:bg-primary/5">
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">
+            Reader Rating
+          </p>
+          <p className="mt-2 text-3xl font-black">{story.rating.toFixed(1)}</p>
+        </div>
+        <div className="text-right">
+          <p className="text-sm font-bold">{story.reviewCount.toLocaleString()}</p>
+          <p className="text-xs uppercase tracking-[0.18em] text-slate-400">
+            Ratings
+          </p>
+        </div>
+      </div>
+      <div className="mt-4 space-y-2">
+        <RatingStars
+          currentRating={story.userRating ?? 0}
+          disabled={!story.canRate || isSubmittingRating}
+          onRate={onRate}
+        />
+        <p className="text-sm leading-relaxed text-slate-500 dark:text-slate-400">
+          {getRatingHelperText(story)}
+        </p>
+      </div>
+    </div>
+  );
+}
+
 function getSequenceBlockedLabel(chapter) {
   if (!chapter?.requiredPreviousChapter) {
     return "Available after the previous chapter";
@@ -45,6 +120,8 @@ function getSequenceBlockedLabel(chapter) {
 }
 
 function DesktopStoryDetails({
+  isSubmittingRating,
+  onRate,
   onSearchSubmit,
   searchTerm,
   setSearchTerm,
@@ -150,7 +227,13 @@ function DesktopStoryDetails({
                   </div>
                 </div>
 
-                <div className="space-y-4">
+                <StoryRatingPanel
+                  isSubmittingRating={isSubmittingRating}
+                  onRate={onRate}
+                  story={story}
+                />
+
+                <div className="space-y-4 ">
                   <h2 className="text-xl font-bold">Synopsis</h2>
                   <p className="max-w-4xl text-lg leading-relaxed text-slate-700 dark:text-slate-300">
                     {story.synopsis}
@@ -182,7 +265,7 @@ function DesktopStoryDetails({
                 </p>
               </div>
 
-              <div className="space-y-3">
+              <div className="space-y-3 flex flex-col gap-1">
                 {storyData.chapters.map((chapter, index) => {
                   const isSequenceBlocked = chapter.accessState === "SEQUENCE_BLOCKED";
                   const chapterCard = (
@@ -278,7 +361,12 @@ function DesktopStoryDetails({
   );
 }
 
-function MobileStoryDetails({ story, storyData }) {
+function MobileStoryDetails({
+  isSubmittingRating,
+  onRate,
+  story,
+  storyData,
+}) {
   const primaryChapterSlug =
     storyData.continueReading?.chapterSlug || story.firstChapterSlug;
 
@@ -335,6 +423,14 @@ function MobileStoryDetails({ story, storyData }) {
           </div>
         </Reveal>
 
+        <Reveal>
+          <StoryRatingPanel
+            isSubmittingRating={isSubmittingRating}
+            onRate={onRate}
+            story={story}
+          />
+        </Reveal>
+
         <Reveal className="space-y-3">
           {primaryChapterSlug ? (
             <StoryAction to={buildChapterHref(story.slug, primaryChapterSlug)}>
@@ -350,7 +446,7 @@ function MobileStoryDetails({ story, storyData }) {
 
         <Reveal as="section" className="space-y-4">
           <h2 className="text-2xl font-bold">Chapters</h2>
-          <div className="space-y-3">
+          <div className="space-y-3 flex flex-col gap-1">
             {storyData.chapters.map((chapter) => {
               const isSequenceBlocked = chapter.accessState === "SEQUENCE_BLOCKED";
               const chapterCard = (
@@ -419,13 +515,36 @@ function MobileStoryDetails({ story, storyData }) {
 export default function StoryDetailsPage() {
   const navigate = useNavigate();
   const { storySlug } = useParams();
+  const { showToast } = useToast();
   const [searchTerm, setSearchTerm] = useState("");
   const { data, error, isError, isLoading } = useStoryDetailsQuery(storySlug);
+  const updateStoryRatingMutation = useUpdateStoryRatingMutation(storySlug);
   const story = useMemo(() => data?.story ?? null, [data]);
 
   function handleSearchSubmit(event) {
     event.preventDefault();
     navigate(buildSearchHref(searchTerm || story?.genres?.[0] || "Fantasy"));
+  }
+
+  async function handleRate(nextRating) {
+    if (!story?.canRate || updateStoryRatingMutation.isPending) {
+      return;
+    }
+
+    try {
+      await updateStoryRatingMutation.mutateAsync({ rating: nextRating });
+      showToast("Your book rating has been saved.", {
+        title: "Rating updated",
+      });
+    } catch (mutationError) {
+      showToast(
+        mutationError?.message || "We could not save your rating right now.",
+        {
+          title: "Rating failed",
+          tone: "error",
+        },
+      );
+    }
   }
 
   if (isLoading) {
@@ -453,13 +572,20 @@ export default function StoryDetailsPage() {
   return (
     <>
       <DesktopStoryDetails
+        isSubmittingRating={updateStoryRatingMutation.isPending}
+        onRate={handleRate}
         onSearchSubmit={handleSearchSubmit}
         searchTerm={searchTerm}
         setSearchTerm={setSearchTerm}
         story={story}
         storyData={data}
       />
-      <MobileStoryDetails story={story} storyData={data} />
+      <MobileStoryDetails
+        isSubmittingRating={updateStoryRatingMutation.isPending}
+        onRate={handleRate}
+        story={story}
+        storyData={data}
+      />
     </>
   );
 }

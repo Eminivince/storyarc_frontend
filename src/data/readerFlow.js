@@ -1,4 +1,4 @@
-export const readerLibraryHref = "/dashboard";
+export const readerLibraryHref = "/library";
 
 export function buildSearchHref(query = "Fantasy") {
   const params = new URLSearchParams();
@@ -10,6 +10,22 @@ export function buildSearchHref(query = "Fantasy") {
   const search = params.toString();
 
   return search ? `/search?${search}` : "/search";
+}
+
+export function buildBrowseHref(genre, query) {
+  const params = new URLSearchParams();
+
+  if (genre) {
+    params.set("genre", genre);
+  }
+
+  if (query) {
+    params.set("q", query);
+  }
+
+  const search = params.toString();
+
+  return search ? `/browse?${search}` : "/browse";
 }
 
 export function buildStoryHref(storySlug) {

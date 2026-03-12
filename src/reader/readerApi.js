@@ -64,6 +64,14 @@ export function fetchStoryDetails(storySlug) {
   });
 }
 
+export function updateStoryRating(storySlug, input) {
+  return requestJson(`/reader/stories/${storySlug}/rating`, {
+    body: input,
+    headers: getAuthHeaders(),
+    method: "PUT",
+  });
+}
+
 export function fetchChapter(storySlug, chapterSlug) {
   return getJson(`/reader/stories/${storySlug}/chapters/${chapterSlug}`, {
     headers: getAuthHeaders(),

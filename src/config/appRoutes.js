@@ -36,6 +36,7 @@ const AdminUserManagementPage = lazy(() =>
 const AuthPage = lazy(() => import("../pages/AuthPage"));
 const AuthorDashboardPage = lazy(() => import("../pages/AuthorDashboardPage"));
 const BillingSettingsPage = lazy(() => import("../pages/BillingSettingsPage"));
+const BrowsePage = lazy(() => import("../pages/BrowsePage"));
 const ChapterCompletePage = lazy(() => import("../pages/ChapterCompletePage"));
 const ChapterEditorPage = lazy(() => import("../pages/ChapterEditorPage"));
 const CheckoutPage = lazy(() => import("../pages/CheckoutPage"));
@@ -83,6 +84,7 @@ const PricingPage = lazy(() => import("../pages/PricingPage"));
 const ProfilePage = lazy(() => import("../pages/ProfilePage"));
 const PublishedChaptersPage = lazy(() => import("../pages/PublishedChaptersPage"));
 const ReadingPage = lazy(() => import("../pages/ReadingPage"));
+const ReaderLibraryPage = lazy(() => import("../pages/ReaderLibraryPage"));
 const ReadingPreferencesPage = lazy(() =>
   import("../pages/ReadingPreferencesPage"),
 );
@@ -222,6 +224,8 @@ export const appRouteGroups = [
     flow: "Dashboard to search, detail, reading, report, completion, and locked access.",
     routes: [
       { path: "/dashboard", component: DashboardPage, page: "DashboardPage" },
+      { path: "/browse", component: BrowsePage, page: "BrowsePage" },
+      { path: "/library", component: ReaderLibraryPage, page: "ReaderLibraryPage" },
       { path: "/search", component: SearchResultsPage, page: "SearchResultsPage" },
       { path: "/stories/:storySlug", component: StoryDetailsPage, page: "StoryDetailsPage" },
       { path: "/stories/:storySlug/gift", component: GiftSendingPage, page: "GiftSendingPage" },

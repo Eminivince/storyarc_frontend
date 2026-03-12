@@ -1,6 +1,5 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { useMonetization } from "../context/MonetizationContext";
 import { useToast } from "../context/ToastContext";
 import {
   accountSettingsHref,
@@ -26,10 +25,14 @@ import {
   getCreatorVolumeManagerHref,
 } from "../data/creatorFlow";
 import { useCreator } from "../context/CreatorContext";
-import { buildSearchHref, readerLibraryHref } from "../data/readerFlow";
+import {
+  buildBrowseHref,
+  buildSearchHref,
+  readerLibraryHref,
+} from "../data/readerFlow";
 import UserAvatar from "./UserAvatar";
 
-function getReaderConfig(topGenre) {
+function getReaderConfig(topGenre, creatorEntryHref = "/creator") {
   return {
     homeHref: "/dashboard",
     primary: [
@@ -38,7 +41,7 @@ function getReaderConfig(topGenre) {
         id: "browse",
         icon: "explore",
         label: "Browse",
-        href: buildSearchHref(topGenre),
+        href: buildBrowseHref(topGenre),
       },
       { id: "library", icon: "auto_stories", label: "Library", href: readerLibraryHref },
       {
@@ -69,7 +72,13 @@ function getReaderConfig(topGenre) {
         id: "browse",
         icon: "explore",
         label: "Browse",
-        href: buildSearchHref(topGenre),
+        href: buildBrowseHref(topGenre),
+      },
+      {
+        id: "write",
+        icon: "edit_square",
+        label: "Write",
+        href: creatorEntryHref,
       },
       {
         id: "library",
@@ -373,8 +382,12 @@ function getActiveKey(mode, pathname) {
     return "home";
   }
 
-  if (pathname.startsWith("/search")) {
+  if (pathname.startsWith("/search") || pathname.startsWith("/browse")) {
     return "browse";
+  }
+
+  if (pathname === readerLibraryHref || pathname.startsWith(`${readerLibraryHref}/`)) {
+    return "library";
   }
 
   if (pathname.startsWith("/stories") || pathname.startsWith("/read")) {
@@ -419,9 +432,9 @@ function DesktopNavLink({ active, href, icon, label }) {
   );
 }
 
-function MobileNavLink({ active, dot, href, icon, label }) {
+function MobileNavLink({ active, dot, href, icon, label, onClick }) {
   return (
-    <Link className="group flex flex-col items-center gap-1" to={href}>
+    <Link className="group flex flex-col items-center gap-1" onClick={onClick} to={href}>
       <div className="relative">
         <span
           className={`material-symbols-outlined transition-all duration-300 ${
@@ -449,24 +462,6 @@ function MobileNavLink({ active, dot, href, icon, label }) {
   );
 }
 
-function MobileNavButton({ disabled, icon, label, onClick }) {
-  return (
-    <button
-      className="group flex flex-col items-center gap-1 disabled:cursor-not-allowed disabled:opacity-60"
-      disabled={disabled}
-      onClick={onClick}
-      type="button"
-    >
-      <span className="material-symbols-outlined text-slate-400 transition-colors duration-300 group-hover:text-primary dark:text-slate-500">
-        {icon}
-      </span>
-      <span className="text-[10px] font-medium text-slate-400 dark:text-slate-500">
-        {label}
-      </span>
-    </button>
-  );
-}
-
 export function AppDesktopSidebar({
   avatar,
   memberLabel,
@@ -479,7 +474,6 @@ export function AppDesktopSidebar({
   const navigate = useNavigate();
   const { logout, isLoggingOut, user } = useAuth();
   const { activeStorySlug, stories } = useCreator();
-  const { coinBalance } = useMonetization();
   const { showToast } = useToast();
   let config = getReaderConfig(topGenre);
   const resolvedCreatorStorySlug = resolveCreatorStorySlug(
@@ -512,7 +506,6 @@ export function AppDesktopSidebar({
               ? "Admin"
               : "Reader");
   const settingsHref = mode === "admin" ? adminSettingsHref : accountSettingsHref;
-  const showCoinBalance = mode !== "admin";
   const resolvedAvatar = avatar ?? user?.avatarUrl ?? null;
 
   async function handleSignOut() {
@@ -569,14 +562,6 @@ export function AppDesktopSidebar({
           <div className="min-w-0 flex-1">
             <p className="truncate text-sm font-bold">{resolvedMemberName}</p>
             <p className="text-xs font-medium text-primary">{roleLabel}</p>
-            {showCoinBalance ? (
-              <div className="mt-1 inline-flex items-center gap-1 rounded-full border border-primary/20 bg-primary/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-primary">
-                <span className="material-symbols-outlined text-xs">
-                  monetization_on
-                </span>
-                <span>{coinBalance.toLocaleString()} coins</span>
-              </div>
-            ) : null}
           </div>
           <div className="flex items-center gap-1">
             <Link
@@ -607,12 +592,8 @@ export function AppMobileTabBar({
   topGenre,
 }) {
   const { pathname } = useLocation();
-  const navigate = useNavigate();
-  const { logout, isLoggingOut } = useAuth();
-  const { activeStorySlug, stories } = useCreator();
-  const { coinBalance } = useMonetization();
-  const { showToast } = useToast();
-  let config = getReaderConfig(topGenre);
+  const { activeStorySlug, enterWriterMode, getCreatorEntryHref, stories } = useCreator();
+  let config = getReaderConfig(topGenre, getCreatorEntryHref());
   const resolvedCreatorStorySlug = resolveCreatorStorySlug(
     storySlug,
     activeStorySlug,
@@ -634,28 +615,11 @@ export function AppMobileTabBar({
     config.mobile.length > 5
       ? "no-scrollbar gap-4 overflow-x-auto justify-start"
       : "justify-between";
-  const showCoinBalance = mode !== "admin";
-
-  async function handleSignOut() {
-    await logout();
-    showToast("Signed out.");
-    navigate("/auth", { replace: true });
-  }
 
   return (
     <nav
       className={`fixed bottom-0 left-0 right-0 z-50 border-t border-primary/10 bg-background-light px-4 pb-6 pt-2 dark:bg-background-dark lg:hidden ${className}`.trim()}
     >
-      {showCoinBalance ? (
-        <div className="mx-auto mb-2 flex max-w-lg justify-end">
-          <div className="inline-flex items-center gap-1 rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-[11px] font-bold text-primary">
-            <span className="material-symbols-outlined text-sm">
-              monetization_on
-            </span>
-            <span>{coinBalance.toLocaleString()} coins</span>
-          </div>
-        </div>
-      ) : null}
       <div className={`mx-auto flex items-center ${overflowClasses} ${maxWidthClass}`.trim()}>
         {config.mobile.map((item) => (
           <MobileNavLink
@@ -665,14 +629,9 @@ export function AppMobileTabBar({
             icon={item.icon}
             key={item.label}
             label={item.label}
+            onClick={mode === "reader" && item.id === "write" ? enterWriterMode : undefined}
           />
         ))}
-        <MobileNavButton
-          disabled={isLoggingOut}
-          icon="logout"
-          label="Exit"
-          onClick={handleSignOut}
-        />
       </div>
     </nav>
   );

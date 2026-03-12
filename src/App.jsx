@@ -1,8 +1,9 @@
 import { motion } from "framer-motion";
 import { Suspense, useEffect } from "react";
 import { Route, Routes, useLocation } from "react-router-dom";
-import { getRouteAccess } from "./auth/authRouting";
+import { getRouteAccess, isUnauthenticatedRoute } from "./auth/authRouting";
 import ProtectedRoute from "./components/ProtectedRoute";
+import PageLoadingSpinner from "./components/PageLoadingSpinner";
 import RouteLoadingScreen from "./components/RouteLoadingScreen";
 import { appRoutes } from "./config/appRoutes";
 
@@ -46,7 +47,15 @@ export default function App() {
   return (
     <>
       <ScrollToTop />
-      <Suspense fallback={<RouteLoadingScreen />}>
+      <Suspense
+        fallback={
+          isUnauthenticatedRoute(location.pathname) ? (
+            <PageLoadingSpinner />
+          ) : (
+            <RouteLoadingScreen />
+          )
+        }
+      >
         <Routes key={location.pathname} location={location}>
           {appRoutes.map(({ component: Component, path }) => (
             <Route

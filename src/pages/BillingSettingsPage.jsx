@@ -109,14 +109,9 @@ function PlanCard({
 function BillingSections({ onManagePayment }) {
   return (
     <>
-      <section className="rounded-3xl border border-primary/10 bg-white/80 p-6 dark:bg-primary/5">
+      {/* <section className="rounded-3xl border border-primary/10 bg-white/80 p-6 dark:bg-primary/5">
         <div className="mb-5 flex items-center justify-between gap-4">
-          <div>
-            <h2 className="text-xl font-bold">Storage Usage</h2>
-            <p className="text-sm text-slate-500 dark:text-slate-400">
-              Asset uploads, drafts, and creator media currently in use.
-            </p>
-          </div>
+          
           <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-bold text-primary">
             {billingUsage.usedLabel}
           </span>
@@ -125,9 +120,9 @@ function BillingSections({ onManagePayment }) {
           <div className="h-full rounded-full bg-primary" style={{ width: `${billingUsage.used}%` }} />
         </div>
         <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">{billingUsage.totalLabel}</p>
-      </section>
+      </section> */}
 
-      <section className="rounded-3xl border border-primary/10 bg-white/80 p-6 dark:bg-primary/5">
+      <section className="rounded-3xl mb-6 border border-primary/10 bg-white/80 p-6 dark:bg-primary/5">
         <div className="mb-5 flex items-center justify-between gap-4">
           <h2 className="text-xl font-bold">Payment Methods</h2>
           <button

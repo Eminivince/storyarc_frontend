@@ -10,6 +10,7 @@ import {
   removeBookmark,
   saveReadingProgress,
   searchReaderCatalog,
+  updateStoryRating,
 } from "./readerApi";
 
 export function useReaderDashboardQuery() {
@@ -86,6 +87,21 @@ export function useCreateBookmarkMutation() {
       queryClient.invalidateQueries({
         queryKey: ["reader", "chapter", variables.storySlug, variables.chapterSlug],
       });
+    },
+  });
+}
+
+export function useUpdateStoryRatingMutation(storySlug) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (input) => updateStoryRating(storySlug, input),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["reader", "story", storySlug] });
+      queryClient.invalidateQueries({ queryKey: ["reader", "stories"] });
+      queryClient.invalidateQueries({ queryKey: ["reader", "search"] });
+      queryClient.invalidateQueries({ queryKey: ["reader", "dashboard"] });
+      queryClient.invalidateQueries({ queryKey: ["reader", "home"] });
     },
   });
 }

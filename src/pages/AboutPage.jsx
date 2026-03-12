@@ -512,7 +512,7 @@ function MobileAbout() {
         </div>
       </header>
 
-      <main className="flex-1 pb-24">
+      <main className="flex-1 pb-12">
         <section className="relative flex h-[70vh] w-full flex-col items-center justify-center overflow-hidden px-6 text-center">
           <div className="absolute inset-0 z-0">
             <div className="absolute inset-0 z-10 bg-gradient-to-t from-background-dark via-background-dark/60 to-transparent" />
@@ -636,59 +636,6 @@ function MobileAbout() {
         </footer>
       </main>
 
-      <nav className="safe-area-inset-bottom fixed bottom-0 left-0 right-0 z-50 flex border-t border-primary/10 bg-background-light px-4 pt-2 backdrop-blur-md dark:bg-background-dark/95">
-        <Link
-          className="flex flex-1 flex-col items-center justify-center gap-1 text-slate-400"
-          to="/"
-        >
-          <span className="material-symbols-outlined text-[28px]">home</span>
-          <span className="text-[10px] font-medium uppercase tracking-tighter">
-            Home
-          </span>
-        </Link>
-        <a
-          className="flex flex-1 flex-col items-center justify-center gap-1 text-slate-400"
-          href="#"
-        >
-          <span className="material-symbols-outlined text-[28px]">
-            auto_stories
-          </span>
-          <span className="text-[10px] font-medium uppercase tracking-tighter">
-            Library
-          </span>
-        </a>
-        <Link
-          className="flex flex-1 flex-col items-center justify-center gap-1 text-primary"
-          to="/about"
-        >
-          <span className="material-symbols-outlined fill-1 text-[28px]">
-            info
-          </span>
-          <span className="text-[10px] font-medium uppercase tracking-tighter">
-            About
-          </span>
-        </Link>
-        <a
-          className="flex flex-1 flex-col items-center justify-center gap-1 text-slate-400"
-          href="#"
-        >
-          <span className="material-symbols-outlined text-[28px]">
-            edit_square
-          </span>
-          <span className="text-[10px] font-medium uppercase tracking-tighter">
-            Write
-          </span>
-        </a>
-        <a
-          className="flex flex-1 flex-col items-center justify-center gap-1 text-slate-400"
-          href="#"
-        >
-          <span className="material-symbols-outlined text-[28px]">person</span>
-          <span className="text-[10px] font-medium uppercase tracking-tighter">
-            Profile
-          </span>
-        </a>
-      </nav>
     </div>
   );
 }

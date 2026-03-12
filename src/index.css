@@ -57,3 +57,33 @@ body {
 .pb-safe {
   padding-bottom: calc(env(safe-area-inset-bottom) + 0.25rem);
 }
+
+/* SqueezeLoader / LoadingSpinner animations */
+@keyframes squeeze-loader-squeeze {
+  0% { inset: 0 2em 2em 0; }
+  12.5% { inset: 0 2em 0 0; }
+  25% { inset: 2em 2em 0 0; }
+  37.5% { inset: 2em 0 0 0; }
+  50% { inset: 2em 0 0 2em; }
+  62.5% { inset: 0 0 0 2em; }
+  75% { inset: 0 0 2em 2em; }
+  87.5% { inset: 0 0 2em 0; }
+  100% { inset: 0 2em 2em 0; }
+}
+
+@keyframes squeeze-loader-spin {
+  to { transform: rotate(-360deg); }
+}
+
+.animate-squeeze {
+  animation: squeeze-loader-squeeze var(--squeeze-duration, 3s) infinite;
+}
+
+.animate-squeeze-delayed {
+  animation: squeeze-loader-squeeze var(--squeeze-duration, 3s) infinite;
+  animation-delay: -1.25s;
+}
+
+.animate-squeeze-spin {
+  animation: squeeze-loader-spin var(--spin-duration, 10s) infinite linear;
+}

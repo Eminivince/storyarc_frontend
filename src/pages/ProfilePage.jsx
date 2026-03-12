@@ -1,13 +1,17 @@
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import AccountNotice from "../components/AccountNotice";
 import { AppDesktopSidebar, AppMobileTabBar } from "../components/AppShellNav";
 import Reveal from "../components/Reveal";
 import SkeletonBlock from "../components/SkeletonBlock";
 import UserAvatar from "../components/UserAvatar";
 import { useAccount } from "../context/AccountContext";
+import { useAuth } from "../context/AuthContext";
+import { useMonetization } from "../context/MonetizationContext";
+import { useToast } from "../context/ToastContext";
 import {
   accountQuickLinks,
+  billingSettingsHref,
   editProfileHref,
   notificationsHref,
   profileTabs,
@@ -15,6 +19,7 @@ import {
 import {
   buildChapterHref,
   buildSearchHref,
+  readerLibraryHref,
   buildStoryHref,
 } from "../data/readerFlow";
 
@@ -61,14 +66,14 @@ function ProfileStatsGrid({ isLoading = false, items, mobile = false }) {
     }
 
     return (
-      <section className="mb-10 grid grid-cols-2 gap-4 lg:grid-cols-4">
+      <section className="mb-6 grid grid-cols-2 gap-3 lg:grid-cols-4">
         {Array.from({ length: 4 }).map((_, index) => (
           <div
-            className="rounded-xl border border-slate-200 bg-white p-5 text-center dark:border-white/10 dark:bg-white/5"
+            className="rounded-lg border border-slate-200 bg-white p-3 text-center dark:border-white/10 dark:bg-white/5"
             key={index}
           >
-            <SkeletonBlock className="mx-auto h-7 w-16" />
-            <SkeletonBlock className="mx-auto mt-2 h-3 w-20" />
+            <SkeletonBlock className="mx-auto h-6 w-14" />
+            <SkeletonBlock className="mx-auto mt-1.5 h-3 w-16" />
           </div>
         ))}
       </section>
@@ -98,14 +103,14 @@ function ProfileStatsGrid({ isLoading = false, items, mobile = false }) {
   }
 
   return (
-    <section className="mb-10 grid grid-cols-2 gap-4 lg:grid-cols-4">
+    <section className="mb-6 grid grid-cols-2 gap-3 lg:grid-cols-4">
       {items.map((item) => (
         <div
-          className="rounded-xl border border-slate-200 bg-white p-5 text-center dark:border-white/10 dark:bg-white/5"
+          className="rounded-lg border border-slate-200 bg-white p-3 text-center dark:border-white/10 dark:bg-white/5"
           key={item.label}
         >
-          <p className="text-2xl font-black">{item.value}</p>
-          <p className="mt-1 text-xs font-medium uppercase text-slate-500 dark:text-slate-400">
+          <p className="text-xl font-black">{item.value}</p>
+          <p className="mt-0.5 text-[10px] font-medium uppercase text-slate-500 dark:text-slate-400">
             {item.label}
           </p>
         </div>
@@ -204,15 +209,76 @@ function ActivitySkeleton({ mobile = false }) {
   );
 }
 
+function WalletSection({ coinBalance, isLoading = false, mobile = false }) {
+  const content = (
+    <div
+      className={`overflow-hidden rounded-2xl border border-primary/20 bg-primary/10 ${
+        mobile ? "p-4" : "p-5"
+      }`}
+    >
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <p className="text-[11px] font-black uppercase tracking-[0.22em] text-primary">
+            StoryCoins Balance
+          </p>
+          {isLoading ? (
+            <SkeletonBlock className="mt-3 h-10 w-32 rounded-lg" />
+          ) : (
+            <p className={`${mobile ? "mt-2 text-3xl" : "mt-3 text-4xl"} font-black`}>
+              {coinBalance.toLocaleString()}
+            </p>
+          )}
+          <p className="mt-2 max-w-sm text-sm leading-relaxed text-slate-500 dark:text-slate-400">
+            Use coins for chapter unlocks, gifts, and other premium reader actions.
+          </p>
+        </div>
+        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary text-background-dark shadow-lg shadow-primary/20">
+          <span className="material-symbols-outlined text-2xl">
+            monetization_on
+          </span>
+        </div>
+      </div>
+      <Link
+        className="mt-5 inline-flex items-center gap-2 rounded-xl border border-primary/20 bg-background-light px-4 py-2 text-xs font-black uppercase tracking-widest text-primary transition-colors hover:bg-primary/5 dark:bg-background-dark"
+        to={billingSettingsHref}
+      >
+        Manage Billing
+        <span className="material-symbols-outlined text-sm">chevron_right</span>
+      </Link>
+    </div>
+  );
+
+  if (mobile) {
+    return (
+      <div className="px-4 py-4">
+        <h3 className="mb-4 flex items-center gap-2 text-lg font-bold">
+          <span className="material-symbols-outlined text-primary">
+            monetization_on
+          </span>
+          Wallet
+        </h3>
+        {content}
+      </div>
+    );
+  }
+
+  return (
+    <Reveal>
+      <h3 className="mb-4 text-lg font-bold">Wallet</h3>
+      {content}
+    </Reveal>
+  );
+}
+
 function DesktopCurrentReading({ currentReading, isLoading }) {
   if (isLoading && !currentReading) {
     return (
       <Reveal>
-        <div className="mb-6 flex items-center justify-between">
-          <h3 className="text-xl font-bold">Currently Reading</h3>
+        <div className="mb-4 flex items-center justify-between">
+          <h3 className="text-lg font-bold">Currently Reading</h3>
           <Link
             className="text-xs font-bold uppercase tracking-widest text-primary hover:underline"
-            to="/dashboard"
+            to={readerLibraryHref}
           >
             View Library
           </Link>
@@ -224,11 +290,11 @@ function DesktopCurrentReading({ currentReading, isLoading }) {
 
   return (
     <Reveal>
-      <div className="mb-6 flex items-center justify-between">
-        <h3 className="text-xl font-bold">Currently Reading</h3>
+      <div className="mb-4 flex items-center justify-between">
+        <h3 className="text-lg font-bold">Currently Reading</h3>
         <Link
           className="text-xs font-bold uppercase tracking-widest text-primary hover:underline"
-          to="/dashboard"
+          to={readerLibraryHref}
         >
           View Library
         </Link>
@@ -367,8 +433,8 @@ function DesktopReadingList({ isLoading, readingList }) {
   if (isLoading && !readingList.length) {
     return (
       <Reveal>
-        <div className="mb-6 flex items-center justify-between">
-          <h3 className="text-xl font-bold">Reading List</h3>
+        <div className="mb-4 flex items-center justify-between">
+          <h3 className="text-lg font-bold">Reading List</h3>
           <Link
             className="text-xs font-bold uppercase tracking-widest text-primary hover:underline"
             to={buildSearchHref("")}
@@ -383,8 +449,8 @@ function DesktopReadingList({ isLoading, readingList }) {
 
   return (
     <Reveal>
-      <div className="mb-6 flex items-center justify-between">
-        <h3 className="text-xl font-bold">Reading List</h3>
+      <div className="mb-4 flex items-center justify-between">
+        <h3 className="text-lg font-bold">Reading List</h3>
         <Link
           className="text-xs font-bold uppercase tracking-widest text-primary hover:underline"
           to={buildSearchHref("")}
@@ -571,10 +637,46 @@ function RecentActivityList({ isLoading, items, mobile = false }) {
   );
 }
 
+function MobileLogoutSection({ isLoggingOut, onLogout }) {
+  return (
+    <div className="px-4 pb-32 pt-2">
+      <div className="rounded-2xl border border-red-500/20 bg-red-500/5 p-4 dark:border-red-400/20 dark:bg-red-500/10">
+        <div className="flex items-start gap-3">
+          <div className="rounded-full bg-red-500/10 p-2 text-red-500 dark:bg-red-500/15">
+            <span className="material-symbols-outlined text-lg">logout</span>
+          </div>
+          <div className="flex-1">
+            <h3 className="text-sm font-black uppercase tracking-widest">
+              Exit StoryArc
+            </h3>
+            <p className="mt-2 text-sm leading-relaxed text-slate-500 dark:text-slate-400">
+              Log out of this device and end your current session. You can sign
+              back in any time.
+            </p>
+          </div>
+        </div>
+        <motion.button
+          className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-red-500 px-4 py-3 text-sm font-black uppercase tracking-widest text-white disabled:cursor-not-allowed disabled:opacity-60"
+          disabled={isLoggingOut}
+          onClick={onLogout}
+          type="button"
+          whileHover={{ scale: 1.01 }}
+          whileTap={{ scale: 0.98 }}
+        >
+          <span className="material-symbols-outlined text-base">logout</span>
+          {isLoggingOut ? "Signing Out..." : "Log Out"}
+        </motion.button>
+      </div>
+    </div>
+  );
+}
+
 function DesktopProfile({
   clearNotice,
+  coinBalance,
   currentReading,
   isAccountLoading,
+  isCoinBalanceLoading,
   notice,
   profile,
   profileStats,
@@ -582,56 +684,56 @@ function DesktopProfile({
   recentActivity,
 }) {
   return (
-    <div className="hidden min-h-screen bg-background-light font-display text-slate-900 dark:bg-background-dark dark:text-slate-100 md:block">
-      <div className="flex min-h-screen overflow-hidden">
+    <div className="hidden h-screen bg-background-light font-display text-slate-900 dark:bg-background-dark dark:text-slate-100 md:block">
+      <div className="flex h-full min-h-0">
         <AppDesktopSidebar
           avatar={profile.avatar}
           memberLabel="Gold Member"
           memberName={profile.displayName}
         />
 
-        <main className="custom-scrollbar flex-1 overflow-y-auto bg-background-light dark:bg-[#12100b]">
-          <div className="mx-auto max-w-5xl px-8 py-10">
+        <main className="custom-scrollbar min-h-0 flex-1 overflow-y-auto bg-background-light dark:bg-[#12100b]">
+          <div className="mx-auto max-w-4xl px-5 py-6">
             <AccountNotice notice={notice} onDismiss={clearNotice} />
 
-            <header className="mb-10 flex flex-col items-center gap-8 md:flex-row md:items-end">
-              <div className="relative group">
+            <header className="mb-6 flex flex-col items-center gap-4 md:flex-row md:items-end">
+              <div className="relative shrink-0">
                 <UserAvatar
-                  className="h-32 w-32 rounded-full border-4 border-primary shadow-2xl"
-                  fallbackClassName="text-4xl"
+                  className="h-20 w-20 rounded-full border-2 border-primary shadow-lg md:h-24 md:w-24"
+                  fallbackClassName="text-2xl md:text-3xl"
                   name={profile.displayName}
                   src={profile.avatar}
                 />
-                <div className="absolute bottom-1 right-1 rounded-full border-4 border-background-dark bg-primary p-1.5 text-background-dark">
-                  <span className="material-symbols-outlined text-sm font-bold">
+                <div className="absolute bottom-0 right-0 rounded-full border-2 border-background-dark bg-primary p-1 text-background-dark">
+                  <span className="material-symbols-outlined text-xs font-bold">
                     verified
                   </span>
                 </div>
               </div>
 
-              <div className="flex-1 text-center md:text-left">
-                <div className="mb-2 flex items-center justify-center gap-3 md:justify-start">
-                  <h2 className="text-3xl font-bold">{profile.displayName}</h2>
-                  <span className="rounded bg-primary px-2 py-0.5 text-[10px] font-black uppercase tracking-tighter text-background-dark">
+              <div className="min-w-0 flex-1 text-center md:text-left">
+                <div className="mb-1 flex flex-wrap items-center justify-center gap-2 md:justify-start">
+                  <h2 className="text-xl font-bold md:text-2xl">{profile.displayName}</h2>
+                  <span className="rounded bg-primary px-1.5 py-0.5 text-[10px] font-black uppercase tracking-tighter text-background-dark">
                     Pro
                   </span>
                 </div>
                 {profile.tagline ? (
-                  <p className="max-w-xl text-base text-primary">{profile.tagline}</p>
+                  <p className="max-w-xl text-sm text-primary">{profile.tagline}</p>
                 ) : null}
                 {profile.bio ? (
-                  <p className="mt-3 max-w-xl text-base text-slate-500 dark:text-slate-400">
+                  <p className="mt-2 line-clamp-2 max-w-xl text-sm text-slate-500 dark:text-slate-400">
                     {profile.bio}
                   </p>
                 ) : (
-                  <p className="mt-3 max-w-xl text-sm text-slate-500 dark:text-slate-400">
+                  <p className="mt-2 max-w-xl text-xs text-slate-500 dark:text-slate-400">
                     Add a bio and tagline in Edit Profile to personalize this page.
                   </p>
                 )}
               </div>
 
               <Link
-                className="flex items-center gap-2 rounded-lg border border-slate-300 bg-slate-200 px-5 py-2.5 text-sm font-bold transition-all hover:bg-primary/20 hover:text-primary dark:border-white/10 dark:bg-white/5"
+                className="shrink-0 flex items-center gap-1.5 rounded-lg border border-slate-300 bg-slate-200 px-3 py-2 text-xs font-bold transition-all hover:bg-primary/20 hover:text-primary dark:border-white/10 dark:bg-white/5"
                 to={editProfileHref}
               >
                 <span className="material-symbols-outlined text-sm">edit</span>
@@ -641,11 +743,11 @@ function DesktopProfile({
 
             <ProfileStatsGrid isLoading={isAccountLoading} items={profileStats} />
 
-            <div className="mb-8 overflow-x-auto border-b border-slate-200 dark:border-white/10">
-              <div className="flex gap-10">
+            <div className="mb-5 overflow-x-auto border-b border-slate-200 dark:border-white/10">
+              <div className="flex gap-6">
                 {profileTabs.map((tab, index) => (
                   <button
-                    className={`border-b-2 pb-4 text-sm font-bold whitespace-nowrap ${
+                    className={`whitespace-nowrap border-b-2 pb-3 text-xs font-bold ${
                       index === 0
                         ? "border-primary text-primary"
                         : "border-transparent text-slate-500 transition-colors hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
@@ -659,8 +761,8 @@ function DesktopProfile({
               </div>
             </div>
 
-            <div className="grid grid-cols-1 gap-10 lg:grid-cols-3">
-              <div className="space-y-10 lg:col-span-2">
+            <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+              <div className="space-y-6 lg:col-span-2">
                 <DesktopCurrentReading
                   currentReading={currentReading}
                   isLoading={isAccountLoading}
@@ -671,21 +773,26 @@ function DesktopProfile({
                 />
               </div>
 
-              <div className="space-y-8">
+              <div className="space-y-5">
+                <WalletSection
+                  coinBalance={coinBalance}
+                  isLoading={isCoinBalanceLoading}
+                />
+
                 <Reveal>
-                  <h3 className="mb-6 text-xl font-bold">Account Center</h3>
-                  <div className="grid gap-3">
+                  <h3 className="mb-4 text-lg font-bold">Account Center</h3>
+                  <div className="grid gap-2">
                     {accountQuickLinks.map((item) => (
                       <Link
-                        className="flex items-center justify-between rounded-xl border border-slate-200 bg-white px-4 py-3 transition-colors hover:border-primary/30 hover:bg-primary/5 dark:border-white/10 dark:bg-white/5"
+                        className="flex items-center justify-between rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm transition-colors hover:border-primary/30 hover:bg-primary/5 dark:border-white/10 dark:bg-white/5"
                         key={item.label}
                         to={item.href}
                       >
-                        <div className="flex items-center gap-3">
-                          <span className="material-symbols-outlined text-primary">
+                        <div className="flex items-center gap-2">
+                          <span className="material-symbols-outlined text-lg text-primary">
                             {item.icon}
                           </span>
-                          <span className="text-sm font-semibold">{item.label}</span>
+                          <span className="font-medium">{item.label}</span>
                         </div>
                         <span className="material-symbols-outlined text-slate-400">
                           chevron_right
@@ -696,7 +803,7 @@ function DesktopProfile({
                 </Reveal>
 
                 <Reveal>
-                  <h3 className="mb-6 text-xl font-bold">Recent Activity</h3>
+                  <h3 className="mb-4 text-lg font-bold">Recent Activity</h3>
                   <RecentActivityList
                     isLoading={isAccountLoading}
                     items={recentActivity}
@@ -713,9 +820,13 @@ function DesktopProfile({
 
 function MobileProfile({
   clearNotice,
+  coinBalance,
   currentReading,
   isAccountLoading,
+  isCoinBalanceLoading,
+  isLoggingOut,
   notice,
+  onLogout,
   profile,
   profileStats,
   readingList,
@@ -802,6 +913,13 @@ function MobileProfile({
             currentReading={currentReading}
             isLoading={isAccountLoading}
           />
+
+          <WalletSection
+            coinBalance={coinBalance}
+            isLoading={isCoinBalanceLoading}
+            mobile
+          />
+
           <MobileReadingList
             isLoading={isAccountLoading}
             readingList={readingList}
@@ -833,7 +951,7 @@ function MobileProfile({
             </div>
           </div>
 
-          <div className="mb-20 px-4 py-4">
+          <div className="px-4 py-4">
             <h3 className="mb-4 flex items-center gap-2 text-lg font-bold">
               <span className="material-symbols-outlined text-primary">history</span>
               Recent Activity
@@ -844,6 +962,11 @@ function MobileProfile({
               mobile
             />
           </div>
+
+          <MobileLogoutSection
+            isLoggingOut={isLoggingOut}
+            onLogout={onLogout}
+          />
         </main>
 
         <AppMobileTabBar />
@@ -853,6 +976,9 @@ function MobileProfile({
 }
 
 export default function ProfilePage() {
+  const navigate = useNavigate();
+  const { logout, isLoggingOut } = useAuth();
+  const { coinBalance, isStatusLoading } = useMonetization();
   const {
     clearNotice,
     currentReading,
@@ -863,13 +989,22 @@ export default function ProfilePage() {
     readingList,
     recentActivity,
   } = useAccount();
+  const { showToast } = useToast();
+
+  async function handleLogout() {
+    await logout();
+    showToast("Signed out.");
+    navigate("/auth", { replace: true });
+  }
 
   return (
     <>
       <DesktopProfile
         clearNotice={clearNotice}
+        coinBalance={coinBalance}
         currentReading={currentReading}
         isAccountLoading={isAccountLoading}
+        isCoinBalanceLoading={isStatusLoading}
         notice={notice}
         profile={profile}
         profileStats={profileStats}
@@ -878,9 +1013,13 @@ export default function ProfilePage() {
       />
       <MobileProfile
         clearNotice={clearNotice}
+        coinBalance={coinBalance}
         currentReading={currentReading}
         isAccountLoading={isAccountLoading}
+        isCoinBalanceLoading={isStatusLoading}
+        isLoggingOut={isLoggingOut}
         notice={notice}
+        onLogout={handleLogout}
         profile={profile}
         profileStats={profileStats}
         readingList={readingList}

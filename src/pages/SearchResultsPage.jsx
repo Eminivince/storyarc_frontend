@@ -39,10 +39,11 @@ function DesktopSearchResults({
   query,
   searchTerm,
   setSearchTerm,
+  topGenre,
 }) {
   return (
     <div className="hidden min-h-screen bg-background-light font-display text-slate-900 dark:bg-background-dark dark:text-slate-100 md:flex">
-      <AppDesktopSidebar topGenre={query} />
+      <AppDesktopSidebar topGenre={topGenre} />
 
       <main className="flex-1 p-8">
         <div className="mx-auto max-w-6xl space-y-10">
@@ -197,6 +198,7 @@ function MobileSearchResults({
   query,
   searchTerm,
   setSearchTerm,
+  topGenre,
 }) {
   const navigate = useNavigate();
 
@@ -269,7 +271,7 @@ function MobileSearchResults({
         <Reveal as="section" className="space-y-4">
           <h3 className="text-xl font-bold">Stories</h3>
           {data.stories.length ? (
-            <div className="space-y-4">
+            <div className="space-y-4 flex flex-col gap-1">
               {data.stories.map((story) => (
                 <Link key={story.slug} to={buildStoryHref(story.slug)}>
                   <article className="flex gap-3 rounded-3xl border border-primary/10 bg-white p-3 dark:bg-primary/5">
@@ -305,7 +307,7 @@ function MobileSearchResults({
         </Reveal>
       </main>
 
-      <AppMobileTabBar topGenre={query} />
+      <AppMobileTabBar topGenre={topGenre} />
     </div>
   );
 }
@@ -317,6 +319,10 @@ export default function SearchResultsPage() {
   const query = useMemo(() => searchParams.get("q")?.trim() || "Fantasy", [searchParams]);
   const [searchTerm, setSearchTerm] = useState(query);
   const { data, error, isError, isLoading } = useReaderSearchQuery(query);
+  const browseGenre =
+    data?.stories?.[0]?.genreLabel ??
+    data?.authors?.[0]?.genres?.[0] ??
+    "Fantasy";
 
   function handleSearchSubmit(event) {
     event.preventDefault();
@@ -332,14 +338,14 @@ export default function SearchResultsPage() {
     return (
       <div className="min-h-screen bg-background-light font-display text-slate-900 dark:bg-background-dark dark:text-slate-100">
         <div className="hidden lg:flex">
-          <AppDesktopSidebar topGenre={query} />
+          <AppDesktopSidebar topGenre={browseGenre} />
           <main className="flex-1 p-8">
             <LoadingState />
           </main>
         </div>
         <div className="lg:hidden">
           <LoadingState />
-          <AppMobileTabBar topGenre={query} />
+          <AppMobileTabBar topGenre={browseGenre} />
         </div>
       </div>
     );
@@ -370,6 +376,7 @@ export default function SearchResultsPage() {
         query={query}
         searchTerm={searchTerm}
         setSearchTerm={setSearchTerm}
+        topGenre={browseGenre}
       />
       <MobileSearchResults
         data={safeData}
@@ -377,6 +384,7 @@ export default function SearchResultsPage() {
         query={query}
         searchTerm={searchTerm}
         setSearchTerm={setSearchTerm}
+        topGenre={browseGenre}
       />
     </>
   );

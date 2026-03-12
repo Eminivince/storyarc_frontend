@@ -4,6 +4,12 @@ export const adminRoles = ["ADMIN"];
 const readerRoles = ["READER"];
 
 const publicPaths = new Set(["/", "/about"]);
+
+export function isUnauthenticatedRoute(pathname) {
+  if (publicPaths.has(pathname)) return true;
+  if (pathname.startsWith("/auth")) return true;
+  return false;
+}
 const creatorEntryPaths = new Set([
   "/creator",
   "/creator/apply",

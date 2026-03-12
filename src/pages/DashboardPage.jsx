@@ -281,30 +281,22 @@ function MobileDashboard({
   searchTerm,
   setSearchTerm,
   topGenre,
-  onWriteStory,
 }) {
   return (
     <div className="min-h-screen bg-background-light font-display text-slate-900 dark:bg-background-dark dark:text-slate-100 md:hidden">
       <main className="space-y-8 px-4 pb-28 pt-5">
-        <Reveal>
-          <div className="flex items-center justify-between">
+        {/* <Reveal>
+          <div>
             <div>
               <p className="text-sm font-semibold uppercase tracking-[0.24em] text-primary">
                 Reader mode
               </p>
-              <h1 className="mt-2 text-3xl font-black tracking-tight">
+              <h1 className="mt-2 text-xl font-black tracking-tight">
                 Discover stories
               </h1>
             </div>
-            <button
-              className="rounded-2xl bg-primary px-4 py-2 text-sm font-bold text-background-dark"
-              onClick={onWriteStory}
-              type="button"
-            >
-              Write
-            </button>
           </div>
-        </Reveal>
+        </Reveal> */}
 
         <Reveal>
           <form className="group relative" onSubmit={onSearchSubmit}>
@@ -352,7 +344,7 @@ function MobileDashboard({
         {data?.continueReading?.length ? (
           <Reveal as="section" className="space-y-4">
             <h2 className="text-xl font-bold">Continue reading</h2>
-            <div className="space-y-3">
+            <div className="space-y-3 flex flex-col gap-3">
               {data.continueReading.map((entry) => (
                 <Link
                   key={`${entry.storySlug}-${entry.chapterSlug}`}
@@ -497,7 +489,6 @@ export default function DashboardPage() {
       <MobileDashboard
         data={data}
         onSearchSubmit={handleSearchSubmit}
-        onWriteStory={handleWriteStory}
         searchTerm={searchTerm}
         setSearchTerm={setSearchTerm}
         topGenre={topGenre}
