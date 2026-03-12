@@ -51,7 +51,7 @@ function DesktopCreateStory({
                   search
                 </span>
                 <input
-                  className="w-64 rounded-lg border-none bg-slate-100 py-2 pl-10 pr-4 text-sm focus:ring-1 focus:ring-primary dark:bg-slate-800"
+                  className="w-64 rounded-lg border-none bg-slate-100 py-2 pl-10 pr-4 text-base focus:ring-1 focus:ring-primary dark:bg-slate-800"
                   placeholder="Search documentation..."
                   type="text"
                 />
@@ -77,7 +77,7 @@ function DesktopCreateStory({
             <div className="grid grid-cols-1 gap-10 lg:grid-cols-3">
               <div className="lg:col-span-1">
                 <div className="sticky top-24">
-                  <label className="mb-4 block text-sm font-semibold text-slate-700 dark:text-slate-300">
+                  <label className="mb-4 block text-base font-semibold text-slate-700 dark:text-slate-300">
                     Story Cover
                   </label>
                   <label className="group relative block aspect-[2/3] w-full cursor-pointer overflow-hidden rounded-xl border-2 border-dashed border-primary/30 bg-primary/5">
@@ -123,11 +123,11 @@ function DesktopCreateStory({
               <div className="space-y-8 lg:col-span-2">
                 <Reveal className="space-y-6 rounded-xl border border-primary/5 bg-slate-50 p-6 dark:bg-slate-900/40">
                   <div>
-                    <label className="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-300" htmlFor="story-title">
+                    <label className="mb-2 block text-base font-semibold text-slate-700 dark:text-slate-300" htmlFor="story-title">
                       Story Title
                     </label>
                     <input
-                      className="w-full rounded-lg border border-slate-200 bg-white px-4 py-3 outline-none transition-all placeholder:text-slate-400 focus:border-transparent focus:ring-2 focus:ring-primary dark:border-slate-700 dark:bg-slate-800"
+                      className="w-full rounded-lg border border-slate-200 bg-white px-4 py-3 text-base outline-none transition-all placeholder:text-slate-400 focus:border-transparent focus:ring-2 focus:ring-primary dark:border-slate-700 dark:bg-slate-800"
                       id="story-title"
                       name="title"
                       onChange={onChange}
@@ -138,11 +138,11 @@ function DesktopCreateStory({
                   </div>
 
                   <div>
-                    <label className="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-300" htmlFor="story-synopsis">
+                    <label className="mb-2 block text-base font-semibold text-slate-700 dark:text-slate-300" htmlFor="story-synopsis">
                       Synopsis / Description
                     </label>
                     <textarea
-                      className="w-full resize-none rounded-lg border border-slate-200 bg-white px-4 py-3 outline-none transition-all placeholder:text-slate-400 focus:border-transparent focus:ring-2 focus:ring-primary dark:border-slate-700 dark:bg-slate-800"
+                      className="w-full resize-none rounded-lg border border-slate-200 bg-white px-4 py-3 text-base outline-none transition-all placeholder:text-slate-400 focus:border-transparent focus:ring-2 focus:ring-primary dark:border-slate-700 dark:bg-slate-800"
                       id="story-synopsis"
                       name="synopsis"
                       onChange={onChange}
@@ -155,12 +155,12 @@ function DesktopCreateStory({
 
                   <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                     <div>
-                      <label className="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-300" htmlFor="story-genre">
+                      <label className="mb-2 block text-base font-semibold text-slate-700 dark:text-slate-300" htmlFor="story-genre">
                         Primary Genre
                       </label>
                       <div className="relative">
                         <select
-                          className="w-full cursor-pointer appearance-none rounded-lg border border-slate-200 bg-white px-4 py-3 outline-none focus:border-transparent focus:ring-2 focus:ring-primary dark:border-slate-700 dark:bg-slate-800"
+                          className="w-full cursor-pointer appearance-none rounded-lg border border-slate-200 bg-white px-4 py-3 text-base outline-none focus:border-transparent focus:ring-2 focus:ring-primary dark:border-slate-700 dark:bg-slate-800"
                           id="story-genre"
                           name="genre"
                           onChange={onChange}
@@ -180,7 +180,7 @@ function DesktopCreateStory({
                     </div>
 
                     <div>
-                      <label className="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-300">
+                      <label className="mb-2 block text-base font-semibold text-slate-700 dark:text-slate-300">
                         Target Audience
                       </label>
                       <div className="grid grid-cols-2 gap-2">
@@ -258,9 +258,13 @@ function DesktopCreateStory({
                     />
                     <label className="text-sm text-slate-600 dark:text-slate-400" htmlFor="story-terms">
                       I confirm that I own the rights to this story and agree to StoryArc&apos;s{" "}
-                      <button className="text-primary hover:underline" type="button">
+                      <Link
+                        className="text-primary hover:underline"
+                        onClick={(event) => event.stopPropagation()}
+                        to="/terms"
+                      >
                         Terms of Service
-                      </button>
+                      </Link>
                       .
                     </label>
                   </div>
@@ -350,11 +354,11 @@ function MobileCreateStory({
 
         <section className="space-y-6">
           <div className="space-y-2">
-            <label className="text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400" htmlFor="mobile-story-title">
+            <label className="text-base font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400" htmlFor="mobile-story-title">
               Story Title
             </label>
             <input
-              className="w-full rounded-lg border border-slate-200 bg-slate-100 px-4 py-3 outline-none transition-all placeholder:text-slate-400 focus:border-transparent focus:ring-2 focus:ring-primary dark:border-primary/20 dark:bg-primary/5 dark:placeholder:text-slate-600"
+              className="w-full rounded-lg border border-slate-200 bg-slate-100 px-4 py-3 text-base outline-none transition-all placeholder:text-slate-400 focus:border-transparent focus:ring-2 focus:ring-primary dark:border-primary/20 dark:bg-primary/5 dark:placeholder:text-slate-600"
               id="mobile-story-title"
               name="title"
               onChange={onChange}
@@ -365,11 +369,11 @@ function MobileCreateStory({
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400" htmlFor="mobile-story-synopsis">
+            <label className="text-base font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400" htmlFor="mobile-story-synopsis">
               Synopsis / Description
             </label>
             <textarea
-              className="w-full resize-none rounded-lg border border-slate-200 bg-slate-100 px-4 py-3 outline-none transition-all placeholder:text-slate-400 focus:border-transparent focus:ring-2 focus:ring-primary dark:border-primary/20 dark:bg-primary/5 dark:placeholder:text-slate-600"
+              className="w-full resize-none rounded-lg border border-slate-200 bg-slate-100 px-4 py-3 text-base outline-none transition-all placeholder:text-slate-400 focus:border-transparent focus:ring-2 focus:ring-primary dark:border-primary/20 dark:bg-primary/5 dark:placeholder:text-slate-600"
               id="mobile-story-synopsis"
               name="synopsis"
               onChange={onChange}
@@ -380,11 +384,11 @@ function MobileCreateStory({
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400" htmlFor="mobile-story-genre">
+            <label className="text-base font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400" htmlFor="mobile-story-genre">
               Primary Genre
             </label>
             <select
-              className="w-full appearance-none rounded-lg border border-slate-200 bg-slate-100 px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-primary dark:border-primary/20 dark:bg-primary/5"
+              className="w-full appearance-none rounded-lg border border-slate-200 bg-slate-100 px-4 py-3 text-base outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-primary dark:border-primary/20 dark:bg-primary/5"
               id="mobile-story-genre"
               name="genre"
               onChange={onChange}
@@ -400,7 +404,7 @@ function MobileCreateStory({
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+            <label className="text-base font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
               Target Audience
             </label>
             <div className="grid grid-cols-2 gap-2">
@@ -474,8 +478,15 @@ function MobileCreateStory({
               type="checkbox"
             />
             <label className="text-sm text-slate-600 dark:text-slate-400" htmlFor="mobile-story-terms">
-              I agree to the <span className="text-primary">Terms of Service</span> and confirm that I own all rights
-              to this content.
+              I agree to the{" "}
+              <Link
+                className="text-primary hover:underline"
+                onClick={(event) => event.stopPropagation()}
+                to="/terms"
+              >
+                Terms of Service
+              </Link>{" "}
+              and confirm that I own all rights to this content.
             </label>
           </div>
         </section>

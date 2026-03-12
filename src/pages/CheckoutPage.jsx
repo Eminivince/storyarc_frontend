@@ -309,9 +309,9 @@ function DesktopCheckout({
 
                   <p className="px-8 text-center text-xs text-slate-500 dark:text-slate-400">
                     By clicking Pay Now, you agree to StoryArc&apos;s{" "}
-                    <a className="underline" href="#">
+                    <Link className="underline" to="/terms">
                       Terms of Service
-                    </a>{" "}
+                    </Link>{" "}
                     and{" "}
                     <a className="underline" href="#">
                       Privacy Policy

@@ -176,7 +176,7 @@ function DesktopHelp({
                     <span className="material-symbols-outlined">search</span>
                   </div>
                   <input
-                    className="block h-14 w-full rounded-xl border border-slate-200 bg-white pl-12 pr-4 shadow-sm transition-all placeholder:text-slate-400 focus:border-primary focus:ring-primary dark:border-border-dark dark:bg-[#27241b] dark:text-slate-100"
+                    className="block h-14 w-full rounded-xl border border-slate-200 bg-white pl-12 pr-4 text-base shadow-sm transition-all placeholder:text-slate-400 focus:border-primary focus:ring-primary dark:border-border-dark dark:bg-[#27241b] dark:text-slate-100"
                     onChange={(event) => onSearchChange(event.target.value)}
                     placeholder="Search for articles, guides, and more..."
                     type="text"

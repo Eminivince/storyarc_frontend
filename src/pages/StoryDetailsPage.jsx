@@ -146,7 +146,7 @@ function DesktopStoryDetails({
             <div className="flex h-11 items-center rounded-xl bg-slate-100 dark:bg-primary/10">
               <span className="material-symbols-outlined px-4 text-slate-400">search</span>
               <input
-                className="h-full w-full border-none bg-transparent pr-4 text-sm focus:ring-0"
+                className="h-full w-full border-none bg-transparent pr-4 text-base focus:ring-0"
                 onChange={(event) => setSearchTerm(event.target.value)}
                 placeholder="Search stories, authors..."
                 type="text"

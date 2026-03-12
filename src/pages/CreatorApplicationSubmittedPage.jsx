@@ -118,7 +118,7 @@ function DesktopCreatorApplicationSubmitted({
               <Link className="text-sm text-slate-500 transition-colors hover:text-primary dark:text-slate-500" to="/about">
                 Privacy Policy
               </Link>
-              <Link className="text-sm text-slate-500 transition-colors hover:text-primary dark:text-slate-500" to="/about">
+              <Link className="text-sm text-slate-500 transition-colors hover:text-primary dark:text-slate-500" to="/terms">
                 Terms of Service
               </Link>
               <Link className="text-sm text-slate-500 transition-colors hover:text-primary dark:text-slate-500" to="/account/help">

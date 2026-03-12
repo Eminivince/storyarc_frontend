@@ -118,7 +118,7 @@ function DesktopPasswordResetSuccess() {
           <div className="flex flex-wrap items-center justify-center gap-8 md:gap-16">
             <Link
               className="text-sm font-medium text-slate-500 transition-colors hover:text-primary dark:text-slate-400"
-              to="/about"
+              to="/terms"
             >
               Terms of Service
             </Link>

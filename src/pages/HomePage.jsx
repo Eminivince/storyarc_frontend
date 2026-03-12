@@ -123,7 +123,7 @@ function DesktopHome({
                   search
                 </span>
                 <input
-                  className="w-full rounded-lg border-none bg-slate-200/50 py-2 pl-10 pr-4 text-sm placeholder:text-slate-500 focus:ring-2 focus:ring-primary/50 dark:bg-primary/10"
+                  className="w-full rounded-lg border-none bg-slate-200/50 py-2 pl-10 pr-4 text-base placeholder:text-slate-500 focus:ring-2 focus:ring-primary/50 dark:bg-primary/10"
                   placeholder="Search stories, authors..."
                   type="text"
                 />
@@ -534,9 +534,9 @@ function DesktopHome({
                     </Link>
                   </li>
                   <li>
-                    <a className="transition-colors hover:text-primary" href="#">
+                    <Link className="transition-colors hover:text-primary" to="/terms">
                       Terms of Service
-                    </a>
+                    </Link>
                   </li>
                 </ul>
               </div>

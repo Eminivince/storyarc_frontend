@@ -201,8 +201,11 @@ function DesktopCreatorApplication({
 
               <div className="flex flex-col items-center justify-between gap-6 border-t border-slate-200 pt-6 dark:border-primary/10 md:flex-row">
                 <p className="max-w-sm text-sm text-slate-500 dark:text-slate-400">
-                  By submitting this form, you agree to our Author Terms of Service and
-                  Privacy Policy.
+                  By submitting this form, you agree to our{" "}
+                  <Link className="text-primary hover:underline" to="/terms">
+                    Author Terms of Service
+                  </Link>{" "}
+                  and Privacy Policy.
                 </p>
                 <div className="flex w-full flex-col gap-3 md:w-auto md:flex-row">
                   <button

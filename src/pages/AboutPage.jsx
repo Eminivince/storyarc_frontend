@@ -105,7 +105,7 @@ function DesktopAbout() {
                 search
               </span>
               <input
-                className="ml-2 w-full border-none bg-transparent text-sm text-white placeholder-slate-400 focus:ring-0"
+                className="ml-2 w-full border-none bg-transparent text-base text-white placeholder-slate-400 focus:ring-0"
                 placeholder="Search stories..."
                 type="text"
               />
@@ -367,7 +367,7 @@ function DesktopAbout() {
             </p>
             <div className="mx-auto flex max-w-md flex-col gap-3 sm:flex-row">
               <input
-                className="flex-1 rounded-xl border-none bg-accent-dark px-4 py-3 text-white focus:ring-1 focus:ring-primary"
+                className="flex-1 rounded-xl border-none bg-accent-dark px-4 py-3 text-base text-white focus:ring-1 focus:ring-primary"
                 placeholder="Enter your email"
                 type="email"
               />
@@ -474,9 +474,9 @@ function DesktopAbout() {
                 </a>
               </li>
               <li>
-                <a className="transition-colors hover:text-primary" href="#">
+                <Link className="transition-colors hover:text-primary" to="/terms">
                   Terms of Service
-                </a>
+                </Link>
               </li>
             </ul>
           </div>

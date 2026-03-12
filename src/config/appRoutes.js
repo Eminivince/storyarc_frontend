@@ -104,6 +104,7 @@ const SecuritySettingsPage = lazy(() =>
 const StoryDetailsPage = lazy(() => import("../pages/StoryDetailsPage"));
 const StoryManagementPage = lazy(() => import("../pages/StoryManagementPage"));
 const SubscriptionPage = lazy(() => import("../pages/SubscriptionPage"));
+const TermsPage = lazy(() => import("../pages/TermsPage"));
 const VerifyCodePage = lazy(() => import("../pages/VerifyCodePage"));
 const VolumeManagerPage = lazy(() => import("../pages/VolumeManagerPage"));
 
@@ -174,6 +175,7 @@ export const appRouteGroups = [
     routes: [
       { path: "/", component: HomePage, page: "HomePage" },
       { path: "/about", component: AboutPage, page: "AboutPage" },
+      { path: "/terms", component: TermsPage, page: "TermsPage" },
     ],
   },
   {

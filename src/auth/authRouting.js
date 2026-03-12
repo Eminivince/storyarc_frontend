@@ -3,7 +3,7 @@ export const creatorRoles = ["CREATOR", "ADMIN"];
 export const adminRoles = ["ADMIN"];
 const readerRoles = ["READER"];
 
-const publicPaths = new Set(["/", "/about"]);
+const publicPaths = new Set(["/", "/about", "/terms"]);
 
 export function isUnauthenticatedRoute(pathname) {
   if (publicPaths.has(pathname)) return true;

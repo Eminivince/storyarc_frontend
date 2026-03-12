@@ -21,9 +21,9 @@ function LoadingState() {
 
 function EmptyState() {
   return (
-    <div className="rounded-3xl border border-primary/10 bg-primary/5 p-8 text-center">
-      <h2 className="text-2xl font-bold">Your library is ready for real stories</h2>
-      <p className="mt-3 text-sm text-slate-600 dark:text-slate-400">
+    <div className="rounded-xl border border-primary/10 bg-primary/5 p-4 text-center md:rounded-3xl md:p-8">
+      <h2 className="text-lg font-bold md:text-2xl">Your library is ready for real stories</h2>
+      <p className="mt-2 text-xs text-slate-600 dark:text-slate-400 md:mt-3 md:text-sm">
         Seed the reader catalog in the backend, then your dashboard rows will appear here.
       </p>
     </div>
@@ -123,7 +123,7 @@ function DesktopDashboard({
                   search
                 </span>
                 <input
-                  className="w-full rounded-full border-none bg-slate-200/60 py-2.5 pl-11 pr-4 text-sm transition-all focus:ring-2 focus:ring-primary/50 dark:bg-primary/5"
+                  className="w-full rounded-full border-none bg-slate-200/60 py-2.5 pl-11 pr-4 text-base transition-all focus:ring-2 focus:ring-primary/50 dark:bg-primary/5"
                   onChange={(event) => setSearchTerm(event.target.value)}
                   placeholder="Search for stories, tags, or authors..."
                   type="text"
@@ -284,54 +284,39 @@ function MobileDashboard({
 }) {
   return (
     <div className="min-h-screen bg-background-light font-display text-slate-900 dark:bg-background-dark dark:text-slate-100 md:hidden">
-      <main className="space-y-8 px-4 pb-28 pt-5">
-        {/* <Reveal>
-          <div>
-            <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.24em] text-primary">
-                Reader mode
-              </p>
-              <h1 className="mt-2 text-xl font-black tracking-tight">
-                Discover stories
-              </h1>
-            </div>
-          </div>
-        </Reveal> */}
-
-        <Reveal>
-          <form className="group relative" onSubmit={onSearchSubmit}>
-            <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 transition-colors group-focus-within:text-primary">
-              search
-            </span>
-            <input
-              className="w-full rounded-2xl border-none bg-slate-100 py-4 pl-12 pr-4 text-base focus:ring-2 focus:ring-primary/50 dark:bg-primary/10"
-              onChange={(event) => setSearchTerm(event.target.value)}
-              placeholder={`Search ${topGenre || "Fantasy"} stories`}
-              type="text"
-              value={searchTerm}
-            />
-          </form>
-        </Reveal>
+      <main className="space-y-5 px-4 pb-24 pt-4">
+        <form className="group relative" onSubmit={onSearchSubmit}>
+          <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 transition-colors group-focus-within:text-primary">
+            search
+          </span>
+          <input
+            className="h-10 w-full rounded-xl border-none bg-slate-100 pl-10 pr-4 text-base focus:ring-2 focus:ring-primary/50 dark:bg-primary/10"
+            onChange={(event) => setSearchTerm(event.target.value)}
+            placeholder={`Search ${topGenre || "Fantasy"} stories`}
+            type="text"
+            value={searchTerm}
+          />
+        </form>
 
         {data?.featured ? (
           <Reveal>
             <Link className="block" to={buildStoryHref(data.featured.slug)}>
-              <article className="overflow-hidden rounded-[2rem] border border-primary/10">
-                <div className="relative min-h-[340px]">
+              <article className="overflow-hidden rounded-xl border border-primary/10">
+                <div className="relative min-h-[200px]">
                   <img
                     alt={data.featured.title}
                     className="absolute inset-0 h-full w-full object-cover"
                     src={data.featured.bannerImage}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-background-dark via-background-dark/70 to-transparent" />
-                  <div className="relative flex min-h-[340px] flex-col justify-end p-6">
-                    <span className="inline-flex w-fit rounded-full bg-primary px-3 py-1 text-[11px] font-black uppercase tracking-[0.2em] text-background-dark">
+                  <div className="relative flex min-h-[200px] flex-col justify-end p-4">
+                    <span className="inline-flex w-fit rounded-full bg-primary px-2.5 py-0.5 text-[10px] font-black uppercase tracking-[0.16em] text-background-dark">
                       Featured
                     </span>
-                    <h2 className="mt-4 text-3xl font-black leading-tight text-white">
+                    <h2 className="mt-2 line-clamp-2 text-xl font-black leading-tight text-white">
                       {data.featured.title}
                     </h2>
-                    <p className="mt-3 text-sm leading-relaxed text-slate-200">
+                    <p className="mt-1.5 line-clamp-2 text-xs leading-relaxed text-slate-200">
                       {data.featured.shortSynopsis}
                     </p>
                   </div>
@@ -342,34 +327,31 @@ function MobileDashboard({
         ) : null}
 
         {data?.continueReading?.length ? (
-          <Reveal as="section" className="space-y-4">
-            <h2 className="text-xl font-bold">Continue reading</h2>
-            <div className="space-y-3 flex flex-col gap-3">
+          <Reveal as="section" className="space-y-3">
+            <h2 className="text-base font-bold">Continue reading</h2>
+            <div className="flex flex-col gap-2">
               {data.continueReading.map((entry) => (
                 <Link
                   key={`${entry.storySlug}-${entry.chapterSlug}`}
                   to={buildChapterHref(entry.storySlug, entry.chapterSlug)}
                 >
-                  <article className="flex gap-3 rounded-3xl border border-primary/10 bg-white p-3 dark:bg-primary/5">
+                  <article className="flex gap-2.5 rounded-xl border border-primary/10 bg-white p-2.5 dark:bg-primary/5">
                     <img
                       alt={entry.storyTitle}
-                      className="h-24 w-20 rounded-2xl object-cover"
+                      className="h-20 w-16 shrink-0 rounded-lg object-cover"
                       src={entry.coverImage}
                     />
                     <div className="min-w-0 flex-1">
-                      <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-primary">
+                      <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-primary">
                         {entry.chapterLabel}
                       </p>
-                      <h3 className="mt-2 line-clamp-1 text-base font-bold">
+                      <h3 className="mt-1 line-clamp-1 text-sm font-bold">
                         {entry.storyTitle}
                       </h3>
-                      <p className="mt-1 line-clamp-1 text-sm text-slate-500 dark:text-slate-400">
+                      <p className="mt-0.5 line-clamp-1 text-xs text-slate-500 dark:text-slate-400">
                         {entry.chapterTitle}
                       </p>
-                      <p className="mt-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-400">
-                        {entry.resumeLabel || "Resume reading"}
-                      </p>
-                      <div className="mt-3 h-2 overflow-hidden rounded-full bg-slate-200 dark:bg-primary/10">
+                      <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-slate-200 dark:bg-primary/10">
                         <div
                           className="h-full rounded-full bg-primary"
                           style={{ width: `${entry.progressPercent}%` }}
@@ -385,29 +367,29 @@ function MobileDashboard({
 
         {data?.rows?.map((row) =>
           row.stories?.length ? (
-            <Reveal as="section" className="space-y-4" key={row.id}>
-              <div className="flex items-center justify-between gap-4">
-                <h2 className="text-xl font-bold">{row.title}</h2>
-                <span className="text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-400">
+            <Reveal as="section" className="space-y-3" key={row.id}>
+              <div className="flex items-center justify-between gap-2">
+                <h2 className="text-base font-bold">{row.title}</h2>
+                <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-400">
                   {row.stories.length}
                 </span>
               </div>
-              <div className="flex gap-4 overflow-x-auto pb-2 no-scrollbar">
+              <div className="flex gap-3 overflow-x-auto pb-1 no-scrollbar">
                 {row.stories.map((story) => (
                   <Link
-                    className="block w-40 shrink-0"
+                    className="block w-32 shrink-0"
                     key={story.slug}
                     to={buildStoryHref(story.slug)}
                   >
-                    <article className="space-y-3">
+                    <article className="space-y-2">
                       <img
                         alt={story.title}
-                        className="aspect-[3/4] w-full rounded-3xl object-cover"
+                        className="aspect-[3/4] w-full rounded-xl object-cover"
                         src={story.coverImage}
                       />
                       <div>
-                        <h3 className="line-clamp-1 text-sm font-bold">{story.title}</h3>
-                        <p className="line-clamp-1 text-xs text-slate-500 dark:text-slate-400">
+                        <h3 className="line-clamp-1 text-xs font-bold">{story.title}</h3>
+                        <p className="line-clamp-1 text-[10px] text-slate-500 dark:text-slate-400">
                           {story.authorName}
                         </p>
                       </div>

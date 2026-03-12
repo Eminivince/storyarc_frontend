@@ -335,9 +335,9 @@ function MobileCoinStore({ coinBalance, currency, packages, returnTo }) {
         <div className="mt-8 px-6 text-center">
           <p className="text-xs leading-relaxed text-slate-400">
             By purchasing coins, you agree to our{" "}
-            <a className="text-primary underline" href="#">
+            <Link className="text-primary underline" to="/terms">
               Terms of Service
-            </a>
+            </Link>
             . Coins are virtual currency and cannot be refunded or exchanged for
             real money.
           </p>

@@ -48,7 +48,7 @@ function SearchField({ onSearchChange, placeholder, searchTerm }) {
         search
       </span>
       <input
-        className="w-full rounded-full border border-primary/10 bg-slate-200/60 py-3 pl-12 pr-4 text-sm transition-all focus:border-primary/30 focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-primary/5"
+        className="w-full rounded-full border border-primary/10 bg-slate-200/60 py-3 pl-12 pr-4 text-base transition-all focus:border-primary/30 focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-primary/5"
         onChange={(event) => onSearchChange(event.target.value)}
         placeholder={placeholder}
         type="text"

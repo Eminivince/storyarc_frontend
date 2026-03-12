@@ -300,18 +300,18 @@ function DesktopAuth() {
                   {error && (
                     <div className="flex items-start gap-3 rounded-lg border border-red-200 bg-red-50 p-4 text-red-800 dark:border-red-900/50 dark:bg-red-950/30 dark:text-red-200">
                       <span className="material-symbols-outlined shrink-0 text-xl">error</span>
-                      <p className="text-sm font-medium">{error}</p>
+                      <p className="text-base font-medium">{error}</p>
                     </div>
                   )}
                   {!isSignIn && (
                     <div className="space-y-2">
-                      <label className="block text-sm font-medium">Display Name</label>
+                      <label className="block text-base font-medium">Display Name</label>
                       <div className="relative">
                         <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-xl text-slate-400">
                           person
                         </span>
                         <input
-                          className="w-full rounded-lg border border-slate-200 bg-slate-100 py-3.5 pl-12 pr-4 text-slate-900 outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary dark:border-primary/20 dark:bg-primary/5 dark:text-white"
+                          className="w-full rounded-lg border border-slate-200 bg-slate-100 py-3.5 pl-12 pr-4 text-base text-slate-900 outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary dark:border-primary/20 dark:bg-primary/5 dark:text-white"
                           onChange={(event) => setDisplayName(event.target.value)}
                           placeholder="Alex Thorne"
                           required
@@ -323,13 +323,13 @@ function DesktopAuth() {
                   )}
 
                   <div className="space-y-2">
-                    <label className="block text-sm font-medium">Email Address</label>
+                    <label className="block text-base font-medium">Email Address</label>
                     <div className="relative">
                       <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-xl text-slate-400">
                         mail
                       </span>
                       <input
-                        className="w-full rounded-lg border border-slate-200 bg-slate-100 py-3.5 pl-12 pr-4 text-slate-900 outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary dark:border-primary/20 dark:bg-primary/5 dark:text-white"
+                        className="w-full rounded-lg border border-slate-200 bg-slate-100 py-3.5 pl-12 pr-4 text-base text-slate-900 outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary dark:border-primary/20 dark:bg-primary/5 dark:text-white"
                         onChange={(event) => setEmail(event.target.value)}
                         placeholder="name@example.com"
                         required
@@ -341,7 +341,7 @@ function DesktopAuth() {
 
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
-                      <label className="block text-sm font-medium">Password</label>
+                      <label className="block text-base font-medium">Password</label>
                       {isSignIn && (
                         <Link
                           className="text-xs font-medium text-primary hover:underline"
@@ -356,7 +356,7 @@ function DesktopAuth() {
                         lock
                       </span>
                       <input
-                        className="w-full rounded-lg border border-slate-200 bg-slate-100 py-3.5 pl-12 pr-12 text-slate-900 outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary dark:border-primary/20 dark:bg-primary/5 dark:text-white"
+                        className="w-full rounded-lg border border-slate-200 bg-slate-100 py-3.5 pl-12 pr-12 text-base text-slate-900 outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary dark:border-primary/20 dark:bg-primary/5 dark:text-white"
                         onChange={(event) => setPassword(event.target.value)}
                         placeholder="••••••••"
                         required
@@ -378,13 +378,13 @@ function DesktopAuth() {
 
                   {!isSignIn && (
                     <div className="space-y-2">
-                      <label className="block text-sm font-medium">Confirm Password</label>
+                      <label className="block text-base font-medium">Confirm Password</label>
                       <div className="relative">
                         <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-xl text-slate-400">
                           verified
                         </span>
                         <input
-                          className="w-full rounded-lg border border-slate-200 bg-slate-100 py-3.5 pl-12 pr-12 text-slate-900 outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary dark:border-primary/20 dark:bg-primary/5 dark:text-white"
+                          className="w-full rounded-lg border border-slate-200 bg-slate-100 py-3.5 pl-12 pr-12 text-base text-slate-900 outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary dark:border-primary/20 dark:bg-primary/5 dark:text-white"
                           onChange={(event) => setConfirmPassword(event.target.value)}
                           placeholder="••••••••"
                           required
@@ -406,7 +406,7 @@ function DesktopAuth() {
                   )}
 
                   <motion.button
-                    className="w-full rounded-lg bg-primary py-4 font-bold text-background-dark shadow-lg shadow-primary/20 disabled:cursor-not-allowed disabled:opacity-60"
+                    className="w-full rounded-lg bg-primary py-4 text-base font-bold text-background-dark shadow-lg shadow-primary/20 disabled:cursor-not-allowed disabled:opacity-60"
                     disabled={isPending}
                     type="submit"
                     whileHover={isPending ? undefined : { scale: 1.01 }}
@@ -454,9 +454,9 @@ function DesktopAuth() {
 
                 <p className="mt-10 text-center text-xs leading-relaxed text-slate-500">
                   By continuing, you agree to StoryArc&apos;s{" "}
-                  <a className="text-primary hover:underline" href="#">
+                  <Link className="text-primary hover:underline" to="/terms">
                     Terms of Service
-                  </a>{" "}
+                  </Link>{" "}
                   and{" "}
                   <a className="text-primary hover:underline" href="#">
                     Privacy Policy
@@ -564,14 +564,14 @@ function MobileAuth() {
               {error && (
                 <div className="flex items-start gap-2 rounded-lg border border-red-200 bg-red-50 p-3 text-red-800 dark:border-red-900/50 dark:bg-red-950/30 dark:text-red-200">
                   <span className="material-symbols-outlined shrink-0 text-lg">error</span>
-                  <p className="text-xs font-medium">{error}</p>
+                  <p className="text-base font-medium">{error}</p>
                 </div>
               )}
               {!isSignIn && (
                 <label className="flex flex-col gap-1">
-                  <span className="text-xs font-medium text-slate-600 dark:text-slate-400">Display Name</span>
+                  <span className="text-base font-medium text-slate-600 dark:text-slate-400">Display Name</span>
                   <input
-                    className="h-10 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-primary/30 dark:border-primary/20 dark:bg-primary/5 dark:text-slate-100"
+                    className="h-10 w-full rounded-lg border border-slate-200 bg-white px-3 text-base text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-primary/30 dark:border-primary/20 dark:bg-primary/5 dark:text-slate-100"
                     onChange={(e) => setDisplayName(e.target.value)}
                     placeholder="Alex Thorne"
                     required
@@ -581,9 +581,9 @@ function MobileAuth() {
                 </label>
               )}
               <label className="flex flex-col gap-1">
-                <span className="text-xs font-medium text-slate-600 dark:text-slate-400">Email</span>
+                <span className="text-base font-medium text-slate-600 dark:text-slate-400">Email</span>
                 <input
-                  className="h-10 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-primary/30 dark:border-primary/20 dark:bg-primary/5 dark:text-slate-100"
+                  className="h-10 w-full rounded-lg border border-slate-200 bg-white px-3 text-base text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-primary/30 dark:border-primary/20 dark:bg-primary/5 dark:text-slate-100"
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="name@example.com"
                   required
@@ -592,10 +592,10 @@ function MobileAuth() {
                 />
               </label>
               <label className="flex flex-col gap-1">
-                <span className="text-xs font-medium text-slate-600 dark:text-slate-400">Password</span>
+                <span className="text-base font-medium text-slate-600 dark:text-slate-400">Password</span>
                 <div className="relative">
                   <input
-                    className="h-10 w-full rounded-lg border border-slate-200 bg-white px-3 pr-10 text-sm text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-primary/30 dark:border-primary/20 dark:bg-primary/5 dark:text-slate-100"
+                    className="h-10 w-full rounded-lg border border-slate-200 bg-white px-3 pr-10 text-base text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-primary/30 dark:border-primary/20 dark:bg-primary/5 dark:text-slate-100"
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••"
                     required
@@ -616,10 +616,10 @@ function MobileAuth() {
               </label>
               {!isSignIn && (
                 <label className="flex flex-col gap-1">
-                  <span className="text-xs font-medium text-slate-600 dark:text-slate-400">Confirm Password</span>
+                  <span className="text-base font-medium text-slate-600 dark:text-slate-400">Confirm Password</span>
                   <div className="relative">
                     <input
-                      className="h-10 w-full rounded-lg border border-slate-200 bg-white px-3 pr-10 text-sm text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-primary/30 dark:border-primary/20 dark:bg-primary/5 dark:text-slate-100"
+                      className="h-10 w-full rounded-lg border border-slate-200 bg-white px-3 pr-10 text-base text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-primary/30 dark:border-primary/20 dark:bg-primary/5 dark:text-slate-100"
                       onChange={(e) => setConfirmPassword(e.target.value)}
                       placeholder="••••••••"
                       required
@@ -641,13 +641,13 @@ function MobileAuth() {
               )}
               {isSignIn && (
                 <div className="flex justify-end">
-                  <Link className="text-xs font-medium text-primary hover:underline" to="/auth/forgot-password">
+                  <Link className="text-base font-medium text-primary hover:underline" to="/auth/forgot-password">
                     Forgot password?
                   </Link>
                 </div>
               )}
               <motion.button
-                className="mt-1 h-10 rounded-lg bg-primary font-semibold text-background-dark transition-all disabled:cursor-not-allowed disabled:opacity-60"
+                className="mt-1 h-10 rounded-lg bg-primary text-base font-semibold text-background-dark transition-all disabled:cursor-not-allowed disabled:opacity-60"
                 disabled={isPending}
                 type="submit"
                 whileHover={isPending ? undefined : { scale: 1.01 }}
@@ -672,7 +672,7 @@ function MobileAuth() {
           </div>
 
           <button
-            className="flex w-full items-center justify-center gap-2.5 rounded-lg border border-slate-200 bg-white py-2.5 text-sm font-medium text-slate-900 shadow-sm disabled:opacity-60 dark:border-primary/20 dark:bg-white/5 dark:text-slate-100"
+            className="flex w-full items-center justify-center gap-2.5 rounded-lg border border-slate-200 bg-white py-2.5 text-base font-medium text-slate-900 shadow-sm disabled:opacity-60 dark:border-primary/20 dark:bg-white/5 dark:text-slate-100"
             disabled={isGoogleRedirecting}
             onClick={continueWithGoogle}
             type="button"
@@ -692,9 +692,9 @@ function MobileAuth() {
         <div className="mt-auto shrink-0 px-4 py-5 text-center">
           <p className="text-xs text-slate-500">
             By continuing, you agree to StoryArc&apos;s{" "}
-            <a className="text-primary underline" href="#">
+            <Link className="text-primary underline" to="/terms">
               Terms of Service
-            </a>{" "}
+            </Link>{" "}
             and{" "}
             <a className="text-primary underline" href="#">
               Privacy Policy

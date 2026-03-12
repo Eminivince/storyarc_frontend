@@ -206,11 +206,11 @@ function DesktopGiftSending({
 
           <section className="rounded-3xl border border-primary/10 bg-white/80 p-6 dark:bg-primary/5">
             <label className="block">
-              <span className="mb-3 block text-sm font-bold uppercase tracking-widest text-slate-400">
+              <span className="mb-3 block text-base font-bold uppercase tracking-widest text-slate-400">
                 Personalized Message
               </span>
               <textarea
-                className="min-h-[160px] w-full rounded-2xl border border-primary/20 bg-primary/5 p-4 leading-relaxed focus:border-primary focus:ring-primary"
+                className="min-h-[160px] w-full rounded-2xl border border-primary/20 bg-primary/5 p-4 text-base leading-relaxed focus:border-primary focus:ring-primary"
                 onChange={(event) => onMessageChange(event.target.value)}
                 placeholder={`Write a supportive note to ${authorFirstName}...`}
                 value={message}
@@ -369,11 +369,11 @@ function MobileGiftSending({
 
             <section>
               <label className="block">
-                <span className="mb-2 ml-2 block text-sm font-bold uppercase tracking-widest text-slate-400">
+                <span className="mb-2 ml-2 block text-base font-bold uppercase tracking-widest text-slate-400">
                   Personalized Message
                 </span>
                 <textarea
-                  className="min-h-[120px] w-full rounded-3xl border border-primary/20 bg-primary/5 p-4 focus:border-primary focus:ring-primary"
+                  className="min-h-[120px] w-full rounded-3xl border border-primary/20 bg-primary/5 p-4 text-base focus:border-primary focus:ring-primary"
                   onChange={(event) => onMessageChange(event.target.value)}
                   placeholder={`Write a supportive note to ${authorFirstName}...`}
                   value={message}

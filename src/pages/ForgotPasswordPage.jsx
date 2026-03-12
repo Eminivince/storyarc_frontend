@@ -61,7 +61,7 @@ function DesktopForgotPassword({ email, onChange, onSubmit, pending }) {
           <form className="space-y-6" onSubmit={onSubmit}>
             <div className="space-y-2">
               <label
-                className="ml-1 text-sm font-medium text-slate-700 dark:text-slate-300"
+                className="ml-1 text-base font-medium text-slate-700 dark:text-slate-300"
                 htmlFor="forgot-email-desktop"
               >
                 Email Address
@@ -71,7 +71,7 @@ function DesktopForgotPassword({ email, onChange, onSubmit, pending }) {
                   <span className="material-symbols-outlined text-lg">mail</span>
                 </div>
                 <input
-                  className="w-full rounded-lg border border-primary/20 bg-background-light py-3.5 pl-11 pr-4 text-slate-900 outline-none transition-all placeholder:text-slate-500 focus:border-primary focus:ring-2 focus:ring-primary/40 dark:bg-background-dark dark:text-slate-100"
+                  className="w-full rounded-lg border border-primary/20 bg-background-light py-3.5 pl-11 pr-4 text-base text-slate-900 outline-none transition-all placeholder:text-slate-500 focus:border-primary focus:ring-2 focus:ring-primary/40 dark:bg-background-dark dark:text-slate-100"
                   id="forgot-email-desktop"
                   onChange={(event) => onChange(event.target.value)}
                   placeholder="name@example.com"
@@ -116,7 +116,7 @@ function DesktopForgotPassword({ email, onChange, onSubmit, pending }) {
           </Link>
           <Link
             className="text-sm text-slate-500 transition-colors hover:text-primary dark:text-slate-400"
-            to="/about"
+            to="/terms"
           >
             Terms of Service
           </Link>
@@ -181,7 +181,7 @@ function MobileForgotPassword({ email, onChange, onSubmit, pending }) {
         <form className="flex flex-col gap-6 px-6 py-8" onSubmit={onSubmit}>
           <div className="flex flex-col gap-2">
             <label
-              className="text-sm font-semibold uppercase tracking-wider"
+              className="text-base font-semibold uppercase tracking-wider"
               htmlFor="forgot-email-mobile"
             >
               Email Address
