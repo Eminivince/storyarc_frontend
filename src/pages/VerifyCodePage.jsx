@@ -58,7 +58,7 @@ function MobileOtpInputs({ digits, onDigitChange, onKeyDown }) {
   return digits.map((digit, index) => (
     <input
       autoFocus={index === 0}
-      className="h-14 w-11 border-0 border-b-2 border-slate-300 bg-transparent text-center text-xl font-bold transition-colors [appearance:textfield] placeholder:text-slate-400 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary dark:border-slate-700 sm:w-12"
+      className="h-10 w-9 border-0 border-b-2 border-slate-300 bg-transparent text-center text-base font-bold transition-colors [appearance:textfield] placeholder:text-slate-400 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary dark:border-slate-700 sm:w-10"
       inputMode="numeric"
       key={index}
       maxLength={1}
@@ -196,66 +196,58 @@ function MobileVerifyCode({
 }) {
   return (
     <div className="relative flex min-h-screen w-full flex-col overflow-x-hidden bg-background-light font-display text-slate-900 dark:bg-background-dark dark:text-slate-100 md:hidden">
-      <div className="flex items-center justify-between p-4 pb-2">
+      <header className="flex shrink-0 items-center justify-between border-b border-primary/10 px-4 py-3">
         <Link
-          className="flex h-12 w-12 items-center justify-start focus:outline-none"
+          className="flex size-9 items-center justify-center rounded-lg transition-colors hover:bg-slate-200 dark:hover:bg-primary/20"
           state={backState}
           to={backHref}
         >
-          <span className="material-symbols-outlined text-[28px]">arrow_back</span>
+          <span className="material-symbols-outlined text-xl">arrow_back</span>
         </Link>
-        <h2 className="flex-1 text-lg font-bold leading-tight tracking-tight">
-          {flow === "register" ? "Account Verification" : "Password Reset"}
+        <h2 className="flex-1 text-center text-base font-bold leading-tight tracking-tight">
+          {flow === "register" ? "Verify Account" : "Reset Password"}
         </h2>
-        <div className="h-12 w-12" />
-      </div>
+        <div className="w-9" />
+      </header>
 
-      <div className="px-6 pb-4 pt-8">
-        <h1 className="text-3xl font-bold leading-tight tracking-tight">Verify Your Email</h1>
-        <p className="mt-3 text-base leading-relaxed text-slate-600 dark:text-slate-400">
-          We&apos;ve sent a 6-digit {flow === "register" ? "verification" : "security"} code to <span className="font-semibold text-primary">{email}</span>. Please enter it below to continue.
-        </p>
-      </div>
-
-      <form className="mt-auto flex flex-1 flex-col" onSubmit={onSubmit}>
-        <div className="flex justify-between px-6 py-8">
-          <fieldset className="flex w-full justify-center gap-2 sm:gap-4">
-            <MobileOtpInputs
-              digits={digits}
-              onDigitChange={onDigitChange}
-              onKeyDown={onKeyDown}
-            />
-          </fieldset>
-        </div>
-
-        <div className="px-6 text-center">
-          <p className="text-sm text-slate-500 dark:text-slate-400">
-            Didn&apos;t receive a code?
-            <button
-              className="ml-1 font-semibold text-primary hover:underline disabled:opacity-60"
-              disabled={resendPending}
-              onClick={onResend}
-              type="button"
-            >
-              {resendPending ? "Resending..." : "Resend Code"}
-            </button>
+      <div className="flex flex-1 flex-col px-4 py-4">
+        <div className="rounded-xl border border-primary/10 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-white/5">
+          <h1 className="text-xl font-bold">Verify Your Email</h1>
+          <p className="mt-1.5 text-sm leading-relaxed text-slate-600 dark:text-slate-400">
+            We&apos;ve sent a 6-digit code to <span className="font-semibold text-primary">{email}</span>. Enter it below.
           </p>
-        </div>
 
-        <div className="mt-auto px-6 pb-12 pt-8">
-          <button
-            className="w-full rounded-xl bg-primary py-4 text-lg font-bold text-background-dark shadow-lg transition-all hover:bg-primary/90 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60"
-            disabled={pending}
-            type="submit"
-          >
-            {pending
-              ? "Verifying..."
-              : flow === "register"
-                ? "Verify Account"
-                : "Verify"}
-          </button>
+          <form className="mt-5 space-y-4" onSubmit={onSubmit}>
+            <fieldset className="flex w-full justify-center gap-1.5 sm:gap-2">
+              <MobileOtpInputs
+                digits={digits}
+                onDigitChange={onDigitChange}
+                onKeyDown={onKeyDown}
+              />
+            </fieldset>
+
+            <p className="text-center text-xs text-slate-500 dark:text-slate-400">
+              Didn&apos;t receive a code?{" "}
+              <button
+                className="font-semibold text-primary hover:underline disabled:opacity-60"
+                disabled={resendPending}
+                onClick={onResend}
+                type="button"
+              >
+                {resendPending ? "Resending..." : "Resend"}
+              </button>
+            </p>
+
+            <button
+              className="h-10 w-full rounded-lg bg-primary text-base font-semibold text-background-dark transition-all hover:bg-primary/90 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60"
+              disabled={pending}
+              type="submit"
+            >
+              {pending ? "Verifying..." : flow === "register" ? "Verify Account" : "Verify"}
+            </button>
+          </form>
         </div>
-      </form>
+      </div>
 
       <div className="pointer-events-none fixed bottom-0 right-0 -z-10 opacity-10">
         <div className="-mb-32 -mr-32 h-64 w-64 rounded-full bg-primary blur-[100px]" />

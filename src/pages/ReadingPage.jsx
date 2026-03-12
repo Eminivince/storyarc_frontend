@@ -273,7 +273,9 @@ function DesktopReader({
               </span>
               <span className="flex items-center gap-2 text-lg font-bold transition-colors group-hover:text-primary">
                 <span className="material-symbols-outlined text-sm">arrow_back</span>
-                {chapter.previousChapter?.title || "Back to Story"}
+                {(chapter.previousChapter?.title
+                  ? chapter.previousChapter.title.slice(0, 8)
+                  : "Back to")}
               </span>
             </Link>
 

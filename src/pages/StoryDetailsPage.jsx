@@ -372,16 +372,19 @@ function MobileStoryDetails({
 
   return (
     <div className="min-h-screen bg-background-light font-display text-slate-900 dark:bg-background-dark dark:text-slate-100 md:hidden">
-      <main className="space-y-8 px-4 pb-28 pt-5">
+      <main className="space-y-5 px-4 pb-20 pt-4">
         <Reveal>
-          <Link className="inline-flex items-center gap-2 text-primary" to="/dashboard">
-            <span className="material-symbols-outlined">arrow_back</span>
-            Back
+          <Link
+            className="inline-flex items-center gap-1 text-sm font-medium text-primary"
+            to="/dashboard"
+          >
+            <span className="material-symbols-outlined text-base">arrow_back</span>
+            <span>Back</span>
           </Link>
         </Reveal>
 
         <Reveal>
-          <div className="overflow-hidden rounded-[2rem] border border-primary/10">
+          <div className="overflow-hidden rounded-xl border border-primary/10">
             <img
               alt={story.title}
               className="aspect-[3/4] w-full object-cover"
@@ -390,36 +393,36 @@ function MobileStoryDetails({
           </div>
         </Reveal>
 
-        <Reveal className="space-y-4">
-          <div className="flex flex-wrap gap-2">
+        <Reveal className="space-y-3">
+          <div className="flex flex-wrap gap-1.5">
             {story.genres.map((genre) => (
               <span
-                className="rounded-full bg-primary/10 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.18em] text-primary"
+                className="rounded-full bg-primary/10 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-[0.16em] text-primary"
                 key={genre}
               >
                 {genre}
               </span>
             ))}
           </div>
-          <h1 className="text-4xl font-black leading-tight">{story.title}</h1>
-          <p className="text-lg text-primary">by {story.authorName}</p>
-          <p className="text-sm leading-relaxed text-slate-600 dark:text-slate-400">
+          <h1 className="text-2xl font-black leading-snug">{story.title}</h1>
+          <p className="text-sm font-semibold text-primary">by {story.authorName}</p>
+          <p className="text-xs leading-relaxed text-slate-600 dark:text-slate-400">
             {story.synopsis}
           </p>
         </Reveal>
 
-        <Reveal className="grid grid-cols-2 gap-3">
-          <div className="rounded-3xl border border-primary/10 bg-white p-4 dark:bg-primary/5">
-            <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400">
+        <Reveal className="grid grid-cols-2 gap-2.5">
+          <div className="rounded-xl border border-primary/10 bg-white p-3 dark:bg-primary/5">
+            <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-400">
               Rating
             </p>
-            <p className="mt-2 text-2xl font-black">{story.rating.toFixed(1)}</p>
+            <p className="mt-1.5 text-xl font-black">{story.rating.toFixed(1)}</p>
           </div>
-          <div className="rounded-3xl border border-primary/10 bg-white p-4 dark:bg-primary/5">
-            <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400">
+          <div className="rounded-xl border border-primary/10 bg-white p-3 dark:bg-primary/5">
+            <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-400">
               Chapters
             </p>
-            <p className="mt-2 text-2xl font-black">{story.chapterCount}</p>
+            <p className="mt-1.5 text-xl font-black">{story.chapterCount}</p>
           </div>
         </Reveal>
 
@@ -431,53 +434,59 @@ function MobileStoryDetails({
           />
         </Reveal>
 
-        <Reveal className="space-y-3">
+        <Reveal className="space-y-2.5">
           {primaryChapterSlug ? (
             <StoryAction to={buildChapterHref(story.slug, primaryChapterSlug)}>
-              <span className="material-symbols-outlined">menu_book</span>
-              {storyData.continueReading ? "Continue Reading" : "Start Reading"}
+              <span className="material-symbols-outlined text-base">menu_book</span>
+              <span className="text-sm">
+                {storyData.continueReading ? "Continue Reading" : "Start Reading"}
+              </span>
             </StoryAction>
           ) : null}
           <StoryAction to={buildGiftSendingHref(story.slug)} tone="secondary">
-            <span className="material-symbols-outlined">card_giftcard</span>
-            Send Gift
+            <span className="material-symbols-outlined text-base">card_giftcard</span>
+            <span className="text-sm">Send Gift</span>
           </StoryAction>
         </Reveal>
 
-        <Reveal as="section" className="space-y-4">
-          <h2 className="text-2xl font-bold">Chapters</h2>
-          <div className="space-y-3 flex flex-col gap-1">
+        <Reveal as="section" className="space-y-3">
+          <h2 className="text-lg font-bold">Chapters</h2>
+          <div className="flex flex-col gap-2">
             {storyData.chapters.map((chapter) => {
               const isSequenceBlocked = chapter.accessState === "SEQUENCE_BLOCKED";
               const chapterCard = (
                 <article
-                  className={`rounded-3xl border border-primary/10 bg-white p-4 dark:bg-primary/5 ${
+                  className={`rounded-xl border border-primary/10 bg-white p-3 dark:bg-primary/5 ${
                     isSequenceBlocked ? "opacity-70" : ""
                   }`}
                 >
-                  <div className="flex items-center justify-between gap-4">
+                  <div className="flex items-center justify-between gap-3">
                     <div className="min-w-0">
-                      <p className="text-xs font-bold uppercase tracking-[0.18em] text-primary">
+                      <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-primary">
                         Chapter {chapter.chapterNumber}
                       </p>
-                      <h3 className="mt-2 line-clamp-1 font-bold">{chapter.title}</h3>
-                      <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                      <h3 className="mt-1 line-clamp-1 text-sm font-semibold">
+                        {chapter.title}
+                      </h3>
+                      <p className="mt-0.5 text-[11px] text-slate-500 dark:text-slate-400">
                         {chapter.publishedAtLabel}
                       </p>
                       {isSequenceBlocked ? (
-                        <p className="mt-2 text-[11px] font-bold uppercase tracking-[0.18em] text-amber-600 dark:text-amber-300">
+                        <p className="mt-1.5 text-[10px] font-bold uppercase tracking-[0.16em] text-amber-600 dark:text-amber-300">
                           {getSequenceBlockedLabel(chapter)}
                         </p>
                       ) : null}
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex flex-col items-end gap-1">
                       {chapter.premium ? (
-                        <span className="rounded-full bg-primary px-2.5 py-1 text-[10px] font-black uppercase tracking-wide text-background-dark">
+                        <span className="rounded-full bg-primary px-2 py-0.5 text-[9px] font-black uppercase tracking-wide text-background-dark">
                           Premium
                         </span>
                       ) : null}
                       {isSequenceBlocked ? (
-                        <span className="material-symbols-outlined text-slate-400">lock</span>
+                        <span className="material-symbols-outlined text-slate-400">
+                          lock
+                        </span>
                       ) : null}
                     </div>
                   </div>

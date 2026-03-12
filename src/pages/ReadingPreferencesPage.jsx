@@ -85,9 +85,9 @@ function ProfilePictureSection({
   const displayName = user?.displayName ?? "StoryArc User";
 
   return (
-    <section className={compact ? "px-4 pt-10" : "flex flex-col gap-4 px-4"}>
+    <section className={compact ? "px-4 pt-4" : "flex flex-col gap-4 px-4"}>
       <div className={compact ? "" : "flex flex-col gap-1"}>
-        <h3 className={compact ? "pb-4 text-[22px] font-bold tracking-[-0.015em]" : "text-xl font-bold"}>
+        <h3 className={compact ? "pb-3 text-lg font-bold tracking-[-0.015em]" : "text-xl font-bold"}>
           Profile Picture
         </h3>
         {!compact ? (
@@ -98,28 +98,30 @@ function ProfilePictureSection({
       </div>
 
       <div
-        className={`flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-4 dark:border-primary/20 dark:bg-primary/5 ${
-          compact ? "" : "md:p-5"
+        className={`flex items-center gap-3 rounded-xl border border-slate-200 bg-white dark:border-primary/20 dark:bg-primary/5 ${
+          compact ? "p-3" : "p-4 md:p-5"
         }`.trim()}
       >
         <UserAvatar
-          className={`${compact ? "size-20" : "size-24"} rounded-full border-4 border-primary/20 shadow-lg`}
-          fallbackClassName={compact ? "text-3xl" : "text-4xl"}
+          className={`${compact ? "size-14" : "size-24"} rounded-full border-2 border-primary/20 shadow-lg`}
+          fallbackClassName={compact ? "text-2xl" : "text-4xl"}
           name={displayName}
           src={user?.avatarUrl}
         />
 
         <div className="min-w-0 flex-1">
-          <p className="text-sm font-semibold md:text-base">
+          <p className={`font-semibold ${compact ? "text-xs" : "text-sm md:text-base"}`}>
             {hasAvatar ? "Your photo is live." : "Upload a photo for your profile."}
           </p>
-          <p className="mt-1 text-xs text-slate-500 dark:text-slate-400 md:text-sm">
+          <p className={`text-slate-500 dark:text-slate-400 ${compact ? "mt-0.5 text-[10px]" : "mt-1 text-xs md:text-sm"}`}>
             JPG, PNG, GIF, or WebP up to 5 MB.
           </p>
         </div>
 
         <label
-          className={`inline-flex shrink-0 cursor-pointer items-center justify-center rounded-xl bg-primary px-4 py-3 text-sm font-bold text-background-dark transition-opacity hover:opacity-90 ${
+          className={`inline-flex shrink-0 cursor-pointer items-center justify-center rounded-lg bg-primary text-background-dark transition-opacity hover:opacity-90 ${
+            compact ? "px-3 py-2 text-xs font-bold" : "rounded-xl px-4 py-3 text-sm font-bold"
+          } ${
             isUploadingProfilePicture ? "pointer-events-none opacity-60" : ""
           }`.trim()}
           htmlFor={inputId}
@@ -357,30 +359,33 @@ function MobileReadingPreferences() {
   return (
     <div className="min-h-screen bg-background-light font-display text-slate-900 dark:bg-background-dark dark:text-slate-100 md:hidden">
       <div className="relative flex min-h-screen w-full flex-col overflow-x-hidden">
-        <header className="flex items-center justify-between p-4 pb-2">
-          <Link className="flex size-10 items-center justify-center" to="/onboarding/genres">
-            <span className="material-symbols-outlined text-slate-900 dark:text-slate-100">
+        <header className="flex shrink-0 items-center justify-between border-b border-primary/10 px-4 py-3">
+          <Link
+            className="flex size-9 items-center justify-center rounded-lg transition-colors hover:bg-slate-200 dark:hover:bg-primary/20"
+            to="/onboarding/genres"
+          >
+            <span className="material-symbols-outlined text-xl text-slate-900 dark:text-slate-100">
               arrow_back
             </span>
           </Link>
-          <h2 className="flex-1 pr-10 text-center text-lg font-bold tracking-[-0.015em]">
+          <h2 className="flex-1 pr-9 text-center text-base font-bold tracking-[-0.015em]">
             Reading Preferences
           </h2>
         </header>
 
-        <div className="flex flex-col gap-3 p-4">
-          <div className="flex items-end justify-between gap-6">
-            <p className="text-sm font-medium">Setup Progress</p>
-            <p className="text-xs font-bold uppercase tracking-wider text-primary">
+        <div className="flex flex-col gap-2 px-4 py-3">
+          <div className="flex items-end justify-between gap-4">
+            <p className="text-xs font-medium">Setup Progress</p>
+            <p className="text-[10px] font-bold uppercase tracking-wider text-primary">
               Step 4 of 4
             </p>
           </div>
-          <div className="h-2 overflow-hidden rounded-full bg-slate-200 dark:bg-primary/20">
+          <div className="h-1.5 overflow-hidden rounded-full bg-slate-200 dark:bg-primary/20">
             <div className="h-full w-[80%] rounded-full bg-primary" />
           </div>
         </div>
 
-        <main className="flex-1 pb-24">
+        <main className="flex-1 overflow-y-auto pb-20">
           <ProfilePictureSection
             compact
             inputId="mobile-onboarding-profile-picture"
@@ -389,35 +394,35 @@ function MobileReadingPreferences() {
             user={user}
           />
 
-          <section className="px-4 pt-6">
-            <h2 className="pb-4 text-[22px] font-bold tracking-[-0.015em]">
+          <section className="px-4 pt-4">
+            <h2 className="pb-3 text-base font-bold tracking-[-0.015em]">
               Reading Style
             </h2>
-            <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-2">
               {readingStyles.slice(0, 2).map((style) => {
                 const selected = readingStyle === style.name;
 
                 return (
                   <motion.button
-                    className="flex items-center gap-4 rounded-xl border-2 border-slate-200 p-4 text-left transition-all dark:border-primary/20"
+                    className="flex items-center gap-3 rounded-xl border border-slate-200 p-3 text-left transition-all dark:border-primary/20"
                     key={style.name}
                     onClick={() => setReadingStyle(style.name)}
                     type="button"
                     whileTap={{ scale: 0.98 }}
                   >
                     <div className="flex grow flex-col">
-                      <p className="text-base font-bold">{style.name}</p>
-                      <p className="text-sm text-slate-500 dark:text-slate-400">
+                      <p className="text-sm font-bold">{style.name}</p>
+                      <p className="text-xs text-slate-500 dark:text-slate-400">
                         {style.mobileDescription}
                       </p>
                     </div>
                     <div
-                      className={`h-6 w-6 rounded-full border-2 border-slate-300 dark:border-primary/40 ${
+                      className={`h-5 w-5 shrink-0 rounded-full border-2 border-slate-300 dark:border-primary/40 ${
                         selected ? "border-primary" : ""
                       }`}
                     >
                       {selected && (
-                        <div className="m-auto mt-1 h-2.5 w-2.5 rounded-full bg-primary" />
+                        <div className="m-auto mt-0.5 h-2 w-2 rounded-full bg-primary" />
                       )}
                     </div>
                   </motion.button>
@@ -426,19 +431,19 @@ function MobileReadingPreferences() {
             </div>
           </section>
 
-          <section className="px-4 pt-10">
-            <h2 className="pb-4 text-[22px] font-bold tracking-[-0.015em]">
+          <section className="px-4 pt-5">
+            <h2 className="pb-3 text-base font-bold tracking-[-0.015em]">
               Reading Theme
             </h2>
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-3 gap-2">
               {themes.map((theme) => {
                 const selected = readingTheme === theme.name;
 
                 return (
                   <motion.button
-                    className={`flex flex-col items-center gap-2 rounded-xl border-2 p-3 transition-all ${
+                    className={`flex flex-col items-center gap-1.5 rounded-lg border p-2.5 transition-all ${
                       selected
-                        ? "border-primary ring-2 ring-primary/20"
+                        ? "border-2 border-primary ring-2 ring-primary/20"
                         : "border-slate-200 dark:border-primary/10"
                     } ${theme.name === "Light" ? "bg-white" : theme.cardClass}`}
                     key={theme.name}
@@ -447,7 +452,7 @@ function MobileReadingPreferences() {
                     whileTap={{ scale: 0.98 }}
                   >
                     <div
-                      className={`flex aspect-square w-full items-center justify-center rounded-lg ${
+                      className={`flex aspect-square w-full items-center justify-center rounded-md ${
                         theme.name === "Light"
                           ? "border border-slate-200 bg-white"
                           : theme.name === "Sepia"
@@ -456,18 +461,18 @@ function MobileReadingPreferences() {
                       }`}
                     >
                       <span
-                        className={`text-xl font-bold ${
+                        className={`font-bold ${
                           theme.name === "Light"
                             ? "text-slate-800"
                             : theme.name === "Sepia"
                               ? "text-[#5f4b32]"
                               : "text-white"
-                        }`}
+                        } text-sm`}
                       >
                         Aa
                       </span>
                     </div>
-                    <span className={`text-xs font-bold ${theme.mobileLabelClass}`}>
+                    <span className={`text-[10px] font-bold ${theme.mobileLabelClass}`}>
                       {theme.name}
                     </span>
                   </motion.button>
@@ -477,9 +482,9 @@ function MobileReadingPreferences() {
           </section>
         </main>
 
-        <footer className="fixed bottom-0 left-0 right-0 bg-background-light/80 p-4 backdrop-blur-md dark:bg-background-dark/80">
+        <footer className="fixed bottom-0 left-0 right-0 shrink-0 border-t border-primary/10 bg-background-light/90 p-4 backdrop-blur-md dark:bg-background-dark/90">
           <motion.button
-            className="w-full rounded-xl bg-primary py-4 font-bold text-slate-900 shadow-lg shadow-primary/20 disabled:cursor-not-allowed disabled:opacity-60"
+            className="h-10 w-full rounded-lg bg-primary text-base font-semibold text-slate-900 shadow-lg shadow-primary/20 disabled:cursor-not-allowed disabled:opacity-60"
             disabled={isSavingPreferences}
             onClick={handleComplete}
             type="button"
