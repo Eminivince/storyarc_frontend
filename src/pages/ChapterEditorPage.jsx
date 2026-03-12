@@ -6,7 +6,6 @@ import {
   useSearchParams,
 } from "react-router-dom";
 import { AppDesktopSidebar, AppMobileTabBar } from "../components/AppShellNav";
-import RichTextEditor from "../components/RichTextEditor";
 import ReaderStateScreen from "../components/ReaderStateScreen";
 import RouteLoadingScreen from "../components/RouteLoadingScreen";
 import { useCreator } from "../context/CreatorContext";
@@ -17,9 +16,15 @@ import {
   getCreatorScheduledChaptersHref,
   getCreatorStoryManagementHref,
 } from "../data/creatorFlow";
-import { getRichTextWordCount } from "../editor/richText";
+import { getRichTextPlainText } from "../editor/richText";
 
 const warningOptions = ["Violence", "Strong Language", "Mature Themes"];
+
+function getWordCount(body) {
+  const plainText = getRichTextPlainText(body);
+
+  return plainText ? plainText.split(/\s+/).filter(Boolean).length : 0;
+}
 
 function toggleWarning(warnings, warning) {
   if (warnings.includes(warning)) {
@@ -84,6 +89,8 @@ function DesktopChapterEditor({
   volumeOptions,
   wordCount,
 }) {
+  const bodyValue = getRichTextPlainText(draft.body);
+
   return (
     <div className="hidden min-h-screen bg-background-light font-display text-slate-900 dark:bg-background-dark dark:text-slate-100 md:block">
       <div className="flex h-screen overflow-hidden">
@@ -190,13 +197,12 @@ function DesktopChapterEditor({
 
                 <hr className="border-[#393528]" />
 
-                <RichTextEditor
-                  contentClassName="min-h-[500px] text-lg leading-relaxed text-slate-100/90"
-                  editorClassName="border-[#393528] bg-transparent"
-                  onChange={onBodyChange}
+                <textarea
+                  className="min-h-[500px] w-full resize-none border-none bg-transparent p-0 text-lg leading-relaxed text-slate-100/90 placeholder:text-slate-600 focus:ring-0"
+                  name="body"
+                  onChange={(event) => onBodyChange(event.target.value)}
                   placeholder="Start writing your masterpiece here..."
-                  toolbarClassName="border-[#393528] bg-[#27241b]/50"
-                  value={draft.body}
+                  value={bodyValue}
                 />
               </div>
             </section>
@@ -449,9 +455,25 @@ function DesktopChapterEditor({
           </div>
 
           <footer className="flex h-12 shrink-0 items-center gap-6 border-t border-[#393528] bg-[#27241b] px-8">
-            <div className="text-xs font-medium text-slate-500">
-              Rich formatting enabled: bold, italic, headings, links, lists, and quotes.
+            <div className="flex items-center gap-4">
+              {[
+                "format_bold",
+                "format_italic",
+                "format_list_bulleted",
+                "format_quote",
+                "image",
+              ].map((icon) => (
+                <button
+                  className="flex items-center gap-1 text-slate-500 transition-colors hover:text-primary"
+                  key={icon}
+                  type="button">
+                  <span className="material-symbols-outlined text-lg">
+                    {icon}
+                  </span>
+                </button>
+              ))}
             </div>
+            <div className="h-4 w-px bg-[#393528]" />
             <div className="text-xs font-medium text-slate-500">
               Last saved: {draft.lastSavedAt}
             </div>
@@ -483,6 +505,8 @@ function MobileChapterEditor({
   volumeOptions,
   wordCount,
 }) {
+  const bodyValue = getRichTextPlainText(draft.body);
+
   return (
     <div className="min-h-screen bg-background-light font-display text-slate-900 dark:bg-background-dark dark:text-slate-100 md:hidden">
       <header className="sticky top-0 z-50 flex items-center justify-between border-b border-slate-200 bg-background-light/80 px-4 py-3 backdrop-blur-md dark:border-primary/10 dark:bg-background-dark/80">
@@ -533,7 +557,7 @@ function MobileChapterEditor({
             </div>
           </div>
           <input
-            className="mb-3 w-full border-none bg-transparent p-0 text-xl font-bold placeholder:text-slate-400 focus:ring-0 dark:placeholder:text-slate-600"
+            className="mb-3 outline-none w-full border-none bg-transparent p-0 text-xl font-bold placeholder:text-slate-400 focus:ring-0 dark:placeholder:text-slate-600"
             name="title"
             onChange={onFieldChange}
             placeholder="Chapter Title..."
@@ -543,14 +567,12 @@ function MobileChapterEditor({
         </div>
 
         <div className="flex-1 px-4">
-          <RichTextEditor
-            compact
-            contentClassName="min-h-[360px] text-base leading-relaxed text-slate-900 dark:text-slate-100"
-            editorClassName="border-slate-200 bg-white dark:border-primary/10 dark:bg-background-dark/70"
-            onChange={onBodyChange}
+          <textarea
+            className="h-full outline-none w-full resize-none border-none bg-transparent p-0 pb-32 text-base leading-relaxed placeholder:text-slate-400 focus:ring-0 dark:placeholder:text-slate-600"
+            name="body"
+            onChange={(event) => onBodyChange(event.target.value)}
             placeholder="Start writing your story here..."
-            toolbarClassName="border-slate-200 bg-slate-50 dark:border-primary/10 dark:bg-background-dark/90"
-            value={draft.body}
+            value={bodyValue}
           />
         </div>
       </main>
@@ -568,6 +590,30 @@ function MobileChapterEditor({
         type="button">
         <span className="material-symbols-outlined text-2xl">settings</span>
       </button>
+
+      <div className="fixed bottom-24 left-1/2 z-40 flex w-[90%] max-w-md -translate-x-1/2 items-center justify-around rounded-xl border border-slate-200 bg-white/90 p-1.5 shadow-2xl backdrop-blur-xl dark:border-slate-700 dark:bg-slate-800/90">
+        {["format_bold", "format_italic", "format_list_bulleted", "image"].map(
+          (icon) => (
+            <button
+              className="p-1.5 transition-colors hover:text-primary"
+              key={icon}
+              type="button">
+              <span className="material-symbols-outlined text-lg">{icon}</span>
+            </button>
+          ),
+        )}
+        <div className="mx-0.5 h-5 w-px bg-slate-200 dark:bg-slate-700" />
+        {["undo", "redo", "settings_suggest"].map((icon) => (
+          <button
+            className={`p-1.5 transition-colors ${
+              icon === "settings_suggest" ? "text-primary" : "hover:text-primary"
+            }`}
+            key={icon}
+            type="button">
+            <span className="material-symbols-outlined text-lg">{icon}</span>
+          </button>
+        ))}
+      </div>
 
       <div className="pointer-events-none fixed inset-0 z-[70] md:hidden">
         <button
@@ -801,7 +847,7 @@ export default function ChapterEditorPage() {
 
   const story = getStory(storySlug);
   const draft = getChapterDraft(storySlug, chapterId);
-  const wordCount = getRichTextWordCount(draft.body);
+  const wordCount = getWordCount(draft.body);
   const readTime = Math.max(1, Math.ceil(wordCount / 225));
   const volumeOptions = story ? getVolumeOptions(story) : [];
   const arcOptions = story ? getArcOptions(story, draft.volumeId) : [];
