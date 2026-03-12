@@ -95,6 +95,14 @@ export function AuthProvider({ children }) {
     return updateCurrentUser(nextUser);
   }
 
+  async function completeOAuthSession(tokens) {
+    persistAuthTokens(tokens);
+
+    const response = await fetchCurrentUser();
+
+    return updateCurrentUser(response.user);
+  }
+
   async function register(input) {
     return registerMutation.mutateAsync(input);
   }
@@ -146,6 +154,7 @@ export function AuthProvider({ children }) {
     hasStoredSession,
     isAuthenticated: Boolean(user),
     isBootstrapping: bootstrapQuery.isPending,
+    completeOAuthSession,
     isLoggingIn: loginMutation.isPending,
     isLoggingOut: logoutMutation.isPending,
     isRegistering: registerMutation.isPending,

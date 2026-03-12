@@ -1,4 +1,4 @@
-import { getJson, postJson, requestJson } from "../lib/apiClient";
+import { buildApiUrl, getJson, postJson, requestJson } from "../lib/apiClient";
 import { getAccessToken } from "./authStorage";
 
 function getAuthHeaders(headers = {}) {
@@ -28,6 +28,18 @@ export function verifyRegistrationCode(input) {
 
 export function loginAccount(input) {
   return postJson("/auth/login", input);
+}
+
+export function buildGoogleAuthStartUrl(nextPath) {
+  const params = new URLSearchParams();
+
+  if (nextPath) {
+    params.set("next", nextPath);
+  }
+
+  const suffix = params.toString() ? `?${params.toString()}` : "";
+
+  return buildApiUrl(`/auth/google/start${suffix}`);
 }
 
 export function logoutAccount() {

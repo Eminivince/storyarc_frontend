@@ -60,6 +60,9 @@ const EditProfilePage = lazy(() => import("../pages/EditProfilePage"));
 const ForgotPasswordPage = lazy(() => import("../pages/ForgotPasswordPage"));
 const GenreSelectionPage = lazy(() => import("../pages/GenreSelectionPage"));
 const GiftSendingPage = lazy(() => import("../pages/GiftSendingPage"));
+const GoogleAuthCallbackPage = lazy(() =>
+  import("../pages/GoogleAuthCallbackPage"),
+);
 const HelpSupportPage = lazy(() => import("../pages/HelpSupportPage"));
 const HomePage = lazy(() => import("../pages/HomePage"));
 const LeaderboardPage = lazy(() => import("../pages/LeaderboardPage"));
@@ -179,6 +182,11 @@ export const appRouteGroups = [
     flow: "Sign up, sign in, and password recovery.",
     routes: [
       { path: "/auth", component: AuthPage, page: "AuthPage" },
+      {
+        path: "/auth/google/callback",
+        component: GoogleAuthCallbackPage,
+        page: "GoogleAuthCallbackPage",
+      },
       {
         path: "/auth/forgot-password",
         component: ForgotPasswordPage,
