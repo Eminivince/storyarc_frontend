@@ -210,7 +210,7 @@ function DesktopChapterEditor({
             <div className="pointer-events-none absolute inset-0 z-40">
               <button
                 aria-hidden={!showSettings}
-                className={`absolute inset-0 bg-black/45 transition-opacity duration-300 ${
+                className={`absolute inset-0 bg-black/45 backdrop-blur-sm transition-opacity duration-300 ${
                   showSettings ? "pointer-events-auto opacity-100" : "opacity-0"
                 }`}
                 onClick={onToggleSettings}
@@ -218,7 +218,7 @@ function DesktopChapterEditor({
                 type="button"
               />
               <aside
-                className={`pointer-events-auto absolute inset-y-0 right-0 w-80 max-w-full overflow-y-auto border-l border-[#393528] bg-[#27241b]/95 p-6 shadow-2xl transition-transform duration-300 ease-out ${
+                className={`pointer-events-auto absolute inset-y-0 right-0 w-80 max-w-full overflow-y-auto border-l border-[#393528]/80 bg-[#27241b]/80 p-6 shadow-2xl backdrop-blur-xl transition-transform duration-300 ease-out ${
                   showSettings ? "translate-x-0" : "translate-x-full"
                 }`}
               >
@@ -618,7 +618,7 @@ function MobileChapterEditor({
       <div className="pointer-events-none fixed inset-0 z-[70] md:hidden">
         <button
           aria-hidden={!showSettings}
-          className={`absolute inset-0 bg-slate-950/55 transition-opacity duration-300 ${
+          className={`absolute inset-0 bg-slate-950/55 backdrop-blur-sm transition-opacity duration-300 ${
             showSettings ? "pointer-events-auto opacity-100" : "opacity-0"
           }`}
           onClick={onToggleSettings}
@@ -627,7 +627,7 @@ function MobileChapterEditor({
         />
 
         <section
-          className={`pointer-events-auto absolute inset-x-0 bottom-0 max-h-[78vh] overflow-y-auto rounded-t-[1.75rem] border-t border-slate-200 bg-background-light px-4 pb-8 pt-4 shadow-2xl transition-transform duration-300 ease-out dark:border-primary/10 dark:bg-slate-900 ${
+          className={`pointer-events-auto absolute inset-x-0 bottom-0 max-h-[78vh] overflow-y-auto rounded-t-[1.75rem] border-t border-slate-200/70 bg-white/95 px-4 pb-8 pt-4 shadow-2xl backdrop-blur-xl transition-transform duration-300 ease-out dark:border-white/10 dark:bg-slate-950/90 ${
             showSettings ? "translate-y-0" : "translate-y-full"
           }`}
         >
@@ -1095,7 +1095,7 @@ export default function ChapterEditorPage() {
   }
 
   if (isPublishing) {
-    return <RouteLoadingScreen message="Processing..." />;
+    return <RouteLoadingScreen message="Uploading chapter..." />;
   }
 
   return (

@@ -33,8 +33,18 @@ export function normalizeRichTextBody(value) {
 }
 
 export function getRichTextPlainText(value) {
-  const normalized = normalizeRichTextBody(value);
+  const str = String(value ?? "");
 
+  if (!str) {
+    return "";
+  }
+
+  // If already plain text (no HTML), return as-is so spaces are preserved
+  if (!isRichTextHtml(str)) {
+    return str;
+  }
+
+  const normalized = normalizeRichTextBody(str);
   if (!normalized) {
     return "";
   }
