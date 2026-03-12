@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import AccountNotice from "./AccountNotice";
 import { AppDesktopSidebar, AppMobileTabBar } from "./AppShellNav";
 import { adminDashboardHref } from "../data/adminFlow";
 
@@ -62,8 +61,6 @@ export default function AdminPageLayout({
   children,
   contentClassName = "",
   headerActions = null,
-  notice,
-  onDismissNotice,
   onSearchChange,
   searchPlaceholder = "Search users, reports, stories, or support cases...",
   searchTerm = "",
@@ -106,7 +103,6 @@ export default function AdminPageLayout({
               </div>
             </div>
 
-            <AccountNotice notice={notice} onDismiss={onDismissNotice} />
             {children}
           </div>
         </main>
@@ -141,7 +137,6 @@ export default function AdminPageLayout({
         </header>
 
         <main className="space-y-6 px-4 pb-28 pt-4">
-          <AccountNotice notice={notice} onDismiss={onDismissNotice} />
           {children}
         </main>
 

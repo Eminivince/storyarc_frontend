@@ -1,7 +1,6 @@
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import AccountNotice from "../components/AccountNotice";
 import Reveal from "../components/Reveal";
 import ReaderStateScreen from "../components/ReaderStateScreen";
 import RouteLoadingScreen from "../components/RouteLoadingScreen";
@@ -86,8 +85,6 @@ function DesktopGiftSending({
   gifts,
   isCatalogLoading,
   message,
-  notice,
-  onDismiss,
   onMessageChange,
   onSelectGift,
   onSend,
@@ -141,8 +138,6 @@ function DesktopGiftSending({
               </p>
             </div>
           </Reveal>
-
-          <AccountNotice notice={notice} onDismiss={onDismiss} />
 
           <section>
             <div className="mb-4 flex items-center justify-between">
@@ -264,8 +259,6 @@ function MobileGiftSending({
   gifts,
   isCatalogLoading,
   message,
-  notice,
-  onDismiss,
   onMessageChange,
   onSelectGift,
   onSend,
@@ -309,8 +302,6 @@ function MobileGiftSending({
           </div>
 
           <div className="space-y-6 px-4">
-            <AccountNotice notice={notice} onDismiss={onDismiss} />
-
             <section>
               <div className="mb-4 flex items-center justify-between px-1">
                 <h3 className="text-sm font-bold uppercase tracking-widest text-primary/80">
@@ -426,11 +417,9 @@ export default function GiftSendingPage() {
   const storyQuery = useStoryDetailsQuery(storySlug);
   const {
     catalogError,
-    clearNotice,
     coinBalance,
     giftCatalog,
     isCatalogLoading,
-    lastNotice,
     sendGift,
   } = useMonetization();
   const [selectedGiftId, setSelectedGiftId] = useState(null);
@@ -525,8 +514,6 @@ export default function GiftSendingPage() {
         gifts={giftCatalog}
         isCatalogLoading={isCatalogLoading}
         message={message}
-        notice={lastNotice}
-        onDismiss={clearNotice}
         onMessageChange={setMessage}
         onSelectGift={(gift) => setSelectedGiftId(gift.id)}
         onSend={handleSendGift}
@@ -539,8 +526,6 @@ export default function GiftSendingPage() {
         gifts={giftCatalog}
         isCatalogLoading={isCatalogLoading}
         message={message}
-        notice={lastNotice}
-        onDismiss={clearNotice}
         onMessageChange={setMessage}
         onSelectGift={(gift) => setSelectedGiftId(gift.id)}
         onSend={handleSendGift}

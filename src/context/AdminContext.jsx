@@ -21,6 +21,7 @@ import {
   updateAdminUserStatus as updateAdminUserStatusRequest,
 } from "../admin/adminApi";
 import { useAuth } from "./AuthContext";
+import { useToast } from "./ToastContext";
 
 const AdminContext = createContext(null);
 
@@ -56,7 +57,7 @@ function getReportActionStatus(actionLabel) {
 export function AdminProvider({ children }) {
   const queryClient = useQueryClient();
   const { user } = useAuth();
-  const [adminNotice, setAdminNotice] = useState(null);
+  const { showToast } = useToast();
   const [selectedConversationId, setSelectedConversationId] = useState(null);
   const [userDetailsById, setUserDetailsById] = useState({});
   const isAdmin = user?.role === "ADMIN";
@@ -110,7 +111,6 @@ export function AdminProvider({ children }) {
       return;
     }
 
-    setAdminNotice(null);
     setSelectedConversationId(null);
     setUserDetailsById({});
   }, [isAdmin]);
@@ -144,15 +144,8 @@ export function AdminProvider({ children }) {
     });
   }, [conversations]);
 
-  function clearAdminNotice() {
-    setAdminNotice(null);
-  }
-
   function showAdminNotice(message, tone = "success") {
-    setAdminNotice({
-      message,
-      tone,
-    });
+    showToast(message, { tone });
   }
 
   function syncUserCache(nextUser) {
@@ -488,9 +481,7 @@ export function AdminProvider({ children }) {
 
   const value = {
     activityGroups,
-    adminNotice,
     changeUserRole,
-    clearAdminNotice,
     conversations,
     deleteUser,
     financialHealth,

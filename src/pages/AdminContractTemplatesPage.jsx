@@ -6,7 +6,6 @@ import AdminPageLayout from "../components/AdminPageLayout";
 import ReaderStateScreen from "../components/ReaderStateScreen";
 import Reveal from "../components/Reveal";
 import RouteLoadingScreen from "../components/RouteLoadingScreen";
-import { useAdmin } from "../context/AdminContext";
 import {
   adminContractTemplatesHref,
   adminContractsHref,
@@ -83,7 +82,6 @@ function TemplateCard({ onCreateContract, onEdit, template }) {
 
 export default function AdminContractTemplatesPage() {
   const navigate = useNavigate();
-  const { adminNotice, clearAdminNotice } = useAdmin();
   const [searchTerm, setSearchTerm] = useState("");
   const deferredSearch = useDeferredValue(searchTerm);
 
@@ -157,8 +155,6 @@ export default function AdminContractTemplatesPage() {
           </Link>
         </>
       }
-      notice={adminNotice}
-      onDismissNotice={clearAdminNotice}
       subtitle="Manage reusable agreement templates, keep company terms editable, and start new contracts from the latest approved wording."
       title="Contract Templates"
     >

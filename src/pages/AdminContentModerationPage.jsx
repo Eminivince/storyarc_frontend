@@ -73,8 +73,6 @@ function formatApplicationDate(value) {
 export default function AdminContentModerationPage() {
   const queryClient = useQueryClient();
   const {
-    adminNotice,
-    clearAdminNotice,
     reports,
     resolveModerationItem,
     showAdminNotice,
@@ -198,8 +196,6 @@ export default function AdminContentModerationPage() {
           Bulk Review
         </button>
       }
-      notice={adminNotice}
-      onDismissNotice={clearAdminNotice}
       onSearchChange={setSearchTerm}
       searchPlaceholder="Search reports, creators, policies, or flagged stories..."
       searchTerm={searchTerm}

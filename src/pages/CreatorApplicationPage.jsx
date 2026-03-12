@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import AccountNotice from "../components/AccountNotice";
 import {
   useCreator,
 } from "../context/CreatorContext";
@@ -12,12 +11,10 @@ import {
 } from "../data/creatorFlow";
 
 function DesktopCreatorApplication({
-  clearNotice,
   form,
   isSaving,
   isSubmitted,
   isSubmitting,
-  notice,
   onChange,
   onExperienceSelect,
   onSaveDraft,
@@ -66,8 +63,6 @@ function DesktopCreatorApplication({
 
         <main className="flex flex-1 justify-center px-6 py-12">
           <div className="flex w-full max-w-[800px] flex-col gap-8">
-            <AccountNotice notice={notice} onDismiss={clearNotice} />
-
             <div className="flex flex-wrap items-center justify-between gap-6 rounded-xl border border-primary/20 bg-primary/5 p-8">
               <div className="flex max-w-lg flex-col gap-3">
                 <h1 className="text-4xl font-black leading-tight tracking-tight lg:text-5xl">
@@ -279,12 +274,10 @@ function DesktopCreatorApplication({
 }
 
 function MobileCreatorApplication({
-  clearNotice,
   form,
   isSaving,
   isSubmitted,
   isSubmitting,
-  notice,
   onChange,
   onExperienceSelect,
   onGenreSelect,
@@ -318,10 +311,6 @@ function MobileCreatorApplication({
           <p className="mt-0.5 text-xs text-slate-600 dark:text-slate-400">
             Tell us about your creative journey.
           </p>
-        </div>
-
-        <div className="px-4 pt-3">
-          <AccountNotice notice={notice} onDismiss={clearNotice} />
         </div>
 
         <form className="flex flex-col gap-4 p-4" onSubmit={onSubmit}>
@@ -497,9 +486,7 @@ export default function CreatorApplicationPage() {
   const navigate = useNavigate();
   const {
     applicationDraft,
-    clearCreatorNotice,
     creatorApplicationStatus,
-    creatorNotice,
     enterReaderMode,
     enterWriterMode,
     isCreatorApplicationLoading,
@@ -571,24 +558,20 @@ export default function CreatorApplicationPage() {
   return (
     <>
       <DesktopCreatorApplication
-        clearNotice={clearCreatorNotice}
         form={form}
         isSaving={isSavingCreatorDraft}
         isSubmitted={creatorApplicationStatus === "SUBMITTED"}
         isSubmitting={isSubmittingCreatorApplication || isCreatorApplicationLoading}
-        notice={creatorNotice}
         onChange={handleChange}
         onExperienceSelect={handleExperienceSelect}
         onSaveDraft={handleSaveDraft}
         onSubmit={handleSubmit}
       />
       <MobileCreatorApplication
-        clearNotice={clearCreatorNotice}
         form={form}
         isSaving={isSavingCreatorDraft}
         isSubmitted={creatorApplicationStatus === "SUBMITTED"}
         isSubmitting={isSubmittingCreatorApplication || isCreatorApplicationLoading}
-        notice={creatorNotice}
         onChange={handleChange}
         onExperienceSelect={handleExperienceSelect}
         onGenreSelect={handleGenreSelect}

@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import AccountNotice from "../components/AccountNotice";
 import Reveal from "../components/Reveal";
 import { useCreator } from "../context/CreatorContext";
 import {
@@ -24,7 +23,7 @@ function getCreatorCtaLabel(status) {
   return "Start Application";
 }
 
-function DesktopCreatorOnboarding({ clearNotice, notice, onStart, status }) {
+function DesktopCreatorOnboarding({ onStart, status }) {
   return (
     <div className="hidden min-h-screen bg-background-light font-display text-slate-900 dark:bg-background-dark dark:text-slate-100 md:block">
       <div className="relative flex min-h-screen flex-col overflow-x-hidden">
@@ -77,8 +76,6 @@ function DesktopCreatorOnboarding({ clearNotice, notice, onStart, status }) {
 
         <main className="flex flex-1 justify-center px-4 py-10">
           <div className="flex max-w-[1000px] flex-1 flex-col gap-8">
-            <AccountNotice notice={notice} onDismiss={clearNotice} />
-
             <Reveal>
               <div
                 className="relative flex min-h-[400px] flex-col justify-end overflow-hidden rounded-xl border border-primary/10 shadow-2xl"
@@ -199,7 +196,7 @@ function DesktopCreatorOnboarding({ clearNotice, notice, onStart, status }) {
   );
 }
 
-function MobileCreatorOnboarding({ clearNotice, notice, onStart, status }) {
+function MobileCreatorOnboarding({ onStart, status }) {
   return (
     <div className="min-h-screen bg-background-light font-display text-slate-900 dark:bg-background-dark dark:text-slate-100 md:hidden">
       <div className="relative flex min-h-screen w-full flex-col overflow-x-hidden pb-20">
@@ -215,9 +212,6 @@ function MobileCreatorOnboarding({ clearNotice, notice, onStart, status }) {
           </h2>
         </header>
 
-        <div className="px-4 pt-3">
-          <AccountNotice notice={notice} onDismiss={clearNotice} />
-        </div>
 
         <section className="px-4 py-3">
           <Reveal
@@ -299,8 +293,6 @@ function MobileCreatorOnboarding({ clearNotice, notice, onStart, status }) {
 export default function CreatorOnboardingPage() {
   const navigate = useNavigate();
   const {
-    clearCreatorNotice,
-    creatorNotice,
     creatorStatus,
     enterWriterMode,
     getCreatorNextStepHref,
@@ -317,14 +309,10 @@ export default function CreatorOnboardingPage() {
   return (
     <>
       <DesktopCreatorOnboarding
-        clearNotice={clearCreatorNotice}
-        notice={creatorNotice}
         onStart={handleStart}
         status={creatorStatus}
       />
       <MobileCreatorOnboarding
-        clearNotice={clearCreatorNotice}
-        notice={creatorNotice}
         onStart={handleStart}
         status={creatorStatus}
       />

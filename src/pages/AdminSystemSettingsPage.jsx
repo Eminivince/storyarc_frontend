@@ -30,8 +30,6 @@ function parseCurrencyDraft(value) {
 
 export default function AdminSystemSettingsPage() {
   const {
-    adminNotice,
-    clearAdminNotice,
     runMaintenanceAction,
     settings,
     toggleSystemSetting,
@@ -85,8 +83,6 @@ export default function AdminSystemSettingsPage() {
           Backup Now
         </button>
       }
-      notice={adminNotice}
-      onDismissNotice={clearAdminNotice}
       onSearchChange={setSearchTerm}
       searchPlaceholder="Search settings, policies, or maintenance actions..."
       searchTerm={searchTerm}

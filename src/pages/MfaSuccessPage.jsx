@@ -1,5 +1,4 @@
 import { Link, useNavigate } from "react-router-dom";
-import AccountNotice from "../components/AccountNotice";
 import { useAccount } from "../context/AccountContext";
 import {
   mfaChooseHref,
@@ -21,9 +20,7 @@ function downloadCodesFile(codes) {
 }
 
 function DesktopSuccess({
-  clearNotice,
   mfa,
-  notice,
   onCopyCodes,
   onDone,
   onDownloadCodes,
@@ -48,8 +45,6 @@ function DesktopSuccess({
 
         <main className="flex flex-1 flex-col items-center justify-center px-4 py-12">
           <div className="w-full max-w-[560px] rounded-xl border border-primary/10 bg-background-dark/50 p-8 shadow-2xl backdrop-blur-sm">
-            <AccountNotice notice={notice} onDismiss={clearNotice} />
-
             <div className="mb-10 mt-6 flex flex-col items-center text-center">
               <div className="mb-6 flex size-20 items-center justify-center rounded-full bg-primary/20 ring-4 ring-primary/5">
                 <span className="material-symbols-outlined text-5xl text-primary">check_circle</span>
@@ -138,9 +133,7 @@ function DesktopSuccess({
 }
 
 function MobileSuccess({
-  clearNotice,
   mfa,
-  notice,
   onCopyCodes,
   onDone,
   onDownloadCodes,
@@ -156,8 +149,6 @@ function MobileSuccess({
         </header>
 
         <div className="flex flex-col px-6 py-8">
-          <AccountNotice notice={notice} onDismiss={clearNotice} />
-
           <div className="mb-8 mt-6 flex flex-col items-center gap-6">
             <div className="relative flex items-center justify-center">
               <div className="absolute inset-0 rounded-full bg-primary/20 blur-3xl" />
@@ -236,7 +227,7 @@ function MobileSuccess({
 
 export default function MfaSuccessPage() {
   const navigate = useNavigate();
-  const { clearNotice, copyValue, mfa, notice, showNotice } = useAccount();
+  const { copyValue, mfa, showNotice } = useAccount();
 
   function handleDownloadCodes() {
     downloadCodesFile(mfa.recoveryCodes);
@@ -250,17 +241,13 @@ export default function MfaSuccessPage() {
   return (
     <>
       <DesktopSuccess
-        clearNotice={clearNotice}
         mfa={mfa}
-        notice={notice}
         onCopyCodes={handleCopyCodes}
         onDone={() => navigate(profileHref)}
         onDownloadCodes={handleDownloadCodes}
       />
       <MobileSuccess
-        clearNotice={clearNotice}
         mfa={mfa}
-        notice={notice}
         onCopyCodes={handleCopyCodes}
         onDone={() => navigate(profileHref)}
         onDownloadCodes={handleDownloadCodes}

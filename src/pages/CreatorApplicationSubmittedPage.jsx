@@ -1,13 +1,10 @@
 import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import AccountNotice from "../components/AccountNotice";
 import Reveal from "../components/Reveal";
 import { useCreator } from "../context/CreatorContext";
 import { creatorSubmissionSteps } from "../data/creatorFlow";
 
 function DesktopCreatorApplicationSubmitted({
-  clearNotice,
-  notice,
   onReturn,
   onViewDetails,
 }) {
@@ -48,8 +45,6 @@ function DesktopCreatorApplicationSubmitted({
 
         <main className="flex flex-1 flex-col items-center justify-center px-6 py-12 md:py-24">
           <div className="flex w-full max-w-[800px] flex-col items-center text-center">
-            <AccountNotice notice={notice} onDismiss={clearNotice} />
-
             <Reveal className="relative mb-12 mt-6">
               <div className="absolute inset-0 scale-75 rounded-full bg-primary/20 blur-3xl" />
               <div className="relative aspect-[4/3] w-full max-w-[500px] overflow-hidden rounded-2xl border border-primary/20 bg-background-light shadow-2xl dark:bg-[#181611]">
@@ -133,8 +128,6 @@ function DesktopCreatorApplicationSubmitted({
 }
 
 function MobileCreatorApplicationSubmitted({
-  clearNotice,
-  notice,
   onReturn,
   onViewDetails,
 }) {
@@ -149,8 +142,6 @@ function MobileCreatorApplicationSubmitted({
       </header>
 
       <main className="mx-auto flex w-full max-w-md flex-1 flex-col items-center px-4 py-6">
-        <AccountNotice notice={notice} onDismiss={clearNotice} />
-
         <div className="mb-6 mt-4 flex w-full flex-col items-center text-center">
           <div className="mb-4 flex size-16 items-center justify-center rounded-full border border-primary/30 bg-primary/20">
             <span className="material-symbols-outlined text-4xl text-primary">check_circle</span>
@@ -230,9 +221,7 @@ function MobileCreatorApplicationSubmitted({
 export default function CreatorApplicationSubmittedPage() {
   const navigate = useNavigate();
   const {
-    clearCreatorNotice,
     creatorStatus,
-    creatorNotice,
     enterReaderMode,
     enterWriterMode,
     getCreatorEntryHref,
@@ -267,14 +256,10 @@ export default function CreatorApplicationSubmittedPage() {
   return (
     <>
       <DesktopCreatorApplicationSubmitted
-        clearNotice={clearCreatorNotice}
-        notice={creatorNotice}
         onReturn={handleReturn}
         onViewDetails={handleViewDetails}
       />
       <MobileCreatorApplicationSubmitted
-        clearNotice={clearCreatorNotice}
-        notice={creatorNotice}
         onReturn={handleReturn}
         onViewDetails={handleViewDetails}
       />

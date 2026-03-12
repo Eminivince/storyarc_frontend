@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link, useNavigate } from "react-router-dom";
-import AccountNotice from "../components/AccountNotice";
 import { AppDesktopSidebar, AppMobileTabBar } from "../components/AppShellNav";
 import Reveal from "../components/Reveal";
 import { useCreator } from "../context/CreatorContext";
@@ -255,9 +254,7 @@ function DesktopCommunity({
   activeTab,
   community,
   isVoting,
-  notice,
   onAction,
-  onDismiss,
   onTabChange,
   onVote,
   storySlug,
@@ -298,8 +295,6 @@ function DesktopCommunity({
               </div>
             </Reveal>
 
-            <AccountNotice notice={notice} onDismiss={onDismiss} />
-
             <CommunityTabs activeTab={activeTab} onChange={onTabChange} />
 
             <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_22rem]">
@@ -336,9 +331,7 @@ function MobileCommunity({
   activeTab,
   community,
   isVoting,
-  notice,
   onAction,
-  onDismiss,
   onTabChange,
   onVote,
   storySlug,
@@ -367,7 +360,6 @@ function MobileCommunity({
 
         <main className="flex-1 overflow-y-auto pb-24">
           <div className="space-y-5 px-4 py-4">
-            <AccountNotice notice={notice} onDismiss={onDismiss} />
             <CommunityTabs
               activeTab={activeTab}
               onChange={onTabChange}
@@ -399,8 +391,6 @@ export default function PollsAnnouncementsPage() {
   const navigate = useNavigate();
   const {
     activeStorySlug,
-    clearCreatorNotice,
-    creatorNotice,
     creatorStatus,
     enterWriterMode,
     getCreatorEntryHref,
@@ -512,9 +502,7 @@ export default function PollsAnnouncementsPage() {
         activeTab={activeTab}
         community={community}
         isVoting={voteMutation.isPending}
-        notice={creatorNotice}
         onAction={handleAction}
-        onDismiss={clearCreatorNotice}
         onTabChange={setActiveTab}
         onVote={handleVote}
         storySlug={activeStorySlug}
@@ -523,9 +511,7 @@ export default function PollsAnnouncementsPage() {
         activeTab={activeTab}
         community={community}
         isVoting={voteMutation.isPending}
-        notice={creatorNotice}
         onAction={handleAction}
-        onDismiss={clearCreatorNotice}
         onTabChange={setActiveTab}
         onVote={handleVote}
         storySlug={activeStorySlug}

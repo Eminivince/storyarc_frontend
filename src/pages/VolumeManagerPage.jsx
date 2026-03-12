@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
-import AccountNotice from "../components/AccountNotice";
 import { AppDesktopSidebar, AppMobileTabBar } from "../components/AppShellNav";
 import ReaderStateScreen from "../components/ReaderStateScreen";
 import Reveal from "../components/Reveal";
@@ -31,8 +30,6 @@ function getStructureStats(story) {
 }
 
 function DesktopVolumeManager({
-  clearNotice,
-  notice,
   onAddArc,
   onAddVolume,
   onSave,
@@ -86,8 +83,6 @@ function DesktopVolumeManager({
           </header>
 
           <div className="mx-auto max-w-6xl p-8">
-            <AccountNotice notice={notice} onDismiss={clearNotice} />
-
             <div className="mb-8 mt-6 flex items-end justify-between">
               <div>
                 <div className="mb-2 flex items-center gap-2 text-sm text-slate-500">
@@ -208,7 +203,7 @@ function DesktopVolumeManager({
   );
 }
 
-function MobileVolumeManager({ clearNotice, notice, onAddVolume, story }) {
+function MobileVolumeManager({ onAddVolume, story }) {
   const stats = getStructureStats(story);
 
   return (
@@ -224,8 +219,6 @@ function MobileVolumeManager({ clearNotice, notice, onAddVolume, story }) {
       </header>
 
       <main className="flex-1 overflow-y-auto px-4 py-6 pb-40">
-        <AccountNotice notice={notice} onDismiss={clearNotice} />
-
         <div className="mb-6 mt-4 flex items-center justify-between">
           <h2 className="text-lg font-semibold text-slate-800 dark:text-slate-200">Volumes & Arcs</h2>
           <button
@@ -296,8 +289,6 @@ export default function VolumeManagerPage() {
   const {
     addStoryArc,
     addStoryVolume,
-    clearCreatorNotice,
-    creatorNotice,
     enterWriterMode,
     getStory,
     isStudioLoading,
@@ -353,15 +344,13 @@ export default function VolumeManagerPage() {
   return (
     <>
       <DesktopVolumeManager
-        clearNotice={clearCreatorNotice}
-        notice={creatorNotice}
         onAddArc={handleAddArc}
         onAddVolume={handleAddVolume}
         onSave={handleSave}
         stats={stats}
         story={story}
       />
-      <MobileVolumeManager clearNotice={clearCreatorNotice} notice={creatorNotice} onAddVolume={handleAddVolume} story={story} />
+      <MobileVolumeManager onAddVolume={handleAddVolume} story={story} />
     </>
   );
 }

@@ -1,0 +1,7 @@
+.chapter-rich-text-content p.is-editor-empty:first-child::before {
+  color: rgb(100 116 139 / 0.9);
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}

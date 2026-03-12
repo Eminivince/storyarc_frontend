@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
-import AccountNotice from "../components/AccountNotice";
 import { AppDesktopSidebar, AppMobileTabBar } from "../components/AppShellNav";
 import Reveal from "../components/Reveal";
 import UserAvatar from "../components/UserAvatar";
@@ -146,8 +145,6 @@ function getAuthorRecentActivity(stories) {
 
 function DesktopAuthorDashboard({
   authorName,
-  clearNotice,
-  notice,
   quickActions,
   recentActivity,
   stats,
@@ -215,8 +212,6 @@ function DesktopAuthorDashboard({
 
           <main className="flex-1 overflow-y-auto p-6 md:p-8">
             <div className="mx-auto max-w-6xl space-y-8">
-              <AccountNotice notice={notice} onDismiss={clearNotice} />
-
               <div className="flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
                 <div>
                   <h1 className="text-3xl font-black tracking-tight">Welcome back, {authorName.split(" ")[0]}</h1>
@@ -379,8 +374,6 @@ function DesktopAuthorDashboard({
 
 function MobileAuthorDashboard({
   authorName,
-  clearNotice,
-  notice,
   quickActions,
   recentActivity,
   stats,
@@ -391,79 +384,75 @@ function MobileAuthorDashboard({
   return (
     <div className="min-h-screen bg-background-light font-display text-slate-900 dark:bg-[#0F0E0C] dark:text-slate-100 md:hidden">
       <div className="relative flex h-screen flex-col overflow-hidden">
-        <header className="flex items-center justify-between border-b border-slate-200 bg-background-light p-4 dark:border-primary/10 dark:bg-[#0F0E0C]">
-          <div className="flex items-center gap-3">
-            <div className="relative size-12 rounded-full border-2 border-primary p-0.5">
+        <header className="flex items-center justify-between border-b border-slate-200 bg-background-light px-4 py-3 dark:border-primary/10 dark:bg-[#0F0E0C]">
+          <div className="flex min-w-0 items-center gap-2.5">
+            <div className="relative size-9 shrink-0 rounded-full border-2 border-primary p-0.5">
               <UserAvatar
                 className="size-full rounded-full"
-                fallbackClassName="text-base"
+                fallbackClassName="text-xs"
                 name={authorName}
                 src={user?.avatarUrl}
               />
-              <div className="absolute bottom-0 right-0 flex size-4 items-center justify-center rounded-full border-2 border-background-dark bg-primary">
-                <span className="material-symbols-outlined text-[10px] font-bold text-background-dark">check</span>
+              <div className="absolute bottom-0 right-0 flex size-3 items-center justify-center rounded-full border-2 border-background-dark bg-primary">
+                <span className="material-symbols-outlined text-[8px] font-bold text-background-dark">check</span>
               </div>
             </div>
-            <div>
-              <h1 className="text-lg font-bold leading-tight">{authorName}</h1>
-              <span className="text-xs font-semibold uppercase tracking-wider text-primary">
+            <div className="min-w-0">
+              <h1 className="truncate text-base font-bold leading-tight">{authorName}</h1>
+              <span className="text-[10px] font-semibold uppercase tracking-wider text-primary">
                 Pro Creator
               </span>
             </div>
           </div>
-          <div className="flex gap-2">
-            <button className="flex size-10 items-center justify-center rounded-full bg-slate-100 text-slate-700 dark:bg-primary/10 dark:text-primary" type="button">
-              <span className="material-symbols-outlined">notifications</span>
+          <div className="flex shrink-0 gap-1.5">
+            <button className="flex size-9 items-center justify-center rounded-full bg-slate-100 text-slate-700 dark:bg-primary/10 dark:text-primary" type="button">
+              <span className="material-symbols-outlined text-lg">notifications</span>
             </button>
-            <Link className="flex size-10 items-center justify-center rounded-full bg-slate-100 text-slate-700 dark:bg-primary/10 dark:text-primary" to="/account/notifications">
-              <span className="material-symbols-outlined">settings</span>
+            <Link className="flex size-9 items-center justify-center rounded-full bg-slate-100 text-slate-700 dark:bg-primary/10 dark:text-primary" to="/account/notifications">
+              <span className="material-symbols-outlined text-lg">settings</span>
             </Link>
           </div>
         </header>
 
         <main className="custom-scrollbar flex-1 overflow-y-auto pb-24">
-          <div className="p-4">
-            <AccountNotice notice={notice} onDismiss={clearNotice} />
-          </div>
-
-          <section className="grid grid-cols-3 gap-3 p-4">
+          <section className="grid grid-cols-3 gap-2 px-4 pt-3 pb-1">
             {stats.map((stat) => (
-              <Reveal className="rounded-xl border border-transparent bg-slate-100 p-4 dark:border-white/10 dark:bg-white/5" key={stat.label}>
+              <Reveal className="rounded-xl border border-transparent bg-slate-100 p-3 dark:border-white/10 dark:bg-white/5" key={stat.label}>
                 <p className="text-[10px] font-bold uppercase tracking-tighter text-slate-500 dark:text-slate-400">
                   {stat.label.split(" ")[0]}
                 </p>
-                <p className="text-xl font-bold">{stat.value}</p>
+                <p className="text-lg font-bold">{stat.value}</p>
                 <p className="flex items-center gap-0.5 text-[10px] font-bold text-emerald-500">
-                  <span className="material-symbols-outlined text-[12px]">trending_up</span>
+                  <span className="material-symbols-outlined text-[10px]">trending_up</span>
                   {stat.delta}
                 </p>
               </Reveal>
             ))}
           </section>
 
-          <section className="px-4 py-2">
-            <h2 className="mb-3 text-sm font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">
+          <section className="px-4 py-1.5">
+            <h2 className="mb-2 text-[10px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">
               Quick Actions
             </h2>
-            <div className="custom-scrollbar flex gap-3 overflow-x-auto pb-2">
-              <Link className="flex flex-shrink-0 items-center gap-2 rounded-lg bg-primary px-4 py-3 text-sm font-bold text-background-dark" to={quickActions[0].href}>
-                <span className="material-symbols-outlined text-xl">edit_note</span>
+            <div className="custom-scrollbar flex gap-2 overflow-x-auto pb-1">
+              <Link className="flex flex-shrink-0 items-center gap-1.5 rounded-lg bg-primary px-3 py-2 text-xs font-bold text-background-dark" to={quickActions[0].href}>
+                <span className="material-symbols-outlined text-lg">edit_note</span>
                 {quickActions[0].title}
               </Link>
               {quickActions.slice(1).map((action) => (
-                <Link className="flex flex-shrink-0 items-center gap-2 rounded-lg border border-white/10 bg-slate-100 px-4 py-3 text-sm font-bold text-slate-900 dark:bg-white/5 dark:text-white" key={action.title} to={action.href}>
-                  <span className="material-symbols-outlined text-xl text-primary">{action.icon}</span>
+                <Link className="flex flex-shrink-0 items-center gap-1.5 rounded-lg border border-white/10 bg-slate-100 px-3 py-2 text-xs font-bold text-slate-900 dark:bg-white/5 dark:text-white" key={action.title} to={action.href}>
+                  <span className="material-symbols-outlined text-lg text-primary">{action.icon}</span>
                   {action.title}
                 </Link>
               ))}
             </div>
           </section>
 
-          <section className="p-4">
-            <div className="mb-4 flex items-center justify-between">
-              <h2 className="text-xl font-bold">My Stories</h2>
+          <section className="px-4 py-2">
+            <div className="mb-3 flex items-center justify-between">
+              <h2 className="text-base font-bold">My Stories</h2>
               <Link
-                className="text-sm font-semibold text-primary"
+                className="text-xs font-semibold text-primary"
                 to={
                   stories[0]
                     ? getCreatorStoryManagementHref(stories[0].slug)
@@ -473,31 +462,31 @@ function MobileAuthorDashboard({
                 View All
               </Link>
             </div>
-            <div className="space-y-4">
+            <div className="space-y-2">
               {stories.length ? stories.map((story) => {
                 const accent = getStoryAccentClasses(story.accent);
 
                 return (
-                  <Reveal className="flex gap-4 rounded-xl border border-transparent bg-slate-100 p-3 dark:border-white/10 dark:bg-white/5" key={story.title}>
-                    <Link className="h-24 w-16 shrink-0 overflow-hidden rounded-lg shadow-lg shadow-black/40" to={getCreatorStoryManagementHref(story.slug)}>
+                  <Reveal className="flex gap-3 rounded-xl border border-transparent bg-slate-100 p-2.5 dark:border-white/10 dark:bg-white/5" key={story.title}>
+                    <Link className="h-20 w-14 shrink-0 overflow-hidden rounded-lg shadow-lg shadow-black/40" to={getCreatorStoryManagementHref(story.slug)}>
                       <img alt={story.title} className="h-full w-full object-cover" src={story.image} />
                     </Link>
-                    <Link className="flex flex-1 flex-col justify-between py-0.5" to={getCreatorStoryManagementHref(story.slug)}>
+                    <Link className="flex min-w-0 flex-1 flex-col justify-between py-0.5" to={getCreatorStoryManagementHref(story.slug)}>
                       <div>
-                        <h3 className="mb-1 text-base font-bold leading-tight">{story.title}</h3>
-                        <div className="flex items-center gap-2">
-                          <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold uppercase ${accent.badge}`}>
+                        <h3 className="mb-0.5 truncate text-sm font-bold leading-tight">{story.title}</h3>
+                        <div className="flex flex-wrap items-center gap-1.5">
+                          <span className={`rounded-full px-1.5 py-0.5 text-[9px] font-bold uppercase ${accent.badge}`}>
                             {story.dashboardStatus}
                           </span>
-                          <span className="text-[11px] text-slate-500">{story.chapterLabel.replace("Chapter ", "Ch. ")}</span>
+                          <span className="text-[10px] text-slate-500">{story.chapterLabel.replace("Chapter ", "Ch. ")}</span>
                         </div>
                       </div>
                       <div className="w-full">
-                        <div className="mb-1 flex items-center justify-between">
-                          <span className="text-[10px] text-slate-400">Drafting Progress</span>
-                          <span className={`text-[10px] font-bold ${accent.text}`}>{story.progress}%</span>
+                        <div className="mb-0.5 flex items-center justify-between">
+                          <span className="text-[9px] text-slate-400">Progress</span>
+                          <span className={`text-[9px] font-bold ${accent.text}`}>{story.progress}%</span>
                         </div>
-                        <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-200 dark:bg-white/10">
+                        <div className="h-1 w-full overflow-hidden rounded-full bg-slate-200 dark:bg-white/10">
                           <div className={`h-full ${accent.bar}`} style={{ width: `${story.progress}%` }} />
                         </div>
                       </div>
@@ -505,9 +494,9 @@ function MobileAuthorDashboard({
                   </Reveal>
                 );
               }) : (
-                <Reveal className="rounded-xl border border-transparent bg-slate-100 p-4 dark:border-white/10 dark:bg-white/5">
-                  <h3 className="font-bold">No stories yet</h3>
-                  <p className="mt-2 text-sm text-slate-500">
+                <Reveal className="rounded-xl border border-transparent bg-slate-100 p-3 dark:border-white/10 dark:bg-white/5">
+                  <h3 className="text-sm font-bold">No stories yet</h3>
+                  <p className="mt-1 text-xs text-slate-500">
                     Create your first story to turn on the creator production flow.
                   </p>
                 </Reveal>
@@ -515,24 +504,24 @@ function MobileAuthorDashboard({
             </div>
           </section>
 
-          <section className="p-4">
-            <h2 className="mb-4 text-sm font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">
+          <section className="px-4 py-2 pb-4">
+            <h2 className="mb-2 text-[10px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">
               Recent Activity
             </h2>
-            <div className="space-y-4">
+            <div className="space-y-2">
               {recentActivity.length ? recentActivity.map((item) => (
-                <Reveal className="flex gap-3" key={`${item.title}-${item.time}`}>
-                  <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary/20 text-primary">
-                    <span className="material-symbols-outlined">{item.icon}</span>
+                <Reveal className="flex gap-2.5" key={`${item.title}-${item.time}`}>
+                  <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary/20 text-primary">
+                    <span className="material-symbols-outlined text-sm">{item.icon}</span>
                   </div>
-                  <div className="flex-1 border-b border-slate-200 pb-4 dark:border-white/5">
-                    <p className="text-sm leading-relaxed">{item.title}</p>
-                    <p className="mt-1 text-xs text-slate-500">{item.detail}</p>
-                    <p className="mt-1 text-[10px] text-slate-500">{item.time}</p>
+                  <div className="min-w-0 flex-1 border-b border-slate-200 pb-2.5 dark:border-white/5">
+                    <p className="text-xs leading-relaxed">{item.title}</p>
+                    <p className="mt-0.5 text-[10px] text-slate-500">{item.detail}</p>
+                    <p className="mt-0.5 text-[9px] text-slate-500">{item.time}</p>
                   </div>
                 </Reveal>
               )) : (
-                <Reveal className="text-sm text-slate-500">
+                <Reveal className="text-xs text-slate-500">
                   Activity will appear here after you start drafting and publishing.
                 </Reveal>
               )}
@@ -550,8 +539,6 @@ export default function AuthorDashboardPage() {
   const { user } = useAuth();
   const {
     applicationDraft,
-    clearCreatorNotice,
-    creatorNotice,
     enterWriterMode,
     stories,
   } = useCreator();
@@ -582,8 +569,6 @@ export default function AuthorDashboardPage() {
     <>
       <DesktopAuthorDashboard
         authorName={authorName}
-        clearNotice={clearCreatorNotice}
-        notice={creatorNotice}
         quickActions={quickActions}
         recentActivity={recentActivity}
         stats={stats}
@@ -592,8 +577,6 @@ export default function AuthorDashboardPage() {
       />
       <MobileAuthorDashboard
         authorName={authorName}
-        clearNotice={clearCreatorNotice}
-        notice={creatorNotice}
         quickActions={quickActions}
         recentActivity={recentActivity}
         stats={stats}

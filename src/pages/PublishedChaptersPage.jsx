@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import AccountNotice from "../components/AccountNotice";
 import { AppDesktopSidebar, AppMobileTabBar } from "../components/AppShellNav";
 import ReaderStateScreen from "../components/ReaderStateScreen";
 import Reveal from "../components/Reveal";
@@ -22,7 +21,7 @@ function getChapterEditHref(storySlug, chapterId) {
     : getCreatorChapterEditorHref(storySlug);
 }
 
-function DesktopPublishedChapters({ clearNotice, notice, onArchive, story }) {
+function DesktopPublishedChapters({ onArchive, story }) {
   return (
     <div className="hidden min-h-screen bg-background-light font-display text-slate-900 dark:bg-background-dark dark:text-slate-100 md:block">
       <div className="flex h-screen overflow-hidden">
@@ -56,8 +55,6 @@ function DesktopPublishedChapters({ clearNotice, notice, onArchive, story }) {
           </header>
 
           <div className="flex-1 overflow-y-auto p-8">
-            <AccountNotice notice={notice} onDismiss={clearNotice} />
-
             <div className="mb-8 mt-6 flex flex-col justify-between gap-4 md:flex-row md:items-end">
               <div>
                 <nav className="mb-2 flex gap-2 text-xs font-medium uppercase tracking-wider text-primary">
@@ -150,7 +147,7 @@ function DesktopPublishedChapters({ clearNotice, notice, onArchive, story }) {
   );
 }
 
-function MobilePublishedChapters({ clearNotice, notice, onArchive, story }) {
+function MobilePublishedChapters({ onArchive, story }) {
   return (
     <div className="min-h-screen bg-background-light font-display text-slate-900 dark:bg-background-dark dark:text-slate-100 md:hidden">
       <header className="sticky top-0 z-10 border-b border-primary/10 bg-background-light px-4 py-4 dark:bg-background-dark">
@@ -189,8 +186,6 @@ function MobilePublishedChapters({ clearNotice, notice, onArchive, story }) {
       </header>
 
       <main className="space-y-3 p-4 pb-28">
-        <AccountNotice notice={notice} onDismiss={clearNotice} />
-
         <div className="mb-2 flex items-center justify-between">
           <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-500">Published ({story.publishedChapters.length})</h3>
           <span className="material-symbols-outlined text-sm text-slate-500">filter_list</span>
@@ -245,8 +240,6 @@ export default function PublishedChaptersPage() {
   const navigate = useNavigate();
   const { storySlug } = useParams();
   const {
-    clearCreatorNotice,
-    creatorNotice,
     enterWriterMode,
     getStory,
     isStudioLoading,
@@ -289,8 +282,8 @@ export default function PublishedChaptersPage() {
 
   return (
     <>
-      <DesktopPublishedChapters clearNotice={clearCreatorNotice} notice={creatorNotice} onArchive={handleArchive} story={story} />
-      <MobilePublishedChapters clearNotice={clearCreatorNotice} notice={creatorNotice} onArchive={handleArchive} story={story} />
+      <DesktopPublishedChapters onArchive={handleArchive} story={story} />
+      <MobilePublishedChapters onArchive={handleArchive} story={story} />
     </>
   );
 }

@@ -1,6 +1,5 @@
 import { useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import AccountNotice from "../components/AccountNotice";
 import { useAccount } from "../context/AccountContext";
 import {
   helpHref,
@@ -37,11 +36,9 @@ function CodeInputs({ digits, inputRefs, onChange, onKeyDown }) {
 
 function DesktopSetup({
   allDigitsFilled,
-  clearNotice,
   digits,
   inputRefs,
   mfa,
-  notice,
   onChange,
   onComplete,
   onCopySecret,
@@ -82,8 +79,6 @@ function DesktopSetup({
 
         <main className="flex flex-1 justify-center px-6 py-10">
           <div className="flex w-full max-w-[520px] flex-col gap-8">
-            <AccountNotice notice={notice} onDismiss={clearNotice} />
-
             <div className="flex flex-col gap-2 text-center">
               <h1 className="text-3xl font-black tracking-tight lg:text-4xl">
                 {usingSms ? "Verify Phone Protection" : "Setup Authenticator"}
@@ -201,11 +196,9 @@ function DesktopSetup({
 
 function MobileSetup({
   allDigitsFilled,
-  clearNotice,
   digits,
   inputRefs,
   mfa,
-  notice,
   onChange,
   onComplete,
   onCopySecret,
@@ -237,8 +230,6 @@ function MobileSetup({
             Protect your account with a secondary layer of security.
           </p>
         </div>
-
-        <AccountNotice notice={notice} onDismiss={clearNotice} />
 
         <section className="mb-10 mt-6">
           <div className="mb-4 flex items-center gap-3">
@@ -347,7 +338,7 @@ export default function MfaSetupPage() {
   const desktopInputRefs = useRef([]);
   const mobileInputRefs = useRef([]);
   const [digits, setDigits] = useState(["", "", "", "", "", ""]);
-  const { clearNotice, completeMfaSetup, copyValue, mfa, notice } = useAccount();
+  const { completeMfaSetup, copyValue, mfa } = useAccount();
 
   function handleDigitChange(refs, index, value) {
     const nextValue = value.replace(/\D/g, "").slice(-1);
@@ -380,11 +371,9 @@ export default function MfaSetupPage() {
     <>
       <DesktopSetup
         allDigitsFilled={allDigitsFilled}
-        clearNotice={clearNotice}
         digits={digits}
         inputRefs={desktopInputRefs}
         mfa={mfa}
-        notice={notice}
         onChange={(index, value) => handleDigitChange(desktopInputRefs, index, value)}
         onComplete={handleComplete}
         onCopySecret={() => copyValue("Setup code", mfa.secret)}
@@ -392,11 +381,9 @@ export default function MfaSetupPage() {
       />
       <MobileSetup
         allDigitsFilled={allDigitsFilled}
-        clearNotice={clearNotice}
         digits={digits}
         inputRefs={mobileInputRefs}
         mfa={mfa}
-        notice={notice}
         onChange={(index, value) => handleDigitChange(mobileInputRefs, index, value)}
         onComplete={handleComplete}
         onCopySecret={() => copyValue("Setup code", mfa.secret)}

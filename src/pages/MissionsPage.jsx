@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import AccountNotice from "../components/AccountNotice";
 import Reveal from "../components/Reveal";
 import UserAvatar from "../components/UserAvatar";
 import { useAccount } from "../context/AccountContext";
@@ -29,9 +28,7 @@ function getMissionStatus(mission, claimedMissionIds, rewards) {
 
 function DesktopMissions({
   claimedMissionIds,
-  clearNotice,
   missionList,
-  notice,
   onClaim,
   points,
   rewards,
@@ -73,8 +70,6 @@ function DesktopMissions({
         </header>
 
         <main className="mx-auto flex w-full max-w-[1200px] flex-1 flex-col gap-8 p-4 lg:p-8">
-          <AccountNotice notice={notice} onDismiss={clearNotice} />
-
           <section className="grid grid-cols-1 gap-6 lg:grid-cols-4">
             <aside className="flex flex-col gap-2 lg:col-span-1">
               <nav className="flex flex-col gap-1">
@@ -265,9 +260,7 @@ function DesktopMissions({
 
 function MobileMissions({
   claimedMissionIds,
-  clearNotice,
   missionList,
-  notice,
   onClaim,
   points,
   rewards,
@@ -310,8 +303,6 @@ function MobileMissions({
       </header>
 
       <main className="flex-1 space-y-6 overflow-y-auto p-4 pb-24">
-        <AccountNotice notice={notice} onDismiss={clearNotice} />
-
         <section>
           <div className="relative mb-4 aspect-[16/7] overflow-hidden rounded-xl border border-slate-800 bg-slate-900 p-4">
             <div
@@ -462,9 +453,7 @@ export default function MissionsPage() {
   const {
     claimMission,
     claimedMissionIds,
-    clearNotice,
     missions,
-    notice,
     rewards,
   } = useAccount();
 
@@ -472,18 +461,14 @@ export default function MissionsPage() {
     <>
       <DesktopMissions
         claimedMissionIds={claimedMissionIds}
-        clearNotice={clearNotice}
         missionList={missions}
-        notice={notice}
         onClaim={claimMission}
         points={rewards.points}
         rewards={rewards}
       />
       <MobileMissions
         claimedMissionIds={claimedMissionIds}
-        clearNotice={clearNotice}
         missionList={missions}
-        notice={notice}
         onClaim={claimMission}
         points={rewards.points}
         rewards={rewards}

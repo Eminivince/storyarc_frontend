@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import AccountNotice from "../components/AccountNotice";
 import { AppDesktopSidebar, AppMobileTabBar } from "../components/AppShellNav";
 import ReaderStateScreen from "../components/ReaderStateScreen";
 import Reveal from "../components/Reveal";
@@ -22,7 +21,7 @@ function getChapterEditHref(storySlug, chapterId) {
     : getCreatorChapterEditorHref(storySlug);
 }
 
-function DesktopScheduledChapters({ clearNotice, notice, onReschedule, story }) {
+function DesktopScheduledChapters({ onReschedule, story }) {
   return (
     <div className="hidden min-h-screen bg-background-light font-display text-slate-900 dark:bg-background-dark dark:text-slate-100 md:block">
       <div className="flex h-screen overflow-hidden">
@@ -50,8 +49,6 @@ function DesktopScheduledChapters({ clearNotice, notice, onReschedule, story }) 
           </header>
 
           <div className="flex-1 overflow-y-auto p-8">
-            <AccountNotice notice={notice} onDismiss={clearNotice} />
-
             <div className="mb-8 mt-6 flex flex-col justify-between gap-6 md:flex-row md:items-end">
               <div>
                 <h1 className="mb-2 text-4xl font-black tracking-tight">Queue Management</h1>
@@ -148,7 +145,7 @@ function DesktopScheduledChapters({ clearNotice, notice, onReschedule, story }) 
   );
 }
 
-function MobileScheduledChapters({ clearNotice, notice, onReschedule, story }) {
+function MobileScheduledChapters({ onReschedule, story }) {
   return (
     <div className="min-h-screen bg-background-light font-display text-slate-900 dark:bg-background-dark dark:text-slate-100 md:hidden">
       <header className="sticky top-0 z-10 border-b border-slate-200 bg-background-light/80 px-4 py-4 backdrop-blur-md dark:border-primary/20 dark:bg-background-dark/80">
@@ -182,8 +179,6 @@ function MobileScheduledChapters({ clearNotice, notice, onReschedule, story }) {
       </nav>
 
       <main className="space-y-4 p-4 pb-32">
-        <AccountNotice notice={notice} onDismiss={clearNotice} />
-
         {story.scheduledChapters.map((chapter) => (
           <Reveal className="flex gap-4 rounded-xl border border-slate-200 bg-white p-4 dark:border-primary/10 dark:bg-primary/5" key={chapter.id}>
             <div className="h-20 w-20 shrink-0 rounded-lg bg-cover bg-center" style={{ backgroundImage: `url("${chapter.coverImage}")` }} />
@@ -253,8 +248,6 @@ export default function ScheduledChaptersPage() {
   const navigate = useNavigate();
   const { storySlug } = useParams();
   const {
-    clearCreatorNotice,
-    creatorNotice,
     enterWriterMode,
     getStory,
     isStudioLoading,
@@ -297,8 +290,8 @@ export default function ScheduledChaptersPage() {
 
   return (
     <>
-      <DesktopScheduledChapters clearNotice={clearCreatorNotice} notice={creatorNotice} onReschedule={handleReschedule} story={story} />
-      <MobileScheduledChapters clearNotice={clearCreatorNotice} notice={creatorNotice} onReschedule={handleReschedule} story={story} />
+      <DesktopScheduledChapters onReschedule={handleReschedule} story={story} />
+      <MobileScheduledChapters onReschedule={handleReschedule} story={story} />
     </>
   );
 }

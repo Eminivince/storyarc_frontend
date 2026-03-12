@@ -24,8 +24,6 @@ function getToneClasses(tone) {
 
 export default function AdminDashboardPage() {
   const {
-    adminNotice,
-    clearAdminNotice,
     financialHealth,
     overviewStats,
     recentReports,
@@ -50,8 +48,6 @@ export default function AdminDashboardPage() {
           </Link>
         </>
       }
-      notice={adminNotice}
-      onDismissNotice={clearAdminNotice}
       subtitle="Track platform health, queue pressure, revenue posture, and the highest-priority admin actions from one command center."
       title="Admin Dashboard"
     >

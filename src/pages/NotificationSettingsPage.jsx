@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import AccountNotice from "../components/AccountNotice";
 import { AppDesktopSidebar, AppMobileTabBar } from "../components/AppShellNav";
 import Reveal from "../components/Reveal";
 import { useAccount } from "../context/AccountContext";
@@ -121,9 +120,7 @@ function NotificationInbox({
 }
 
 function DesktopNotifications({
-  clearNotice,
   draft,
-  notice,
   notificationFeed,
   onMarkAllRead,
   onMarkRead,
@@ -184,8 +181,6 @@ function DesktopNotifications({
                   notifications from StoryArc.
                 </p>
               </div>
-
-              <AccountNotice notice={notice} onDismiss={clearNotice} />
 
               <div className="flex border-b border-primary/10">
                 {accountSettingsTabs.map((tab) => (
@@ -251,9 +246,7 @@ function DesktopNotifications({
 }
 
 function MobileNotifications({
-  clearNotice,
   draft,
-  notice,
   notificationFeed,
   onMarkAllRead,
   onMarkRead,
@@ -294,9 +287,6 @@ function MobileNotifications({
         </nav>
 
         <main className="flex-1 overflow-y-auto pb-24">
-          <div className="px-4 pt-3">
-            <AccountNotice notice={notice} onDismiss={clearNotice} />
-          </div>
           <div className="px-4 pt-3">
             <NotificationInbox
               compact
@@ -344,10 +334,8 @@ function MobileNotifications({
 
 export default function NotificationSettingsPage() {
   const {
-    clearNotice,
     markAllNotificationsRead,
     markNotificationRead,
-    notice,
     notificationFeed,
     notifications,
     unreadNotificationCount,
@@ -368,9 +356,7 @@ export default function NotificationSettingsPage() {
   return (
     <>
       <DesktopNotifications
-        clearNotice={clearNotice}
         draft={draft}
-        notice={notice}
         notificationFeed={notificationFeed}
         onMarkAllRead={markAllNotificationsRead}
         onMarkRead={markNotificationRead}
@@ -378,9 +364,7 @@ export default function NotificationSettingsPage() {
         unreadNotificationCount={unreadNotificationCount}
       />
       <MobileNotifications
-        clearNotice={clearNotice}
         draft={draft}
-        notice={notice}
         notificationFeed={notificationFeed}
         onMarkAllRead={markAllNotificationsRead}
         onMarkRead={markNotificationRead}

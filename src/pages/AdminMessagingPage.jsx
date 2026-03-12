@@ -19,8 +19,6 @@ function statusDot(status) {
 
 export default function AdminMessagingPage() {
   const {
-    adminNotice,
-    clearAdminNotice,
     conversations,
     selectedConversation,
     selectedConversationId,
@@ -73,8 +71,6 @@ export default function AdminMessagingPage() {
           Refresh Inbox
         </button>
       }
-      notice={adminNotice}
-      onDismissNotice={clearAdminNotice}
       onSearchChange={setSearchTerm}
       searchPlaceholder="Search creators, readers, support notes, or messages..."
       searchTerm={searchTerm}

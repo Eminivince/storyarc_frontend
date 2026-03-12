@@ -14,8 +14,6 @@ const trendBars = [
 
 export default function AdminMonetizationPage() {
   const {
-    adminNotice,
-    clearAdminNotice,
     monetizationStats,
     monetizationStreams,
     payoutQueue,
@@ -45,8 +43,6 @@ export default function AdminMonetizationPage() {
           </button>
         </>
       }
-      notice={adminNotice}
-      onDismissNotice={clearAdminNotice}
       subtitle="Monitor subscription momentum, coin sales, payout readiness, and the monetization mix that powers chapter unlocks."
       title="Monetization Dashboard"
     >

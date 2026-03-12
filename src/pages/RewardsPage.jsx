@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import AccountNotice from "../components/AccountNotice";
 import Reveal from "../components/Reveal";
 import UserAvatar from "../components/UserAvatar";
 import { useAccount } from "../context/AccountContext";
@@ -50,9 +49,7 @@ function RewardsCalendar({ checkedInToday, rewardCalendar }) {
 
 function DesktopRewards({
   claimedMissionIds,
-  clearNotice,
   missionList,
-  notice,
   onCheckIn,
   points,
   rewardCalendar,
@@ -92,8 +89,6 @@ function DesktopRewards({
         </header>
 
         <main className="mx-auto w-full max-w-[1200px] flex-1 px-6 py-8 lg:px-40">
-          <AccountNotice notice={notice} onDismiss={clearNotice} />
-
           <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-3">
             <div className="flex flex-col justify-center rounded-xl border border-primary/20 bg-gradient-to-br from-primary/20 to-transparent p-8 md:col-span-2">
               <h1 className="mb-2 text-3xl font-bold">Welcome back, Reader</h1>
@@ -268,9 +263,7 @@ function DesktopRewards({
 
 function MobileRewards({
   claimedMissionIds,
-  clearNotice,
   missionList,
-  notice,
   onCheckIn,
   points,
   rewardCalendar,
@@ -299,10 +292,6 @@ function MobileRewards({
         </header>
 
         <main className="flex-1 overflow-y-auto pb-24">
-          <div className="px-4 pt-4">
-            <AccountNotice notice={notice} onDismiss={clearNotice} />
-          </div>
-
           <section className="p-4">
             <div className="flex flex-col gap-2 rounded-xl border border-primary/20 bg-gradient-to-br from-primary/20 to-primary/5 p-6 shadow-lg shadow-primary/5">
               <p className="text-sm font-medium uppercase tracking-wider text-slate-400">
@@ -481,9 +470,7 @@ export default function RewardsPage() {
   const {
     claimDailyCheckIn,
     claimedMissionIds,
-    clearNotice,
     missions,
-    notice,
     rewardCalendar,
     rewards,
     streakRewards,
@@ -493,9 +480,7 @@ export default function RewardsPage() {
     <>
       <DesktopRewards
         claimedMissionIds={claimedMissionIds}
-        clearNotice={clearNotice}
         missionList={missions}
-        notice={notice}
         onCheckIn={claimDailyCheckIn}
         points={rewards.points}
         rewardCalendar={rewardCalendar}
@@ -504,9 +489,7 @@ export default function RewardsPage() {
       />
       <MobileRewards
         claimedMissionIds={claimedMissionIds}
-        clearNotice={clearNotice}
         missionList={missions}
-        notice={notice}
         onCheckIn={claimDailyCheckIn}
         points={rewards.points}
         rewardCalendar={rewardCalendar}

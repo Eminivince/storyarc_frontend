@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import AccountNotice from "../components/AccountNotice";
 import { AppDesktopSidebar, AppMobileTabBar } from "../components/AppShellNav";
 import Reveal from "../components/Reveal";
 import { useCreator } from "../context/CreatorContext";
@@ -22,11 +21,9 @@ function updateTags(tags, tag) {
 }
 
 function DesktopCreateStory({
-  clearNotice,
   form,
   isCreating,
   isUploadingCover,
-  notice,
   onAudienceChange,
   onChange,
   onCoverChange,
@@ -41,9 +38,15 @@ function DesktopCreateStory({
         <main className="flex-1 overflow-y-auto bg-white/50 dark:bg-black/20">
           <header className="sticky top-0 z-10 flex items-center justify-between border-b border-primary/10 bg-background-light/80 px-8 py-4 backdrop-blur-md dark:bg-background-dark/80">
             <div className="flex items-center gap-2 text-sm">
-              <span className="text-slate-500 dark:text-slate-400">My Stories</span>
-              <span className="material-symbols-outlined text-xs">chevron_right</span>
-              <span className="font-semibold text-primary">Create New Story</span>
+              <span className="text-slate-500 dark:text-slate-400">
+                My Stories
+              </span>
+              <span className="material-symbols-outlined text-xs">
+                chevron_right
+              </span>
+              <span className="font-semibold text-primary">
+                Create New Story
+              </span>
             </div>
             <div className="flex items-center gap-4">
               <label className="relative hidden lg:block">
@@ -56,7 +59,9 @@ function DesktopCreateStory({
                   type="text"
                 />
               </label>
-              <button className="relative p-2 text-slate-500 transition-colors hover:text-primary dark:text-slate-400" type="button">
+              <button
+                className="relative p-2 text-slate-500 transition-colors hover:text-primary dark:text-slate-400"
+                type="button">
                 <span className="material-symbols-outlined">notifications</span>
                 <span className="absolute right-2 top-2 size-2 rounded-full bg-primary" />
               </button>
@@ -64,13 +69,14 @@ function DesktopCreateStory({
           </header>
 
           <div className="mx-auto max-w-5xl px-8 py-10">
-            <AccountNotice notice={notice} onDismiss={clearNotice} />
-
             <div className="mb-8 mt-6">
-              <h2 className="text-3xl font-extrabold tracking-tight">Create New Story</h2>
+              <h2 className="text-3xl font-extrabold tracking-tight">
+                Create New Story
+              </h2>
               <p className="mt-2 max-w-2xl text-slate-600 dark:text-slate-400">
-                Embark on a new literary journey. Fill out the details below to set up your serial profile and
-                move directly into chapter production.
+                Embark on a new literary journey. Fill out the details below to
+                set up your serial profile and move directly into chapter
+                production.
               </p>
             </div>
 
@@ -96,10 +102,14 @@ function DesktopCreateStory({
                     ) : null}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
                     <div className="relative flex h-full flex-col items-center justify-center gap-4 p-6 text-center">
-                      <span className="material-symbols-outlined text-4xl text-primary/70">add_photo_alternate</span>
+                      <span className="material-symbols-outlined text-4xl text-primary/70">
+                        add_photo_alternate
+                      </span>
                       <div>
                         <p className="text-sm font-medium">
-                          {isUploadingCover ? "Uploading cover..." : "Upload Portrait Cover"}
+                          {isUploadingCover
+                            ? "Uploading cover..."
+                            : "Upload Portrait Cover"}
                         </p>
                         <p className="mt-2 text-xs text-slate-500 dark:text-slate-300">
                           Recommended: 600x900px
@@ -111,8 +121,12 @@ function DesktopCreateStory({
                   </label>
                   <div className="mt-4 space-y-3">
                     {createStoryCallouts.map((item) => (
-                      <div className="flex items-start gap-2 text-xs text-slate-500 dark:text-slate-400" key={item}>
-                        <span className="material-symbols-outlined text-sm text-primary">info</span>
+                      <div
+                        className="flex items-start gap-2 text-xs text-slate-500 dark:text-slate-400"
+                        key={item}>
+                        <span className="material-symbols-outlined text-sm text-primary">
+                          info
+                        </span>
                         <p>{item}</p>
                       </div>
                     ))}
@@ -123,7 +137,9 @@ function DesktopCreateStory({
               <div className="space-y-8 lg:col-span-2">
                 <Reveal className="space-y-6 rounded-xl border border-primary/5 bg-slate-50 p-6 dark:bg-slate-900/40">
                   <div>
-                    <label className="mb-2 block text-base font-semibold text-slate-700 dark:text-slate-300" htmlFor="story-title">
+                    <label
+                      className="mb-2 block text-base font-semibold text-slate-700 dark:text-slate-300"
+                      htmlFor="story-title">
                       Story Title
                     </label>
                     <input
@@ -138,7 +154,9 @@ function DesktopCreateStory({
                   </div>
 
                   <div>
-                    <label className="mb-2 block text-base font-semibold text-slate-700 dark:text-slate-300" htmlFor="story-synopsis">
+                    <label
+                      className="mb-2 block text-base font-semibold text-slate-700 dark:text-slate-300"
+                      htmlFor="story-synopsis">
                       Synopsis / Description
                     </label>
                     <textarea
@@ -150,12 +168,16 @@ function DesktopCreateStory({
                       rows="6"
                       value={form.synopsis}
                     />
-                    <p className="mt-1 text-right text-xs text-slate-500">{form.synopsis.length} / 2000 characters</p>
+                    <p className="mt-1 text-right text-xs text-slate-500">
+                      {form.synopsis.length} / 2000 characters
+                    </p>
                   </div>
 
                   <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                     <div>
-                      <label className="mb-2 block text-base font-semibold text-slate-700 dark:text-slate-300" htmlFor="story-genre">
+                      <label
+                        className="mb-2 block text-base font-semibold text-slate-700 dark:text-slate-300"
+                        htmlFor="story-genre">
                         Primary Genre
                       </label>
                       <div className="relative">
@@ -164,8 +186,7 @@ function DesktopCreateStory({
                           id="story-genre"
                           name="genre"
                           onChange={onChange}
-                          value={form.genre}
-                        >
+                          value={form.genre}>
                           <option value="">Select Genre</option>
                           {storyGenreOptions.map((genre) => (
                             <option key={genre} value={genre}>
@@ -196,8 +217,7 @@ function DesktopCreateStory({
                               }`}
                               key={option}
                               onClick={() => onAudienceChange(option)}
-                              type="button"
-                            >
+                              type="button">
                               {option}
                             </button>
                           );
@@ -216,10 +236,11 @@ function DesktopCreateStory({
                           className="inline-flex items-center gap-1 rounded-full bg-primary/20 px-3 py-1 text-xs font-bold text-primary"
                           key={tag}
                           onClick={() => onTagToggle(tag)}
-                          type="button"
-                        >
+                          type="button">
                           {tag}
-                          <span className="material-symbols-outlined text-[14px]">close</span>
+                          <span className="material-symbols-outlined text-[14px]">
+                            close
+                          </span>
                         </button>
                       ))}
                     </div>
@@ -236,8 +257,7 @@ function DesktopCreateStory({
                             }`}
                             key={tag}
                             onClick={() => onTagToggle(tag)}
-                            type="button"
-                          >
+                            type="button">
                             {tag}
                           </button>
                         );
@@ -256,34 +276,31 @@ function DesktopCreateStory({
                       onChange={onChange}
                       type="checkbox"
                     />
-                    <label className="text-sm text-slate-600 dark:text-slate-400" htmlFor="story-terms">
-                      I confirm that I own the rights to this story and agree to StoryArc&apos;s{" "}
+                    <label
+                      className="text-sm text-slate-600 dark:text-slate-400"
+                      htmlFor="story-terms">
+                      I confirm that I own the rights to this story and agree to
+                      StoryArc&apos;s{" "}
                       <Link
                         className="text-primary hover:underline"
                         onClick={(event) => event.stopPropagation()}
-                        to="/terms"
-                      >
+                        to="/terms">
                         Terms of Service
                       </Link>
                       .
                     </label>
                   </div>
 
-                  <div className="flex items-center gap-4 pt-4">
+                  <div className="flex justify-center pt-4">
                     <button
-                      className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-primary py-4 font-black uppercase tracking-wider text-background-dark transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/20"
+                      className="flex items-center justify-center gap-2 rounded-lg bg-primary px-12 py-4 font-black uppercase tracking-wider text-background-dark transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/20"
                       onClick={onSubmit}
-                      type="button"
-                    >
-                      <span className="material-symbols-outlined font-bold">auto_awesome</span>
+                      type="button">
+                      <span className="material-symbols-outlined font-bold">
+                        auto_awesome
+                      </span>
                       {isCreating ? "Creating..." : "Create Story"}
                     </button>
-                    <Link
-                      className="rounded-lg border border-slate-300 px-8 py-4 font-bold transition-all hover:bg-slate-100 dark:border-slate-700 dark:hover:bg-slate-800"
-                      to={authorDashboardHref}
-                    >
-                      Cancel
-                    </Link>
                   </div>
                 </section>
               </div>
@@ -296,11 +313,9 @@ function DesktopCreateStory({
 }
 
 function MobileCreateStory({
-  clearNotice,
   form,
   isCreating,
   isUploadingCover,
-  notice,
   onAudienceChange,
   onChange,
   onCoverChange,
@@ -309,26 +324,30 @@ function MobileCreateStory({
 }) {
   return (
     <div className="min-h-screen bg-background-light font-display text-slate-900 dark:bg-background-dark dark:text-slate-100 md:hidden">
-      <header className="sticky top-0 z-50 flex items-center justify-between border-b border-slate-200 bg-background-light p-4 dark:border-primary/20 dark:bg-background-dark">
-        <div className="flex items-center gap-3">
-          <Link className="material-symbols-outlined text-slate-900 dark:text-slate-100" to={authorDashboardHref}>
-            arrow_back
+      <header className="sticky top-0 z-50 flex items-center justify-between border-b border-slate-200 bg-background-light px-4 py-3 dark:border-primary/20 dark:bg-background-dark">
+        <div className="flex items-center gap-2">
+          <Link
+            className="flex size-9 items-center justify-center rounded-lg text-slate-900 transition-colors hover:bg-slate-200 dark:text-slate-100 dark:hover:bg-primary/20"
+            to={authorDashboardHref}>
+            <span className="material-symbols-outlined text-xl">
+              arrow_back
+            </span>
           </Link>
-          <h2 className="text-primary text-xl font-bold tracking-tight">StoryArc</h2>
+          <h2 className="text-base font-bold tracking-tight text-primary">
+            StoryArc
+          </h2>
         </div>
-        <div className="flex size-10 items-center justify-center rounded-full bg-primary/10 text-primary">
-          <span className="material-symbols-outlined">person</span>
+        <div className="flex size-9 items-center justify-center rounded-full bg-primary/10 text-primary">
+          <span className="material-symbols-outlined text-lg">person</span>
         </div>
       </header>
 
-      <main className="space-y-8 px-4 py-6 pb-36">
-        <AccountNotice notice={notice} onDismiss={clearNotice} />
+      <main className="space-y-5 px-4 py-4 pb-24">
+        <h1 className="text-xl font-bold tracking-tight">Create New Story</h1>
 
-        <h1 className="text-3xl font-bold tracking-tight">Create New Story</h1>
-
-        <section className="space-y-3">
-          <h3 className="text-lg font-semibold">Story Cover</h3>
-          <label className="relative mx-auto block aspect-[3/4] w-full max-w-[280px] cursor-pointer overflow-hidden rounded-xl border-2 border-dashed border-slate-300 bg-slate-100 dark:border-primary/30 dark:bg-primary/5">
+        <section className="space-y-2">
+          <h3 className="text-sm font-semibold">Story Cover</h3>
+          <label className="relative mx-auto block aspect-[3/4] w-full max-w-[200px] cursor-pointer overflow-hidden rounded-xl border-2 border-dashed border-slate-300 bg-slate-100 dark:border-primary/30 dark:bg-primary/5">
             <input
               accept="image/png,image/jpeg,image/webp,image/gif"
               className="sr-only"
@@ -342,23 +361,29 @@ function MobileCreateStory({
                 src={form.coverImage}
               />
             ) : null}
-            <div className="relative z-10 flex h-full flex-col items-center justify-center p-6 text-center">
-              <span className="material-symbols-outlined mb-2 text-4xl text-primary">add_a_photo</span>
-              <p className="text-sm font-medium text-slate-600 dark:text-slate-400">
-                {isUploadingCover ? "Uploading cover..." : "Tap to upload cover image"}
+            <div className="relative z-10 flex h-full flex-col items-center justify-center p-4 text-center">
+              <span className="material-symbols-outlined mb-1 text-3xl text-primary">
+                add_a_photo
+              </span>
+              <p className="text-xs font-medium text-slate-600 dark:text-slate-400">
+                {isUploadingCover ? "Uploading..." : "Tap to upload"}
               </p>
-              <p className="mt-1 text-xs text-slate-500 dark:text-slate-500">Recommended: 600x800px</p>
+              <p className="mt-0.5 text-[10px] text-slate-500 dark:text-slate-500">
+                600×800px
+              </p>
             </div>
           </label>
         </section>
 
-        <section className="space-y-6">
-          <div className="space-y-2">
-            <label className="text-base font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400" htmlFor="mobile-story-title">
+        <section className="space-y-4">
+          <div className="space-y-1.5">
+            <label
+              className="text-[10px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400"
+              htmlFor="mobile-story-title">
               Story Title
             </label>
             <input
-              className="w-full rounded-lg border border-slate-200 bg-slate-100 px-4 py-3 text-base outline-none transition-all placeholder:text-slate-400 focus:border-transparent focus:ring-2 focus:ring-primary dark:border-primary/20 dark:bg-primary/5 dark:placeholder:text-slate-600"
+              className="w-full rounded-lg border border-slate-200 bg-slate-100 px-3 py-2.5 text-base outline-none transition-all placeholder:text-slate-400 focus:border-transparent focus:ring-2 focus:ring-primary dark:border-primary/20 dark:bg-primary/5 dark:placeholder:text-slate-600"
               id="mobile-story-title"
               name="title"
               onChange={onChange}
@@ -368,32 +393,35 @@ function MobileCreateStory({
             />
           </div>
 
-          <div className="space-y-2">
-            <label className="text-base font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400" htmlFor="mobile-story-synopsis">
+          <div className="space-y-1.5">
+            <label
+              className="text-[10px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400"
+              htmlFor="mobile-story-synopsis">
               Synopsis / Description
             </label>
             <textarea
-              className="w-full resize-none rounded-lg border border-slate-200 bg-slate-100 px-4 py-3 text-base outline-none transition-all placeholder:text-slate-400 focus:border-transparent focus:ring-2 focus:ring-primary dark:border-primary/20 dark:bg-primary/5 dark:placeholder:text-slate-600"
+              className="w-full resize-none rounded-lg border border-slate-200 bg-slate-100 px-3 py-2.5 text-base outline-none transition-all placeholder:text-slate-400 focus:border-transparent focus:ring-2 focus:ring-primary dark:border-primary/20 dark:bg-primary/5 dark:placeholder:text-slate-600"
               id="mobile-story-synopsis"
               name="synopsis"
               onChange={onChange}
-              placeholder="Write a brief overview of your story..."
-              rows="4"
+              placeholder="Write a brief overview..."
+              rows="3"
               value={form.synopsis}
             />
           </div>
 
-          <div className="space-y-2">
-            <label className="text-base font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400" htmlFor="mobile-story-genre">
+          <div className="space-y-1.5">
+            <label
+              className="text-[10px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400"
+              htmlFor="mobile-story-genre">
               Primary Genre
             </label>
             <select
-              className="w-full appearance-none rounded-lg border border-slate-200 bg-slate-100 px-4 py-3 text-base outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-primary dark:border-primary/20 dark:bg-primary/5"
+              className="w-full appearance-none rounded-lg border border-slate-200 bg-slate-100 px-3 py-2.5 text-base outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-primary dark:border-primary/20 dark:bg-primary/5"
               id="mobile-story-genre"
               name="genre"
               onChange={onChange}
-              value={form.genre}
-            >
+              value={form.genre}>
               <option value="">Select a genre</option>
               {storyGenreOptions.map((genre) => (
                 <option key={genre} value={genre}>
@@ -403,25 +431,24 @@ function MobileCreateStory({
             </select>
           </div>
 
-          <div className="space-y-2">
-            <label className="text-base font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+          <div className="space-y-1.5">
+            <label className="text-[10px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
               Target Audience
             </label>
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-2 gap-1.5">
               {storyAudienceOptions.map((option) => {
                 const isActive = form.audience === option;
 
                 return (
                   <button
-                    className={`rounded-lg border px-4 py-2 text-sm font-medium ${
+                    className={`rounded-lg border px-3 py-2 text-xs font-medium ${
                       isActive
                         ? "border-primary bg-primary/10 text-primary"
                         : "border-slate-200 text-slate-600 dark:border-primary/20 dark:text-slate-400"
                     }`}
                     key={option}
                     onClick={() => onAudienceChange(option)}
-                    type="button"
-                  >
+                    type="button">
                     {option}
                   </button>
                 );
@@ -429,38 +456,38 @@ function MobileCreateStory({
             </div>
           </div>
 
-          <div className="space-y-2">
-            <label className="text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+          <div className="space-y-1.5">
+            <label className="text-[10px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
               Tags
             </label>
-            <div className="mb-2 flex flex-wrap gap-2">
+            <div className="mb-1.5 flex flex-wrap gap-1.5">
               {form.tags.map((tag) => (
                 <button
-                  className="inline-flex items-center gap-1 rounded-full bg-primary px-3 py-1 text-xs font-bold text-slate-900"
+                  className="inline-flex items-center gap-0.5 rounded-full bg-primary px-2.5 py-0.5 text-[10px] font-bold text-slate-900"
                   key={tag}
                   onClick={() => onTagToggle(tag)}
-                  type="button"
-                >
+                  type="button">
                   {tag}
-                  <span className="material-symbols-outlined text-xs">close</span>
+                  <span className="material-symbols-outlined text-xs">
+                    close
+                  </span>
                 </button>
               ))}
             </div>
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-1.5">
               {storyTagSuggestions.map((tag) => {
                 const isActive = form.tags.includes(tag);
 
                 return (
                   <button
-                    className={`rounded-full border px-3 py-1 text-xs font-bold ${
+                    className={`rounded-full border px-2.5 py-0.5 text-[10px] font-bold ${
                       isActive
                         ? "border-primary bg-primary/10 text-primary"
                         : "border-slate-200 text-slate-500 dark:border-primary/20 dark:text-slate-400"
                     }`}
                     key={tag}
                     onClick={() => onTagToggle(tag)}
-                    type="button"
-                  >
+                    type="button">
                     {tag}
                   </button>
                 );
@@ -468,49 +495,45 @@ function MobileCreateStory({
             </div>
           </div>
 
-          <div className="flex items-start gap-3 pt-2">
+          <div className="flex items-start gap-2 pt-1">
             <input
               checked={form.termsAccepted}
-              className="mt-1 size-5 rounded border-slate-300 bg-transparent text-primary focus:ring-primary"
+              className="mt-0.5 size-4 rounded border-slate-300 bg-transparent text-primary focus:ring-primary"
               id="mobile-story-terms"
               name="termsAccepted"
               onChange={onChange}
               type="checkbox"
             />
-            <label className="text-sm text-slate-600 dark:text-slate-400" htmlFor="mobile-story-terms">
+            <label
+              className="text-xs text-slate-600 dark:text-slate-400"
+              htmlFor="mobile-story-terms">
               I agree to the{" "}
               <Link
                 className="text-primary hover:underline"
                 onClick={(event) => event.stopPropagation()}
-                to="/terms"
-              >
+                to="/terms">
                 Terms of Service
               </Link>{" "}
-              and confirm that I own all rights to this content.
+              and confirm I own all rights to this content.
             </label>
+          </div>
+
+          <div className="pt-6">
+            <button
+              className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-3 text-sm font-bold text-slate-900 shadow-lg shadow-primary/20 transition-all disabled:cursor-not-allowed disabled:opacity-60"
+              disabled={isCreating}
+              onClick={onSubmit}
+              type="button">
+              <span className="material-symbols-outlined text-lg">
+                auto_stories
+              </span>
+              {isCreating ? "Creating..." : "Create Story"}
+            </button>
           </div>
         </section>
       </main>
 
-      <div className="fixed bottom-0 left-0 right-0 border-t border-slate-200 bg-background-light p-4 dark:border-primary/20 dark:bg-background-dark">
-        <div className="flex flex-col gap-3">
-          <button
-            className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-4 font-bold text-slate-900 shadow-lg shadow-primary/20 transition-all"
-            onClick={onSubmit}
-            type="button"
-          >
-            <span className="material-symbols-outlined">auto_stories</span>
-            {isCreating ? "Creating..." : "Create Story"}
-          </button>
-          <Link
-            className="w-full rounded-xl bg-transparent py-3 text-center font-medium text-slate-600 transition-all hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-primary/10"
-            to={authorDashboardHref}
-          >
-            Cancel
-          </Link>
-        </div>
-      </div>
-      <AppMobileTabBar className="bottom-[124px]" mode="creator" />
+      <AppMobileTabBar mode="creator" />
     </div>
   );
 }
@@ -518,9 +541,7 @@ function MobileCreateStory({
 export default function CreateStoryPage() {
   const navigate = useNavigate();
   const {
-    clearCreatorNotice,
     createStory,
-    creatorNotice,
     enterWriterMode,
     isSavingStory,
     isUploadingStoryCover,
@@ -584,11 +605,9 @@ export default function CreateStoryPage() {
   return (
     <>
       <DesktopCreateStory
-        clearNotice={clearCreatorNotice}
         form={storyDraft}
         isCreating={isSavingStory}
         isUploadingCover={isUploadingStoryCover}
-        notice={creatorNotice}
         onAudienceChange={handleAudienceChange}
         onChange={handleChange}
         onCoverChange={handleCoverChange}
@@ -596,11 +615,9 @@ export default function CreateStoryPage() {
         onTagToggle={handleTagToggle}
       />
       <MobileCreateStory
-        clearNotice={clearCreatorNotice}
         form={storyDraft}
         isCreating={isSavingStory}
         isUploadingCover={isUploadingStoryCover}
-        notice={creatorNotice}
         onAudienceChange={handleAudienceChange}
         onChange={handleChange}
         onCoverChange={handleCoverChange}

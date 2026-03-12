@@ -51,7 +51,7 @@ export default function AdminCreateContractTemplatePage() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { templateId } = useParams();
-  const { adminNotice, clearAdminNotice, showAdminNotice } = useAdmin();
+  const { showAdminNotice } = useAdmin();
   const [form, setForm] = useState(createEmptyContractTemplateDraft);
   const isEditing = Boolean(templateId);
 
@@ -216,8 +216,6 @@ export default function AdminCreateContractTemplatePage() {
           </button>
         </>
       }
-      notice={adminNotice}
-      onDismissNotice={clearAdminNotice}
       subtitle="Define reusable agreement terms for creator contracts, including financial structure, editable company details, and the template body admins will start from."
       title={isEditing ? "Edit Contract Template" : "Create Contract Template"}
     >

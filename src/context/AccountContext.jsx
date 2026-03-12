@@ -22,6 +22,7 @@ import {
   streakRewards as initialStreakRewards,
 } from "../data/accountFlow";
 import { useAuth } from "./AuthContext";
+import { useToast } from "./ToastContext";
 
 const AccountContext = createContext(null);
 const defaultProfile = {
@@ -111,7 +112,7 @@ export function AccountProvider({ children }) {
   const { updateCurrentUser, user } = useAuth();
   const [profile, setProfile] = useState(() => buildProfileState(null, null));
   const [mfa, setMfa] = useState(initialMfa);
-  const [notice, setNotice] = useState(null);
+  const { showToast } = useToast();
   const engagementQueryKey = ["engagement", "overview", user?.id ?? "guest"];
   const engagementQuery = useQuery({
     queryKey: engagementQueryKey,
@@ -178,15 +179,8 @@ export function AccountProvider({ children }) {
   const rewardCalendar = overview?.rewardCalendar ?? initialRewardCalendar;
   const streakRewards = overview?.streakRewards ?? initialStreakRewards;
 
-  function clearNotice() {
-    setNotice(null);
-  }
-
   function showNotice(message, tone = "success") {
-    setNotice({
-      tone,
-      message,
-    });
+    showToast(message, { tone });
   }
 
   function replaceOverview(nextOverview) {
@@ -385,7 +379,6 @@ export function AccountProvider({ children }) {
     claimDailyCheckIn,
     claimMission,
     claimedMissionIds,
-    clearNotice,
     completeMfaSetup,
     copyValue,
     currentReading,
@@ -396,7 +389,6 @@ export function AccountProvider({ children }) {
     markNotificationRead,
     mfa,
     missions,
-    notice,
     notificationFeed,
     notifications,
     profile,

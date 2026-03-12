@@ -24,8 +24,6 @@ export default function AdminUserDetailsPage() {
   const navigate = useNavigate();
   const { userId = "" } = useParams();
   const {
-    adminNotice,
-    clearAdminNotice,
     deleteUser,
     getUser,
     loadUserDetails,
@@ -112,8 +110,6 @@ export default function AdminUserDetailsPage() {
           </Link>
         </>
       }
-      notice={adminNotice}
-      onDismissNotice={clearAdminNotice}
       subtitle="Review identity, permissions, account history, and moderation context before taking irreversible actions."
       title="User Details"
     >

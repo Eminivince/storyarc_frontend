@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import AccountNotice from "../components/AccountNotice";
 import { AppDesktopSidebar, AppMobileTabBar } from "../components/AppShellNav";
 import ReaderStateScreen from "../components/ReaderStateScreen";
 import Reveal from "../components/Reveal";
@@ -57,7 +56,7 @@ function getQuickManagementCards(storySlug) {
   ];
 }
 
-function DesktopStoryManagement({ clearNotice, notice, onPreview, story }) {
+function DesktopStoryManagement({ onPreview, story }) {
   const { user } = useAuth();
   const cards = getQuickManagementCards(story.slug);
 
@@ -104,7 +103,6 @@ function DesktopStoryManagement({ clearNotice, notice, onPreview, story }) {
           </header>
 
           <div className="space-y-8 px-8 py-6">
-            <AccountNotice notice={notice} onDismiss={clearNotice} />
 
             <section className="group relative overflow-hidden rounded-3xl border border-primary/10 bg-slate-100 dark:bg-[#2d281a]">
               <div className="absolute inset-0 opacity-10 transition-opacity duration-700 group-hover:opacity-20">
@@ -280,58 +278,58 @@ function DesktopStoryManagement({ clearNotice, notice, onPreview, story }) {
   );
 }
 
-function MobileStoryManagement({ clearNotice, notice, onPreview, story }) {
+function MobileStoryManagement({ onPreview, story }) {
   return (
     <div className="min-h-screen bg-background-light font-display text-slate-900 dark:bg-background-dark dark:text-slate-100 md:hidden">
-      <header className="sticky top-0 z-10 flex items-center justify-between border-b border-primary/10 bg-background-light/80 p-4 backdrop-blur-md dark:bg-background-dark/80">
-        <Link className="flex items-center justify-center rounded-full p-2 transition-colors hover:bg-primary/10" to={authorDashboardHref}>
-          <span className="material-symbols-outlined text-slate-900 dark:text-slate-100">arrow_back</span>
+      <header className="sticky top-0 z-10 flex items-center justify-between border-b border-primary/10 bg-background-light/80 px-4 py-3 backdrop-blur-md dark:bg-background-dark/80">
+        <Link className="flex size-9 items-center justify-center rounded-lg transition-colors hover:bg-primary/10" to={authorDashboardHref}>
+          <span className="material-symbols-outlined text-xl text-slate-900 dark:text-slate-100">arrow_back</span>
         </Link>
-        <h1 className="text-lg font-bold tracking-tight">StoryArc</h1>
-        <button className="flex items-center justify-center rounded-full p-2 transition-colors hover:bg-primary/10" type="button">
-          <span className="material-symbols-outlined text-slate-900 dark:text-slate-100">more_vert</span>
+        <h1 className="text-base font-bold tracking-tight">StoryArc</h1>
+        <button className="flex size-9 items-center justify-center rounded-lg transition-colors hover:bg-primary/10" type="button">
+          <span className="material-symbols-outlined text-xl text-slate-900 dark:text-slate-100">more_vert</span>
         </button>
       </header>
 
-      <main className="flex-1 overflow-y-auto pb-28">
-        <div className="flex flex-col items-center gap-6 p-6">
-          <div className="relative aspect-[3/4] w-40 overflow-hidden rounded-xl bg-primary/20 shadow-2xl">
+      <main className="flex-1 overflow-y-auto pb-24">
+        <div className="flex flex-col items-center gap-4 px-4 py-4">
+          <div className="relative aspect-[3/4] w-32 overflow-hidden rounded-lg bg-primary/20 shadow-xl">
             <img alt={story.title} className="absolute inset-0 size-full object-cover" src={story.image} />
           </div>
           <div className="text-center">
-            <h2 className="mb-1 text-3xl font-bold tracking-tight">{story.title}</h2>
-            <p className="font-medium text-slate-600 dark:text-primary/70">Story Management Dashboard</p>
+            <h2 className="mb-0.5 text-xl font-bold tracking-tight">{story.title}</h2>
+            <p className="text-xs font-medium text-slate-600 dark:text-primary/70">Story Management</p>
           </div>
-          <div className="flex w-full max-w-md gap-3">
+          <div className="flex w-full max-w-md gap-2">
             <Link
-              className="flex-1 rounded-lg border border-primary/20 bg-slate-200 px-4 py-3 text-center text-sm font-bold transition-all hover:bg-primary/20 dark:bg-primary/10"
+              className="flex-1 rounded-lg border border-primary/20 bg-slate-200 px-3 py-2.5 text-center text-xs font-bold transition-all hover:bg-primary/20 dark:bg-primary/10"
               to={getCreatorChapterEditorHref(story.slug)}
             >
               Add New Chapter
             </Link>
             <Link
-              className="flex-1 rounded-lg bg-primary px-4 py-3 text-center text-sm font-bold text-background-dark shadow-lg shadow-primary/20"
+              className="flex-1 rounded-lg bg-primary px-3 py-2.5 text-center text-xs font-bold text-background-dark shadow-lg shadow-primary/20"
               to={getCreatorPublishedChaptersHref(story.slug)}
             >
               Manage Library
             </Link>
           </div>
-          <div className="flex w-full max-w-md gap-3">
+          <div className="flex w-full max-w-md gap-2">
             <Link
-              className="flex-1 rounded-lg border border-primary/20 bg-primary/5 px-4 py-3 text-center text-xs font-bold text-primary"
+              className="flex-1 rounded-lg border border-primary/20 bg-primary/5 px-3 py-2 text-center text-[10px] font-bold text-primary"
               to={getCreatorVolumeManagerHref(story.slug)}
             >
               Volume Planner
             </Link>
             <Link
-              className="flex-1 rounded-lg border border-primary/20 bg-primary/5 px-4 py-3 text-center text-xs font-bold text-primary"
+              className="flex-1 rounded-lg border border-primary/20 bg-primary/5 px-3 py-2 text-center text-[10px] font-bold text-primary"
               to={getCreatorScheduledChaptersHref(story.slug)}
             >
               Release Queue
             </Link>
           </div>
           <button
-            className="rounded-full border border-primary/20 bg-primary/10 px-5 py-2 text-sm font-bold text-primary"
+            className="rounded-lg border border-primary/20 bg-primary/10 px-4 py-1.5 text-xs font-bold text-primary"
             onClick={onPreview}
             type="button"
           >
@@ -340,40 +338,39 @@ function MobileStoryManagement({ clearNotice, notice, onPreview, story }) {
         </div>
 
         <div className="px-4">
-          <AccountNotice notice={notice} onDismiss={clearNotice} />
         </div>
 
-        <section className="grid grid-cols-3 gap-3 px-4 py-4">
+        <section className="grid grid-cols-3 gap-2 px-4 py-3">
           {[
             ["Reads", story.stats.reads],
             ["Stars", story.stats.stars],
             ["Reviews", story.stats.reviews],
           ].map(([label, value]) => (
-            <Reveal className="rounded-xl border border-primary/10 bg-slate-100 p-4 text-center dark:bg-primary/5" key={label}>
-              <span className="block text-2xl font-bold">{value}</span>
-              <span className="mt-1 block text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-primary/60">
+            <Reveal className="rounded-lg border border-primary/10 bg-slate-100 p-3 text-center dark:bg-primary/5" key={label}>
+              <span className="block text-lg font-bold">{value}</span>
+              <span className="mt-0.5 block text-[10px] font-medium uppercase tracking-wider text-slate-500 dark:text-primary/60">
                 {label}
               </span>
             </Reveal>
           ))}
         </section>
 
-        <section className="mt-8 px-4">
-          <div className="mb-4 flex items-center justify-between">
-            <h3 className="text-xl font-bold">Recent Chapters</h3>
-            <Link className="text-sm font-semibold text-primary" to={getCreatorPublishedChaptersHref(story.slug)}>
+        <section className="mt-5 px-4">
+          <div className="mb-3 flex items-center justify-between">
+            <h3 className="text-base font-bold">Recent Chapters</h3>
+            <Link className="text-xs font-semibold text-primary" to={getCreatorPublishedChaptersHref(story.slug)}>
               View All
             </Link>
           </div>
-          <div className="space-y-3">
+          <div className="space-y-2">
             {story.recentChapters.map((chapter) => (
-              <Reveal className="flex items-center gap-4 rounded-xl border border-transparent bg-slate-50 p-4 transition-colors dark:border-primary/5 dark:bg-primary/5" key={chapter.id}>
-                <div className="flex size-12 items-center justify-center rounded-lg bg-primary/20 font-bold text-primary">{chapter.number}</div>
-                <div className="flex-1">
-                  <h4 className="font-bold leading-tight">{chapter.title}</h4>
-                  <div className="mt-1 flex items-center gap-2">
+              <Reveal className="flex items-center gap-3 rounded-lg border border-transparent bg-slate-50 p-3 transition-colors dark:border-primary/5 dark:bg-primary/5" key={chapter.id}>
+                <div className="flex size-10 items-center justify-center rounded-lg bg-primary/20 text-sm font-bold text-primary">{chapter.number}</div>
+                <div className="flex-1 min-w-0">
+                  <h4 className="text-sm font-bold leading-tight truncate">{chapter.title}</h4>
+                  <div className="mt-0.5 flex items-center gap-1.5">
                     <span
-                      className={`rounded px-2 py-0.5 text-[10px] font-bold uppercase ${
+                      className={`rounded px-1.5 py-0.5 text-[10px] font-bold uppercase ${
                         chapter.status === "Published"
                           ? "bg-emerald-500/20 text-emerald-500"
                           : chapter.status === "Scheduled"
@@ -383,14 +380,14 @@ function MobileStoryManagement({ clearNotice, notice, onPreview, story }) {
                     >
                       {chapter.status}
                     </span>
-                    <span className="flex items-center gap-1 text-xs text-slate-500 dark:text-primary/50">
-                      <span className="material-symbols-outlined text-[14px]">visibility</span>
+                    <span className="flex items-center gap-0.5 text-[10px] text-slate-500 dark:text-primary/50">
+                      <span className="material-symbols-outlined text-xs">visibility</span>
                       {chapter.views}
                     </span>
                   </div>
                 </div>
-                <Link className="text-slate-400" to={getChapterEditHref(story.slug, chapter.chapterId)}>
-                  <span className="material-symbols-outlined">edit</span>
+                <Link className="flex size-9 shrink-0 items-center justify-center rounded-lg text-slate-400 hover:bg-slate-200 dark:hover:bg-primary/10" to={getChapterEditHref(story.slug, chapter.chapterId)}>
+                  <span className="material-symbols-outlined text-lg">edit</span>
                 </Link>
               </Reveal>
             ))}
@@ -407,8 +404,6 @@ export default function StoryManagementPage() {
   const navigate = useNavigate();
   const { storySlug } = useParams();
   const {
-    clearCreatorNotice,
-    creatorNotice,
     enterWriterMode,
     getStory,
     isStudioLoading,
@@ -458,8 +453,8 @@ export default function StoryManagementPage() {
 
   return (
     <>
-      <DesktopStoryManagement clearNotice={clearCreatorNotice} notice={creatorNotice} onPreview={handlePreview} story={story} />
-      <MobileStoryManagement clearNotice={clearCreatorNotice} notice={creatorNotice} onPreview={handlePreview} story={story} />
+      <DesktopStoryManagement onPreview={handlePreview} story={story} />
+      <MobileStoryManagement onPreview={handlePreview} story={story} />
     </>
   );
 }

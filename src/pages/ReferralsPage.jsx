@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import AccountNotice from "../components/AccountNotice";
 import Reveal from "../components/Reveal";
 import UserAvatar from "../components/UserAvatar";
 import { useAccount } from "../context/AccountContext";
@@ -38,8 +37,6 @@ const shareAccentClasses = {
 };
 
 function DesktopReferrals({
-  clearNotice,
-  notice,
   onCopyCode,
   onShare,
   points,
@@ -86,8 +83,6 @@ function DesktopReferrals({
         </header>
 
         <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-8">
-          <AccountNotice notice={notice} onDismiss={clearNotice} />
-
           <Reveal className="mb-8 overflow-hidden rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/30 to-background-dark p-8">
             <div className="relative">
               <div className="pointer-events-none absolute right-0 top-0 opacity-20">
@@ -243,8 +238,6 @@ function DesktopReferrals({
 }
 
 function MobileReferrals({
-  clearNotice,
-  notice,
   onCopyCode,
   onShare,
   referralHistory,
@@ -266,10 +259,6 @@ function MobileReferrals({
         </header>
 
         <main className="flex-1 pb-24">
-          <div className="px-4 pt-4">
-            <AccountNotice notice={notice} onDismiss={clearNotice} />
-          </div>
-
           <section className="px-4 pb-2 pt-4">
             <Reveal className="relative aspect-[16/9] overflow-hidden rounded-2xl bg-gradient-to-t from-background-dark to-transparent p-6">
               <img
@@ -411,9 +400,7 @@ function MobileReferrals({
 
 export default function ReferralsPage() {
   const {
-    clearNotice,
     copyValue,
-    notice,
     referralHistory,
     referrals,
     rewards,
@@ -423,8 +410,6 @@ export default function ReferralsPage() {
   return (
     <>
       <DesktopReferrals
-        clearNotice={clearNotice}
-        notice={notice}
         onCopyCode={() => copyValue("Referral code", referrals.code)}
         onShare={shareReferral}
         points={rewards.points}
@@ -432,8 +417,6 @@ export default function ReferralsPage() {
         referrals={referrals}
       />
       <MobileReferrals
-        clearNotice={clearNotice}
-        notice={notice}
         onCopyCode={() => copyValue("Referral code", referrals.mobileCode)}
         onShare={shareReferral}
         referralHistory={referralHistory}

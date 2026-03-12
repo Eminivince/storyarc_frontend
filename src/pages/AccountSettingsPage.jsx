@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import AccountNotice from "../components/AccountNotice";
 import AccountSettingsNav from "../components/AccountSettingsNav";
 import { AppDesktopSidebar, AppMobileTabBar } from "../components/AppShellNav";
 import Reveal from "../components/Reveal";
@@ -220,9 +219,7 @@ function SettingsSections({
 }
 
 function DesktopAccountSettings({
-  clearNotice,
   isProfileSaving,
-  notice,
   onConnectAccount,
   onToggleFiltering,
   onUpdateLanguage,
@@ -249,8 +246,6 @@ function DesktopAccountSettings({
               </div>
             </Reveal>
 
-            <AccountNotice notice={notice} onDismiss={clearNotice} />
-
             <div className="grid gap-8 lg:grid-cols-[16rem_minmax(0,1fr)]">
               <AccountSettingsNav />
 
@@ -275,9 +270,7 @@ function DesktopAccountSettings({
 }
 
 function MobileAccountSettings({
-  clearNotice,
   isProfileSaving,
-  notice,
   onConnectAccount,
   onToggleFiltering,
   onUpdateLanguage,
@@ -304,7 +297,6 @@ function MobileAccountSettings({
 
         <main className="flex-1 overflow-y-auto pb-24">
           <div className="space-y-3 px-4 pt-3">
-            <AccountNotice notice={notice} onDismiss={clearNotice} />
             <AccountSettingsNav compact />
             <SettingsSections
               compact
@@ -325,8 +317,7 @@ function MobileAccountSettings({
 }
 
 export default function AccountSettingsPage() {
-  const { clearNotice, isProfileSaving, notice, profile, showNotice, updateProfile } =
-    useAccount();
+  const { isProfileSaving, profile, showNotice, updateProfile } = useAccount();
 
   function handleConnectAccount(account) {
     showNotice(
@@ -366,9 +357,7 @@ export default function AccountSettingsPage() {
   return (
     <>
       <DesktopAccountSettings
-        clearNotice={clearNotice}
         isProfileSaving={isProfileSaving}
-        notice={notice}
         onConnectAccount={handleConnectAccount}
         onToggleFiltering={handleToggleFiltering}
         onUpdateLanguage={handleLanguageChange}
@@ -376,9 +365,7 @@ export default function AccountSettingsPage() {
         profile={profile}
       />
       <MobileAccountSettings
-        clearNotice={clearNotice}
         isProfileSaving={isProfileSaving}
-        notice={notice}
         onConnectAccount={handleConnectAccount}
         onToggleFiltering={handleToggleFiltering}
         onUpdateLanguage={handleLanguageChange}

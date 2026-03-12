@@ -1,5 +1,4 @@
 import { Link, useNavigate } from "react-router-dom";
-import AccountNotice from "../components/AccountNotice";
 import { useAccount } from "../context/AccountContext";
 import {
   helpHref,
@@ -11,8 +10,6 @@ import {
 } from "../data/accountFlow";
 
 function DesktopChooseMethod({
-  clearNotice,
-  notice,
   onContinue,
   onMethodChange,
   selectedMethod,
@@ -84,10 +81,6 @@ function DesktopChooseMethod({
 
         <main className="flex flex-1 flex-col items-center justify-center bg-background-light p-8 dark:bg-background-dark">
           <div className="w-full max-w-xl">
-            <div className="mb-8">
-              <AccountNotice notice={notice} onDismiss={clearNotice} />
-            </div>
-
             <div className="mb-10 text-center">
               <div className="mb-6 inline-flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 text-primary">
                 <span className="material-symbols-outlined text-4xl">verified_user</span>
@@ -180,8 +173,6 @@ function DesktopChooseMethod({
 }
 
 function MobileChooseMethod({
-  clearNotice,
-  notice,
   onContinue,
   onMethodChange,
   selectedMethod,
@@ -204,10 +195,6 @@ function MobileChooseMethod({
           <p className="text-base leading-relaxed text-slate-600 dark:text-slate-400">
             Choose how you want to receive your security codes to keep StoryArc secure.
           </p>
-        </div>
-
-        <div className="px-6">
-          <AccountNotice notice={notice} onDismiss={clearNotice} />
         </div>
 
         <div className="flex flex-1 flex-col gap-4 p-6">
@@ -276,20 +263,16 @@ function MobileChooseMethod({
 
 export default function MfaChooseMethodPage() {
   const navigate = useNavigate();
-  const { clearNotice, mfa, notice, setMfaMethod } = useAccount();
+  const { mfa, setMfaMethod } = useAccount();
 
   return (
     <>
       <DesktopChooseMethod
-        clearNotice={clearNotice}
-        notice={notice}
         onContinue={() => navigate(mfaSetupHref)}
         onMethodChange={setMfaMethod}
         selectedMethod={mfa.method}
       />
       <MobileChooseMethod
-        clearNotice={clearNotice}
-        notice={notice}
         onContinue={() => navigate(mfaSetupHref)}
         onMethodChange={setMfaMethod}
         selectedMethod={mfa.method}

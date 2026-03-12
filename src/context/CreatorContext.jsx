@@ -23,6 +23,7 @@ import {
   initialCreatorApplication,
 } from "../data/creatorFlow";
 import { useAuth } from "./AuthContext";
+import { useToast } from "./ToastContext";
 
 const CreatorContext = createContext(null);
 
@@ -222,12 +223,12 @@ function cloneStoryWithNewArc(story, volumeId) {
 
 export function CreatorProvider({ children }) {
   const { refetchCurrentUser, refreshSession, user } = useAuth();
+  const { showToast } = useToast();
   const [creatorMode, setCreatorMode] = useState("reader");
   const [applicationDraft, setApplicationDraft] = useState(() =>
     createDefaultApplicationDraft(user),
   );
   const [creatorApplication, setCreatorApplication] = useState(null);
-  const [creatorNotice, setCreatorNotice] = useState(null);
   const [isCreatorApplicationLoading, setIsCreatorApplicationLoading] = useState(false);
   const [isSavingCreatorDraft, setIsSavingCreatorDraft] = useState(false);
   const [isSubmittingCreatorApplication, setIsSubmittingCreatorApplication] =
@@ -397,15 +398,8 @@ export function CreatorProvider({ children }) {
     };
   }, [hasStudioAccess, user?.id]);
 
-  function clearCreatorNotice() {
-    setCreatorNotice(null);
-  }
-
   function showCreatorNotice(message, tone = "success") {
-    setCreatorNotice({
-      message,
-      tone,
-    });
+    showToast(message, { tone });
   }
 
   function enterWriterMode() {
@@ -866,12 +860,10 @@ export function CreatorProvider({ children }) {
         addStoryVolume,
         applicationDraft,
         chapterDrafts,
-        clearCreatorNotice,
         createStory,
         creatorApplication,
         creatorApplicationStatus,
         creatorMode,
-        creatorNotice,
         creatorStatus,
         enterReaderMode,
         enterWriterMode,

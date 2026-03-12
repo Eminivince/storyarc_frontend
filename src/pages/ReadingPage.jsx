@@ -11,6 +11,7 @@ import {
   buildStoryHref,
   readerLibraryHref,
 } from "../data/readerFlow";
+import { isRichTextHtml } from "../editor/richText";
 import { useToast } from "../context/ToastContext";
 import {
   useChapterQuery,
@@ -147,6 +148,32 @@ function scrollToReaderParagraph(paragraphIndex) {
   return true;
 }
 
+function ReaderRichTextBlock({
+  block,
+  blockClassName,
+  chapterSlug,
+  index,
+  transition,
+}) {
+  return (
+    <motion.div
+      className={`[&_a]:text-primary [&_a]:underline [&_a]:underline-offset-2 [&_blockquote]:my-5 [&_blockquote]:border-l-4 [&_blockquote]:border-primary/40 [&_blockquote]:pl-4 [&_blockquote]:italic [&_h1]:mt-10 [&_h1]:text-3xl [&_h1]:font-black [&_h2]:mt-8 [&_h2]:text-2xl [&_h2]:font-black [&_h3]:mt-6 [&_h3]:text-xl [&_h3]:font-bold [&_li]:my-1 [&_ol]:my-4 [&_ol]:list-decimal [&_ol]:pl-6 [&_p]:my-4 [&_ul]:my-4 [&_ul]:list-disc [&_ul]:pl-6 ${blockClassName}`}
+      data-reader-paragraph-index={index}
+      initial={{ opacity: 0, y: 18 }}
+      key={`${chapterSlug}-${index}`}
+      transition={transition}
+      viewport={{ amount: 0.2, once: true }}
+      whileInView={{ opacity: 1, y: 0 }}
+    >
+      {isRichTextHtml(block) ? (
+        <div dangerouslySetInnerHTML={{ __html: block }} />
+      ) : (
+        <p>{block}</p>
+      )}
+    </motion.div>
+  );
+}
+
 function DesktopReader({
   chapter,
   fontFamily,
@@ -246,16 +273,14 @@ function DesktopReader({
             style={{ fontSize: `${fontSize + 4}px` }}
           >
             {chapter.paragraphs.map((paragraph, index) => (
-              <motion.p
-                data-reader-paragraph-index={index}
-                initial={{ opacity: 0, y: 18 }}
+              <ReaderRichTextBlock
+                block={paragraph}
+                blockClassName=""
+                chapterSlug={chapter.chapterSlug}
+                index={index}
                 key={`${chapter.chapterSlug}-${index}`}
                 transition={{ delay: index * 0.03, duration: 0.25 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ amount: 0.2, once: true }}
-              >
-                {paragraph}
-              </motion.p>
+              />
             ))}
           </div>
 
@@ -451,17 +476,14 @@ function MobileReader({
           style={{ fontSize: `${fontSize}px` }}
         >
           {chapter.paragraphs.map((paragraph, index) => (
-            <motion.p
-              className="mb-4"
-              data-reader-paragraph-index={index}
-              initial={{ opacity: 0, y: 16 }}
+            <ReaderRichTextBlock
+              block={paragraph}
+              blockClassName="mb-4"
+              chapterSlug={chapter.chapterSlug}
+              index={index}
               key={`${chapter.chapterSlug}-${index}`}
               transition={{ delay: index * 0.03, duration: 0.25 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ amount: 0.2, once: true }}
-            >
-              {paragraph}
-            </motion.p>
+            />
           ))}
         </article>
 

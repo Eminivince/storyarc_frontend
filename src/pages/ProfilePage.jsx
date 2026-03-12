@@ -1,6 +1,5 @@
 import { motion } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
-import AccountNotice from "../components/AccountNotice";
 import { AppDesktopSidebar, AppMobileTabBar } from "../components/AppShellNav";
 import Reveal from "../components/Reveal";
 import SkeletonBlock from "../components/SkeletonBlock";
@@ -672,12 +671,10 @@ function MobileLogoutSection({ isLoggingOut, onLogout }) {
 }
 
 function DesktopProfile({
-  clearNotice,
   coinBalance,
   currentReading,
   isAccountLoading,
   isCoinBalanceLoading,
-  notice,
   profile,
   profileStats,
   readingList,
@@ -694,8 +691,6 @@ function DesktopProfile({
 
         <main className="custom-scrollbar min-h-0 flex-1 overflow-y-auto bg-background-light dark:bg-[#12100b]">
           <div className="mx-auto max-w-4xl px-5 py-6">
-            <AccountNotice notice={notice} onDismiss={clearNotice} />
-
             <header className="mb-6 flex flex-col items-center gap-4 md:flex-row md:items-end">
               <div className="relative shrink-0">
                 <UserAvatar
@@ -819,13 +814,11 @@ function DesktopProfile({
 }
 
 function MobileProfile({
-  clearNotice,
   coinBalance,
   currentReading,
   isAccountLoading,
   isCoinBalanceLoading,
   isLoggingOut,
-  notice,
   onLogout,
   profile,
   profileStats,
@@ -850,10 +843,6 @@ function MobileProfile({
         </div>
 
         <main className="pb-24">
-          <div className="px-4 pt-3">
-            <AccountNotice notice={notice} onDismiss={clearNotice} />
-          </div>
-
           <div className="flex flex-col items-center gap-4 p-4">
             <div className="relative">
               <UserAvatar
@@ -980,10 +969,8 @@ export default function ProfilePage() {
   const { logout, isLoggingOut } = useAuth();
   const { coinBalance, isStatusLoading } = useMonetization();
   const {
-    clearNotice,
     currentReading,
     isAccountLoading,
-    notice,
     profile,
     profileStats,
     readingList,
@@ -1000,25 +987,21 @@ export default function ProfilePage() {
   return (
     <>
       <DesktopProfile
-        clearNotice={clearNotice}
         coinBalance={coinBalance}
         currentReading={currentReading}
         isAccountLoading={isAccountLoading}
         isCoinBalanceLoading={isStatusLoading}
-        notice={notice}
         profile={profile}
         profileStats={profileStats}
         readingList={readingList}
         recentActivity={recentActivity}
       />
       <MobileProfile
-        clearNotice={clearNotice}
         coinBalance={coinBalance}
         currentReading={currentReading}
         isAccountLoading={isAccountLoading}
         isCoinBalanceLoading={isStatusLoading}
         isLoggingOut={isLoggingOut}
-        notice={notice}
         onLogout={handleLogout}
         profile={profile}
         profileStats={profileStats}

@@ -230,7 +230,7 @@ function buildRecentActivity(inventory) {
 export default function AdminBookManagementPage() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const { adminNotice, clearAdminNotice, showAdminNotice } = useAdmin();
+  const { showAdminNotice } = useAdmin();
   const [activeTab, setActiveTab] = useState(adminBookInventoryTabs[0]);
   const [activeStatus, setActiveStatus] = useState(adminBookStatusFilters[0]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -426,8 +426,6 @@ export default function AdminBookManagementPage() {
           Review Queue
         </button>
       }
-      notice={adminNotice}
-      onDismissNotice={clearAdminNotice}
       onSearchChange={setSearchTerm}
       searchPlaceholder="Search books, authors, or IDs..."
       searchTerm={searchTerm}

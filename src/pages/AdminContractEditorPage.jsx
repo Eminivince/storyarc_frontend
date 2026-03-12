@@ -71,7 +71,7 @@ export default function AdminContractEditorPage() {
   const { contractId } = useParams();
   const [searchParams] = useSearchParams();
   const initialTemplateId = searchParams.get("templateId") || "";
-  const { adminNotice, clearAdminNotice, showAdminNotice } = useAdmin();
+  const { showAdminNotice } = useAdmin();
   const [form, setForm] = useState(createEmptyContractDraft);
   const [hasAppliedInitialTemplate, setHasAppliedInitialTemplate] = useState(false);
   const isEditing = Boolean(contractId);
@@ -337,8 +337,6 @@ export default function AdminContractEditorPage() {
           </button>
         </>
       }
-      notice={adminNotice}
-      onDismissNotice={clearAdminNotice}
       subtitle="Compose real contract records, apply reusable templates when needed, and keep each contract’s terms frozen as a separate snapshot."
       title={isEditing ? "Edit Contract" : "Create Contract"}
     >

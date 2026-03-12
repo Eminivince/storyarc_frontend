@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { createContext, useContext, useMemo, useState } from "react";
+import { createContext, useContext, useMemo } from "react";
 import { useAuth } from "./AuthContext";
 import { useToast } from "./ToastContext";
 import {
@@ -46,19 +46,10 @@ function mergeGiftCatalog(catalogGifts) {
   }));
 }
 
-function getNoticeToneFromMessage(message) {
-  if (!message) {
-    return "success";
-  }
-
-  return /not enough|already|need/i.test(message) ? "info" : "success";
-}
-
 export function MonetizationProvider({ children }) {
   const queryClient = useQueryClient();
   const { isAuthenticated } = useAuth();
   const { showToast } = useToast();
-  const [lastNotice, setLastNotice] = useState(null);
 
   const catalogQuery = useQuery({
     enabled: isAuthenticated,
@@ -97,20 +88,6 @@ export function MonetizationProvider({ children }) {
   const coinBalance = statusQuery.data?.coinBalance ?? 0;
   const hasPremium = Boolean(statusQuery.data?.hasPremium);
   const isCatalogReady = !catalogQuery.isLoading && !catalogQuery.error;
-
-  function setNotice(message, options = {}) {
-    const nextNotice = {
-      message,
-      tone: options.tone ?? getNoticeToneFromMessage(message),
-    };
-
-    setLastNotice(nextNotice);
-    return nextNotice;
-  }
-
-  function clearNotice() {
-    setLastNotice(null);
-  }
 
   function applyStatusSnapshot(status) {
     if (!status) {
@@ -154,7 +131,6 @@ export function MonetizationProvider({ children }) {
             ? "info"
             : "error";
 
-      setNotice(response?.message || "Payment status updated.", { tone });
       showToast(response?.message || "Payment status updated.", {
         title,
         tone,
@@ -172,7 +148,6 @@ export function MonetizationProvider({ children }) {
           queryKey: ["reader", "chapter", variables.storySlug, variables.chapterSlug],
         }),
       ]);
-      setNotice(response?.message || "Chapter unlocked.");
       showToast(response?.message || "Chapter unlocked.", {
         title: "Access updated",
       });
@@ -189,7 +164,6 @@ export function MonetizationProvider({ children }) {
           queryKey: ["reader", "chapter", variables.storySlug, variables.chapterSlug],
         }),
       ]);
-      setNotice(response?.message || "Ad unlock recorded.");
       showToast(response?.message || "Ad unlock recorded.", {
         title: "Access updated",
       });
@@ -201,7 +175,6 @@ export function MonetizationProvider({ children }) {
     onSuccess: async (response) => {
       applyStatusSnapshot(response?.status);
       await invalidateMonetizationState();
-      setNotice(response?.message || "Gift sent.");
       showToast(response?.message || "Gift sent.", {
         title: "Support sent",
       });
@@ -297,7 +270,6 @@ export function MonetizationProvider({ children }) {
     canUnlockWithCoins,
     catalogError: catalogQuery.error,
     chapterEntitlements,
-    clearNotice,
     coinBalance,
     coinPackages: displayCoinPackages,
     freePlan: freePlanTier,
@@ -318,7 +290,6 @@ export function MonetizationProvider({ children }) {
     isStatusLoading: statusQuery.isLoading,
     isUnlockingWithAd: unlockWithAdMutation.isPending,
     isUnlockingWithCoins: unlockWithCoinsMutation.isPending,
-    lastNotice,
     plans: displayPlans,
     refreshStatus: statusQuery.refetch,
     sendGift,

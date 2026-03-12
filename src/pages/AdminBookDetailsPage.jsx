@@ -116,7 +116,7 @@ function NotFoundState({ description = "Open the admin inventory again and choos
 export default function AdminBookDetailsPage() {
   const { bookId } = useParams();
   const queryClient = useQueryClient();
-  const { adminNotice, clearAdminNotice, showAdminNotice } = useAdmin();
+  const { showAdminNotice } = useAdmin();
   const [savedSnapshot, setSavedSnapshot] = useState(null);
   const [draft, setDraft] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
@@ -379,8 +379,6 @@ export default function AdminBookDetailsPage() {
 
   return (
     <AdminPageLayout
-      notice={adminNotice}
-      onDismissNotice={clearAdminNotice}
       onSearchChange={setSearchTerm}
       searchPlaceholder="Search chapters..."
       searchTerm={searchTerm}

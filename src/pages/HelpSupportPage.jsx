@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import AccountNotice from "../components/AccountNotice";
+import { useToast } from "../context/ToastContext";
 import { AppDesktopSidebar, AppMobileTabBar } from "../components/AppShellNav";
 import Reveal from "../components/Reveal";
 import RouteLoadingScreen from "../components/RouteLoadingScreen";
@@ -140,12 +140,10 @@ function SupportTicketsPanel({ isLoading, tickets }) {
 function DesktopHelp({
   articles,
   categories,
-  clearNotice,
   helpError,
   isCreatingTicket,
   isLoadingContent,
   isLoadingTickets,
-  notice,
   onArticleSelect,
   onCategorySelect,
   onSearchChange,
@@ -186,7 +184,6 @@ function DesktopHelp({
               </div>
             </header>
 
-            <AccountNotice notice={notice} onDismiss={clearNotice} />
             <SupportTicketsPanel isLoading={isLoadingTickets} tickets={tickets} />
 
             <section className="mb-16">
@@ -321,12 +318,10 @@ function DesktopHelp({
 function MobileHelp({
   articles,
   categories,
-  clearNotice,
   helpError,
   isCreatingTicket,
   isLoadingContent,
   isLoadingTickets,
-  notice,
   onArticleSelect,
   onCategorySelect,
   onSearchChange,
@@ -385,10 +380,6 @@ function MobileHelp({
               />
             </div>
           </label>
-        </div>
-
-        <div className="px-4">
-          <AccountNotice notice={notice} onDismiss={clearNotice} />
         </div>
 
         <section className="px-4 py-2">
@@ -527,7 +518,7 @@ function MobileHelp({
 
 export default function HelpSupportPage() {
   const queryClient = useQueryClient();
-  const [notice, setNotice] = useState(null);
+  const { showToast } = useToast();
   const [searchValue, setSearchValue] = useState("");
   const supportTicketsQuery = useQuery({
     queryKey: ["support", "tickets"],
@@ -540,14 +531,12 @@ export default function HelpSupportPage() {
   const createTicketMutation = useMutation({
     mutationFn: createSupportTicket,
     onError: (error) => {
-      setNotice({
-        message: error.message || "We could not create your support ticket.",
+      showToast(error.message || "We could not create your support ticket.", {
         tone: "info",
       });
     },
     onSuccess: (response) => {
-      setNotice({
-        message: response.message || "Support ticket created.",
+      showToast(response.message || "Support ticket created.", {
         tone: "success",
       });
       queryClient.invalidateQueries({
@@ -593,29 +582,22 @@ export default function HelpSupportPage() {
     return <RouteLoadingScreen />;
   }
 
-  function clearNotice() {
-    setNotice(null);
-  }
-
   function handleCategorySelect(category) {
     setSearchValue(category.title);
-    setNotice({
-      message: `${category.title}: ${category.description}`,
+    showToast(`${category.title}: ${category.description}`, {
       tone: "info",
     });
   }
 
   function handleArticleSelect(article) {
-    setNotice({
-      message: article.excerpt || `${article.title} is available in the help center.`,
+    showToast(article.excerpt || `${article.title} is available in the help center.`, {
       tone: "info",
     });
   }
 
   function handleSupportAction(action) {
     if (!action?.ticketTemplate) {
-      setNotice({
-        message: "This support action is not configured yet.",
+      showToast("This support action is not configured yet.", {
         tone: "info",
       });
       return;
@@ -629,12 +611,10 @@ export default function HelpSupportPage() {
       <DesktopHelp
         articles={articles}
         categories={categories}
-        clearNotice={clearNotice}
         helpError={helpCenterQuery.error}
         isCreatingTicket={createTicketMutation.isPending}
         isLoadingContent={helpCenterQuery.isPending}
         isLoadingTickets={supportTicketsQuery.isPending}
-        notice={notice}
         onArticleSelect={handleArticleSelect}
         onCategorySelect={handleCategorySelect}
         onSearchChange={setSearchValue}
@@ -647,12 +627,10 @@ export default function HelpSupportPage() {
       <MobileHelp
         articles={articles}
         categories={categories}
-        clearNotice={clearNotice}
         helpError={helpCenterQuery.error}
         isCreatingTicket={createTicketMutation.isPending}
         isLoadingContent={helpCenterQuery.isPending}
         isLoadingTickets={supportTicketsQuery.isPending}
-        notice={notice}
         onArticleSelect={handleArticleSelect}
         onCategorySelect={handleCategorySelect}
         onSearchChange={setSearchValue}

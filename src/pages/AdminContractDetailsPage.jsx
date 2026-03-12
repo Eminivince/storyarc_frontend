@@ -6,7 +6,6 @@ import AdminPageLayout from "../components/AdminPageLayout";
 import ReaderStateScreen from "../components/ReaderStateScreen";
 import Reveal from "../components/Reveal";
 import RouteLoadingScreen from "../components/RouteLoadingScreen";
-import { useAdmin } from "../context/AdminContext";
 import {
   buildContractPreview,
   formatAdvancePaymentLabel,
@@ -32,7 +31,6 @@ function SummaryCard({ label, value, subtext }) {
 
 export default function AdminContractDetailsPage() {
   const { contractId } = useParams();
-  const { adminNotice, clearAdminNotice } = useAdmin();
 
   const contractQuery = useQuery({
     queryKey: ["admin", "contract", contractId],
@@ -94,8 +92,6 @@ export default function AdminContractDetailsPage() {
           </Link>
         </>
       }
-      notice={adminNotice}
-      onDismissNotice={clearAdminNotice}
       subtitle="Review the saved contract snapshot, linked story and user, and the exact text attached to this agreement."
       title={contract.contractId}
     >

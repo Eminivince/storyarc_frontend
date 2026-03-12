@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import AccountNotice from "../components/AccountNotice";
 import AccountSettingsNav from "../components/AccountSettingsNav";
 import { AppDesktopSidebar, AppMobileTabBar } from "../components/AppShellNav";
 import Reveal from "../components/Reveal";
@@ -225,10 +224,8 @@ function SessionsSection({ compact = false, onRevoke }) {
 }
 
 function DesktopSecuritySettings({
-  clearNotice,
   fields,
   mfaEnabled,
-  notice,
   onChange,
   onRevoke,
   onSubmit,
@@ -254,8 +251,6 @@ function DesktopSecuritySettings({
               </div>
             </Reveal>
 
-            <AccountNotice notice={notice} onDismiss={clearNotice} />
-
             <div className="grid gap-8 lg:grid-cols-[16rem_minmax(0,1fr)]">
               <AccountSettingsNav />
 
@@ -279,10 +274,8 @@ function DesktopSecuritySettings({
 }
 
 function MobileSecuritySettings({
-  clearNotice,
   fields,
   mfaEnabled,
-  notice,
   onChange,
   onRevoke,
   onSubmit,
@@ -307,7 +300,6 @@ function MobileSecuritySettings({
 
         <main className="flex-1 overflow-y-auto pb-24">
           <div className="space-y-3 px-4 pt-3">
-            <AccountNotice notice={notice} onDismiss={clearNotice} />
             <AccountSettingsNav compact />
 
             <section className="rounded-xl border border-primary/20 bg-primary/10 p-3">
@@ -342,7 +334,7 @@ function MobileSecuritySettings({
 }
 
 export default function SecuritySettingsPage() {
-  const { clearNotice, mfa, notice, profile, showNotice } = useAccount();
+  const { mfa, profile, showNotice } = useAccount();
   const [fields, setFields] = useState({
     currentPassword: "",
     newPassword: "",
@@ -389,20 +381,16 @@ export default function SecuritySettingsPage() {
   return (
     <>
       <DesktopSecuritySettings
-        clearNotice={clearNotice}
         fields={fields}
         mfaEnabled={mfa.enabled}
-        notice={notice}
         onChange={handleChange}
         onRevoke={handleRevoke}
         onSubmit={handleSubmit}
         profile={profile}
       />
       <MobileSecuritySettings
-        clearNotice={clearNotice}
         fields={fields}
         mfaEnabled={mfa.enabled}
-        notice={notice}
         onChange={handleChange}
         onRevoke={handleRevoke}
         onSubmit={handleSubmit}

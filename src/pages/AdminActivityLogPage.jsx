@@ -20,7 +20,7 @@ function toneClasses(tone) {
 }
 
 export default function AdminActivityLogPage() {
-  const { activityGroups, adminNotice, clearAdminNotice, showAdminNotice } = useAdmin();
+  const { activityGroups, showAdminNotice } = useAdmin();
   const [searchTerm, setSearchTerm] = useState("");
   const deferredSearch = useDeferredValue(searchTerm);
 
@@ -56,8 +56,6 @@ export default function AdminActivityLogPage() {
           Export Log
         </button>
       }
-      notice={adminNotice}
-      onDismissNotice={clearAdminNotice}
       onSearchChange={setSearchTerm}
       searchPlaceholder="Search by admin, action, policy, or moderation event..."
       searchTerm={searchTerm}

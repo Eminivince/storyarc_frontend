@@ -35,8 +35,6 @@ function statusClasses(status) {
 
 export default function AdminUserManagementPage() {
   const {
-    adminNotice,
-    clearAdminNotice,
     showAdminNotice,
     suspendUser,
     users,
@@ -96,8 +94,6 @@ export default function AdminUserManagementPage() {
           </button>
         </>
       }
-      notice={adminNotice}
-      onDismissNotice={clearAdminNotice}
       onSearchChange={setSearchTerm}
       searchPlaceholder="Search by name, email, location, or role..."
       searchTerm={searchTerm}

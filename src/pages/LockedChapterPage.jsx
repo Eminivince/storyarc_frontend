@@ -21,35 +21,6 @@ import {
 } from "../data/readerFlow";
 import { useChapterQuery } from "../reader/readerHooks";
 
-function UnlockNotice({ clearNotice, lastNotice }) {
-  if (!lastNotice) {
-    return null;
-  }
-
-  const toneClasses =
-    lastNotice.tone === "success"
-      ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:text-emerald-100"
-      : "border-primary/30 bg-primary/10 text-slate-900 dark:text-slate-100";
-
-  return (
-    <div className={`mb-8 flex items-start justify-between gap-4 rounded-xl border px-4 py-3 ${toneClasses}`}>
-      <div className="flex items-start gap-3">
-        <span className="material-symbols-outlined mt-0.5 text-lg">
-          notifications_active
-        </span>
-        <p className="text-sm font-medium">{lastNotice.message}</p>
-      </div>
-      <button
-        className="text-xs font-bold uppercase tracking-widest opacity-80 transition-opacity hover:opacity-100"
-        onClick={clearNotice}
-        type="button"
-      >
-        Dismiss
-      </button>
-    </div>
-  );
-}
-
 function getSequentialAccessDescription(chapter) {
   if (!chapter?.requiredPreviousChapter) {
     return "Open the previous chapter first to continue in order.";
@@ -64,11 +35,9 @@ function DesktopLockedChapter({
   chapterTitle,
   chapterUnlocked,
   coinStoreTo,
-  clearNotice,
   coinBalance,
   handlePrimaryAction,
   handleWatchAd,
-  lastNotice,
   lockedChapterCost,
   primaryLabel,
   premiumHref,
@@ -114,8 +83,6 @@ function DesktopLockedChapter({
 
         <main className="flex flex-1 flex-col items-center">
           <div className="w-full max-w-[800px] px-6 py-10">
-            <UnlockNotice clearNotice={clearNotice} lastNotice={lastNotice} />
-
             <nav className="mb-8 flex items-center gap-2 text-sm font-medium uppercase tracking-widest text-primary/70">
               <Link className="transition-colors hover:text-primary" to={storyTo}>
                 {storyTitle}
@@ -282,11 +249,9 @@ function MobileLockedChapter({
   chapterUnlocked,
   chapterCompleteTo,
   coinStoreTo,
-  clearNotice,
   coinBalance,
   handlePrimaryAction,
   handleWatchAd,
-  lastNotice,
   lockedChapterCost,
   primaryLabel,
   premiumHref,
@@ -322,8 +287,6 @@ function MobileLockedChapter({
       </header>
 
       <main className="relative flex-1 overflow-y-auto px-6 py-8">
-        <UnlockNotice clearNotice={clearNotice} lastNotice={lastNotice} />
-
         <article className="space-y-6">
           {mobileLockedPreview.paragraphs.map((paragraph, index) => (
             <p
@@ -487,11 +450,9 @@ export default function LockedChapterPage() {
   const { data, error, isError, isLoading } = useChapterQuery(storySlug, chapterSlug);
   const {
     canUnlockWithCoins,
-    clearNotice,
     coinBalance,
     hasPremium,
     isChapterUnlocked,
-    lastNotice,
     spendCoinsForChapter,
     unlockWithAd,
   } = useMonetization();
@@ -607,11 +568,9 @@ export default function LockedChapterPage() {
         chapterTitle={chapter.chapterTitle}
         chapterUnlocked={chapterUnlocked}
         coinStoreTo={coinStoreTo}
-        clearNotice={clearNotice}
         coinBalance={coinBalance}
         handlePrimaryAction={handlePrimaryAction}
         handleWatchAd={handleWatchAd}
-        lastNotice={lastNotice}
         lockedChapterCost={lockedChapterCost}
         premiumHref={premiumHref}
         premiumLabel={premiumLabel}
@@ -625,11 +584,9 @@ export default function LockedChapterPage() {
         chapterUnlocked={chapterUnlocked}
         chapterCompleteTo={chapterCompleteTo}
         coinStoreTo={coinStoreTo}
-        clearNotice={clearNotice}
         coinBalance={coinBalance}
         handlePrimaryAction={handlePrimaryAction}
         handleWatchAd={handleWatchAd}
-        lastNotice={lastNotice}
         lockedChapterCost={lockedChapterCost}
         premiumHref={premiumHref}
         premiumLabel={premiumLabel}

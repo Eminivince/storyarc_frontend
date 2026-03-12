@@ -142,7 +142,7 @@ function MobileContractCard({ contract, onEdit, onView }) {
 
 export default function AdminContractManagementPage() {
   const navigate = useNavigate();
-  const { adminNotice, clearAdminNotice, showAdminNotice } = useAdmin();
+  const { showAdminNotice } = useAdmin();
   const [activeFilter, setActiveFilter] = useState(adminContractFilters[0]);
   const [searchTerm, setSearchTerm] = useState("");
   const [page, setPage] = useState(1);
@@ -241,8 +241,6 @@ export default function AdminContractManagementPage() {
           </Link>
         </>
       }
-      notice={adminNotice}
-      onDismissNotice={clearAdminNotice}
       subtitle="Monitor legal agreements, manage intellectual property rights, and track signature statuses for active StoryArc contracts."
       title="Contract Management"
     >
