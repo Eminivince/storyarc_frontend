@@ -110,7 +110,7 @@ function DesktopForgotPassword({ email, onChange, onSubmit, pending }) {
         <div className="flex flex-wrap items-center justify-center gap-8">
           <Link
             className="text-sm text-slate-500 transition-colors hover:text-primary dark:text-slate-400"
-            to="/about"
+            to="/privacy"
           >
             Privacy Policy
           </Link>

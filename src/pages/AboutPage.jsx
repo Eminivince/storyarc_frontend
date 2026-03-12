@@ -469,9 +469,9 @@ function DesktopAbout() {
                 </a>
               </li>
               <li>
-                <a className="transition-colors hover:text-primary" href="#">
+                <Link className="transition-colors hover:text-primary" to="/privacy">
                   Privacy Policy
-                </a>
+                </Link>
               </li>
               <li>
                 <Link className="transition-colors hover:text-primary" to="/terms">

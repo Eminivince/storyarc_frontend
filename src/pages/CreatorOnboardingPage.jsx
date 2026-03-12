@@ -202,24 +202,24 @@ function DesktopCreatorOnboarding({ clearNotice, notice, onStart, status }) {
 function MobileCreatorOnboarding({ clearNotice, notice, onStart, status }) {
   return (
     <div className="min-h-screen bg-background-light font-display text-slate-900 dark:bg-background-dark dark:text-slate-100 md:hidden">
-      <div className="relative flex min-h-screen w-full flex-col overflow-x-hidden pb-24">
-        <header className="sticky top-0 z-10 flex items-center justify-between border-b border-primary/10 bg-background-light p-4 dark:bg-background-dark">
+      <div className="relative flex min-h-screen w-full flex-col overflow-x-hidden pb-20">
+        <header className="sticky top-0 z-10 flex items-center justify-between border-b border-primary/10 bg-background-light px-4 py-3 dark:bg-background-dark">
           <Link
-            className="flex size-10 items-center justify-center rounded-full transition-colors hover:bg-primary/10"
+            className="flex size-9 items-center justify-center rounded-lg transition-colors hover:bg-slate-200 dark:hover:bg-primary/20"
             to="/dashboard"
           >
-            <span className="material-symbols-outlined">arrow_back</span>
+            <span className="material-symbols-outlined text-xl">arrow_back</span>
           </Link>
-          <h2 className="flex-1 pr-10 text-center text-base font-bold tracking-tight">
+          <h2 className="flex-1 pr-9 text-center text-base font-bold tracking-tight">
             Creator Program
           </h2>
         </header>
 
-        <div className="px-4 pt-4">
+        <div className="px-4 pt-3">
           <AccountNotice notice={notice} onDismiss={clearNotice} />
         </div>
 
-        <section className="px-4 py-4">
+        <section className="px-4 py-3">
           <Reveal
             className="relative aspect-[4/5] overflow-hidden rounded-xl shadow-2xl shadow-primary/5"
             style={{
@@ -228,29 +228,29 @@ function MobileCreatorOnboarding({ clearNotice, notice, onStart, status }) {
             }}
           >
             <div className="absolute inset-0 bg-gradient-to-t from-background-dark via-background-dark/20 to-transparent" />
-            <div className="relative p-6">
-              <h1 className="mb-2 text-3xl font-bold leading-tight text-white">
+            <div className="relative p-4">
+              <h1 className="mb-1.5 text-2xl font-bold leading-tight text-white">
                 Your story deserves an audience
               </h1>
-              <p className="text-xs font-medium uppercase tracking-wide text-primary">
+              <p className="text-[10px] font-medium uppercase tracking-wide text-primary">
                 Welcome to the inner circle
               </p>
             </div>
           </Reveal>
         </section>
 
-        <section className="mt-4 space-y-4 px-4">
+        <section className="mt-3 space-y-3 px-4">
           {creatorBenefits.map((benefit) => (
             <Reveal
-              className="flex items-center gap-4 rounded-xl border border-primary/10 bg-white p-4 dark:bg-primary/5"
+              className="flex items-center gap-3 rounded-xl border border-primary/10 bg-white p-3 dark:bg-primary/5"
               key={benefit.title}
             >
-              <div className="flex size-12 shrink-0 items-center justify-center rounded-lg bg-primary/20 text-primary">
-                <span className="material-symbols-outlined text-2xl">{benefit.icon}</span>
+              <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/20 text-primary">
+                <span className="material-symbols-outlined text-xl">{benefit.icon}</span>
               </div>
-              <div className="flex flex-col">
-                <p className="text-lg font-bold leading-none">{benefit.title}</p>
-                <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
+              <div className="min-w-0 flex-1">
+                <p className="text-sm font-bold leading-none">{benefit.title}</p>
+                <p className="mt-0.5 text-xs text-slate-600 dark:text-slate-400">
                   {benefit.description}
                 </p>
               </div>
@@ -258,22 +258,22 @@ function MobileCreatorOnboarding({ clearNotice, notice, onStart, status }) {
           ))}
         </section>
 
-        <section className="mb-8 mt-10 px-4">
-          <h3 className="mb-6 text-xl font-bold">Application Timeline</h3>
-          <div className="relative ml-4 space-y-8">
-            <div className="absolute bottom-2 left-[11px] top-2 w-0.5 bg-primary/20" />
+        <section className="mb-6 mt-6 px-4">
+          <h3 className="mb-4 text-base font-bold">Application Timeline</h3>
+          <div className="relative ml-3 space-y-6">
+            <div className="absolute bottom-1.5 left-[11px] top-1.5 w-0.5 bg-primary/20" />
             {creatorTimeline.map((step, index) => (
-              <div className="relative flex gap-4" key={step.step}>
+              <div className="relative flex gap-3" key={step.step}>
                 <div
-                  className={`z-10 flex size-6 items-center justify-center rounded-full text-xs font-bold ${
+                  className={`z-10 flex size-5 items-center justify-center rounded-full text-[10px] font-bold ${
                     index === 0 ? "bg-primary text-background-dark" : "bg-primary/30 text-primary"
                   }`}
                 >
                   {step.step}
                 </div>
                 <div>
-                  <p className="font-bold">{step.title}</p>
-                  <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
+                  <p className="text-sm font-bold">{step.title}</p>
+                  <p className="mt-0.5 text-xs text-slate-600 dark:text-slate-400">
                     {step.description}
                   </p>
                 </div>
@@ -282,9 +282,9 @@ function MobileCreatorOnboarding({ clearNotice, notice, onStart, status }) {
           </div>
         </section>
 
-        <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-t from-background-light via-background-light to-transparent p-4 pt-10 dark:from-background-dark dark:via-background-dark">
+        <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-t from-background-light via-background-light to-transparent p-4 pt-8 dark:from-background-dark dark:via-background-dark">
           <button
-            className="w-full rounded-xl bg-primary py-4 font-bold text-background-dark shadow-lg shadow-primary/20 transition-all active:scale-[0.98]"
+            className="w-full rounded-xl bg-primary py-3 text-sm font-bold text-background-dark shadow-lg shadow-primary/20 transition-all active:scale-[0.98]"
             onClick={onStart}
             type="button"
           >

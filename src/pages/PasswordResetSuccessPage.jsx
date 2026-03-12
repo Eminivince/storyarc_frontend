@@ -124,7 +124,7 @@ function DesktopPasswordResetSuccess() {
             </Link>
             <Link
               className="text-sm font-medium text-slate-500 transition-colors hover:text-primary dark:text-slate-400"
-              to="/about"
+              to="/privacy"
             >
               Privacy Policy
             </Link>

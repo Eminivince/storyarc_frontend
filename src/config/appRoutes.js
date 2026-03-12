@@ -83,6 +83,7 @@ const PaymentSuccessPage = lazy(() => import("../pages/PaymentSuccessPage"));
 const PollsAnnouncementsPage = lazy(() =>
   import("../pages/PollsAnnouncementsPage"),
 );
+const PrivacyPage = lazy(() => import("../pages/PrivacyPage"));
 const PricingPage = lazy(() => import("../pages/PricingPage"));
 const ProfilePage = lazy(() => import("../pages/ProfilePage"));
 const PublishedChaptersPage = lazy(() => import("../pages/PublishedChaptersPage"));
@@ -175,6 +176,7 @@ export const appRouteGroups = [
     routes: [
       { path: "/", component: HomePage, page: "HomePage" },
       { path: "/about", component: AboutPage, page: "AboutPage" },
+      { path: "/privacy", component: PrivacyPage, page: "PrivacyPage" },
       { path: "/terms", component: TermsPage, page: "TermsPage" },
     ],
   },

@@ -313,9 +313,9 @@ function DesktopCheckout({
                       Terms of Service
                     </Link>{" "}
                     and{" "}
-                    <a className="underline" href="#">
+                    <Link className="underline" to="/privacy">
                       Privacy Policy
-                    </a>
+                    </Link>
                     .
                   </p>
                 </form>

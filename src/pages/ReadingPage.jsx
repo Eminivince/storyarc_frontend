@@ -428,22 +428,22 @@ function MobileReader({
 
   return (
     <div className={`min-h-screen font-display antialiased md:hidden ${theme.shell}`}>
-      <header className={`fixed left-0 right-0 top-0 z-50 flex items-center justify-between border-b px-4 py-3 backdrop-blur-md ${theme.chrome}`}>
-        <Link className="rounded-full p-2 transition-colors hover:bg-primary/10" to={buildStoryHref(story.slug)}>
-          <span className="material-symbols-outlined text-primary">arrow_back</span>
+      <header className={`fixed left-0 right-0 top-0 z-50 flex items-center justify-between border-b px-3 py-2.5 backdrop-blur-md ${theme.chrome}`}>
+        <Link className="flex size-8 items-center justify-center rounded-lg transition-colors hover:bg-primary/10" to={buildStoryHref(story.slug)}>
+          <span className="material-symbols-outlined text-lg text-primary">arrow_back</span>
         </Link>
-        <h1 className={`text-sm font-semibold uppercase tracking-wide ${theme.muted}`}>{story.title}</h1>
-        <Link className="rounded-full p-2 transition-colors hover:bg-primary/10" to={buildReportChapterHref(story.slug, chapter.chapterSlug)}>
-          <span className="material-symbols-outlined text-primary">flag</span>
+        <h1 className={`truncate px-2 text-xs font-semibold uppercase tracking-wide ${theme.muted}`}>{story.title}</h1>
+        <Link className="flex size-8 items-center justify-center rounded-lg transition-colors hover:bg-primary/10" to={buildReportChapterHref(story.slug, chapter.chapterSlug)}>
+          <span className="material-symbols-outlined text-lg text-primary">flag</span>
         </Link>
       </header>
 
-      <main className="mx-auto max-w-2xl px-6 pb-32 pt-24">
-        <div className="mb-10">
-          <span className="text-sm font-bold uppercase tracking-widest text-primary">
+      <main className="mx-auto max-w-2xl px-4 pb-24 pt-20">
+        <div className="mb-6">
+          <span className="text-xs font-bold uppercase tracking-wider text-primary">
             Chapter {chapter.chapterNumber}
           </span>
-          <h2 className="mt-2 text-3xl font-bold">{chapter.chapterTitle}</h2>
+          <h2 className="mt-1.5 text-2xl font-bold">{chapter.chapterTitle}</h2>
         </div>
 
         <article
@@ -452,7 +452,7 @@ function MobileReader({
         >
           {chapter.paragraphs.map((paragraph, index) => (
             <motion.p
-              className="mb-6"
+              className="mb-4"
               data-reader-paragraph-index={index}
               initial={{ opacity: 0, y: 16 }}
               key={`${chapter.chapterSlug}-${index}`}
@@ -465,61 +465,61 @@ function MobileReader({
           ))}
         </article>
 
-        <nav className="mt-16 flex items-center justify-between gap-4">
+        <nav className="mt-10 flex items-center justify-between gap-3">
           <Link
-            className={`flex flex-1 items-center justify-center gap-2 rounded-xl border px-6 py-4 font-semibold transition-all ${theme.panelSecondary}`}
+            className={`flex flex-1 items-center justify-center gap-1.5 rounded-lg border px-4 py-3 text-sm font-semibold transition-all ${theme.panelSecondary}`}
             to={
               chapter.previousChapter
                 ? buildChapterHref(story.slug, chapter.previousChapter.chapterSlug)
                 : buildStoryHref(story.slug)
             }
           >
-            <span className="material-symbols-outlined text-sm">chevron_left</span>
+            <span className="material-symbols-outlined text-base">chevron_left</span>
             Previous
           </Link>
           <Link
-            className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-primary px-6 py-4 font-bold text-background-dark shadow-lg shadow-primary/20 transition-all hover:brightness-110"
+            className="flex flex-1 items-center justify-center gap-1.5 rounded-lg bg-primary px-4 py-3 text-sm font-bold text-background-dark shadow-lg shadow-primary/20 transition-all hover:brightness-110"
             onClick={onNextClick}
             to={nextHref}
           >
             {nextLabel}
-            <span className="material-symbols-outlined text-sm">chevron_right</span>
+            <span className="material-symbols-outlined text-base">chevron_right</span>
           </Link>
         </nav>
       </main>
 
       <section className={`fixed bottom-0 left-0 right-0 z-50 border-t pb-safe ${theme.chrome}`}>
-        <div className={`h-1 w-full ${theme.track}`}>
+        <div className={`h-0.5 w-full ${theme.track}`}>
           <div className="h-full bg-primary" style={{ width: `${progressPercent}%` }} />
         </div>
-        <div className="flex items-center justify-around px-4 py-3">
+        <div className="flex items-center justify-around px-3 py-2.5">
           <button
-            className={`flex flex-col items-center gap-1 transition-colors ${settingsOpen ? "text-primary" : theme.muted}`}
+            className={`flex flex-col items-center gap-0.5 transition-colors ${settingsOpen ? "text-primary" : theme.muted}`}
             onClick={onToggleSettings}
             type="button"
           >
-            <span className="material-symbols-outlined">format_size</span>
-            <span className="text-[10px] font-bold uppercase tracking-tighter">Text</span>
+            <span className="material-symbols-outlined text-xl">format_size</span>
+            <span className="text-[9px] font-bold uppercase tracking-tighter">Text</span>
           </button>
-          <Link className={`flex flex-col items-center gap-1 transition-colors ${theme.muted}`} to={buildStoryHref(story.slug)}>
-            <span className="material-symbols-outlined">menu_book</span>
-            <span className="text-[10px] font-bold uppercase tracking-tighter">Index</span>
+          <Link className={`flex flex-col items-center gap-0.5 transition-colors ${theme.muted}`} to={buildStoryHref(story.slug)}>
+            <span className="material-symbols-outlined text-xl">menu_book</span>
+            <span className="text-[9px] font-bold uppercase tracking-tighter">Index</span>
           </Link>
           <button
-            className={`flex flex-col items-center gap-1 transition-colors ${
+            className={`flex flex-col items-center gap-0.5 transition-colors ${
               chapter.isBookmarked ? "text-primary" : theme.muted
             }`}
             onClick={onBookmarkToggle}
             type="button"
           >
-            <span className="material-symbols-outlined">
+            <span className="material-symbols-outlined text-xl">
               {chapter.isBookmarked ? "bookmark" : "bookmark_add"}
             </span>
-            <span className="text-[10px] font-bold uppercase tracking-tighter">Save</span>
+            <span className="text-[9px] font-bold uppercase tracking-tighter">Save</span>
           </button>
-          <div className={`flex flex-col items-center gap-1 transition-colors ${theme.muted}`}>
-            <span className="material-symbols-outlined">percent</span>
-            <span className="text-[10px] font-bold uppercase tracking-tighter">{progressPercent}%</span>
+          <div className={`flex flex-col items-center gap-0.5 transition-colors ${theme.muted}`}>
+            <span className="material-symbols-outlined text-xl">percent</span>
+            <span className="text-[9px] font-bold uppercase tracking-tighter">{progressPercent}%</span>
           </div>
         </div>
       </section>
@@ -528,16 +528,16 @@ function MobileReader({
         {settingsOpen ? (
           <motion.div
             animate={{ opacity: 1, y: 0 }}
-            className={`fixed bottom-24 left-4 right-4 z-[60] rounded-2xl border p-6 shadow-2xl ${theme.panel}`}
+            className={`fixed bottom-20 left-3 right-3 z-[60] rounded-xl border p-4 shadow-2xl ${theme.panel}`}
             exit={{ opacity: 0, y: 16 }}
             initial={{ opacity: 0, y: 24 }}
           >
-            <div className="space-y-6">
+            <div className="space-y-4">
               <div>
-                <span className={`mb-3 block text-xs font-bold uppercase tracking-widest ${theme.muted}`}>
+                <span className={`mb-2 block text-[10px] font-bold uppercase tracking-wider ${theme.muted}`}>
                   Background
                 </span>
-                <div className="flex gap-3">
+                <div className="flex gap-2">
                   {[
                     ["light", "bg-[#f8f8f5] border-primary"],
                     ["sepia", "bg-[#f4ecd8] border-slate-200"],
@@ -545,7 +545,7 @@ function MobileReader({
                   ].map(([value, swatch]) => (
                     <button
                       aria-label={`${value} theme`}
-                      className={`h-10 flex-1 rounded-lg border-2 transition-all ${swatch} ${
+                      className={`h-8 flex-1 rounded-lg border-2 transition-all ${swatch} ${
                         readerTheme === value ? "ring-2 ring-primary/20" : ""
                       }`}
                       key={value}
@@ -557,35 +557,35 @@ function MobileReader({
               </div>
 
               <div className="flex items-center justify-between">
-                <span className={`text-xs font-bold uppercase tracking-widest ${theme.muted}`}>
+                <span className={`text-[10px] font-bold uppercase tracking-wider ${theme.muted}`}>
                   Font Size
                 </span>
-                <div className="flex items-center gap-6">
+                <div className="flex items-center gap-4">
                   <button
                     className="transition-colors hover:text-primary"
                     onClick={() => onSetFontSize(Math.max(fontSize - 1, 18))}
                     type="button"
                   >
-                    <span className="material-symbols-outlined">text_fields</span>
+                    <span className="material-symbols-outlined text-xl">text_fields</span>
                   </button>
-                  <span className="text-lg font-bold">{fontSize}</span>
+                  <span className="text-base font-bold">{fontSize}</span>
                   <button
                     className="transition-colors hover:text-primary"
                     onClick={() => onSetFontSize(Math.min(fontSize + 1, 24))}
                     type="button"
                   >
-                    <span className="material-symbols-outlined text-3xl">text_fields</span>
+                    <span className="material-symbols-outlined text-2xl">text_fields</span>
                   </button>
                 </div>
               </div>
 
               <div>
-                <span className={`mb-3 block text-xs font-bold uppercase tracking-widest ${theme.muted}`}>
+                <span className={`mb-2 block text-[10px] font-bold uppercase tracking-wider ${theme.muted}`}>
                   Typeface
                 </span>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-2 gap-2">
                   <button
-                    className={`rounded-lg border px-4 py-2 text-sm ${
+                    className={`rounded-lg border px-3 py-1.5 text-xs ${
                       fontFamily === "serif"
                         ? "border-primary bg-primary/10 text-primary"
                         : theme.panelSecondary
@@ -596,7 +596,7 @@ function MobileReader({
                     Serif
                   </button>
                   <button
-                    className={`rounded-lg border px-4 py-2 text-sm ${
+                    className={`rounded-lg border px-3 py-1.5 text-xs ${
                       fontFamily === "sans"
                         ? "border-primary bg-primary/10 text-primary"
                         : theme.panelSecondary

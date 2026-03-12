@@ -115,7 +115,7 @@ function DesktopCreatorApplicationSubmitted({
               © 2024 StoryArc Media. All rights reserved.
             </p>
             <div className="flex gap-6">
-              <Link className="text-sm text-slate-500 transition-colors hover:text-primary dark:text-slate-500" to="/about">
+              <Link className="text-sm text-slate-500 transition-colors hover:text-primary dark:text-slate-500" to="/privacy">
                 Privacy Policy
               </Link>
               <Link className="text-sm text-slate-500 transition-colors hover:text-primary dark:text-slate-500" to="/terms">
@@ -140,30 +140,30 @@ function MobileCreatorApplicationSubmitted({
 }) {
   return (
     <div className="min-h-screen bg-background-light font-display text-slate-900 dark:bg-background-dark dark:text-slate-100 md:hidden">
-      <header className="flex items-center justify-between border-b border-primary/10 p-4">
-        <Link className="flex h-10 w-10 items-center justify-center rounded-full hover:bg-primary/10" to="/dashboard">
-          <span className="material-symbols-outlined text-slate-900 dark:text-slate-100">arrow_back</span>
+      <header className="flex items-center justify-between border-b border-primary/10 px-4 py-3">
+        <Link className="flex size-9 items-center justify-center rounded-lg text-slate-900 transition-colors hover:bg-slate-200 dark:text-slate-100 dark:hover:bg-primary/20" to="/dashboard">
+          <span className="material-symbols-outlined text-xl">arrow_back</span>
         </Link>
-        <h1 className="text-lg font-bold tracking-tight">Application Status</h1>
-        <div className="w-10" />
+        <h1 className="text-base font-bold tracking-tight">Application Status</h1>
+        <div className="w-9" />
       </header>
 
-      <main className="mx-auto flex w-full max-w-md flex-1 flex-col items-center px-6 py-10">
+      <main className="mx-auto flex w-full max-w-md flex-1 flex-col items-center px-4 py-6">
         <AccountNotice notice={notice} onDismiss={clearNotice} />
 
-        <div className="mb-10 mt-6 flex w-full flex-col items-center text-center">
-          <div className="mb-6 flex h-24 w-24 items-center justify-center rounded-full border border-primary/30 bg-primary/20">
-            <span className="material-symbols-outlined text-5xl text-primary">check_circle</span>
+        <div className="mb-6 mt-4 flex w-full flex-col items-center text-center">
+          <div className="mb-4 flex size-16 items-center justify-center rounded-full border border-primary/30 bg-primary/20">
+            <span className="material-symbols-outlined text-4xl text-primary">check_circle</span>
           </div>
-          <h2 className="mb-2 text-sm font-bold uppercase tracking-widest text-primary">Success!</h2>
-          <h3 className="mb-4 text-2xl font-bold">Application Submitted</h3>
-          <p className="leading-relaxed text-slate-600 dark:text-slate-400">
+          <h2 className="mb-1.5 text-[10px] font-bold uppercase tracking-wider text-primary">Success!</h2>
+          <h3 className="mb-3 text-lg font-bold">Application Submitted</h3>
+          <p className="text-sm leading-relaxed text-slate-600 dark:text-slate-400">
             Thank you for applying to StoryArc. Your application has been successfully
             received and is now under review by our editorial team.
           </p>
         </div>
 
-        <div className="mb-10 w-full">
+        <div className="mb-6 w-full">
           <div className="relative aspect-video overflow-hidden rounded-xl border border-primary/10 bg-primary/5">
             <div className="absolute inset-0 bg-gradient-to-t from-background-dark/80 to-transparent" />
             <img
@@ -174,28 +174,28 @@ function MobileCreatorApplicationSubmitted({
           </div>
         </div>
 
-        <div className="mb-12 w-full">
-          <h4 className="mb-6 text-center text-xl font-bold">What happens next?</h4>
+        <div className="mb-8 w-full">
+          <h4 className="mb-4 text-center text-base font-bold">What happens next?</h4>
           <div className="space-y-0">
             {creatorSubmissionSteps.map((step, index) => (
-              <div className="grid grid-cols-[48px_1fr] gap-x-4" key={step.title}>
+              <div className="grid grid-cols-[36px_1fr] gap-x-3" key={step.title}>
                 <div className="flex flex-col items-center">
                   <div
-                    className={`flex h-8 w-8 items-center justify-center rounded-full ${
+                    className={`flex size-7 items-center justify-center rounded-full ${
                       step.complete
                         ? "bg-primary text-background-dark"
                         : "border border-primary/50 text-primary"
                     }`}
                   >
-                    <span className="material-symbols-outlined text-sm">{step.icon}</span>
+                    <span className="material-symbols-outlined text-xs">{step.icon}</span>
                   </div>
                   {index !== creatorSubmissionSteps.length - 1 ? (
-                    <div className="my-1 h-10 w-px bg-primary/30" />
+                    <div className="my-1 h-8 w-px bg-primary/30" />
                   ) : null}
                 </div>
-                <div className={`${index !== creatorSubmissionSteps.length - 1 ? "pb-6" : "pb-2"}`}>
-                  <p className="font-bold">{step.title}</p>
-                  <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+                <div className={`${index !== creatorSubmissionSteps.length - 1 ? "pb-4" : "pb-2"}`}>
+                  <p className="text-sm font-bold">{step.title}</p>
+                  <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
                     {step.description}
                   </p>
                 </div>
@@ -205,17 +205,17 @@ function MobileCreatorApplicationSubmitted({
         </div>
       </main>
 
-      <footer className="sticky bottom-0 border-t border-primary/10 bg-background-light p-6 backdrop-blur-md dark:bg-background-dark/90">
-        <div className="mx-auto max-w-md space-y-3">
+      <footer className="sticky bottom-0 border-t border-primary/10 bg-background-light px-4 py-4 backdrop-blur-md dark:bg-background-dark/90">
+        <div className="mx-auto max-w-md space-y-2">
           <button
-            className="w-full rounded-xl bg-primary py-4 font-bold text-background-dark shadow-lg shadow-primary/10 transition-all active:scale-[0.98]"
+            className="w-full rounded-xl bg-primary py-3 text-sm font-bold text-background-dark shadow-lg shadow-primary/10 transition-all active:scale-[0.98]"
             onClick={onReturn}
             type="button"
           >
             Back to Dashboard
           </button>
           <button
-            className="w-full rounded-xl border border-primary/20 bg-primary/10 py-4 font-semibold text-primary transition-all hover:bg-primary/20"
+            className="w-full rounded-xl border border-primary/20 bg-primary/10 py-3 text-sm font-semibold text-primary transition-all hover:bg-primary/20"
             onClick={onViewDetails}
             type="button"
           >

@@ -17,7 +17,7 @@ function LoadingState() {
   return <RouteLoadingScreen />;
 }
 
-function EmptyState({ activeGenre, query }) {
+function EmptyState({ activeGenre, compact = false, query }) {
   const description = query
     ? `No stories matched "${query}"${activeGenre ? ` in ${activeGenre}` : ""}.`
     : activeGenre
@@ -25,9 +25,15 @@ function EmptyState({ activeGenre, query }) {
       : "No published stories are available to browse yet.";
 
   return (
-    <div className="rounded-3xl border border-primary/10 bg-primary/5 p-8 text-center">
-      <h2 className="text-2xl font-bold">Nothing to browse yet</h2>
-      <p className="mt-3 text-sm text-slate-600 dark:text-slate-400">
+    <div
+      className={`rounded-xl border border-primary/10 bg-primary/5 text-center ${
+        compact ? "p-5" : "rounded-3xl p-8"
+      }`}
+    >
+      <h2 className={compact ? "text-lg font-bold" : "text-2xl font-bold"}>
+        Nothing to browse yet
+      </h2>
+      <p className={`text-slate-600 dark:text-slate-400 ${compact ? "mt-2 text-xs" : "mt-3 text-sm"}`}>
         {description}
       </p>
     </div>
@@ -42,10 +48,12 @@ function getBrowseErrorMessage(error) {
   return error?.message || "We could not load the browse catalog right now.";
 }
 
-function GenrePill({ active = false, label, onClick }) {
+function GenrePill({ active = false, compact = false, label, onClick }) {
   return (
     <button
-      className={`rounded-full px-4 py-2 text-xs font-black uppercase tracking-[0.18em] transition-colors ${
+      className={`rounded-full font-black uppercase transition-colors whitespace-nowrap ${
+        compact ? "px-3 py-1.5 text-[10px] tracking-[0.14em]" : "px-4 py-2 text-xs tracking-[0.18em]"
+      } ${
         active
           ? "bg-primary text-background-dark"
           : "bg-primary/10 text-primary hover:bg-primary/20"
@@ -101,29 +109,29 @@ function StoryGrid({ stories }) {
 
 function MobileStoryList({ stories }) {
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       {stories.map((story) => (
-        <Link key={story.slug} to={buildStoryHref(story.slug)}>
-          <article className="flex gap-3 rounded-3xl border border-primary/10 bg-white p-3 dark:bg-primary/5">
+        <Link key={story.slug} to={buildStoryHref(story.slug)} className="block">
+          <article className="flex gap-2.5 rounded-xl border border-primary/10 bg-white p-2.5 dark:bg-primary/5">
             <img
               alt={story.title}
-              className="h-28 w-24 rounded-2xl object-cover"
+              className="h-20 w-16 shrink-0 rounded-lg object-cover"
               src={story.coverImage}
             />
             <div className="min-w-0 flex-1">
-              <h4 className="line-clamp-2 text-base font-bold">{story.title}</h4>
-              <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+              <h4 className="line-clamp-2 text-sm font-bold">{story.title}</h4>
+              <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
                 {story.authorName}
               </p>
-              <div className="mt-3 flex flex-wrap gap-2">
-                <span className="rounded-full bg-primary/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-primary">
+              <div className="mt-2 flex flex-wrap gap-1.5">
+                <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide text-primary">
                   {story.genreLabel}
                 </span>
-                <span className="rounded-full bg-slate-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-slate-500 dark:bg-slate-900 dark:text-slate-400">
+                <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide text-slate-500 dark:bg-slate-900 dark:text-slate-400">
                   {story.statusLabel}
                 </span>
               </div>
-              <p className="mt-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
+              <p className="mt-2 text-[10px] font-semibold uppercase tracking-wider text-slate-400">
                 {story.readsLabel} reads
               </p>
             </div>
@@ -239,28 +247,28 @@ function MobileBrowse({
 
   return (
     <div className="min-h-screen bg-background-light font-display text-slate-900 dark:bg-background-dark dark:text-slate-100 md:hidden">
-      <header className="sticky top-0 z-50 border-b border-primary/10 bg-background-light/95 px-4 pb-4 pt-5 backdrop-blur-sm dark:bg-background-dark/95">
-        <div className="mb-4 flex items-center justify-between gap-4">
+      <header className="sticky top-0 z-50 border-b border-primary/10 bg-background-light/95 px-4 py-3 backdrop-blur-sm dark:bg-background-dark/95">
+        <div className="mb-3 flex items-center justify-between gap-4">
           <button
-            className="flex h-10 w-10 items-center justify-center text-primary"
+            className="flex size-9 items-center justify-center rounded-lg text-primary transition-colors hover:bg-slate-200 dark:hover:bg-primary/20"
             onClick={() => navigate(-1)}
             type="button"
           >
-            <span className="material-symbols-outlined">arrow_back</span>
+            <span className="material-symbols-outlined text-xl">arrow_back</span>
           </button>
-          <h1 className="flex-1 text-center text-lg font-bold tracking-tight">
+          <h1 className="flex-1 text-center text-base font-bold tracking-tight">
             Browse
           </h1>
-          <div className="w-10" />
+          <div className="w-9" />
         </div>
 
         <form onSubmit={onSearchSubmit}>
-          <div className="flex h-12 items-center rounded-2xl bg-slate-100 dark:bg-primary/10">
-            <span className="material-symbols-outlined px-4 text-slate-400">
+          <div className="flex h-10 items-center rounded-xl bg-slate-100 dark:bg-primary/10">
+            <span className="material-symbols-outlined px-3 text-lg text-slate-400">
               search
             </span>
             <input
-              className="h-full w-full border-none bg-transparent pr-4 text-base focus:ring-0"
+              className="h-full w-full border-none bg-transparent pr-3 text-base focus:ring-0"
               onChange={(event) => setSearchTerm(event.target.value)}
               placeholder="Search the browse catalog"
               value={searchTerm}
@@ -269,30 +277,32 @@ function MobileBrowse({
         </form>
       </header>
 
-      <main className="space-y-8 px-4 pb-28 pt-6">
+      <main className="space-y-5 px-4 pb-24 pt-4">
         <Reveal as="section">
-          <p className="text-sm font-semibold uppercase tracking-[0.24em] text-primary">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-primary">
             Browse catalog
           </p>
-          <h2 className="mt-2 text-3xl font-black tracking-tight">
+          <h2 className="mt-1.5 text-2xl font-black tracking-tight">
             {activeGenreLabel ? activeGenreLabel : "All stories"}
           </h2>
-          <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
-            {data.stories.length} backend-backed stories
+          <p className="mt-1.5 text-xs text-slate-500 dark:text-slate-400">
+            {data.stories.length} stories
             {query ? ` matching "${query}"` : ""}
           </p>
         </Reveal>
 
-        <Reveal as="section" className="space-y-3">
-          <div className="no-scrollbar flex gap-3 overflow-x-auto pb-2">
+        <Reveal as="section" className="space-y-2">
+          <div className="no-scrollbar flex gap-2 overflow-x-auto pb-1">
             <GenrePill
               active={!activeGenreLabel}
+              compact
               label="All"
               onClick={() => onGenreChange("")}
             />
             {data.genres.map((genre) => (
               <GenrePill
                 active={activeGenreLabel === genre.label || activeGenreLabel === genre.slug}
+                compact
                 key={genre.slug}
                 label={genre.label}
                 onClick={() => onGenreChange(genre.slug)}
@@ -301,12 +311,12 @@ function MobileBrowse({
           </div>
         </Reveal>
 
-        <Reveal as="section" className="space-y-4">
-          <h3 className="text-xl font-bold">Stories</h3>
+        <Reveal as="section" className="space-y-3">
+          <h3 className="text-base font-bold">Stories</h3>
           {data.stories.length ? (
             <MobileStoryList stories={data.stories} />
           ) : (
-            <EmptyState activeGenre={activeGenreLabel} query={query} />
+            <EmptyState activeGenre={activeGenreLabel} compact query={query} />
           )}
         </Reveal>
       </main>

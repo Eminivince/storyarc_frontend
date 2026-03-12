@@ -374,6 +374,9 @@ export default function TermsPage() {
           </div>
 
           <div className="flex flex-wrap items-center gap-5 text-sm text-slate-500 dark:text-slate-400">
+            <Link className="transition-colors hover:text-primary" to="/privacy">
+              Privacy
+            </Link>
             <Link className="transition-colors hover:text-primary" to="/">
               Home
             </Link>

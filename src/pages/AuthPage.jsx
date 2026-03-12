@@ -458,9 +458,9 @@ function DesktopAuth() {
                     Terms of Service
                   </Link>{" "}
                   and{" "}
-                  <a className="text-primary hover:underline" href="#">
+                  <Link className="text-primary hover:underline" to="/privacy">
                     Privacy Policy
-                  </a>
+                  </Link>
                   .
                 </p>
               </motion.div>
@@ -696,9 +696,9 @@ function MobileAuth() {
               Terms of Service
             </Link>{" "}
             and{" "}
-            <a className="text-primary underline" href="#">
+            <Link className="text-primary underline" to="/privacy">
               Privacy Policy
-            </a>
+            </Link>
           </p>
         </div>
       </div>

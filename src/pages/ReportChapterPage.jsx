@@ -155,41 +155,41 @@ function MobileReportModal({
   selectedReason,
 }) {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background-light p-4 font-display text-slate-900 dark:bg-background-dark dark:text-slate-100 md:hidden">
+    <div className="flex min-h-screen items-center justify-center bg-background-light p-3 font-display text-slate-900 dark:bg-background-dark dark:text-slate-100 md:hidden">
       <motion.div
         animate={{ opacity: 1, y: 0 }}
         className="w-full max-w-md overflow-hidden rounded-xl border border-slate-200 bg-white shadow-2xl dark:border-primary/10 dark:bg-zinc-900/50"
         initial={{ opacity: 0, y: 18 }}
       >
-        <div className="flex items-center justify-between border-b border-slate-200 p-5 dark:border-primary/10">
-          <div className="flex items-center gap-3">
-            <span className="material-symbols-outlined text-primary">
+        <div className="flex items-center justify-between border-b border-slate-200 px-4 py-3 dark:border-primary/10">
+          <div className="flex items-center gap-2">
+            <span className="material-symbols-outlined text-lg text-primary">
               report_problem
             </span>
-            <h1 className="text-xl font-bold tracking-tight">Report Content</h1>
+            <h1 className="text-base font-bold tracking-tight">Report Content</h1>
           </div>
           <button
-            className="text-slate-500 transition-colors hover:text-slate-800 dark:text-slate-400 dark:hover:text-primary"
+            className="flex size-8 items-center justify-center rounded-lg text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-800 dark:text-slate-400 dark:hover:bg-primary/10 dark:hover:text-primary"
             onClick={onClose}
             type="button"
           >
-            <span className="material-symbols-outlined">close</span>
+            <span className="material-symbols-outlined text-xl">close</span>
           </button>
         </div>
 
-        <div className="space-y-6 p-5">
+        <div className="space-y-4 p-4">
           <div>
-            <p className="mb-4 text-sm text-slate-600 dark:text-slate-400">
+            <p className="mb-3 text-xs text-slate-600 dark:text-slate-400">
               Please select the most relevant reason for reporting this chapter.
               Your feedback helps us keep the community safe.
             </p>
-            <div className="space-y-3">
+            <div className="space-y-2">
               {mobileReportReasons.map((reason) => {
                 const isSelected = selectedReason === reason;
 
                 return (
                   <button
-                    className={`flex w-full items-center rounded-lg border p-4 text-left transition-all ${
+                    className={`flex w-full items-center rounded-lg border p-2.5 text-left transition-all ${
                       isSelected
                         ? "border-primary/40 bg-primary/5"
                         : "border-slate-200 bg-slate-50 hover:border-primary/40 dark:border-primary/5 dark:bg-primary/5"
@@ -199,13 +199,13 @@ function MobileReportModal({
                     type="button"
                   >
                     <span
-                      className={`material-symbols-outlined mr-3 text-primary ${
+                      className={`material-symbols-outlined mr-2 text-lg text-primary ${
                         isSelected ? "fill-1" : ""
                       }`}
                     >
                       radio_button_checked
                     </span>
-                    <span className="font-medium transition-colors">
+                    <span className="text-sm font-medium transition-colors">
                       {reason}
                     </span>
                   </button>
@@ -214,33 +214,33 @@ function MobileReportModal({
             </div>
           </div>
 
-          <div className="space-y-2">
-            <label className="text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-primary/70">
+          <div className="space-y-1.5">
+            <label className="text-[10px] font-semibold uppercase tracking-wider text-slate-500 dark:text-primary/70">
               Additional Details
             </label>
             <textarea
-              className="w-full resize-none rounded-lg border border-slate-200 bg-slate-50 p-4 text-slate-800 outline-none transition-all placeholder:text-slate-400 focus:border-transparent focus:ring-2 focus:ring-primary dark:border-primary/20 dark:bg-background-dark dark:text-slate-100"
+              className="w-full resize-none rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm text-slate-800 outline-none transition-all placeholder:text-slate-400 focus:border-transparent focus:ring-2 focus:ring-primary dark:border-primary/20 dark:bg-background-dark dark:text-slate-100"
               onChange={(event) => onDetailsChange(event.target.value)}
               placeholder="Provide more context to help our moderators..."
-              rows="4"
+              rows="3"
               value={details}
             />
-            <p className="text-right text-xs text-slate-500 dark:text-slate-500">
+            <p className="text-right text-[10px] text-slate-500 dark:text-slate-500">
               {details.length} / 500 characters
             </p>
           </div>
         </div>
 
-        <div className="flex flex-col gap-3 border-t border-slate-200 p-5 dark:border-primary/10">
+        <div className="flex flex-col gap-2 border-t border-slate-200 px-4 py-3 dark:border-primary/10">
           <button
-            className="w-full rounded-lg bg-primary px-4 py-3.5 font-bold text-background-dark shadow-lg shadow-primary/10 transition-transform active:scale-[0.98]"
+            className="w-full rounded-lg bg-primary px-4 py-3 text-sm font-bold text-background-dark shadow-lg shadow-primary/10 transition-transform active:scale-[0.98]"
             onClick={onSubmit}
             type="button"
           >
             Submit Report
           </button>
           <button
-            className="w-full rounded-lg bg-slate-100 px-4 py-3.5 font-semibold text-slate-700 transition-colors hover:bg-slate-200 dark:bg-primary/10 dark:text-primary dark:hover:bg-primary/20"
+            className="w-full rounded-lg bg-slate-100 px-4 py-3 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-200 dark:bg-primary/10 dark:text-primary dark:hover:bg-primary/20"
             onClick={onClose}
             type="button"
           >
@@ -248,9 +248,9 @@ function MobileReportModal({
           </button>
         </div>
 
-        <div className="flex items-center justify-center gap-2 pb-6 opacity-60">
-          <span className="material-symbols-outlined text-[16px]">security</span>
-          <span className="text-[10px] font-bold uppercase tracking-widest">
+        <div className="flex items-center justify-center gap-1.5 pb-4 opacity-60">
+          <span className="material-symbols-outlined text-sm">security</span>
+          <span className="text-[9px] font-bold uppercase tracking-wider">
             Encrypted Moderation Link
           </span>
         </div>

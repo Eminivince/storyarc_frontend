@@ -3,7 +3,7 @@ import { useAccount } from "../context/AccountContext";
 import { accountSettingsTabs } from "../data/accountFlow";
 import UserAvatar from "./UserAvatar";
 
-export default function AccountSettingsNav() {
+export default function AccountSettingsNav({ compact = false }) {
   const { pathname } = useLocation();
   const { profile } = useAccount();
 
@@ -55,13 +55,17 @@ export default function AccountSettingsNav() {
         </div>
       </aside>
 
-      <nav className="hide-scrollbar flex gap-6 overflow-x-auto border-b border-primary/10 lg:hidden">
+      <nav className={`hide-scrollbar flex overflow-x-auto border-b border-primary/10 lg:hidden ${
+        compact ? "gap-4 pb-2 pt-1.5" : "gap-6 pb-3 pt-1"
+      }`}>
         {accountSettingsTabs.map((tab) => {
           const active = pathname === tab.href;
 
           return (
             <Link
-              className={`shrink-0 border-b-2 px-1 pb-3 pt-1 text-sm font-bold transition-colors ${
+              className={`shrink-0 border-b-2 font-bold transition-colors ${
+                compact ? "px-1 pb-2 pt-1 text-xs" : "px-1 pb-3 pt-1 text-sm"
+              } ${
                 active
                   ? "border-primary text-primary"
                   : "border-transparent text-slate-500 dark:text-slate-400"

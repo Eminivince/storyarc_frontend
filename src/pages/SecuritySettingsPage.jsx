@@ -13,25 +13,31 @@ import {
   securitySessions,
 } from "../data/accountFlow";
 
-function PasswordForm({ fields, onChange, onSubmit, stacked = false }) {
+function PasswordForm({ compact = false, fields, onChange, onSubmit, stacked = false }) {
   const layoutClass = stacked ? "grid gap-4" : "grid gap-4 md:grid-cols-2";
 
   return (
-    <section className="rounded-3xl border border-primary/10 bg-white/80 p-6 dark:bg-primary/5">
-      <div className="mb-6">
-        <h2 className="text-xl font-bold">Password</h2>
-        <p className="text-sm text-slate-500 dark:text-slate-400">
+    <section
+      className={`rounded-xl border border-primary/10 bg-white/80 dark:bg-primary/5 ${
+        compact ? "p-4" : "rounded-3xl p-6"
+      }`}
+    >
+      <div className={compact ? "mb-4" : "mb-6"}>
+        <h2 className={compact ? "text-base font-bold" : "text-xl font-bold"}>Password</h2>
+        <p className={compact ? "text-xs text-slate-500" : "text-sm text-slate-500 dark:text-slate-400"}>
           Update your password to keep the account secure.
         </p>
       </div>
 
-      <div className={layoutClass}>
-        <label className="flex flex-col gap-2">
-          <span className="text-sm font-medium text-slate-500 dark:text-slate-400">
+      <div className={compact ? "grid gap-3" : layoutClass}>
+        <label className="flex flex-col gap-1.5">
+          <span className={compact ? "text-xs font-medium text-slate-500" : "text-sm font-medium text-slate-500 dark:text-slate-400"}>
             Current Password
           </span>
           <input
-            className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 focus:border-primary focus:ring-primary dark:border-primary/10 dark:bg-background-dark/60"
+            className={`rounded-xl border border-slate-200 bg-slate-50 focus:border-primary focus:ring-primary dark:border-primary/10 dark:bg-background-dark/60 ${
+              compact ? "px-3 py-2.5 text-base" : "rounded-2xl px-4 py-3"
+            }`}
             name="currentPassword"
             onChange={onChange}
             placeholder="••••••••"
@@ -42,12 +48,14 @@ function PasswordForm({ fields, onChange, onSubmit, stacked = false }) {
 
         {!stacked ? <div /> : null}
 
-        <label className="flex flex-col gap-2">
-          <span className="text-sm font-medium text-slate-500 dark:text-slate-400">
+        <label className="flex flex-col gap-1.5">
+          <span className={compact ? "text-xs font-medium text-slate-500" : "text-sm font-medium text-slate-500 dark:text-slate-400"}>
             New Password
           </span>
           <input
-            className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 focus:border-primary focus:ring-primary dark:border-primary/10 dark:bg-background-dark/60"
+            className={`rounded-xl border border-slate-200 bg-slate-50 focus:border-primary focus:ring-primary dark:border-primary/10 dark:bg-background-dark/60 ${
+              compact ? "px-3 py-2.5 text-base" : "rounded-2xl px-4 py-3"
+            }`}
             name="newPassword"
             onChange={onChange}
             placeholder="••••••••"
@@ -56,12 +64,14 @@ function PasswordForm({ fields, onChange, onSubmit, stacked = false }) {
           />
         </label>
 
-        <label className="flex flex-col gap-2">
-          <span className="text-sm font-medium text-slate-500 dark:text-slate-400">
+        <label className="flex flex-col gap-1.5">
+          <span className={compact ? "text-xs font-medium text-slate-500" : "text-sm font-medium text-slate-500 dark:text-slate-400"}>
             Confirm Password
           </span>
           <input
-            className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 focus:border-primary focus:ring-primary dark:border-primary/10 dark:bg-background-dark/60"
+            className={`rounded-xl border border-slate-200 bg-slate-50 focus:border-primary focus:ring-primary dark:border-primary/10 dark:bg-background-dark/60 ${
+              compact ? "px-3 py-2.5 text-base" : "rounded-2xl px-4 py-3"
+            }`}
             name="confirmPassword"
             onChange={onChange}
             placeholder="••••••••"
@@ -71,9 +81,11 @@ function PasswordForm({ fields, onChange, onSubmit, stacked = false }) {
         </label>
       </div>
 
-      <div className="mt-5 flex justify-end">
+      <div className={`flex justify-end ${compact ? "mt-4" : "mt-5"}`}>
         <button
-          className="rounded-2xl bg-primary px-5 py-3 text-sm font-bold text-background-dark transition-opacity hover:opacity-90"
+          className={`rounded-xl bg-primary font-bold text-background-dark transition-opacity hover:opacity-90 ${
+            compact ? "px-4 py-2.5 text-xs" : "rounded-2xl px-5 py-3 text-sm"
+          }`}
           onClick={onSubmit}
           type="button"
         >
@@ -84,37 +96,55 @@ function PasswordForm({ fields, onChange, onSubmit, stacked = false }) {
   );
 }
 
-function TwoFactorSection({ enabled }) {
+function TwoFactorSection({ compact = false, enabled }) {
   const badgeClasses = enabled
     ? "bg-emerald-500/15 text-emerald-500"
     : "bg-red-500/15 text-red-500";
 
   return (
-    <section className="rounded-3xl border border-primary/10 bg-white/80 p-6 dark:bg-primary/5">
-      <div className="mb-6 flex items-start justify-between gap-4">
+    <section
+      className={`rounded-xl border border-primary/10 bg-white/80 dark:bg-primary/5 ${
+        compact ? "p-4" : "rounded-3xl p-6"
+      }`}
+    >
+      <div className={`flex items-start justify-between gap-4 ${compact ? "mb-4" : "mb-6"}`}>
         <div>
-          <h2 className="text-xl font-bold">Two-Factor Authentication</h2>
-          <p className="text-sm text-slate-500 dark:text-slate-400">
+          <h2 className={compact ? "text-base font-bold" : "text-xl font-bold"}>
+            Two-Factor Authentication
+          </h2>
+          <p className={compact ? "text-xs text-slate-500" : "text-sm text-slate-500 dark:text-slate-400"}>
             Add an authenticator app or SMS code before premium purchases are approved.
           </p>
         </div>
-        <span className={`rounded-full px-3 py-1 text-xs font-bold uppercase ${badgeClasses}`}>
+        <span className={`rounded-full font-bold uppercase ${badgeClasses} ${
+          compact ? "px-2 py-0.5 text-[10px]" : "px-3 py-1 text-xs"
+        }`}>
           {enabled ? "Enabled" : "Disabled"}
         </span>
       </div>
 
-      <div className="rounded-2xl border border-dashed border-primary/30 bg-primary/5 p-4">
-        <div className="flex items-start gap-4">
-          <div className="rounded-full bg-primary/15 p-3 text-primary">
-            <span className="material-symbols-outlined">app_shortcut</span>
+      <div className={`rounded-xl border border-dashed border-primary/30 bg-primary/5 ${
+        compact ? "p-3" : "rounded-2xl p-4"
+      }`}>
+        <div className={`flex items-start ${compact ? "gap-3" : "gap-4"}`}>
+          <div className={`rounded-full bg-primary/15 text-primary ${
+            compact ? "p-2" : "p-3"
+          }`}>
+            <span className={`material-symbols-outlined ${compact ? "text-lg" : ""}`}>
+              app_shortcut
+            </span>
           </div>
           <div className="min-w-0 flex-1">
-            <h3 className="font-bold">Authenticator App</h3>
-            <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+            <h3 className={compact ? "text-sm font-bold" : "font-bold"}>Authenticator App</h3>
+            <p className={`text-slate-500 dark:text-slate-400 ${
+              compact ? "mt-0.5 text-xs" : "mt-1 text-sm"
+            }`}>
               Use Google Authenticator, Authy, or 1Password to generate secure codes.
             </p>
             <Link
-              className="mt-4 inline-flex rounded-2xl border-2 border-primary px-4 py-2 text-sm font-bold text-primary transition-colors hover:bg-primary hover:text-background-dark"
+              className={`inline-flex rounded-xl border-2 border-primary font-bold text-primary transition-colors hover:bg-primary hover:text-background-dark ${
+                compact ? "mt-3 px-3 py-1.5 text-xs" : "mt-4 rounded-2xl px-4 py-2 text-sm"
+              }`}
               to={enabled ? mfaSuccessHref : mfaChooseHref}
             >
               {enabled ? "Manage 2FA" : "Setup Authenticator"}
@@ -126,44 +156,58 @@ function TwoFactorSection({ enabled }) {
   );
 }
 
-function SessionsSection({ onRevoke }) {
+function SessionsSection({ compact = false, onRevoke }) {
   return (
-    <section className="rounded-3xl border border-primary/10 bg-white/80 p-6 dark:bg-primary/5">
-      <div className="mb-6">
-        <h2 className="text-xl font-bold">Active Sessions</h2>
-        <p className="text-sm text-slate-500 dark:text-slate-400">
+    <section
+      className={`rounded-xl border border-primary/10 bg-white/80 dark:bg-primary/5 ${
+        compact ? "p-4" : "rounded-3xl p-6"
+      }`}
+    >
+      <div className={compact ? "mb-4" : "mb-6"}>
+        <h2 className={compact ? "text-base font-bold" : "text-xl font-bold"}>Active Sessions</h2>
+        <p className={compact ? "text-xs text-slate-500" : "text-sm text-slate-500 dark:text-slate-400"}>
           Review every device that has recently accessed your account.
         </p>
       </div>
 
-      <div className="space-y-3">
+      <div className={compact ? "space-y-2" : "space-y-3"}>
         {securitySessions.map((session) => (
           <div
-            className="flex items-center justify-between gap-4 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 dark:border-primary/10 dark:bg-background-dark/50"
+            className={`flex items-center justify-between gap-3 border border-slate-200 bg-slate-50 dark:border-primary/10 dark:bg-background-dark/50 ${
+              compact ? "rounded-lg px-3 py-3" : "rounded-2xl px-4 py-4"
+            }`}
             key={session.id}
           >
-            <div className="flex items-center gap-4">
-              <div className="rounded-2xl bg-primary/10 p-3 text-primary">
-                <span className="material-symbols-outlined">{session.icon}</span>
+            <div className={`flex items-center min-w-0 flex-1 ${compact ? "gap-3" : "gap-4"}`}>
+              <div className={`shrink-0 rounded-xl bg-primary/10 text-primary ${
+                compact ? "p-2" : "rounded-2xl p-3"
+              }`}>
+                <span className={`material-symbols-outlined ${compact ? "text-lg" : ""}`}>
+                  {session.icon}
+                </span>
               </div>
-              <div>
-                <div className="flex flex-wrap items-center gap-2">
-                  <p className="font-bold">{session.device}</p>
+              <div className="min-w-0">
+                <div className="flex flex-wrap items-center gap-1.5">
+                  <p className={compact ? "text-sm font-bold" : "font-bold"}>{session.device}</p>
                   {session.current ? (
-                    <span className="rounded-full bg-emerald-500/15 px-2 py-0.5 text-[10px] font-bold uppercase text-emerald-500">
+                    <span className="rounded-full bg-emerald-500/15 px-2 py-0.5 text-[9px] font-bold uppercase text-emerald-500">
                       Current
                     </span>
                   ) : null}
                 </div>
-                <p className="text-sm text-slate-500 dark:text-slate-400">
+                <p className={compact ? "text-xs text-slate-500" : "text-sm text-slate-500 dark:text-slate-400"}>
                   {session.location}
                 </p>
-                <p className="text-xs text-slate-400">{session.lastActive}</p>
+                <p className={compact ? "text-[10px] text-slate-400" : "text-xs text-slate-400"}>
+                  {session.lastActive}
+                </p>
               </div>
             </div>
 
             <button
-              className={`rounded-xl px-3 py-2 text-xs font-bold uppercase tracking-widest ${
+              className={`shrink-0 rounded-lg font-bold uppercase ${
+                compact ? "px-2.5 py-1.5 text-[10px]" : "rounded-xl px-3 py-2 text-xs"
+              } tracking-widest ${
                 session.current
                   ? "bg-primary/10 text-primary"
                   : "bg-red-500/10 text-red-500 transition-colors hover:bg-red-500/15"
@@ -246,34 +290,34 @@ function MobileSecuritySettings({
   return (
     <div className="min-h-screen bg-background-light font-display text-slate-900 dark:bg-background-dark dark:text-slate-100 md:hidden">
       <div className="relative flex h-screen flex-col overflow-hidden">
-        <header className="flex items-center border-b border-primary/10 px-4 py-4">
+        <header className="flex shrink-0 items-center border-b border-primary/10 bg-background-light px-4 py-3 dark:bg-background-dark">
           <Link
-            className="flex size-10 items-center justify-center rounded-full transition-colors hover:bg-primary/10"
+            className="flex size-9 items-center justify-center rounded-lg transition-colors hover:bg-slate-200 dark:hover:bg-primary/20"
             to={profileHref}
           >
-            <span className="material-symbols-outlined">arrow_back</span>
+            <span className="material-symbols-outlined text-xl">arrow_back</span>
           </Link>
-          <div className="ml-3">
-            <p className="text-[11px] font-bold uppercase tracking-widest text-primary">
+          <div className="ml-2">
+            <p className="text-[10px] font-bold uppercase tracking-wider text-primary">
               Trust Layer
             </p>
-            <h1 className="text-xl font-bold">Security Settings</h1>
+            <h1 className="text-base font-bold">Security Settings</h1>
           </div>
         </header>
 
-        <main className="flex-1 overflow-y-auto pb-28">
-          <div className="space-y-6 px-4 py-5">
+        <main className="flex-1 overflow-y-auto pb-24">
+          <div className="space-y-3 px-4 pt-3">
             <AccountNotice notice={notice} onDismiss={clearNotice} />
-            <AccountSettingsNav />
+            <AccountSettingsNav compact />
 
-            <section className="rounded-3xl border border-primary/20 bg-primary/10 p-4">
-              <div className="flex items-start gap-3">
-                <span className="material-symbols-outlined text-primary">shield</span>
+            <section className="rounded-xl border border-primary/20 bg-primary/10 p-3">
+              <div className="flex items-start gap-2.5">
+                <span className="material-symbols-outlined text-primary text-lg">shield</span>
                 <div>
-                  <h2 className="font-bold text-primary">Security Checkup</h2>
-                  <div className="mt-2 space-y-1">
+                  <h2 className="text-sm font-bold text-primary">Security Checkup</h2>
+                  <div className="mt-1.5 space-y-0.5">
                     {securityCheckItems.map((item) => (
-                      <p className="text-sm text-slate-600 dark:text-slate-300" key={item.label}>
+                      <p className="text-xs text-slate-600 dark:text-slate-300" key={item.label}>
                         <span className="font-semibold text-slate-900 dark:text-slate-100">
                           {item.label}:
                         </span>{" "}
@@ -285,9 +329,9 @@ function MobileSecuritySettings({
               </div>
             </section>
 
-            <PasswordForm fields={fields} onChange={onChange} onSubmit={onSubmit} stacked />
-            <TwoFactorSection enabled={mfaEnabled} />
-            <SessionsSection onRevoke={onRevoke} />
+            <PasswordForm compact fields={fields} onChange={onChange} onSubmit={onSubmit} stacked />
+            <TwoFactorSection compact enabled={mfaEnabled} />
+            <SessionsSection compact onRevoke={onRevoke} />
           </div>
         </main>
 
