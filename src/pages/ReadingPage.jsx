@@ -1,5 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useScrollHide } from "../hooks/useScrollHide";
 import { Link, Navigate, useParams } from "react-router-dom";
 import ReaderStateScreen from "../components/ReaderStateScreen";
 import RouteLoadingScreen from "../components/RouteLoadingScreen";
@@ -11,7 +12,6 @@ import {
   buildStoryHref,
   readerLibraryHref,
 } from "../data/readerFlow";
-import { isRichTextHtml } from "../editor/richText";
 import { useToast } from "../context/ToastContext";
 import {
   useChapterQuery,
@@ -148,32 +148,6 @@ function scrollToReaderParagraph(paragraphIndex) {
   return true;
 }
 
-function ReaderRichTextBlock({
-  block,
-  blockClassName,
-  chapterSlug,
-  index,
-  transition,
-}) {
-  return (
-    <motion.div
-      className={`[&_a]:text-primary [&_a]:underline [&_a]:underline-offset-2 [&_blockquote]:my-5 [&_blockquote]:border-l-4 [&_blockquote]:border-primary/40 [&_blockquote]:pl-4 [&_blockquote]:italic [&_h1]:mt-10 [&_h1]:text-3xl [&_h1]:font-black [&_h2]:mt-8 [&_h2]:text-2xl [&_h2]:font-black [&_h3]:mt-6 [&_h3]:text-xl [&_h3]:font-bold [&_li]:my-1 [&_ol]:my-4 [&_ol]:list-decimal [&_ol]:pl-6 [&_p]:my-4 [&_ul]:my-4 [&_ul]:list-disc [&_ul]:pl-6 ${blockClassName}`}
-      data-reader-paragraph-index={index}
-      initial={{ opacity: 0, y: 18 }}
-      key={`${chapterSlug}-${index}`}
-      transition={transition}
-      viewport={{ amount: 0.2, once: true }}
-      whileInView={{ opacity: 1, y: 0 }}
-    >
-      {isRichTextHtml(block) ? (
-        <div dangerouslySetInnerHTML={{ __html: block }} />
-      ) : (
-        <p>{block}</p>
-      )}
-    </motion.div>
-  );
-}
-
 function DesktopReader({
   chapter,
   fontFamily,
@@ -273,14 +247,16 @@ function DesktopReader({
             style={{ fontSize: `${fontSize + 4}px` }}
           >
             {chapter.paragraphs.map((paragraph, index) => (
-              <ReaderRichTextBlock
-                block={paragraph}
-                blockClassName=""
-                chapterSlug={chapter.chapterSlug}
-                index={index}
+              <motion.p
+                data-reader-paragraph-index={index}
+                initial={{ opacity: 0, y: 18 }}
                 key={`${chapter.chapterSlug}-${index}`}
                 transition={{ delay: index * 0.03, duration: 0.25 }}
-              />
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ amount: 0.2, once: true }}
+              >
+                {paragraph}
+              </motion.p>
             ))}
           </div>
 
@@ -450,17 +426,23 @@ function MobileReader({
 }) {
   const theme = readerThemes[readerTheme];
   const fontClass = fontFamily === "serif" ? "font-serif" : "font-display";
+  const barVisible = useScrollHide();
 
   return (
     <div className={`min-h-screen font-display antialiased md:hidden ${theme.shell}`}>
-      <header className={`fixed left-0 right-0 top-0 z-50 flex items-center justify-between border-b px-3 py-2.5 backdrop-blur-md ${theme.chrome}`}>
-        <Link className="flex size-8 items-center justify-center rounded-lg transition-colors hover:bg-primary/10" to={buildStoryHref(story.slug)}>
-          <span className="material-symbols-outlined text-lg text-primary">arrow_back</span>
-        </Link>
-        <h1 className={`truncate px-2 text-xs font-semibold uppercase tracking-wide ${theme.muted}`}>{story.title}</h1>
-        <Link className="flex size-8 items-center justify-center rounded-lg transition-colors hover:bg-primary/10" to={buildReportChapterHref(story.slug, chapter.chapterSlug)}>
-          <span className="material-symbols-outlined text-lg text-primary">flag</span>
-        </Link>
+      <header className={`fixed left-0 right-0 top-0 z-50 flex flex-col border-b backdrop-blur-md ${theme.chrome}`}>
+        <div className="flex items-center justify-between px-3 py-2.5">
+          <Link className="flex size-8 items-center justify-center rounded-lg transition-colors hover:bg-primary/10" to={buildStoryHref(story.slug)}>
+            <span className="material-symbols-outlined text-lg text-primary">arrow_back</span>
+          </Link>
+          <h1 className={`truncate px-2 text-xs font-semibold uppercase tracking-wide ${theme.muted}`}>{story.title}</h1>
+          <Link className="flex size-8 items-center justify-center rounded-lg transition-colors hover:bg-primary/10" to={buildReportChapterHref(story.slug, chapter.chapterSlug)}>
+            <span className="material-symbols-outlined text-lg text-primary">flag</span>
+          </Link>
+        </div>
+        <div className={`h-0.5 w-full ${theme.track}`}>
+          <div className="h-full bg-primary" style={{ width: `${progressPercent}%` }} />
+        </div>
       </header>
 
       <main className="mx-auto max-w-2xl px-4 pb-24 pt-20">
@@ -476,14 +458,17 @@ function MobileReader({
           style={{ fontSize: `${fontSize}px` }}
         >
           {chapter.paragraphs.map((paragraph, index) => (
-            <ReaderRichTextBlock
-              block={paragraph}
-              blockClassName="mb-4"
-              chapterSlug={chapter.chapterSlug}
-              index={index}
+            <motion.p
+              className="mb-4"
+              data-reader-paragraph-index={index}
+              initial={{ opacity: 0, y: 16 }}
               key={`${chapter.chapterSlug}-${index}`}
               transition={{ delay: index * 0.03, duration: 0.25 }}
-            />
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ amount: 0.2, once: true }}
+            >
+              {paragraph}
+            </motion.p>
           ))}
         </article>
 
@@ -510,10 +495,10 @@ function MobileReader({
         </nav>
       </main>
 
-      <section className={`fixed bottom-0 left-0 right-0 z-50 border-t pb-safe ${theme.chrome}`}>
-        <div className={`h-0.5 w-full ${theme.track}`}>
-          <div className="h-full bg-primary" style={{ width: `${progressPercent}%` }} />
-        </div>
+      <section
+        className={`fixed bottom-0 left-0 right-0 z-50 border-t pb-safe transition-transform duration-300 ease-out ${theme.chrome}`}
+        style={{ transform: barVisible ? "translateY(0)" : "translateY(100%)" }}
+      >
         <div className="flex items-center justify-around px-3 py-2.5">
           <button
             className={`flex flex-col items-center gap-0.5 transition-colors ${settingsOpen ? "text-primary" : theme.muted}`}

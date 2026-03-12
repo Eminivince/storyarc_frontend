@@ -90,7 +90,16 @@ function LoadingContent() {
   );
 }
 
-export default function RouteLoadingScreen() {
+export default function RouteLoadingScreen({ message }) {
+  if (message) {
+    return (
+      <div className="flex min-h-[100svh] flex-col items-center justify-center gap-4 bg-background-light px-4 text-slate-900 dark:bg-background-dark dark:text-slate-100">
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+        <p className="text-sm font-semibold text-slate-600 dark:text-slate-400">{message}</p>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-[100svh] bg-background-light text-slate-900 dark:bg-background-dark dark:text-slate-100">
       <div className="mx-auto flex min-h-[100svh] max-w-7xl flex-col gap-6 px-4 py-5 sm:px-6 lg:px-8">

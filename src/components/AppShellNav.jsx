@@ -1,4 +1,6 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { useScrollHide } from "../hooks/useScrollHide";
 import { useAuth } from "../context/AuthContext";
 import { useToast } from "../context/ToastContext";
 import {
@@ -593,6 +595,7 @@ export function AppMobileTabBar({
 }) {
   const { pathname } = useLocation();
   const { activeStorySlug, enterReaderMode, enterWriterMode, getCreatorEntryHref, stories } = useCreator();
+  const navVisible = useScrollHide();
   let config = getReaderConfig(topGenre, getCreatorEntryHref());
   const resolvedCreatorStorySlug = resolveCreatorStorySlug(
     storySlug,
@@ -618,7 +621,8 @@ export function AppMobileTabBar({
 
   return (
     <nav
-      className={`fixed bottom-0 left-0 right-0 z-50 border-t border-primary/10 bg-background-light px-4 pb-6 pt-2 dark:bg-background-dark lg:hidden ${className}`.trim()}
+      className={`fixed bottom-0 left-0 right-0 z-50 border-t border-primary/10 bg-background-light px-4 pb-6 pt-2 transition-transform duration-300 ease-out dark:bg-background-dark lg:hidden ${className}`.trim()}
+      style={{ transform: navVisible ? "translateY(0)" : "translateY(100%)" }}
     >
       <div className={`mx-auto flex items-center ${overflowClasses} ${maxWidthClass}`.trim()}>
         {config.mobile.map((item) => (

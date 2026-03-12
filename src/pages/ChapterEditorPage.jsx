@@ -838,6 +838,7 @@ export default function ChapterEditorPage() {
     updateChapterDraft,
   } = useCreator();
   const chapterId = searchParams.get("chapterId");
+  const [isPublishing, setIsPublishing] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const autosaveStateRef = useRef({
     initialized: false,
@@ -1050,6 +1051,7 @@ export default function ChapterEditorPage() {
   }
 
   async function handlePublish() {
+    setIsPublishing(true);
     try {
       if (draft.publishType === "scheduled") {
         await scheduleChapter(story.slug, draft);
@@ -1061,6 +1063,8 @@ export default function ChapterEditorPage() {
       navigate(getCreatorPublishedChaptersHref(story.slug));
     } catch {
       // Errors are surfaced through the creator notice system.
+    } finally {
+      setIsPublishing(false);
     }
   }
 
@@ -1088,6 +1092,10 @@ export default function ChapterEditorPage() {
 
   if (chapterId && isLoadingChapterDraft && !draft.chapterId) {
     return <RouteLoadingScreen />;
+  }
+
+  if (isPublishing) {
+    return <RouteLoadingScreen message="Processing..." />;
   }
 
   return (
