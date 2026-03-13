@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import { PrefetchableChapterLink, PrefetchableStoryLink } from "../components/PrefetchableLink";
 import { AppDesktopSidebar, AppMobileTabBar } from "../components/AppShellNav";
 import Reveal from "../components/Reveal";
 import SkeletonBlock from "../components/SkeletonBlock";
@@ -87,8 +88,10 @@ function ContinueReadingCard({ currentReading, mobile = false }) {
     : "overflow-hidden rounded-[2rem] border border-primary/10 bg-white p-6 shadow-sm dark:bg-primary/5";
 
   return (
-    <Link
+    <PrefetchableChapterLink
+      chapterSlug={currentReading.chapterSlug}
       className="block"
+      storySlug={currentReading.storySlug}
       to={buildChapterHref(currentReading.storySlug, currentReading.chapterSlug)}
     >
       <motion.article className={cardClassName} whileHover={{ y: -4 }}>
@@ -144,7 +147,7 @@ function ContinueReadingCard({ currentReading, mobile = false }) {
           </div>
         </div>
       </motion.article>
-    </Link>
+    </PrefetchableChapterLink>
   );
 }
 
@@ -225,7 +228,7 @@ function DesktopLibrary({ currentReading, isLoading, profile, readingList }) {
               ) : readingList.length ? (
                 <div className="grid grid-cols-2 gap-6 xl:grid-cols-4">
                   {readingList.map((story, index) => (
-                    <Link key={story.storySlug} to={buildStoryHref(story.storySlug)}>
+                    <PrefetchableStoryLink key={story.storySlug} storySlug={story.storySlug} to={buildStoryHref(story.storySlug)}>
                       <motion.article
                         className="group"
                         initial={{ opacity: 0, y: 16 }}
@@ -248,7 +251,7 @@ function DesktopLibrary({ currentReading, isLoading, profile, readingList }) {
                           {story.authorName}
                         </p>
                       </motion.article>
-                    </Link>
+                    </PrefetchableStoryLink>
                   ))}
                 </div>
               ) : (
@@ -329,7 +332,7 @@ function MobileLibrary({ currentReading, isLoading, profile, readingList }) {
             ) : readingList.length ? (
               <div className="space-y-2">
                 {readingList.map((story) => (
-                  <Link key={story.storySlug} to={buildStoryHref(story.storySlug)}>
+                  <PrefetchableStoryLink key={story.storySlug} storySlug={story.storySlug} to={buildStoryHref(story.storySlug)}>
                     <motion.article
                       className="flex gap-2.5 rounded-xl border border-primary/10 bg-white p-2.5 dark:bg-primary/5"
                       whileHover={{ y: -4 }}
@@ -352,10 +355,10 @@ function MobileLibrary({ currentReading, isLoading, profile, readingList }) {
                             arrow_forward
                           </span>
                         </div>
-                      </div>
-                    </motion.article>
-                  </Link>
-                ))}
+                        </div>
+                      </motion.article>
+                    </PrefetchableStoryLink>
+                  ))}
               </div>
             ) : (
               <SectionEmptyState

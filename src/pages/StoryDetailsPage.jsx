@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { useMemo, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
+import { PrefetchableChapterLink } from "../components/PrefetchableLink";
 import ReaderStateScreen from "../components/ReaderStateScreen";
 import Reveal from "../components/Reveal";
 import RouteLoadingScreen from "../components/RouteLoadingScreen";
@@ -27,11 +28,24 @@ function LoadingState() {
   return <RouteLoadingScreen />;
 }
 
-function StoryAction({ children, to, tone = "primary" }) {
+function StoryAction({ children, prefetchChapter, to, tone = "primary" }) {
   const className =
     tone === "primary"
       ? "flex h-14 items-center justify-center gap-2 rounded-2xl bg-primary px-6 text-base font-bold text-background-dark shadow-lg shadow-primary/20"
       : "flex h-14 items-center justify-center gap-2 rounded-2xl border border-primary/20 bg-primary/5 px-6 text-base font-bold text-slate-900 dark:text-slate-100";
+
+  if (prefetchChapter) {
+    return (
+      <PrefetchableChapterLink
+        chapterSlug={prefetchChapter.chapterSlug}
+        className={className}
+        storySlug={prefetchChapter.storySlug}
+        to={to}
+      >
+        {children}
+      </PrefetchableChapterLink>
+    );
+  }
 
   return (
     <Link className={className} to={to}>
@@ -242,7 +256,10 @@ function DesktopStoryDetails({
 
                 <div className="flex flex-wrap gap-4">
                   {primaryChapterSlug ? (
-                    <StoryAction to={buildChapterHref(story.slug, primaryChapterSlug)}>
+                    <StoryAction
+                      prefetchChapter={{ chapterSlug: primaryChapterSlug, storySlug: story.slug }}
+                      to={buildChapterHref(story.slug, primaryChapterSlug)}
+                    >
                       <span className="material-symbols-outlined">menu_book</span>
                       {storyData.continueReading ? "Continue Reading" : "Start Reading"}
                     </StoryAction>
@@ -327,12 +344,14 @@ function DesktopStoryDetails({
                   }
 
                   return (
-                    <Link
+                    <PrefetchableChapterLink
+                      chapterSlug={chapter.chapterSlug}
                       key={chapter.chapterSlug}
+                      storySlug={story.slug}
                       to={buildChapterHref(story.slug, chapter.chapterSlug)}
                     >
                       {chapterCard}
-                    </Link>
+                    </PrefetchableChapterLink>
                   );
                 })}
               </div>
@@ -436,7 +455,10 @@ function MobileStoryDetails({
 
         <Reveal className="space-y-2.5">
           {primaryChapterSlug ? (
-            <StoryAction to={buildChapterHref(story.slug, primaryChapterSlug)}>
+            <StoryAction
+              prefetchChapter={{ chapterSlug: primaryChapterSlug, storySlug: story.slug }}
+              to={buildChapterHref(story.slug, primaryChapterSlug)}
+            >
               <span className="material-symbols-outlined text-base">menu_book</span>
               <span className="text-sm">
                 {storyData.continueReading ? "Continue Reading" : "Start Reading"}
@@ -506,12 +528,14 @@ function MobileStoryDetails({
               }
 
               return (
-                <Link
+                <PrefetchableChapterLink
+                  chapterSlug={chapter.chapterSlug}
                   key={chapter.chapterSlug}
+                  storySlug={story.slug}
                   to={buildChapterHref(story.slug, chapter.chapterSlug)}
                 >
                   {chapterCard}
-                </Link>
+                </PrefetchableChapterLink>
               );
             })}
           </div>

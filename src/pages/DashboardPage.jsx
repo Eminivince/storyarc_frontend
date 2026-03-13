@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { PrefetchableChapterLink, PrefetchableStoryLink } from "../components/PrefetchableLink";
 import { AppDesktopSidebar, AppMobileTabBar } from "../components/AppShellNav";
 import ReaderStateScreen from "../components/ReaderStateScreen";
 import Reveal from "../components/Reveal";
@@ -54,7 +55,7 @@ function StoryRow({ row }) {
 
       <div className="grid grid-cols-2 gap-4 xl:grid-cols-3 2xl:grid-cols-6">
         {row.stories.map((story, index) => (
-          <Link key={story.slug} to={buildStoryHref(story.slug)}>
+          <PrefetchableStoryLink key={story.slug} storySlug={story.slug} to={buildStoryHref(story.slug)}>
             <motion.article
               className="group flex h-full flex-col gap-3"
               initial={{ opacity: 0, y: 20 }}
@@ -95,7 +96,7 @@ function StoryRow({ row }) {
                 </div>
               </div>
             </motion.article>
-          </Link>
+          </PrefetchableStoryLink>
         ))}
       </div>
     </Reveal>
@@ -181,8 +182,10 @@ function DesktopDashboard({
                       ))}
                     </div>
                     <div className="mt-8 flex flex-wrap gap-4">
-                      <Link
+                      <PrefetchableChapterLink
+                        chapterSlug={data.featured.firstChapterSlug || "chapter-1"}
                         className="flex items-center gap-2 rounded-xl bg-primary px-6 py-3 font-bold text-background-dark"
+                        storySlug={data.featured.slug}
                         to={buildChapterHref(
                           data.featured.slug,
                           data.featured.firstChapterSlug || "chapter-1",
@@ -190,14 +193,15 @@ function DesktopDashboard({
                       >
                         <span className="material-symbols-outlined">play_arrow</span>
                         Start Reading
-                      </Link>
-                      <Link
+                      </PrefetchableChapterLink>
+                      <PrefetchableStoryLink
                         className="flex items-center gap-2 rounded-xl border border-white/20 bg-white/10 px-6 py-3 font-bold text-white backdrop-blur-sm"
+                        storySlug={data.featured.slug}
                         to={buildStoryHref(data.featured.slug)}
                       >
                         <span className="material-symbols-outlined">auto_stories</span>
                         View Story
-                      </Link>
+                      </PrefetchableStoryLink>
                     </div>
                   </div>
                 </div>
@@ -215,8 +219,10 @@ function DesktopDashboard({
 
                 <div className="grid gap-4 xl:grid-cols-3">
                   {data.continueReading.map((entry, index) => (
-                    <Link
+                    <PrefetchableChapterLink
+                      chapterSlug={entry.chapterSlug}
                       key={`${entry.storySlug}-${entry.chapterSlug}`}
+                      storySlug={entry.storySlug}
                       to={buildChapterHref(entry.storySlug, entry.chapterSlug)}
                     >
                       <motion.article
@@ -259,7 +265,7 @@ function DesktopDashboard({
                           </div>
                         </div>
                       </motion.article>
-                    </Link>
+                    </PrefetchableChapterLink>
                   ))}
                 </div>
               </Reveal>
@@ -300,7 +306,7 @@ function MobileDashboard({
 
         {data?.featured ? (
           <Reveal>
-            <Link className="block" to={buildStoryHref(data.featured.slug)}>
+            <PrefetchableStoryLink className="block" storySlug={data.featured.slug} to={buildStoryHref(data.featured.slug)}>
               <article className="overflow-hidden rounded-xl border border-primary/10">
                 <div className="relative min-h-[200px]">
                   <img
@@ -322,7 +328,7 @@ function MobileDashboard({
                   </div>
                 </div>
               </article>
-            </Link>
+            </PrefetchableStoryLink>
           </Reveal>
         ) : null}
 
@@ -331,8 +337,10 @@ function MobileDashboard({
             <h2 className="text-base font-bold">Continue reading</h2>
             <div className="flex flex-col gap-2">
               {data.continueReading.map((entry) => (
-                <Link
+                <PrefetchableChapterLink
+                  chapterSlug={entry.chapterSlug}
                   key={`${entry.storySlug}-${entry.chapterSlug}`}
+                  storySlug={entry.storySlug}
                   to={buildChapterHref(entry.storySlug, entry.chapterSlug)}
                 >
                   <article className="flex gap-2.5 rounded-xl border border-primary/10 bg-white p-2.5 dark:bg-primary/5">
@@ -359,7 +367,7 @@ function MobileDashboard({
                       </div>
                     </div>
                   </article>
-                </Link>
+                </PrefetchableChapterLink>
               ))}
             </div>
           </Reveal>
@@ -376,9 +384,10 @@ function MobileDashboard({
               </div>
               <div className="flex gap-3 overflow-x-auto pb-1 no-scrollbar">
                 {row.stories.map((story) => (
-                  <Link
+                  <PrefetchableStoryLink
                     className="block w-32 shrink-0"
                     key={story.slug}
+                    storySlug={story.slug}
                     to={buildStoryHref(story.slug)}
                   >
                     <article className="space-y-2">
@@ -394,7 +403,7 @@ function MobileDashboard({
                         </p>
                       </div>
                     </article>
-                  </Link>
+                  </PrefetchableStoryLink>
                 ))}
               </div>
             </Reveal>

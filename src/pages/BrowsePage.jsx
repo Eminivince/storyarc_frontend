@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { PrefetchableStoryLink } from "../components/PrefetchableLink";
 import { AppDesktopSidebar, AppMobileTabBar } from "../components/AppShellNav";
 import ReaderStateScreen from "../components/ReaderStateScreen";
 import Reveal from "../components/Reveal";
@@ -70,7 +71,7 @@ function StoryGrid({ stories }) {
   return (
     <div className="grid grid-cols-2 gap-6 lg:grid-cols-4 xl:grid-cols-5">
       {stories.map((story, index) => (
-        <Link className="group block" key={story.slug} to={buildStoryHref(story.slug)}>
+        <PrefetchableStoryLink className="group block" key={story.slug} storySlug={story.slug} to={buildStoryHref(story.slug)}>
           <motion.article
             initial={{ opacity: 0, y: 20 }}
             transition={{ delay: index * 0.04, duration: 0.28 }}
@@ -101,7 +102,7 @@ function StoryGrid({ stories }) {
               <span>{story.statusLabel}</span>
             </div>
           </motion.article>
-        </Link>
+        </PrefetchableStoryLink>
       ))}
     </div>
   );
@@ -111,7 +112,7 @@ function MobileStoryList({ stories }) {
   return (
     <div className="space-y-3">
       {stories.map((story) => (
-        <Link key={story.slug} to={buildStoryHref(story.slug)} className="block">
+        <PrefetchableStoryLink key={story.slug} storySlug={story.slug} to={buildStoryHref(story.slug)} className="block">
           <article className="flex gap-2.5 rounded-xl border border-primary/10 bg-white p-2.5 dark:bg-primary/5">
             <img
               alt={story.title}
@@ -136,7 +137,7 @@ function MobileStoryList({ stories }) {
               </p>
             </div>
           </article>
-        </Link>
+        </PrefetchableStoryLink>
       ))}
     </div>
   );

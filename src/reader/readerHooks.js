@@ -13,10 +13,13 @@ import {
   updateStoryRating,
 } from "./readerApi";
 
+const STALE_2_MIN = 2 * 60 * 1000;
+
 export function useReaderDashboardQuery() {
   return useQuery({
     queryKey: ["reader", "dashboard"],
     queryFn: fetchReaderDashboard,
+    staleTime: STALE_2_MIN,
   });
 }
 
@@ -24,6 +27,7 @@ export function useReaderHomeQuery() {
   return useQuery({
     queryKey: ["reader", "home"],
     queryFn: fetchReaderHome,
+    staleTime: STALE_2_MIN,
   });
 }
 
@@ -31,6 +35,7 @@ export function useReaderStoriesQuery(input) {
   return useQuery({
     queryKey: ["reader", "stories", input ?? {}],
     queryFn: () => fetchReaderStories(input),
+    staleTime: STALE_2_MIN,
   });
 }
 
@@ -38,6 +43,7 @@ export function useReaderSearchQuery(query) {
   return useQuery({
     queryKey: ["reader", "search", query ?? ""],
     queryFn: () => searchReaderCatalog({ query }),
+    staleTime: STALE_2_MIN,
   });
 }
 
@@ -46,6 +52,7 @@ export function useStoryDetailsQuery(storySlug) {
     enabled: Boolean(storySlug),
     queryKey: ["reader", "story", storySlug],
     queryFn: () => fetchStoryDetails(storySlug),
+    staleTime: 90_000,
   });
 }
 
@@ -54,6 +61,7 @@ export function useChapterQuery(storySlug, chapterSlug) {
     enabled: Boolean(storySlug && chapterSlug),
     queryKey: ["reader", "chapter", storySlug, chapterSlug],
     queryFn: () => fetchChapter(storySlug, chapterSlug),
+    staleTime: 90_000,
   });
 }
 
@@ -61,6 +69,7 @@ export function useBookmarksQuery() {
   return useQuery({
     queryKey: ["reader", "bookmarks"],
     queryFn: fetchBookmarks,
+    staleTime: 60_000,
   });
 }
 
@@ -116,5 +125,24 @@ export function useRemoveBookmarkMutation() {
       queryClient.invalidateQueries({ queryKey: ["reader", "story"] });
       queryClient.invalidateQueries({ queryKey: ["reader", "chapter"] });
     },
+  });
+}
+
+export function prefetchStoryDetails(queryClient, storySlug) {
+  if (!storySlug) return;
+  queryClient.prefetchQuery({
+    queryKey: ["reader", "story", storySlug],
+    queryFn: () => fetchStoryDetails(storySlug),
+    staleTime: 90_000,
+  });
+}
+
+export function prefetchChapter(queryClient, storySlug, chapterSlug) {
+  if (!storySlug || !chapterSlug) return;
+  prefetchStoryDetails(queryClient, storySlug);
+  queryClient.prefetchQuery({
+    queryKey: ["reader", "chapter", storySlug, chapterSlug],
+    queryFn: () => fetchChapter(storySlug, chapterSlug),
+    staleTime: 90_000,
   });
 }

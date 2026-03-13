@@ -56,7 +56,7 @@ export default function App() {
           )
         }
       >
-        <Routes key={location.pathname} location={location}>
+        <Routes location={location}>
           {appRoutes.map(({ component: Component, path }) => (
             <Route
               element={

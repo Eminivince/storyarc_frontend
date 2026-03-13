@@ -26,6 +26,7 @@ import {
   getCreatorStoryManagementHref,
   getCreatorVolumeManagerHref,
 } from "../data/creatorFlow";
+import { preloadRoute } from "../lib/routePreload";
 import { useCreator } from "../context/CreatorContext";
 import {
   buildBrowseHref,
@@ -420,6 +421,8 @@ function DesktopNavLink({ active, href, icon, label }) {
           ? "bg-primary font-bold text-background-dark"
           : "hover:bg-primary/10"
       }`}
+      onFocus={() => preloadRoute(href)}
+      onMouseEnter={() => preloadRoute(href)}
       to={href}
     >
       <span
@@ -436,7 +439,13 @@ function DesktopNavLink({ active, href, icon, label }) {
 
 function MobileNavLink({ active, dot, href, icon, label, onClick }) {
   return (
-    <Link className="group flex flex-col items-center gap-1" onClick={onClick} to={href}>
+    <Link
+      className="group flex flex-col items-center gap-1"
+      onClick={onClick}
+      onFocus={() => preloadRoute(href)}
+      onMouseEnter={() => preloadRoute(href)}
+      to={href}
+    >
       <div className="relative">
         <span
           className={`material-symbols-outlined transition-all duration-300 ${
@@ -518,7 +527,12 @@ export function AppDesktopSidebar({
 
   return (
     <aside className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col border-r border-primary/10 bg-background-light dark:bg-background-dark lg:flex">
-      <Link className="flex items-center gap-4 text-primary" to={config.homeHref}>
+      <Link
+        className="flex items-center gap-4 text-primary"
+        onFocus={() => preloadRoute(config.homeHref)}
+        onMouseEnter={() => preloadRoute(config.homeHref)}
+        to={config.homeHref}
+      >
         <div className="flex items-center gap-3 p-6">
           <div className="flex size-8 items-center justify-center rounded-lg bg-primary text-background-dark">
             <span className="material-symbols-outlined font-bold">auto_stories</span>

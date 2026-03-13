@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { useMemo, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { PrefetchableStoryLink } from "../components/PrefetchableLink";
 import { AppDesktopSidebar, AppMobileTabBar } from "../components/AppShellNav";
 import ReaderStateScreen from "../components/ReaderStateScreen";
 import Reveal from "../components/Reveal";
@@ -148,7 +149,7 @@ function DesktopSearchResults({
             {data.stories.length ? (
               <div className="grid grid-cols-2 gap-6 lg:grid-cols-4 xl:grid-cols-5">
                 {data.stories.map((story, index) => (
-                  <Link className="group block" key={story.slug} to={buildStoryHref(story.slug)}>
+                  <PrefetchableStoryLink className="group block" key={story.slug} storySlug={story.slug} to={buildStoryHref(story.slug)}>
                     <motion.article
                       initial={{ opacity: 0, y: 20 }}
                       transition={{ delay: index * 0.04, duration: 0.28 }}
@@ -179,7 +180,7 @@ function DesktopSearchResults({
                         <span>{story.statusLabel}</span>
                       </div>
                     </motion.article>
-                  </Link>
+                  </PrefetchableStoryLink>
                 ))}
               </div>
             ) : (
@@ -273,7 +274,7 @@ function MobileSearchResults({
           {data.stories.length ? (
             <div className="space-y-4 flex flex-col gap-1">
               {data.stories.map((story) => (
-                <Link key={story.slug} to={buildStoryHref(story.slug)}>
+                <PrefetchableStoryLink key={story.slug} storySlug={story.slug} to={buildStoryHref(story.slug)}>
                   <article className="flex gap-3 rounded-3xl border border-primary/10 bg-white p-3 dark:bg-primary/5">
                     <img
                       alt={story.title}
@@ -298,7 +299,7 @@ function MobileSearchResults({
                       </div>
                     </div>
                   </article>
-                </Link>
+                </PrefetchableStoryLink>
               ))}
             </div>
           ) : (
