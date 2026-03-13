@@ -3,7 +3,10 @@ export const creatorApplicationHref = "/creator/apply";
 export const creatorSubmittedHref = "/creator/application-submitted";
 export const authorDashboardHref = "/creator/dashboard";
 export const creatorCommunityHref = "/creator/community";
+export const creatorStoriesHref = "/creator/stories";
 export const creatorStoryCreateHref = "/creator/stories/new";
+export const creatorEarningsHref = "/creator/earnings";
+export const creatorWithdrawalHref = "/creator/withdrawal";
 
 function buildCreatorStoryHref(storySlug, suffix = "") {
   if (!storySlug) {
@@ -14,7 +17,7 @@ function buildCreatorStoryHref(storySlug, suffix = "") {
 }
 
 export function getCreatorStoryManagementHref(storySlug) {
-  return buildCreatorStoryHref(storySlug);
+  return storySlug ? buildCreatorStoryHref(storySlug) : creatorStoriesHref;
 }
 
 export function getCreatorChapterEditorHref(storySlug) {
@@ -104,6 +107,34 @@ export const creatorExperienceLevels = [
   },
 ];
 
+export const creatorContractTypeOptions = [
+  {
+    description:
+      "StoryArc gets platform exclusivity for contracted titles in exchange for the higher standard revenue share.",
+    label: "Exclusive",
+    value: "EXCLUSIVE",
+  },
+  {
+    description:
+      "You can distribute the work elsewhere, with a lower default revenue share on premium chapter sales.",
+    label: "Non-Exclusive",
+    value: "NON_EXCLUSIVE",
+  },
+];
+
+export const defaultCreatorContractTerms = {
+  exclusive: {
+    contractType: "EXCLUSIVE",
+    label: "Exclusive",
+    revenueSharePercent: 70,
+  },
+  nonExclusive: {
+    contractType: "NON_EXCLUSIVE",
+    label: "Non-Exclusive",
+    revenueSharePercent: 50,
+  },
+};
+
 export const initialCreatorApplication = {
   fullName: "Alex Thorne",
   email: "alex@storyarc.world",
@@ -112,6 +143,8 @@ export const initialCreatorApplication = {
   portfolioUrl: "https://storyarc.world/alex",
   motivation:
     "I want to join StoryArc because I’m building a premium long-form fantasy saga and I want an audience that values deep lore, consistent updates, and community-driven momentum. I’m looking for a platform that treats authors like long-term partners and gives me the tools to grow sustainably.",
+  requestedContractType: "",
+  wantsContract: false,
 };
 
 export const creatorSubmissionSteps = [

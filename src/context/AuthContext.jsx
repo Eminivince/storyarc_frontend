@@ -14,6 +14,9 @@ import {
   hasStoredRefreshToken,
   persistAuthTokens,
 } from "../auth/authStorage";
+import { useToast } from "../context/ToastContext";
+import { SESSION_EXPIRED_EVENT } from "../lib/apiClient";
+import { clearStoredAppMode } from "../lib/appMode";
 
 const AuthContext = createContext(null);
 const currentUserQueryKey = ["auth", "current-user"];
@@ -37,6 +40,7 @@ async function hydrateCurrentUser() {
 
 export function AuthProvider({ children }) {
   const queryClient = useQueryClient();
+  const { showToast } = useToast();
   const [user, setUser] = useState(null);
   const [hasStoredSession, setHasStoredSession] = useState(hasStoredRefreshToken());
   const bootstrapQuery = useQuery({
@@ -68,6 +72,23 @@ export function AuthProvider({ children }) {
     setHasStoredSession(false);
     queryClient.setQueryData(currentUserQueryKey, null);
   }, [bootstrapQuery.isError, queryClient]);
+
+  useEffect(() => {
+    function handleSessionExpired() {
+      clearStoredAppMode();
+      clearAuthTokens();
+      setUser(null);
+      setHasStoredSession(false);
+      queryClient.setQueryData(currentUserQueryKey, null);
+      showToast("Your session has expired. Please sign in again.", {
+        title: "Session expired",
+        tone: "info",
+      });
+    }
+
+    globalThis.addEventListener(SESSION_EXPIRED_EVENT, handleSessionExpired);
+    return () => globalThis.removeEventListener(SESSION_EXPIRED_EVENT, handleSessionExpired);
+  }, [queryClient, showToast]);
 
   const loginMutation = useMutation({
     mutationFn: loginAccount,
@@ -131,6 +152,7 @@ export function AuthProvider({ children }) {
     } catch {
       // Clear the local session even if the remote logout request fails.
     } finally {
+      clearStoredAppMode();
       clearAuthTokens();
       setUser(null);
       setHasStoredSession(false);

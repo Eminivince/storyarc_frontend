@@ -51,12 +51,16 @@ const CreatorApplicationPage = lazy(() =>
 const CreatorApplicationSubmittedPage = lazy(() =>
   import("../pages/CreatorApplicationSubmittedPage"),
 );
+const CreatorEarningsPage = lazy(() => import("../pages/CreatorEarningsPage"));
+const CreatorStoriesPage = lazy(() => import("../pages/CreatorStoriesPage"));
+const CreatorWithdrawalPage = lazy(() => import("../pages/CreatorWithdrawalPage"));
 const CreatorOnboardingPage = lazy(() =>
   import("../pages/CreatorOnboardingPage"),
 );
 const CreateStoryPage = lazy(() => import("../pages/CreateStoryPage"));
 const DashboardPage = lazy(() => import("../pages/DashboardPage"));
 const EditProfilePage = lazy(() => import("../pages/EditProfilePage"));
+const FollowingPage = lazy(() => import("../pages/FollowingPage"));
 const ForgotPasswordPage = lazy(() => import("../pages/ForgotPasswordPage"));
 const GenreSelectionPage = lazy(() => import("../pages/GenreSelectionPage"));
 const GiftSendingPage = lazy(() => import("../pages/GiftSendingPage"));
@@ -89,6 +93,8 @@ const ProfilePage = lazy(() => import("../pages/ProfilePage"));
 const PublishedChaptersPage = lazy(() => import("../pages/PublishedChaptersPage"));
 const ReadingPage = lazy(() => import("../pages/ReadingPage"));
 const ReaderLibraryPage = lazy(() => import("../pages/ReaderLibraryPage"));
+const ReadingListsPage = lazy(() => import("../pages/ReadingListsPage"));
+const ReadingListDetailsPage = lazy(() => import("../pages/ReadingListDetailsPage"));
 const ReadingPreferencesPage = lazy(() =>
   import("../pages/ReadingPreferencesPage"),
 );
@@ -99,10 +105,15 @@ const ScheduledChaptersPage = lazy(() =>
   import("../pages/ScheduledChaptersPage"),
 );
 const SearchResultsPage = lazy(() => import("../pages/SearchResultsPage"));
+const StoryRankingsPage = lazy(() => import("../pages/StoryRankingsPage"));
 const SecuritySettingsPage = lazy(() =>
   import("../pages/SecuritySettingsPage"),
 );
+const SharedReadingListPage = lazy(() =>
+  import("../pages/SharedReadingListPage"),
+);
 const StoryDetailsPage = lazy(() => import("../pages/StoryDetailsPage"));
+const StoryReviewsPage = lazy(() => import("../pages/StoryReviewsPage"));
 const StoryManagementPage = lazy(() => import("../pages/StoryManagementPage"));
 const SubscriptionPage = lazy(() => import("../pages/SubscriptionPage"));
 const TermsPage = lazy(() => import("../pages/TermsPage"));
@@ -237,9 +248,23 @@ export const appRouteGroups = [
     routes: [
       { path: "/dashboard", component: DashboardPage, page: "DashboardPage" },
       { path: "/browse", component: BrowsePage, page: "BrowsePage" },
+      { path: "/following", component: FollowingPage, page: "FollowingPage" },
       { path: "/library", component: ReaderLibraryPage, page: "ReaderLibraryPage" },
+      { path: "/reading-lists", component: ReadingListsPage, page: "ReadingListsPage" },
+      {
+        path: "/reading-lists/shared/:shareSlug",
+        component: SharedReadingListPage,
+        page: "SharedReadingListPage",
+      },
+      {
+        path: "/reading-lists/:listId",
+        component: ReadingListDetailsPage,
+        page: "ReadingListDetailsPage",
+      },
+      { path: "/rankings", component: StoryRankingsPage, page: "StoryRankingsPage" },
       { path: "/search", component: SearchResultsPage, page: "SearchResultsPage" },
       { path: "/stories/:storySlug", component: StoryDetailsPage, page: "StoryDetailsPage" },
+      { path: "/stories/:storySlug/reviews", component: StoryReviewsPage, page: "StoryReviewsPage" },
       { path: "/stories/:storySlug/gift", component: GiftSendingPage, page: "GiftSendingPage" },
       { path: "/read/:storySlug/:chapterSlug", component: ReadingPage, page: "ReadingPage" },
       {
@@ -372,6 +397,21 @@ export const appRouteGroups = [
         path: "/creator/community",
         component: PollsAnnouncementsPage,
         page: "PollsAnnouncementsPage",
+      },
+      {
+        path: "/creator/earnings",
+        component: CreatorEarningsPage,
+        page: "CreatorEarningsPage",
+      },
+      {
+        path: "/creator/withdrawal",
+        component: CreatorWithdrawalPage,
+        page: "CreatorWithdrawalPage",
+      },
+      {
+        path: "/creator/stories",
+        component: CreatorStoriesPage,
+        page: "CreatorStoriesPage",
       },
       {
         path: "/creator/stories/new",

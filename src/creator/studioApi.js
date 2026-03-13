@@ -20,6 +20,24 @@ export function fetchStudioStories() {
   });
 }
 
+export function fetchStudioAnalytics({ days, storySlug } = {}) {
+  const params = new URLSearchParams();
+
+  if (days) {
+    params.set("days", String(days));
+  }
+
+  if (storySlug) {
+    params.set("storySlug", storySlug);
+  }
+
+  const suffix = params.toString() ? `?${params.toString()}` : "";
+
+  return getJson(`/studio/analytics${suffix}`, {
+    headers: getAuthHeaders(),
+  });
+}
+
 export function fetchStudioStory(storySlug) {
   return getJson(`/studio/stories/${storySlug}`, {
     headers: getAuthHeaders(),

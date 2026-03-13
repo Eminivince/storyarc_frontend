@@ -148,52 +148,52 @@ function DesktopScheduledChapters({ onReschedule, story }) {
 function MobileScheduledChapters({ onReschedule, story }) {
   return (
     <div className="min-h-screen bg-background-light font-display text-slate-900 dark:bg-background-dark dark:text-slate-100 md:hidden">
-      <header className="sticky top-0 z-10 border-b border-slate-200 bg-background-light/80 px-4 py-4 backdrop-blur-md dark:border-primary/20 dark:bg-background-dark/80">
+      <header className="sticky top-0 z-10 border-b border-slate-200 bg-background-light/80 px-2 py-1.5 backdrop-blur-md dark:border-primary/20 dark:bg-background-dark/80">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Link className="material-symbols-outlined text-slate-900 dark:text-slate-100" to={getCreatorStoryManagementHref(story.slug)}>
-              arrow_back
+          <div className="flex items-center gap-2">
+            <Link className="flex size-8 items-center justify-center rounded-full transition-colors hover:bg-primary/10" to={getCreatorStoryManagementHref(story.slug)}>
+              <span className="material-symbols-outlined text-base text-slate-900 dark:text-slate-100">arrow_back</span>
             </Link>
-            <h1 className="text-xl font-bold tracking-tight">Scheduled Chapters</h1>
+            <h1 className="text-sm font-bold tracking-tight">Scheduled Chapters</h1>
           </div>
-            <Link
-              className="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-bold text-background-dark transition-colors hover:bg-primary/90"
+          <Link
+            className="flex items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-xs font-bold text-background-dark transition-colors hover:bg-primary/90"
             to={getChapterEditHref(story.slug)}
           >
-            <span className="material-symbols-outlined text-[20px]">add</span>
+            <span className="material-symbols-outlined text-base">add</span>
             Schedule New
           </Link>
         </div>
       </header>
 
-      <nav className="sticky top-[73px] z-10 flex border-b border-slate-200 bg-background-light dark:border-primary/10 dark:bg-background-dark">
-        <button className="flex-1 border-b-2 border-primary py-4 text-center text-sm font-bold text-primary" type="button">
+      <nav className="sticky top-[45px] z-10 flex border-b border-slate-200 bg-background-light dark:border-primary/10 dark:bg-background-dark">
+        <button className="flex-1 border-b-2 border-primary py-2.5 text-center text-xs font-bold text-primary" type="button">
           All Queued
         </button>
-        <button className="flex-1 border-b-2 border-transparent py-4 text-center text-sm font-medium text-slate-500 dark:text-slate-400" type="button">
+        <button className="flex-1 border-b-2 border-transparent py-2.5 text-center text-xs font-medium text-slate-500 dark:text-slate-400" type="button">
           Drafts
         </button>
-        <Link className="flex-1 border-b-2 border-transparent py-4 text-center text-sm font-medium text-slate-500 dark:text-slate-400" to={getCreatorPublishedChaptersHref(story.slug)}>
+        <Link className="flex-1 border-b-2 border-transparent py-2.5 text-center text-xs font-medium text-slate-500 dark:text-slate-400" to={getCreatorPublishedChaptersHref(story.slug)}>
           Recently Published
         </Link>
       </nav>
 
-      <main className="space-y-4 p-4 pb-32">
+      <main className="space-y-2 p-2 pb-20">
         {story.scheduledChapters.map((chapter) => (
-          <Reveal className="flex gap-4 rounded-xl border border-slate-200 bg-white p-4 dark:border-primary/10 dark:bg-primary/5" key={chapter.id}>
-            <div className="h-20 w-20 shrink-0 rounded-lg bg-cover bg-center" style={{ backgroundImage: `url("${chapter.coverImage}")` }} />
-            <div className="flex flex-1 flex-col justify-between">
+          <Reveal className="flex gap-2 rounded-lg border border-slate-200 bg-white p-2 dark:border-primary/10 dark:bg-primary/5" key={chapter.id}>
+            <div className="h-16 w-14 shrink-0 rounded-md bg-cover bg-center" style={{ backgroundImage: `url("${chapter.coverImage}")` }} />
+            <div className="flex min-w-0 flex-1 flex-col justify-between">
               <div>
-                <h3 className="text-base font-bold leading-tight">{chapter.chapterTitle}</h3>
-                <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">Story: {chapter.storySeries}</p>
+                <h3 className="text-sm font-bold leading-tight line-clamp-1">{chapter.chapterTitle}</h3>
+                <p className="mt-0.5 text-[11px] text-slate-500 dark:text-slate-400">Story: {chapter.storySeries}</p>
               </div>
-              <div className="mt-2 flex items-center justify-between">
-                <div className="flex items-center gap-1 text-[11px] font-medium text-primary">
-                  <span className="material-symbols-outlined text-[14px]">calendar_today</span>
-                  {chapter.scheduledDate}, {chapter.scheduledTime.replace(" (Local)", "")}
+              <div className="mt-1.5 flex items-center justify-between gap-2">
+                <div className="flex min-w-0 items-center gap-1 text-[10px] font-medium text-primary">
+                  <span className="material-symbols-outlined shrink-0 text-xs">calendar_today</span>
+                  <span className="truncate">{chapter.scheduledDate}, {chapter.scheduledTime.replace(" (Local)", "")}</span>
                 </div>
                 <button
-                  className="rounded-lg bg-slate-100 px-3 py-1 text-xs font-bold text-slate-900 dark:bg-primary/20 dark:text-primary"
+                  className="shrink-0 rounded-md bg-slate-100 px-2 py-0.5 text-[10px] font-bold text-slate-900 dark:bg-primary/20 dark:text-primary"
                   onClick={() => onReschedule(chapter)}
                   type="button"
                 >
@@ -204,34 +204,34 @@ function MobileScheduledChapters({ onReschedule, story }) {
           </Reveal>
         ))}
 
-        <div className="pt-6 pb-2">
-          <h2 className="mb-4 text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-primary/60">Publishing Tools</h2>
-          <div className="grid grid-cols-1 gap-4">
-            <div className="flex items-start gap-4 rounded-xl border border-primary/20 bg-gradient-to-br from-primary/20 to-transparent p-4 dark:from-primary/10">
-              <div className="rounded-lg bg-primary/20 p-2">
-                <span className="material-symbols-outlined text-primary">auto_awesome</span>
+        <div className="pt-4 pb-1">
+          <h2 className="mb-2 text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-primary/60">Publishing Tools</h2>
+          <div className="grid grid-cols-1 gap-2">
+            <div className="flex items-start gap-2 rounded-lg border border-primary/20 bg-gradient-to-br from-primary/20 to-transparent p-2.5 dark:from-primary/10">
+              <div className="rounded-md bg-primary/20 p-1.5">
+                <span className="material-symbols-outlined text-base text-primary">auto_awesome</span>
               </div>
-              <div>
-                <h4 className="text-sm font-bold">Smart Scheduling</h4>
-                <p className="mt-1 text-xs text-slate-600 dark:text-slate-400">
-                  AI-driven slots based on reader activity in your time zone.
+              <div className="min-w-0 flex-1">
+                <h4 className="text-xs font-bold">Smart Scheduling</h4>
+                <p className="mt-0.5 text-[11px] text-slate-600 dark:text-slate-400">
+                  AI-driven slots based on reader activity.
                 </p>
-                <button className="mt-2 flex items-center gap-1 text-xs font-bold text-primary" type="button">
-                  Optimize Queue <span className="material-symbols-outlined text-[14px]">chevron_right</span>
+                <button className="mt-1 flex items-center gap-1 text-[10px] font-bold text-primary" type="button">
+                  Optimize Queue <span className="material-symbols-outlined text-xs">chevron_right</span>
                 </button>
               </div>
             </div>
-            <div className="flex items-start gap-4 rounded-xl border border-slate-200 bg-white p-4 dark:border-primary/10 dark:bg-primary/5">
-              <div className="rounded-lg bg-slate-100 p-2 dark:bg-primary/10">
-                <span className="material-symbols-outlined text-slate-600 dark:text-primary">sync</span>
+            <div className="flex items-start gap-2 rounded-lg border border-slate-200 bg-white p-2.5 dark:border-primary/10 dark:bg-primary/5">
+              <div className="rounded-md bg-slate-100 p-1.5 dark:bg-primary/10">
+                <span className="material-symbols-outlined text-base text-slate-600 dark:text-primary">sync</span>
               </div>
-              <div>
-                <h4 className="text-sm font-bold">Cross-Platform Sync</h4>
-                <p className="mt-1 text-xs text-slate-600 dark:text-slate-400">
-                  Automatically push scheduled posts to your audience channels.
+              <div className="min-w-0 flex-1">
+                <h4 className="text-xs font-bold">Cross-Platform Sync</h4>
+                <p className="mt-0.5 text-[11px] text-slate-600 dark:text-slate-400">
+                  Push scheduled posts to audience channels.
                 </p>
-                <button className="mt-2 flex items-center gap-1 text-xs font-bold text-primary" type="button">
-                  Manage Integrations <span className="material-symbols-outlined text-[14px]">chevron_right</span>
+                <button className="mt-1 flex items-center gap-1 text-[10px] font-bold text-primary" type="button">
+                  Manage Integrations <span className="material-symbols-outlined text-xs">chevron_right</span>
                 </button>
               </div>
             </div>

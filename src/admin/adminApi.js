@@ -162,6 +162,34 @@ export function updateAdminReport(reportId, input) {
   });
 }
 
+export function fetchAdminComments() {
+  return getJson("/admin/comments", {
+    headers: getAuthHeaders(),
+  });
+}
+
+export function updateAdminComment(commentId, input) {
+  return requestJson(`/admin/comments/${commentId}`, {
+    body: input,
+    headers: getAuthHeaders(),
+    method: "PATCH",
+  });
+}
+
+export function fetchAdminReviews() {
+  return getJson("/admin/reviews", {
+    headers: getAuthHeaders(),
+  });
+}
+
+export function updateAdminReview(reviewId, input) {
+  return requestJson(`/admin/reviews/${reviewId}`, {
+    body: input,
+    headers: getAuthHeaders(),
+    method: "PATCH",
+  });
+}
+
 export function fetchAdminMonetization() {
   return getJson("/admin/monetization", {
     headers: getAuthHeaders(),

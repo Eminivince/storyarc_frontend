@@ -213,14 +213,14 @@ function DesktopCoinStore({ coinBalance, currency, packages, returnTo }) {
 function MobileCoinStore({ coinBalance, currency, packages, returnTo }) {
   return (
     <div className="min-h-screen bg-background-light font-display text-slate-900 dark:bg-background-dark dark:text-slate-100 md:hidden">
-      <nav className="sticky top-0 z-10 flex items-center border-b border-primary/10 bg-background-light p-4 dark:bg-background-dark">
+      <nav className="sticky top-0 z-10 flex items-center border-b border-primary/10 bg-background-light px-3 py-2.5 dark:bg-background-dark">
         <Link
           className="flex h-10 w-10 items-center justify-center rounded-full transition-colors hover:bg-primary/10"
           to={returnTo}
         >
           <span className="material-symbols-outlined">arrow_back</span>
         </Link>
-        <h2 className="flex-1 text-center text-lg font-bold tracking-tight">
+        <h2 className="flex-1 text-center text-base font-bold tracking-tight">
           Coin Shop
         </h2>
         <div className="flex h-10 w-10 items-center justify-center">
@@ -233,59 +233,61 @@ function MobileCoinStore({ coinBalance, currency, packages, returnTo }) {
         </div>
       </nav>
 
-      <main className="flex-1 overflow-y-auto pb-24">
-        <div className="px-4 py-6">
-          <Reveal className="relative flex aspect-[21/9] w-full items-center justify-center overflow-hidden rounded-xl border border-primary/20 bg-gradient-to-br from-primary/40 to-background-dark">
+      <main className="flex-1 overflow-y-auto pb-20">
+        <div className="px-3 py-4">
+          <Reveal className="relative flex aspect-[3/1] w-full items-center justify-start overflow-hidden rounded-lg border border-primary/20 bg-gradient-to-br from-primary/40 to-background-dark">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(248,214,90,0.32),_transparent_55%)] opacity-80" />
-            <div className="relative z-10 text-center">
-              <span className="material-symbols-outlined mb-2 text-5xl text-primary">
+            <div className="relative z-10 flex items-center gap-3 px-4">
+              <span className="material-symbols-outlined text-3xl text-primary shrink-0">
                 stars
               </span>
-              <h1 className="text-2xl font-bold text-slate-100">
-                Get StoryArc Coins
-              </h1>
-              <p className="text-sm text-primary/80">
-                Unlock premium chapters and exclusive art
-              </p>
+              <div>
+                <h1 className="text-lg font-bold text-slate-100 leading-tight">
+                  Get StoryArc Coins
+                </h1>
+                <p className="text-xs text-primary/80">
+                  Unlock premium chapters and exclusive art
+                </p>
+              </div>
             </div>
           </Reveal>
         </div>
 
-        <div className="mx-4 mb-8 flex items-center justify-between rounded-xl border border-primary/20 bg-primary/10 p-4">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary">
-              <span className="material-symbols-outlined font-bold text-background-dark">
+        <div className="mx-3 mb-5 flex items-center justify-between rounded-lg border border-primary/20 bg-primary/10 p-3">
+          <div className="flex items-center gap-2.5">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary">
+              <span className="material-symbols-outlined text-lg font-bold text-background-dark">
                 payments
               </span>
             </div>
             <div>
-              <p className="text-xs font-medium uppercase tracking-wider text-slate-400">
+              <p className="text-[10px] font-medium uppercase tracking-wider text-slate-400">
                 Your Balance
               </p>
-              <p className="text-xl font-bold text-primary">
-                {coinBalance} <span className="text-sm font-normal text-slate-300">Coins</span>
+              <p className="text-base font-bold text-primary">
+                {coinBalance} <span className="text-xs font-normal text-slate-300">Coins</span>
               </p>
             </div>
           </div>
           <Link
-            className="rounded-full border border-primary/30 px-3 py-1 text-xs font-bold uppercase tracking-tighter text-primary"
+            className="shrink-0 rounded-full border border-primary/30 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-tighter text-primary"
             to={pricingHref}
           >
             Details
           </Link>
         </div>
 
-        <h3 className="mb-4 px-4 text-sm font-semibold uppercase tracking-widest text-slate-100 opacity-70">
+        <h3 className="mb-3 px-3 text-[10px] font-semibold uppercase tracking-widest text-slate-100 opacity-70">
           Available Packages
         </h3>
 
-        <div className="flex flex-col gap-4 px-4">
+        <div className="grid grid-cols-2 gap-3 px-3">
           {packages.map((item) => {
             const featured = item.id === "box";
 
             return (
               <Reveal
-                className={`relative flex items-center justify-between rounded-xl p-4 transition-all ${
+                className={`relative flex flex-col items-center rounded-lg p-3 text-center transition-all ${
                   featured
                     ? "border-2 border-primary bg-primary/20 shadow-[0_0_20px_rgba(244,192,37,0.15)]"
                     : "border border-slate-700 bg-slate-800/40 hover:border-primary/30"
@@ -293,32 +295,25 @@ function MobileCoinStore({ coinBalance, currency, packages, returnTo }) {
                 key={item.id}
               >
                 {featured && (
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-primary px-3 py-0.5 text-[10px] font-black uppercase tracking-tighter text-background-dark">
-                    Most Popular
+                  <div className="absolute -top-2 left-1/2 -translate-x-1/2 rounded-full bg-primary px-2 py-0.5 text-[9px] font-black uppercase tracking-tighter text-background-dark">
+                    Popular
                   </div>
                 )}
-                <div className="flex items-center gap-4">
-                  <div
-                    className={`flex h-14 w-14 items-center justify-center rounded-lg text-primary ${
-                      featured ? "bg-primary/30" : "bg-slate-700/50"
-                    }`}
-                  >
-                    <span className="material-symbols-outlined text-3xl">
-                      {item.mobileIcon}
-                    </span>
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-slate-100">{item.name}</h4>
-                    <p className="text-sm font-medium text-primary">
-                      {item.coins.toLocaleString()} Coins{" "}
-                      <span className="ml-1 text-[10px] text-slate-400">
-                        {item.description}
-                      </span>
-                    </p>
-                  </div>
+                <div
+                  className={`mb-2 flex h-10 w-10 items-center justify-center rounded-lg text-primary ${
+                    featured ? "bg-primary/30" : "bg-slate-700/50"
+                  }`}
+                >
+                  <span className="material-symbols-outlined text-xl">
+                    {item.mobileIcon}
+                  </span>
                 </div>
+                <h4 className="truncate w-full text-xs font-bold text-slate-100">{item.name}</h4>
+                <p className="mb-2 text-[10px] font-medium text-primary">
+                  {item.coins.toLocaleString()} Coins
+                </p>
                 <Link
-                  className="rounded-lg bg-primary px-5 py-2 text-sm font-bold text-background-dark transition-transform active:scale-95"
+                  className="w-full rounded-lg bg-primary px-3 py-1.5 text-[10px] font-bold text-background-dark transition-transform active:scale-95"
                   to={buildCheckoutHref({
                     kind: "coins",
                     productId: item.id,
@@ -332,8 +327,8 @@ function MobileCoinStore({ coinBalance, currency, packages, returnTo }) {
           })}
         </div>
 
-        <div className="mt-8 px-6 text-center">
-          <p className="text-xs leading-relaxed text-slate-400">
+        <div className="mt-5 px-3 pb-2 text-center">
+          <p className="text-[10px] leading-relaxed text-slate-400">
             By purchasing coins, you agree to our{" "}
             <Link className="text-primary underline" to="/terms">
               Terms of Service
@@ -344,7 +339,7 @@ function MobileCoinStore({ coinBalance, currency, packages, returnTo }) {
         </div>
       </main>
 
-      <div className="fixed bottom-0 left-0 right-0 z-20 flex items-center justify-around border-t border-primary/10 bg-background-dark/95 px-4 pb-6 pt-2 backdrop-blur-md">
+      <div className="fixed bottom-0 left-0 right-0 z-20 flex items-center justify-around border-t border-primary/10 bg-background-dark/95 px-3 pb-safe pt-2 backdrop-blur-md">
         <Link className="flex flex-col items-center gap-1 text-slate-400 transition-colors hover:text-primary" to={readerLibraryHref}>
           <span className="material-symbols-outlined">menu_book</span>
           <p className="text-[10px] font-medium leading-none">Library</p>

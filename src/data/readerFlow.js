@@ -1,4 +1,14 @@
 export const readerLibraryHref = "/library";
+export const readingListsHref = "/reading-lists";
+export function buildReadingListDetailsHref(listId) {
+  return listId ? `${readingListsHref}/${listId}` : readingListsHref;
+}
+export const followingHref = "/following";
+export const rankingsHref = "/rankings";
+
+export function buildSharedReadingListHref(shareSlug) {
+  return shareSlug ? `/reading-lists/shared/${shareSlug}` : readingListsHref;
+}
 
 export function buildSearchHref(query = "Fantasy") {
   const params = new URLSearchParams();
@@ -30,6 +40,10 @@ export function buildBrowseHref(genre, query) {
 
 export function buildStoryHref(storySlug) {
   return storySlug ? `/stories/${storySlug}` : readerLibraryHref;
+}
+
+export function buildStoryReviewsHref(storySlug) {
+  return storySlug ? `/stories/${storySlug}/reviews` : readerLibraryHref;
 }
 
 export function buildChapterHref(storySlug, chapterSlug) {

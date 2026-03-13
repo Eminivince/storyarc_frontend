@@ -22,16 +22,20 @@ import {
 import {
   authorDashboardHref,
   creatorCommunityHref,
+  creatorEarningsHref,
+  creatorStoriesHref,
   getCreatorScheduledChaptersHref,
-  getCreatorStoryManagementHref,
   getCreatorVolumeManagerHref,
 } from "../data/creatorFlow";
 import { preloadRoute } from "../lib/routePreload";
 import { useCreator } from "../context/CreatorContext";
 import {
   buildBrowseHref,
+  followingHref,
   buildSearchHref,
   readerLibraryHref,
+  readingListsHref,
+  rankingsHref,
 } from "../data/readerFlow";
 import UserAvatar from "./UserAvatar";
 
@@ -46,6 +50,7 @@ function getReaderConfig(topGenre, creatorEntryHref = "/creator") {
         label: "Browse",
         href: buildBrowseHref(topGenre),
       },
+      { id: "rankings", icon: "trophy", label: "Rankings", href: rankingsHref },
       { id: "library", icon: "auto_stories", label: "Library", href: readerLibraryHref },
       {
         id: "profile",
@@ -57,10 +62,16 @@ function getReaderConfig(topGenre, creatorEntryHref = "/creator") {
     secondaryTitle: "Collections",
     secondary: [
       {
-        id: "profile",
-        icon: "bookmark",
-        label: "Reading List",
-        href: profileHref,
+        id: "reading-lists",
+        icon: "format_list_bulleted",
+        label: "Reading Lists",
+        href: readingListsHref,
+      },
+      {
+        id: "following",
+        icon: "favorite",
+        label: "Following",
+        href: followingHref,
       },
       {
         id: "rewards",
@@ -71,12 +82,8 @@ function getReaderConfig(topGenre, creatorEntryHref = "/creator") {
     ],
     mobile: [
       { id: "home", icon: "home", label: "Home", href: "/dashboard" },
-      {
-        id: "browse",
-        icon: "explore",
-        label: "Browse",
-        href: buildBrowseHref(topGenre),
-      },
+      { id: "rankings", icon: "leaderboard", label: "Rankings", href: rankingsHref },
+      { id: "reading-lists", icon: "format_list_bulleted", label: "Lists", href: readingListsHref },
       {
         id: "write",
         icon: "edit_square",
@@ -92,7 +99,7 @@ function getReaderConfig(topGenre, creatorEntryHref = "/creator") {
       },
       {
         id: "profile",
-        icon: "account_circle",
+        icon: "person",
         label: "Profile",
         href: profileHref,
       },
@@ -114,7 +121,7 @@ function getCreatorConfig(storySlug) {
         id: "stories",
         icon: "auto_stories",
         label: "Stories",
-        href: getCreatorStoryManagementHref(storySlug),
+        href: creatorStoriesHref,
       },
       {
         id: "queue",
@@ -131,6 +138,12 @@ function getCreatorConfig(storySlug) {
     ],
     secondaryTitle: "Studio",
     secondary: [
+      {
+        id: "earnings",
+        icon: "payments",
+        label: "Earnings",
+        href: creatorEarningsHref,
+      },
       {
         id: "community",
         icon: "campaign",
@@ -161,13 +174,19 @@ function getCreatorConfig(storySlug) {
         id: "stories",
         icon: "auto_stories",
         label: "Stories",
-        href: getCreatorStoryManagementHref(storySlug),
+        href: creatorStoriesHref,
       },
       {
         id: "read",
         icon: "menu_book",
         label: "Read",
         href: "/dashboard",
+      },
+      {
+        id: "earnings",
+        icon: "payments",
+        label: "Earnings",
+        href: creatorEarningsHref,
       },
       {
         id: "community",
@@ -362,6 +381,10 @@ function getActiveKey(mode, pathname) {
       return "profile";
     }
 
+    if (pathname.startsWith(creatorEarningsHref) || pathname.startsWith("/creator/withdrawal")) {
+      return "earnings";
+    }
+
     if (pathname.startsWith(creatorCommunityHref)) {
       return "community";
     }
@@ -383,6 +406,14 @@ function getActiveKey(mode, pathname) {
 
   if (pathname === "/dashboard") {
     return "home";
+  }
+
+  if (pathname === "/rankings" || pathname.startsWith("/rankings")) {
+    return "rankings";
+  }
+
+  if (pathname === readingListsHref || pathname.startsWith(`${readingListsHref}/`)) {
+    return "reading-lists";
   }
 
   if (pathname.startsWith("/search") || pathname.startsWith("/browse")) {
@@ -413,7 +444,7 @@ function getActiveKey(mode, pathname) {
   return "home";
 }
 
-function DesktopNavLink({ active, href, icon, label }) {
+function DesktopNavLink({ active, href, icon, label, onClick }) {
   return (
     <Link
       className={`flex items-center gap-3 rounded-xl px-4 py-3 transition-colors ${
@@ -421,6 +452,7 @@ function DesktopNavLink({ active, href, icon, label }) {
           ? "bg-primary font-bold text-background-dark"
           : "hover:bg-primary/10"
       }`}
+      onClick={onClick}
       onFocus={() => preloadRoute(href)}
       onMouseEnter={() => preloadRoute(href)}
       to={href}
@@ -448,7 +480,7 @@ function MobileNavLink({ active, dot, href, icon, label, onClick }) {
     >
       <div className="relative">
         <span
-          className={`material-symbols-outlined transition-all duration-300 ${
+          className={`material-symbols-outlined text-xl transition-all duration-300 ${
             active
               ? "fill-1 scale-110 text-primary"
               : "text-slate-400 dark:text-slate-500 group-hover:text-primary"
@@ -484,7 +516,7 @@ export function AppDesktopSidebar({
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const { logout, isLoggingOut, user } = useAuth();
-  const { activeStorySlug, stories } = useCreator();
+  const { activeStorySlug, enterReaderMode, stories } = useCreator();
   const { showToast } = useToast();
   let config = getReaderConfig(topGenre);
   const resolvedCreatorStorySlug = resolveCreatorStorySlug(
@@ -527,19 +559,6 @@ export function AppDesktopSidebar({
 
   return (
     <aside className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col border-r border-primary/10 bg-background-light dark:bg-background-dark lg:flex">
-      <Link
-        className="flex items-center gap-4 text-primary"
-        onFocus={() => preloadRoute(config.homeHref)}
-        onMouseEnter={() => preloadRoute(config.homeHref)}
-        to={config.homeHref}
-      >
-        <div className="flex items-center gap-3 p-6">
-          <div className="flex size-8 items-center justify-center rounded-lg bg-primary text-background-dark">
-            <span className="material-symbols-outlined font-bold">auto_stories</span>
-          </div>
-          <h2 className="text-xl font-bold tracking-tight">StoryArc</h2>
-        </div>
-      </Link>
 
       <nav className="mt-4 flex-1 space-y-2 px-4">
         {config.primary.map((item) => (
@@ -563,6 +582,7 @@ export function AppDesktopSidebar({
             icon={item.icon}
             key={item.label}
             label={item.label}
+            onClick={item.id === "reader-mode" ? enterReaderMode : undefined}
           />
         ))}
       </nav>
@@ -628,33 +648,30 @@ export function AppMobileTabBar({
   const activeKey = getActiveKey(mode, pathname);
   const maxWidthClass =
     config.mobile.length > 5 ? "max-w-full" : config.mobile.length > 4 ? "max-w-lg" : "max-w-md";
-  const overflowClasses =
-    config.mobile.length > 5
-      ? "no-scrollbar gap-4 overflow-x-auto justify-start"
-      : "justify-between";
 
   return (
     <nav
-      className={`fixed bottom-0 left-0 right-0 z-50 border-t border-primary/10 bg-background-light px-4 pb-2 pt-2 transition-transform duration-300 ease-out dark:bg-background-dark lg:hidden ${className}`.trim()}
+      className={`fixed bottom-0 left-0 right-0 z-50 border-t border-primary/10 bg-background-light px-2 pb-2 pt-2 transition-transform duration-300 ease-out dark:bg-background-dark lg:hidden ${className}`.trim()}
       style={{ transform: navVisible ? "translateY(0)" : "translateY(100%)" }}
     >
-      <div className={`mx-auto flex items-center ${overflowClasses} ${maxWidthClass}`.trim()}>
+      <div className={`mx-auto flex w-full max-w-full items-center ${maxWidthClass}`.trim()}>
         {config.mobile.map((item) => (
-          <MobileNavLink
-            active={activeKey === item.id}
-            dot={item.dot}
-            href={item.href}
-            icon={item.icon}
-            key={item.label}
-            label={item.label}
-            onClick={
-              mode === "reader" && item.id === "write"
-                ? enterWriterMode
-                : mode === "creator" && item.id === "read"
-                  ? enterReaderMode
-                  : undefined
-            }
-          />
+          <div className="flex min-w-0 flex-1 flex-col items-center justify-center py-0.5" key={item.label}>
+            <MobileNavLink
+              active={activeKey === item.id}
+              dot={item.dot}
+              href={item.href}
+              icon={item.icon}
+              label={item.label}
+              onClick={
+                mode === "reader" && item.id === "write"
+                  ? enterWriterMode
+                  : mode === "creator" && item.id === "read"
+                    ? enterReaderMode
+                    : undefined
+              }
+            />
+          </div>
         ))}
       </div>
     </nav>

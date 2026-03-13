@@ -15,15 +15,17 @@ import {
   votePoll,
 } from "../engagement/engagementApi";
 
-function CommunityTabs({ activeTab, onChange, tabs = creatorCommunityTabs }) {
+function CommunityTabs({ activeTab, compact = false, onChange, tabs = creatorCommunityTabs }) {
   return (
-    <nav className="hide-scrollbar flex gap-6 overflow-x-auto border-b border-primary/10">
+    <nav className={`hide-scrollbar flex overflow-x-auto border-b border-primary/10 ${compact ? "gap-4" : "gap-6"}`}>
       {tabs.map((tab) => {
         const active = tab.id === activeTab;
 
         return (
           <button
-            className={`shrink-0 border-b-2 px-1 pb-4 pt-1 text-sm font-bold transition-colors ${
+            className={`shrink-0 border-b-2 px-1 pt-1 font-bold transition-colors ${
+              compact ? "pb-2.5 text-xs" : "pb-4 text-sm"
+            } ${
               active
                 ? "border-primary text-primary"
                 : "border-transparent text-slate-500 dark:text-slate-400"
@@ -43,11 +45,11 @@ function CommunityTabs({ activeTab, onChange, tabs = creatorCommunityTabs }) {
 function LivePollCard({ compact = false, isVoting, onVote, poll }) {
   if (!poll) {
     return (
-      <section className="rounded-3xl border border-primary/20 bg-primary/5 p-5">
-        <h2 className={`${compact ? "text-lg" : "text-xl"} font-black`}>
+      <section className={`border border-primary/20 bg-primary/5 ${compact ? "rounded-lg p-3" : "rounded-3xl p-5"}`}>
+        <h2 className={`font-black ${compact ? "text-base" : "text-xl"}`}>
           No live poll yet
         </h2>
-        <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
+        <p className={`text-slate-500 dark:text-slate-400 ${compact ? "mt-1 text-xs" : "mt-2 text-sm"}`}>
           Publish a poll from the quick actions panel to start collecting votes.
         </p>
       </section>
@@ -55,36 +57,36 @@ function LivePollCard({ compact = false, isVoting, onVote, poll }) {
   }
 
   return (
-    <section className="overflow-hidden rounded-3xl border border-primary/20 bg-primary/5">
-      <div className="h-36 bg-[radial-gradient(circle_at_top_left,_rgba(244,192,37,0.32),_transparent_55%),linear-gradient(135deg,#27241b,#181611)] p-4">
-        <span className="inline-flex items-center gap-2 rounded-full bg-primary px-3 py-1 text-[11px] font-black uppercase tracking-widest text-background-dark">
-          <span className="size-2 rounded-full bg-background-dark" />
+    <section className={`overflow-hidden border border-primary/20 bg-primary/5 ${compact ? "rounded-lg" : "rounded-3xl"}`}>
+      <div className={`bg-[radial-gradient(circle_at_top_left,_rgba(244,192,37,0.32),_transparent_55%),linear-gradient(135deg,#27241b,#181611)] ${compact ? "h-24 p-3" : "h-36 p-4"}`}>
+        <span className={`inline-flex items-center gap-1.5 rounded-full bg-primary font-black uppercase tracking-widest text-background-dark ${compact ? "px-2 py-0.5 text-[9px]" : "px-3 py-1 text-[11px]"}`}>
+          <span className="size-1.5 rounded-full bg-background-dark" />
           Live Poll
         </span>
       </div>
-      <div className="p-5">
-        <h2 className={`${compact ? "text-lg" : "text-xl"} font-black`}>
+      <div className={compact ? "p-3" : "p-5"}>
+        <h2 className={`font-black ${compact ? "text-base" : "text-xl"}`}>
           {poll.title}
         </h2>
-        <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
+        <p className={`text-slate-500 dark:text-slate-400 ${compact ? "mt-1 text-xs" : "mt-2 text-sm"}`}>
           {poll.subtitle}
         </p>
 
-        <div className="mt-5 space-y-3">
+        <div className={compact ? "mt-3 space-y-2" : "mt-5 space-y-3"}>
           {poll.options.map((option) => (
             <button
-              className="relative flex w-full items-center justify-between overflow-hidden rounded-2xl border border-primary/10 bg-background-dark/50 px-4 py-3 text-left"
+              className={`relative flex w-full items-center justify-between overflow-hidden border border-primary/10 bg-background-dark/50 text-left ${compact ? "rounded-lg px-3 py-2" : "rounded-2xl px-4 py-3"}`}
               key={option.id}
               onClick={() => onVote(option.id)}
               type="button"
             >
               <span
-                className="absolute inset-y-0 left-0 rounded-l-2xl bg-primary/15"
+                className={`absolute inset-y-0 left-0 bg-primary/15 ${compact ? "rounded-l-lg" : "rounded-l-2xl"}`}
                 style={{ width: `${option.percent}%` }}
               />
-              <span className="relative z-10 text-sm font-medium">{option.label}</span>
+              <span className={`relative z-10 font-medium ${compact ? "text-xs" : "text-sm"}`}>{option.label}</span>
               <span
-                className={`relative z-10 text-xs font-bold ${
+                className={`relative z-10 font-bold ${compact ? "text-[10px]" : "text-xs"} ${
                   option.voted ? "text-primary" : "text-slate-400"
                 }`}
               >
@@ -95,7 +97,7 @@ function LivePollCard({ compact = false, isVoting, onVote, poll }) {
         </div>
 
         <button
-          className="mt-5 w-full rounded-2xl bg-primary py-3 text-sm font-bold text-background-dark disabled:cursor-not-allowed disabled:opacity-60"
+          className={`w-full bg-primary font-bold text-background-dark disabled:cursor-not-allowed disabled:opacity-60 ${compact ? "mt-3 rounded-lg py-2 text-xs" : "mt-5 rounded-2xl py-3 text-sm"}`}
           disabled={isVoting}
           onClick={() => {
             const preferredOption = poll.options.find((option) => option.voted);
@@ -113,20 +115,20 @@ function LivePollCard({ compact = false, isVoting, onVote, poll }) {
   );
 }
 
-function QuickActions({ onTrigger }) {
+function QuickActions({ compact = false, onTrigger }) {
   return (
-    <section className="grid gap-3 sm:grid-cols-2">
+    <section className={`grid sm:grid-cols-2 ${compact ? "gap-2" : "gap-3"}`}>
       {creatorCommunityActions.map((action) => (
         <button
-          className="flex items-center gap-3 rounded-2xl border border-primary/20 bg-primary/10 p-4 text-left transition-colors hover:bg-primary/20"
+          className={`flex items-center border border-primary/20 bg-primary/10 text-left transition-colors hover:bg-primary/20 ${compact ? "gap-2 rounded-lg p-2.5" : "gap-3 rounded-2xl p-4"}`}
           key={action.id}
           onClick={() => onTrigger(action)}
           type="button"
         >
-          <span className="material-symbols-outlined text-primary">{action.icon}</span>
-          <div>
-            <p className="text-sm font-bold text-primary">{action.title}</p>
-            <p className="text-xs text-slate-500 dark:text-slate-400">{action.detail}</p>
+          <span className={`material-symbols-outlined text-primary ${compact ? "text-lg" : ""}`}>{action.icon}</span>
+          <div className="min-w-0 flex-1">
+            <p className={`font-bold text-primary ${compact ? "text-xs" : "text-sm"}`}>{action.title}</p>
+            <p className={`text-slate-500 dark:text-slate-400 ${compact ? "text-[10px] line-clamp-1" : "text-xs"}`}>{action.detail}</p>
           </div>
         </button>
       ))}
@@ -134,71 +136,71 @@ function QuickActions({ onTrigger }) {
   );
 }
 
-function FeedCard({ item }) {
+function FeedCard({ compact = false, item }) {
   return (
-    <article className="rounded-3xl border border-primary/10 bg-white/80 p-5 dark:bg-primary/5">
-      <div className="flex items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <div className="flex size-10 items-center justify-center rounded-full bg-primary/15 text-primary">
-            <span className="material-symbols-outlined">
+    <article className={`border border-primary/10 bg-white/80 dark:bg-primary/5 ${compact ? "rounded-lg p-3" : "rounded-3xl p-5"}`}>
+      <div className={`flex items-center justify-between ${compact ? "gap-2" : "gap-4"}`}>
+        <div className={`flex items-center gap-2 ${compact ? "" : "gap-3"}`}>
+          <div className={`flex items-center justify-center rounded-full bg-primary/15 text-primary ${compact ? "size-8" : "size-10"}`}>
+            <span className={`material-symbols-outlined ${compact ? "text-lg" : ""}`}>
               {item.type === "Poll" ? "poll" : "campaign"}
             </span>
           </div>
           <div>
-            <p className="font-bold">{item.author}</p>
-            <p className="text-xs text-slate-500 dark:text-slate-400">
+            <p className={`font-bold ${compact ? "text-xs" : ""}`}>{item.author}</p>
+            <p className={`text-slate-500 dark:text-slate-400 ${compact ? "text-[10px]" : "text-xs"}`}>
               {item.publishedAt} • {item.type}
             </p>
           </div>
         </div>
         <button className="text-slate-500" type="button">
-          <span className="material-symbols-outlined">more_horiz</span>
+          <span className={`material-symbols-outlined ${compact ? "text-lg" : ""}`}>more_horiz</span>
         </button>
       </div>
 
-      <div className="mt-4">
-        <h3 className="text-lg font-bold">{item.title}</h3>
-        <p className="mt-2 text-sm leading-relaxed text-slate-600 dark:text-slate-400">
+      <div className={compact ? "mt-2" : "mt-4"}>
+        <h3 className={`font-bold ${compact ? "text-sm" : "text-lg"}`}>{item.title}</h3>
+        <p className={`leading-relaxed text-slate-600 dark:text-slate-400 ${compact ? "mt-1 text-xs line-clamp-2" : "mt-2 text-sm"}`}>
           {item.body}
         </p>
       </div>
 
       {item.image ? (
-        <div className="mt-4 overflow-hidden rounded-2xl">
+        <div className={`overflow-hidden ${compact ? "mt-2 rounded-lg" : "mt-4 rounded-2xl"}`}>
           <img alt={item.title} className="aspect-video w-full object-cover" src={item.image} />
         </div>
       ) : null}
 
       {item.options ? (
-        <div className="mt-4 grid grid-cols-2 gap-3">
+        <div className={`grid grid-cols-2 ${compact ? "mt-2 gap-2" : "mt-4 gap-3"}`}>
           {item.options.map((option) => (
-            <div className="overflow-hidden rounded-2xl border border-primary/10 bg-background-dark/50" key={option.label}>
+            <div className={`overflow-hidden border border-primary/10 bg-background-dark/50 ${compact ? "rounded-lg" : "rounded-2xl"}`} key={option.label}>
               <img alt={option.label} className="aspect-square w-full object-cover" src={option.image} />
-              <div className="p-3 text-xs font-bold">{option.label}</div>
+              <div className={`font-bold ${compact ? "p-2 text-[10px]" : "p-3 text-xs"}`}>{option.label}</div>
             </div>
           ))}
         </div>
       ) : null}
 
-      <div className="mt-5 flex items-center justify-between gap-4">
-        <div className="flex items-center gap-4 text-sm text-slate-500 dark:text-slate-400">
+      <div className={`flex items-center justify-between ${compact ? "mt-2 gap-2 text-[10px]" : "mt-5 gap-4 text-sm"} text-slate-500 dark:text-slate-400`}>
+        <div className={`flex items-center ${compact ? "gap-2" : "gap-4"}`}>
           <span className="flex items-center gap-1.5">
-            <span className="material-symbols-outlined text-base">favorite</span>
+            <span className={`material-symbols-outlined ${compact ? "text-sm" : "text-base"}`}>favorite</span>
             {item.likes ?? "856"}
           </span>
           <span className="flex items-center gap-1.5">
-            <span className="material-symbols-outlined text-base">
+            <span className={`material-symbols-outlined ${compact ? "text-sm" : "text-base"}`}>
               {item.type === "Poll" ? "poll" : "chat_bubble"}
             </span>
             {item.votes ?? item.comments}
           </span>
         </div>
         {item.cta ? (
-          <button className="text-xs font-bold uppercase tracking-widest text-primary" type="button">
+          <button className={`font-bold uppercase tracking-widest text-primary ${compact ? "text-[10px]" : "text-xs"}`} type="button">
             {item.cta}
           </button>
         ) : (
-          <span className="rounded-full bg-primary/15 px-3 py-1 text-xs font-bold text-primary">
+          <span className={`rounded-full bg-primary/15 font-bold text-primary ${compact ? "px-2 py-0.5 text-[10px]" : "px-3 py-1 text-xs"}`}>
             {item.voted}
           </span>
         )}
@@ -207,7 +209,7 @@ function FeedCard({ item }) {
   );
 }
 
-function FeedList({ activeTab, archivedPosts, feed, scheduledPosts }) {
+function FeedList({ activeTab, archivedPosts, compact = false, feed, scheduledPosts }) {
   const items =
     activeTab === "polls"
       ? feed.filter((item) => item.type === "Poll")
@@ -219,7 +221,7 @@ function FeedList({ activeTab, archivedPosts, feed, scheduledPosts }) {
 
   if (items.length === 0) {
     return (
-      <div className="rounded-3xl border border-dashed border-primary/20 bg-primary/5 p-6 text-sm text-slate-500 dark:text-slate-400">
+      <div className={`border border-dashed border-primary/20 bg-primary/5 text-slate-500 dark:text-slate-400 ${compact ? "rounded-lg p-4 text-xs" : "rounded-3xl p-6 text-sm"}`}>
         No community posts in this tab yet.
       </div>
     );
@@ -227,14 +229,14 @@ function FeedList({ activeTab, archivedPosts, feed, scheduledPosts }) {
 
   if (activeTab === "scheduled" || activeTab === "archive") {
     return (
-      <div className="space-y-4">
+      <div className={compact ? "space-y-2" : "space-y-4"}>
         {items.map((item) => (
           <div
-            className="rounded-3xl border border-primary/10 bg-white/80 p-5 dark:bg-primary/5"
+            className={`border border-primary/10 bg-white/80 dark:bg-primary/5 ${compact ? "rounded-lg p-3" : "rounded-3xl p-5"}`}
             key={item.id}
           >
-            <p className="text-lg font-bold">{item.title}</p>
-            <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">{item.detail}</p>
+            <p className={`font-bold ${compact ? "text-sm" : "text-lg"}`}>{item.title}</p>
+            <p className={`text-slate-500 dark:text-slate-400 ${compact ? "mt-1 text-xs" : "mt-2 text-sm"}`}>{item.detail}</p>
           </div>
         ))}
       </div>
@@ -242,9 +244,9 @@ function FeedList({ activeTab, archivedPosts, feed, scheduledPosts }) {
   }
 
   return (
-    <div className="space-y-5">
+    <div className={compact ? "space-y-3" : "space-y-5"}>
       {items.map((item) => (
-        <FeedCard item={item} key={item.id} />
+        <FeedCard compact={compact} item={item} key={item.id} />
       ))}
     </div>
   );
@@ -339,29 +341,30 @@ function MobileCommunity({
   return (
     <div className="min-h-screen bg-background-light font-display text-slate-900 dark:bg-background-dark dark:text-slate-100 md:hidden">
       <div className="relative flex h-screen flex-col overflow-hidden">
-        <header className="sticky top-0 z-50 border-b border-primary/10 bg-background-light/90 px-4 py-3 backdrop-blur-md dark:bg-background-dark/90">
+        <header className="sticky top-0 z-50 border-b border-primary/10 bg-background-light/90 px-2 py-1.5 backdrop-blur-md dark:bg-background-dark/90">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-[10px] font-bold uppercase tracking-widest text-primary">
+              <p className="text-[9px] font-bold uppercase tracking-widest text-primary">
                 Creator Hub
               </p>
-              <h1 className="text-lg font-bold">StoryArc Community</h1>
+              <h1 className="text-sm font-bold">StoryArc Community</h1>
             </div>
-            <div className="flex items-center gap-2">
-              <button className="rounded-full p-2 transition-colors hover:bg-primary/10" type="button">
-                <span className="material-symbols-outlined">search</span>
+            <div className="flex items-center gap-0.5">
+              <button className="rounded-full p-1.5 transition-colors hover:bg-primary/10" type="button">
+                <span className="material-symbols-outlined text-lg">search</span>
               </button>
-              <button className="rounded-full p-2 transition-colors hover:bg-primary/10" type="button">
-                <span className="material-symbols-outlined">notifications</span>
+              <button className="rounded-full p-1.5 transition-colors hover:bg-primary/10" type="button">
+                <span className="material-symbols-outlined text-lg">notifications</span>
               </button>
             </div>
           </div>
         </header>
 
-        <main className="flex-1 overflow-y-auto pb-24">
-          <div className="space-y-5 px-4 py-4">
+        <main className="flex-1 overflow-y-auto pb-20">
+          <div className="space-y-3 px-2 py-2">
             <CommunityTabs
               activeTab={activeTab}
+              compact
               onChange={onTabChange}
               tabs={creatorCommunityTabs.slice(0, 2)}
             />
@@ -371,10 +374,11 @@ function MobileCommunity({
               onVote={onVote}
               poll={community.livePoll}
             />
-            <QuickActions onTrigger={onAction} />
+            <QuickActions compact onTrigger={onAction} />
             <FeedList
               activeTab={activeTab}
               archivedPosts={community.archived ?? []}
+              compact
               feed={community.feed ?? []}
               scheduledPosts={community.scheduled ?? []}
             />

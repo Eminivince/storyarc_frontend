@@ -232,30 +232,6 @@ export const paymentMethods = [
   },
 ];
 
-export const billingHistory = [
-  {
-    id: "invoice-1",
-    date: "Mar 1, 2026",
-    description: "Silver Membership Monthly",
-    amount: "$9.99",
-    status: "Paid",
-  },
-  {
-    id: "invoice-2",
-    date: "Feb 1, 2026",
-    description: "Silver Membership Monthly",
-    amount: "$9.99",
-    status: "Paid",
-  },
-  {
-    id: "invoice-3",
-    date: "Jan 14, 2026",
-    description: "Coin Pack Top-up",
-    amount: "$5.99",
-    status: "Paid",
-  },
-];
-
 export const initialRewards = {
   points: 2450,
   weeklyEarned: 250,

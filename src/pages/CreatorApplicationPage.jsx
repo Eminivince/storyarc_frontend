@@ -4,18 +4,164 @@ import {
   useCreator,
 } from "../context/CreatorContext";
 import {
+  creatorContractTypeOptions,
   creatorExperienceLevels,
   creatorGenres,
   creatorMobileGenres,
   creatorSubmittedHref,
 } from "../data/creatorFlow";
 
+function getContractTerm(contractTerms, contractType) {
+  if (!contractType) {
+    return null;
+  }
+
+  return Object.values(contractTerms ?? {}).find(
+    (item) => item.contractType === contractType,
+  );
+}
+
+function ContractPreferenceSection({
+  compact = false,
+  contractTerms,
+  form,
+  isSubmitted,
+  onContractToggle,
+  onContractTypeSelect,
+}) {
+  const selectedContract = getContractTerm(
+    contractTerms,
+    form.requestedContractType,
+  );
+
+  return (
+    <section className="flex flex-col gap-4">
+      <div className="flex items-center gap-3">
+        <span
+          className={`flex items-center justify-center rounded-full bg-primary font-bold text-background-dark ${
+            compact ? "size-7 text-sm" : "size-8"
+          }`}
+        >
+          5
+        </span>
+        <div>
+          <h2 className={`${compact ? "text-base" : "text-xl"} font-bold`}>
+            Contract Program
+          </h2>
+          <p className="text-xs text-slate-500 dark:text-slate-400">
+            Only stories with an activated contract share premium chapter revenue with
+            the author.
+          </p>
+        </div>
+      </div>
+
+      <div
+        className={`rounded-2xl border border-primary/10 bg-slate-50 ${
+          compact ? "p-4" : "p-5"
+        } dark:bg-background-dark/40`}
+      >
+        <div className={`grid ${compact ? "grid-cols-1" : "grid-cols-2"} gap-3`}>
+          <button
+            className={`rounded-xl border px-4 py-3 text-left transition-colors ${
+              form.wantsContract
+                ? "border-primary/40 bg-primary/10 text-slate-900 dark:text-slate-100"
+                : "border-slate-200 bg-white dark:border-primary/15 dark:bg-background-dark/60"
+            }`}
+            disabled={isSubmitted}
+            onClick={() => onContractToggle(true)}
+            type="button"
+          >
+            <p className="text-sm font-black">Apply for a contract</p>
+            <p className="mt-1 text-xs leading-5 text-slate-500 dark:text-slate-400">
+              You want StoryArc to review your catalog for premium chapter revenue
+              sharing.
+            </p>
+          </button>
+          <button
+            className={`rounded-xl border px-4 py-3 text-left transition-colors ${
+              !form.wantsContract
+                ? "border-primary/40 bg-primary/10 text-slate-900 dark:text-slate-100"
+                : "border-slate-200 bg-white dark:border-primary/15 dark:bg-background-dark/60"
+            }`}
+            disabled={isSubmitted}
+            onClick={() => onContractToggle(false)}
+            type="button"
+          >
+            <p className="text-sm font-black">Creator access only</p>
+            <p className="mt-1 text-xs leading-5 text-slate-500 dark:text-slate-400">
+              You only want publishing tools for now and are not requesting a revenue
+              contract yet.
+            </p>
+          </button>
+        </div>
+
+        {form.wantsContract ? (
+          <div className="mt-4 space-y-3">
+            {creatorContractTypeOptions.map((option) => {
+              const term = getContractTerm(contractTerms, option.value);
+              const selected = form.requestedContractType === option.value;
+
+              return (
+                <button
+                  className={`w-full rounded-2xl border p-4 text-left transition-colors ${
+                    selected
+                      ? "border-primary bg-primary/10"
+                      : "border-slate-200 bg-white hover:border-primary/40 dark:border-primary/15 dark:bg-background-dark/60"
+                  }`}
+                  disabled={isSubmitted}
+                  key={option.value}
+                  onClick={() => onContractTypeSelect(option.value)}
+                  type="button"
+                >
+                  <div className="flex flex-wrap items-center justify-between gap-3">
+                    <div>
+                      <p className="font-black">{option.label}</p>
+                      <p className="mt-1 text-sm leading-6 text-slate-500 dark:text-slate-400">
+                        {option.description}
+                      </p>
+                    </div>
+                    <div className="rounded-full bg-slate-900 px-3 py-1 text-xs font-black uppercase tracking-[0.18em] text-primary dark:bg-primary/10">
+                      {term?.revenueSharePercent ?? 0}% share
+                    </div>
+                  </div>
+                </button>
+              );
+            })}
+
+            <div className="rounded-2xl border border-primary/15 bg-primary/5 px-4 py-3 text-sm text-slate-600 dark:text-slate-300">
+              {selectedContract ? (
+                <>
+                  Current standard for{" "}
+                  <span className="font-black text-primary">
+                    {selectedContract.label}
+                  </span>{" "}
+                  contracts is{" "}
+                  <span className="font-black text-primary">
+                    {selectedContract.revenueSharePercent}%
+                  </span>{" "}
+                  of premium chapter purchase revenue. Final payout only starts after
+                  an admin activates a story contract.
+                </>
+              ) : (
+                "Select a contract basis so StoryArc can quote the right revenue share in review."
+              )}
+            </div>
+          </div>
+        ) : null}
+      </div>
+    </section>
+  );
+}
+
 function DesktopCreatorApplication({
+  contractTerms,
   form,
   isSaving,
   isSubmitted,
   isSubmitting,
   onChange,
+  onContractToggle,
+  onContractTypeSelect,
   onExperienceSelect,
   onSaveDraft,
   onSubmit,
@@ -199,6 +345,14 @@ function DesktopCreatorApplication({
                 </div>
               </section>
 
+              <ContractPreferenceSection
+                contractTerms={contractTerms}
+                form={form}
+                isSubmitted={isSubmitted}
+                onContractToggle={onContractToggle}
+                onContractTypeSelect={onContractTypeSelect}
+              />
+
               <div className="flex flex-col items-center justify-between gap-6 border-t border-slate-200 pt-6 dark:border-primary/10 md:flex-row">
                 <p className="max-w-sm text-sm text-slate-500 dark:text-slate-400">
                   {isSubmitted ? (
@@ -274,11 +428,14 @@ function DesktopCreatorApplication({
 }
 
 function MobileCreatorApplication({
+  contractTerms,
   form,
   isSaving,
   isSubmitted,
   isSubmitting,
   onChange,
+  onContractToggle,
+  onContractTypeSelect,
   onExperienceSelect,
   onGenreSelect,
   onSaveDraft,
@@ -427,23 +584,27 @@ function MobileCreatorApplication({
             <h4 className="text-[10px] font-bold uppercase tracking-wider text-primary">
               Portfolio (Optional)
             </h4>
-            <div className="flex flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-slate-300 bg-white p-5 text-center dark:border-primary/30 dark:bg-background-dark/30">
-              <span className="material-symbols-outlined text-3xl text-primary">cloud_upload</span>
-              <div>
-                <p className="text-sm font-medium">Upload writing samples</p>
-                <p className="text-[10px] text-slate-500 dark:text-slate-400">
-                  PDF, DOCX up to 10MB
-                </p>
-              </div>
-              <button
-                className="mt-1 rounded-full border border-primary px-4 py-1.5 text-xs font-bold text-primary disabled:cursor-not-allowed disabled:opacity-70"
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs font-medium">Portfolio or sample URL</label>
+              <input
+                className="h-11 rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-base text-slate-900 placeholder:text-slate-400 focus:border-primary focus:ring-1 focus:ring-primary dark:border-primary/30 dark:bg-background-dark/50 dark:text-slate-100 dark:placeholder:text-slate-500 disabled:cursor-not-allowed disabled:opacity-70"
                 disabled={isSubmitted}
-                type="button"
-              >
-                Browse Files
-              </button>
+                onChange={onChange("portfolioUrl")}
+                placeholder="https://yourportfolio.com/sample"
+                type="url"
+                value={form.portfolioUrl}
+              />
             </div>
           </div>
+
+          <ContractPreferenceSection
+            compact
+            contractTerms={contractTerms}
+            form={form}
+            isSubmitted={isSubmitted}
+            onContractToggle={onContractToggle}
+            onContractTypeSelect={onContractTypeSelect}
+          />
 
           <div className="mt-4 flex flex-col gap-3 pb-8">
             {isSubmitted ? (
@@ -487,8 +648,8 @@ export default function CreatorApplicationPage() {
   const {
     applicationDraft,
     creatorApplicationStatus,
+    creatorContractTerms,
     enterReaderMode,
-    enterWriterMode,
     isCreatorApplicationLoading,
     isSavingCreatorDraft,
     isSubmittingCreatorApplication,
@@ -496,10 +657,6 @@ export default function CreatorApplicationPage() {
     submitCreatorApplication,
   } = useCreator();
   const [form, setForm] = useState(applicationDraft);
-
-  useEffect(() => {
-    enterWriterMode();
-  }, []);
 
   useEffect(() => {
     setForm(applicationDraft);
@@ -527,6 +684,24 @@ export default function CreatorApplicationPage() {
     setForm((current) => ({
       ...current,
       primaryGenre,
+    }));
+  }
+
+  function handleContractToggle(wantsContract) {
+    setForm((current) => ({
+      ...current,
+      requestedContractType: wantsContract
+        ? current.requestedContractType || "EXCLUSIVE"
+        : "",
+      wantsContract,
+    }));
+  }
+
+  function handleContractTypeSelect(requestedContractType) {
+    setForm((current) => ({
+      ...current,
+      requestedContractType,
+      wantsContract: true,
     }));
   }
 
@@ -558,21 +733,27 @@ export default function CreatorApplicationPage() {
   return (
     <>
       <DesktopCreatorApplication
+        contractTerms={creatorContractTerms}
         form={form}
         isSaving={isSavingCreatorDraft}
         isSubmitted={creatorApplicationStatus === "SUBMITTED"}
         isSubmitting={isSubmittingCreatorApplication || isCreatorApplicationLoading}
         onChange={handleChange}
+        onContractToggle={handleContractToggle}
+        onContractTypeSelect={handleContractTypeSelect}
         onExperienceSelect={handleExperienceSelect}
         onSaveDraft={handleSaveDraft}
         onSubmit={handleSubmit}
       />
       <MobileCreatorApplication
+        contractTerms={creatorContractTerms}
         form={form}
         isSaving={isSavingCreatorDraft}
         isSubmitted={creatorApplicationStatus === "SUBMITTED"}
         isSubmitting={isSubmittingCreatorApplication || isCreatorApplicationLoading}
         onChange={handleChange}
+        onContractToggle={handleContractToggle}
+        onContractTypeSelect={handleContractTypeSelect}
         onExperienceSelect={handleExperienceSelect}
         onGenreSelect={handleGenreSelect}
         onSaveDraft={handleSaveDraft}

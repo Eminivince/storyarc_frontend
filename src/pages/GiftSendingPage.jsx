@@ -25,9 +25,13 @@ function getAuthorInitials(authorName) {
     .join("") || "SC";
 }
 
-function GiftCatalogNotice({ message }) {
+function GiftCatalogNotice({ message, compact }) {
   return (
-    <div className="rounded-3xl border border-primary/15 bg-primary/5 p-5 text-sm text-slate-500 dark:text-slate-400">
+    <div
+      className={`border border-primary/15 bg-primary/5 text-slate-500 dark:text-slate-400 ${
+        compact ? "rounded-xl p-3 text-xs" : "rounded-3xl p-5 text-sm"
+      }`}
+    >
       {message}
     </div>
   );
@@ -56,21 +60,21 @@ function LoadingState() {
 }
 
 function GiftCatalogSkeleton({ mobile = false }) {
-  const items = mobile ? 4 : 4;
+  const items = 4;
 
   return (
-    <div className={mobile ? "grid grid-cols-2 gap-3" : "grid gap-4 sm:grid-cols-2"}>
+    <div className={mobile ? "grid grid-cols-2 gap-2" : "grid gap-4 sm:grid-cols-2"}>
       {Array.from({ length: items }).map((_, index) => (
         <div
-          className={`rounded-3xl border border-primary/10 p-4 ${
-            mobile ? "bg-primary/5" : "bg-white/80 dark:bg-primary/5"
+          className={`border border-primary/10 ${
+            mobile ? "rounded-2xl bg-primary/5 p-2.5" : "rounded-3xl p-4 bg-white/80 dark:bg-primary/5"
           }`}
           key={index}
         >
-          <SkeletonBlock className="aspect-square w-full rounded-2xl" />
-          <div className="mt-4 space-y-2">
-            <SkeletonBlock className="h-4 w-3/4" />
-            <SkeletonBlock className="h-3 w-1/3" />
+          <SkeletonBlock className={`aspect-square w-full ${mobile ? "rounded-xl" : "rounded-2xl"}`} />
+          <div className={mobile ? "mt-2 space-y-1.5" : "mt-4 space-y-2"}>
+            <SkeletonBlock className={mobile ? "h-3 w-3/4" : "h-4 w-3/4"} />
+            <SkeletonBlock className={mobile ? "h-2.5 w-1/3" : "h-3 w-1/3"} />
             {!mobile ? <SkeletonBlock className="h-3 w-full" /> : null}
           </div>
         </div>
@@ -271,60 +275,50 @@ function MobileGiftSending({
   return (
     <div className="min-h-screen bg-background-light font-display text-slate-900 dark:bg-background-dark dark:text-slate-100 md:hidden">
       <div className="relative flex h-screen flex-col overflow-hidden">
-        <header className="sticky top-0 z-50 flex items-center justify-between border-b border-primary/10 bg-background-light/90 px-4 py-3 backdrop-blur-md dark:bg-background-dark/90">
+        <header className="sticky top-0 z-50 flex items-center justify-between border-b border-primary/10 bg-background-light/90 px-3 py-2.5 backdrop-blur-md dark:bg-background-dark/90">
           <Link
-            className="flex size-10 items-center justify-center rounded-full transition-colors hover:bg-primary/10"
+            className="flex size-9 items-center justify-center rounded-full transition-colors hover:bg-primary/10"
             to={storyHref}
           >
-            <span className="material-symbols-outlined">close</span>
+            <span className="material-symbols-outlined text-lg">close</span>
           </Link>
-          <h1 className="text-lg font-bold tracking-tight">Send a Gift</h1>
+          <h1 className="text-base font-bold tracking-tight">Send a Gift</h1>
           <button
-            className="flex size-10 items-center justify-center rounded-full transition-colors hover:bg-primary/10"
+            className="flex size-9 items-center justify-center rounded-full transition-colors hover:bg-primary/10"
             type="button"
           >
-            <span className="material-symbols-outlined">help</span>
+            <span className="material-symbols-outlined text-lg">help</span>
           </button>
         </header>
 
-        <main className="flex-1 overflow-y-auto pb-40">
-          <div className="px-6 py-8 text-center">
-            <div className="relative mx-auto size-24 rounded-full border-2 border-primary bg-primary/10 p-0.5 shadow-lg shadow-primary/10">
-              <CreatorAvatar
-                authorImage={storyMeta.authorImage}
-                authorName={storyMeta.authorName}
-              />
-            </div>
-            <h2 className="mt-4 text-2xl font-black">{storyMeta.authorName}</h2>
-            <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-              Author of <span className="italic text-primary">{storyMeta.storyTitle}</span>
-            </p>
-          </div>
+        <main className="flex-1 overflow-y-auto pb-36 mt-4">
+          
 
-          <div className="space-y-6 px-4">
+          <div className="space-y-4 px-3">
             <section>
-              <div className="mb-4 flex items-center justify-between px-1">
-                <h3 className="text-sm font-bold uppercase tracking-widest text-primary/80">
+              <div className="mb-3 flex items-center justify-between px-0.5">
+                <h3 className="text-xs font-bold uppercase tracking-widest text-primary/80">
                   Choose a Gift
                 </h3>
-                <span className="rounded-full bg-primary/10 px-2 py-1 text-xs font-bold text-primary">
-                  Balance: {balance}
+                <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[11px] font-bold text-primary">
+                  {balance} Coins
                 </span>
               </div>
               {isCatalogLoading ? (
                 <GiftCatalogSkeleton mobile />
               ) : catalogError ? (
                 <GiftCatalogNotice
+                  compact
                   message={catalogError.message || "The gift catalog could not be loaded right now."}
                 />
               ) : gifts.length ? (
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-2 gap-2">
                   {gifts.map((gift) => {
                     const active = gift.id === selectedGift?.id;
 
                     return (
                       <button
-                        className={`flex flex-col gap-3 rounded-3xl border p-3 text-left transition-colors ${
+                        className={`flex flex-col gap-2 rounded-2xl border p-2.5 text-left transition-colors ${
                           active
                             ? "border-primary/40 bg-primary/20 ring-2 ring-primary/30"
                             : "border-primary/10 bg-primary/5"
@@ -333,75 +327,75 @@ function MobileGiftSending({
                         onClick={() => onSelectGift(gift)}
                         type="button"
                       >
-                        <div className="relative flex aspect-square items-center justify-center rounded-2xl bg-[radial-gradient(circle_at_top,_rgba(244,192,37,0.25),_transparent_60%),linear-gradient(135deg,rgba(244,192,37,0.14),rgba(15,23,42,0.85))]">
-                          <span className="material-symbols-outlined text-5xl text-primary">
+                        <div className="relative flex aspect-square items-center justify-center rounded-xl bg-[radial-gradient(circle_at_top,_rgba(244,192,37,0.25),_transparent_60%),linear-gradient(135deg,rgba(244,192,37,0.14),rgba(15,23,42,0.85))]">
+                          <span className="material-symbols-outlined text-4xl text-primary">
                             {gift.icon}
                           </span>
                           {active ? (
-                            <div className="absolute right-2 top-2 rounded-full bg-primary p-0.5 text-background-dark">
-                              <span className="material-symbols-outlined text-sm">check</span>
+                            <div className="absolute right-1.5 top-1.5 rounded-full bg-primary p-0.5 text-background-dark">
+                              <span className="material-symbols-outlined text-xs">check</span>
                             </div>
                           ) : null}
                         </div>
-                        <div>
-                          <p className={`text-sm font-bold ${active ? "text-primary" : ""}`}>
+                        <div className="min-w-0">
+                          <p className={`truncate text-xs font-bold ${active ? "text-primary" : ""}`}>
                             {gift.name}
                           </p>
-                          <p className="text-xs font-medium text-slate-400">{gift.coins} Coins</p>
+                          <p className="text-[11px] font-medium text-slate-400">{gift.coins} Coins</p>
                         </div>
                       </button>
                     );
                   })}
                 </div>
               ) : (
-                <GiftCatalogNotice message="No gift options are available right now." />
+                <GiftCatalogNotice compact message="No gift options are available right now." />
               )}
             </section>
 
             <section>
               <label className="block">
-                <span className="mb-2 ml-2 block text-base font-bold uppercase tracking-widest text-slate-400">
-                  Personalized Message
+                <span className="mb-1.5 ml-1 block text-xs font-bold uppercase tracking-widest text-slate-400">
+                  Message
                 </span>
                 <textarea
-                  className="min-h-[120px] w-full rounded-3xl border border-primary/20 bg-primary/5 p-4 text-base focus:border-primary focus:ring-primary"
+                  className="min-h-[88px] w-full rounded-xl border border-primary/20 bg-primary/5 px-3 py-2.5 text-sm focus:border-primary focus:ring-primary"
                   onChange={(event) => onMessageChange(event.target.value)}
-                  placeholder={`Write a supportive note to ${authorFirstName}...`}
+                  placeholder={`Note to ${authorFirstName}...`}
                   value={message}
                 />
               </label>
-              <div className="mt-3 flex items-center gap-2 rounded-2xl border border-primary/10 bg-primary/5 p-3 text-xs text-slate-500 dark:text-slate-400">
-                <span className="material-symbols-outlined text-primary">info</span>
-                Gifts help authors unlock special rewards and keep creating.
+              <div className="mt-2 flex items-center gap-2 rounded-xl border border-primary/10 bg-primary/5 p-2.5 text-[11px] text-slate-500 dark:text-slate-400">
+                <span className="material-symbols-outlined text-base text-primary">info</span>
+                Gifts help authors unlock rewards and keep creating.
               </div>
             </section>
           </div>
         </main>
 
-        <footer className="fixed bottom-0 left-0 right-0 border-t border-primary/20 bg-background-light/90 p-4 backdrop-blur-xl dark:bg-background-dark/90">
-          <div className="mb-3 flex items-center justify-between px-2">
+        <footer className="fixed bottom-0 left-0 right-0 border-t border-primary/20 bg-background-light/90 p-3 backdrop-blur-xl dark:bg-background-dark/90">
+          <div className="mb-2 flex items-center justify-between px-1">
             <div>
-              <p className="text-[11px] font-bold uppercase tracking-widest text-slate-500">
-                Total Amount
+              <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500">
+                Total
               </p>
-              <p className="text-xl font-black">{selectedGift?.coins ?? 0} Coins</p>
+              <p className="text-lg font-black">{selectedGift?.coins ?? 0} Coins</p>
             </div>
             <div className="text-right">
-              <p className="text-[11px] font-bold uppercase tracking-widest text-slate-500">
-                Remaining
+              <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500">
+                Left
               </p>
-              <p className="text-sm font-semibold text-slate-400">
-                {Math.max(balance - (selectedGift?.coins ?? 0), 0)} Coins
+              <p className="text-xs font-semibold text-slate-400">
+                {Math.max(balance - (selectedGift?.coins ?? 0), 0)}
               </p>
             </div>
           </div>
           <button
-            className="flex w-full items-center justify-center gap-2 rounded-2xl bg-primary py-4 font-bold text-background-dark shadow-lg shadow-primary/20 disabled:cursor-not-allowed disabled:opacity-60"
+            className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-3 text-sm font-bold text-background-dark shadow-lg shadow-primary/20 disabled:cursor-not-allowed disabled:opacity-60"
             disabled={!selectedGift}
             onClick={onSend}
             type="button"
           >
-            <span className="material-symbols-outlined">card_giftcard</span>
+            <span className="material-symbols-outlined text-lg">card_giftcard</span>
             Send Gift to {authorFirstName}
           </button>
         </footer>

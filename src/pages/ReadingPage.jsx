@@ -2,8 +2,10 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useScrollHide } from "../hooks/useScrollHide";
 import { Link, Navigate, useParams } from "react-router-dom";
+import { ChapterCommentsSection } from "../components/ChapterCommentsSection";
 import ReaderStateScreen from "../components/ReaderStateScreen";
 import RouteLoadingScreen from "../components/RouteLoadingScreen";
+import SeoMetadata, { createSeoDescription } from "../components/SeoMetadata";
 import { useOnboarding } from "../context/OnboardingContext";
 import {
   buildChapterHref,
@@ -27,6 +29,7 @@ const readerThemes = {
     footerButton: "bg-slate-800 text-slate-100 hover:bg-slate-700",
     muted: "text-slate-400",
     panel: "border-primary/20 bg-surface-dark/95 text-slate-100",
+    panelOpaque: "border-primary/20 bg-surface-dark text-slate-100",
     panelSecondary: "border-primary/20 bg-surface-dark text-slate-100 hover:bg-accent-dark",
     shell: "bg-background-dark text-slate-100",
     sidebar: "border-primary/5 bg-background-dark/70",
@@ -38,6 +41,7 @@ const readerThemes = {
     footerButton: "bg-slate-100 text-slate-900 hover:bg-slate-200",
     muted: "text-slate-500",
     panel: "border-slate-200 bg-white text-slate-900",
+    panelOpaque: "border-slate-200 bg-white text-slate-900",
     panelSecondary: "border-slate-200 bg-slate-100 text-slate-900 hover:bg-slate-200",
     shell: "bg-background-light text-slate-900",
     sidebar: "border-slate-200 bg-background-light/90",
@@ -49,6 +53,7 @@ const readerThemes = {
     footerButton: "bg-[#efe2c8] text-[#3d2c1f] hover:bg-[#e3d2af]",
     muted: "text-[#7b6247]",
     panel: "border-[#d7c29b] bg-[#f8f1e2] text-[#3d2c1f]",
+    panelOpaque: "border-[#d7c29b] bg-[#f8f1e2] text-[#3d2c1f]",
     panelSecondary: "border-[#d7c29b] bg-[#efe2c8] text-[#3d2c1f] hover:bg-[#e3d2af]",
     shell: "bg-[#f4ecd8] text-[#3d2c1f]",
     sidebar: "border-[#d9c7a9] bg-[#f4ecd8]/90",
@@ -80,6 +85,23 @@ function getChapterErrorMessage(error) {
   }
 
   return error?.message || "We could not open this chapter right now.";
+}
+
+function getChapterSeoDescription(story, chapter) {
+  if (!story || !chapter) {
+    return "";
+  }
+
+  const introParagraph = chapter.paragraphs.find((paragraph) => paragraph?.trim());
+  const introExcerpt = createSeoDescription(introParagraph, 120);
+  const baseDescription = `Read Chapter ${chapter.chapterNumber}: ${chapter.chapterTitle} from ${story.title} by ${chapter.authorName} on StoryArc.`;
+
+  return createSeoDescription(
+    introExcerpt
+      ? `${baseDescription} ${introExcerpt}`
+      : `${baseDescription} ${chapter.readingMinutes} minute read.`,
+    190,
+  );
 }
 
 function getSequentialAccessDescription(chapter) {
@@ -160,9 +182,11 @@ function DesktopReader({
   onSetFontFamily,
   onSetReaderTheme,
   onSetFontSize,
+  onToggleComments,
   onToggleSettings,
   progressPercent,
   readerTheme,
+  commentsOpen,
   settingsOpen,
   story,
 }) {
@@ -388,6 +412,17 @@ function DesktopReader({
         </AnimatePresence>
 
         <div className="flex justify-end gap-3">
+          {chapter.accessState === "READABLE" && !chapter.isLocked && (
+            <button
+              className={`flex h-12 w-12 items-center justify-center rounded-full border shadow-lg transition-colors ${
+                commentsOpen ? "bg-primary/20 text-primary border-primary/30" : theme.panelSecondary
+              }`}
+              onClick={onToggleComments}
+              type="button"
+            >
+              <span className="material-symbols-outlined">chat_bubble</span>
+            </button>
+          )}
           <Link
             className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-background-dark shadow-lg transition-transform hover:scale-105"
             to={buildStoryHref(story.slug)}
@@ -403,6 +438,41 @@ function DesktopReader({
           </button>
         </div>
       </div>
+
+      <AnimatePresence>
+        {commentsOpen && chapter.accessState === "READABLE" && !chapter.isLocked && (
+          <>
+            <motion.div
+              animate={{ opacity: 1 }}
+              className="fixed inset-0 z-[45] bg-black/40 backdrop-blur-sm"
+              exit={{ opacity: 0 }}
+              initial={{ opacity: 0 }}
+              onClick={onToggleComments}
+            />
+            <motion.div
+              animate={{ x: 0 }}
+              className="fixed right-0 top-0 z-50 flex h-full w-full max-w-md flex-col border-l border-primary/20 bg-black shadow-2xl text-slate-100"
+              exit={{ x: "100%" }}
+              initial={{ x: "100%" }}
+              transition={{ type: "spring", damping: 30, stiffness: 300 }}
+            >
+              <div className="flex shrink-0 items-center justify-end border-b border-primary/20 p-3">
+                <button
+                  aria-label="Close comments"
+                  className="rounded-lg p-2 transition-colors hover:bg-white/10"
+                  onClick={onToggleComments}
+                  type="button"
+                >
+                  <span className="material-symbols-outlined">close</span>
+                </button>
+              </div>
+              <div className="flex-1 overflow-y-auto px-4 pb-8">
+                <ChapterCommentsSection chapter={chapter} story={story} theme={{ article: "text-slate-200", muted: "text-slate-400", panel: "border-primary/20 bg-black text-slate-100", panelSecondary: "border-primary/20 bg-slate-900 text-slate-100" }} />
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
@@ -418,9 +488,11 @@ function MobileReader({
   onSetFontFamily,
   onSetReaderTheme,
   onSetFontSize,
+  onToggleComments,
   onToggleSettings,
   progressPercent,
   readerTheme,
+  commentsOpen,
   settingsOpen,
   story,
 }) {
@@ -499,7 +571,7 @@ function MobileReader({
         className={`fixed bottom-0 left-0 right-0 z-50 border-t pb-safe transition-transform duration-300 ease-out ${theme.chrome}`}
         style={{ transform: barVisible ? "translateY(0)" : "translateY(100%)" }}
       >
-        <div className="flex items-center justify-around px-3 py-2.5">
+        <div className="flex items-center justify-around px-2 py-2.5">
           <button
             className={`flex flex-col items-center gap-0.5 transition-colors ${settingsOpen ? "text-primary" : theme.muted}`}
             onClick={onToggleSettings}
@@ -508,6 +580,16 @@ function MobileReader({
             <span className="material-symbols-outlined text-xl">format_size</span>
             <span className="text-[9px] font-bold uppercase tracking-tighter">Text</span>
           </button>
+          {chapter.accessState === "READABLE" && !chapter.isLocked && (
+            <button
+              className={`flex flex-col items-center gap-0.5 transition-colors ${commentsOpen ? "text-primary" : theme.muted}`}
+              onClick={onToggleComments}
+              type="button"
+            >
+              <span className="material-symbols-outlined text-xl">chat_bubble</span>
+              <span className="text-[9px] font-bold uppercase tracking-tighter">Comments</span>
+            </button>
+          )}
           <Link className={`flex flex-col items-center gap-0.5 transition-colors ${theme.muted}`} to={buildStoryHref(story.slug)}>
             <span className="material-symbols-outlined text-xl">menu_book</span>
             <span className="text-[9px] font-bold uppercase tracking-tighter">Index</span>
@@ -530,6 +612,32 @@ function MobileReader({
           </div>
         </div>
       </section>
+
+      <AnimatePresence>
+        {commentsOpen && chapter.accessState === "READABLE" && !chapter.isLocked ? (
+          <motion.div
+            animate={{ opacity: 1, y: 0 }}
+            className="fixed inset-0 z-[60] flex flex-col rounded-t-2xl border-t border-primary/20 bg-black shadow-2xl text-slate-100"
+            exit={{ opacity: 0, y: "100%" }}
+            initial={{ opacity: 0, y: "100%" }}
+            transition={{ type: "spring", damping: 30, stiffness: 300 }}
+          >
+            <div className="flex shrink-0 items-center justify-end border-b border-primary/20 p-3">
+              <button
+                aria-label="Close comments"
+                className="rounded-lg p-2 transition-colors hover:bg-white/10"
+                onClick={onToggleComments}
+                type="button"
+              >
+                <span className="material-symbols-outlined">close</span>
+              </button>
+            </div>
+            <div className="flex-1 overflow-y-auto overscroll-contain px-4 pb-8">
+              <ChapterCommentsSection chapter={chapter} compact story={story} theme={{ article: "text-slate-200", muted: "text-slate-400", panel: "border-primary/20 bg-black text-slate-100", panelSecondary: "border-primary/20 bg-slate-900 text-slate-100" }} />
+            </div>
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
 
       <AnimatePresence>
         {settingsOpen ? (
@@ -570,7 +678,7 @@ function MobileReader({
                 <div className="flex items-center gap-4">
                   <button
                     className="transition-colors hover:text-primary"
-                    onClick={() => onSetFontSize(Math.max(fontSize - 1, 18))}
+                    onClick={() => onSetFontSize(Math.max(fontSize - 1, 16))}
                     type="button"
                   >
                     <span className="material-symbols-outlined text-xl">text_fields</span>
@@ -632,8 +740,9 @@ export default function ReadingPage() {
   const createBookmarkMutation = useCreateBookmarkMutation();
   const removeBookmarkMutation = useRemoveBookmarkMutation();
   const [fontFamily, setFontFamily] = useState("serif");
-  const [fontSize, setFontSize] = useState(20);
+  const [fontSize, setFontSize] = useState(18);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [commentsOpen, setCommentsOpen] = useState(false);
   const [readerTheme, setReaderTheme] = useState(mapPreferenceToTheme(readingTheme));
   const [bookmarkState, setBookmarkState] = useState({
     bookmarkId: null,
@@ -893,6 +1002,15 @@ export default function ReadingPage() {
 
   return (
     <>
+      <SeoMetadata
+        author={chapter.authorName}
+        description={getChapterSeoDescription(story, chapter)}
+        image={story.coverImage}
+        imageAlt={`${story.title} cover art`}
+        title={`${chapter.chapterTitle} - ${story.title}`}
+        type="article"
+        url={buildChapterHref(story.slug, chapter.chapterSlug)}
+      />
       <DesktopReader
         chapter={chapter}
         fontFamily={fontFamily}
@@ -905,9 +1023,17 @@ export default function ReadingPage() {
         onSetFontFamily={setFontFamily}
         onSetReaderTheme={setReaderTheme}
         onSetFontSize={handleSetFontSize}
-        onToggleSettings={() => setSettingsOpen((current) => !current)}
+        onToggleComments={() => {
+          setCommentsOpen((c) => !c);
+          setSettingsOpen(false);
+        }}
+        onToggleSettings={() => {
+          setSettingsOpen((s) => !s);
+          setCommentsOpen(false);
+        }}
         progressPercent={progressPercent}
         readerTheme={readerTheme}
+        commentsOpen={commentsOpen}
         settingsOpen={settingsOpen}
         story={story}
       />
@@ -922,9 +1048,17 @@ export default function ReadingPage() {
         onSetFontFamily={setFontFamily}
         onSetReaderTheme={setReaderTheme}
         onSetFontSize={handleSetFontSize}
-        onToggleSettings={() => setSettingsOpen((current) => !current)}
+        onToggleComments={() => {
+          setCommentsOpen((c) => !c);
+          setSettingsOpen(false);
+        }}
+        onToggleSettings={() => {
+          setSettingsOpen((s) => !s);
+          setCommentsOpen(false);
+        }}
         progressPercent={progressPercent}
         readerTheme={readerTheme}
+        commentsOpen={commentsOpen}
         settingsOpen={settingsOpen}
         story={story}
       />

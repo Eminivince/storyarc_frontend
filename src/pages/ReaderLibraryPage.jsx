@@ -40,15 +40,15 @@ function SectionEmptyState({ body, compact = false, ctaHref, ctaLabel, title }) 
 function LibraryShelfSkeleton({ mobile = false }) {
   if (mobile) {
     return (
-      <div className="space-y-2">
+      <div className="space-y-1.5">
         {Array.from({ length: 3 }).map((_, index) => (
           <div
-            className="flex gap-2.5 rounded-xl border border-primary/10 bg-white p-2.5 dark:bg-primary/5"
+            className="flex gap-2 rounded-lg border border-primary/10 bg-white p-2 dark:bg-primary/5"
             key={index}
           >
-            <SkeletonBlock className="h-20 w-16 flex-shrink-0 rounded-lg" />
-            <div className="flex flex-1 flex-col justify-center gap-2">
-              <SkeletonBlock className="h-4 w-3/4" />
+            <SkeletonBlock className="h-16 w-12 flex-shrink-0 rounded-md" />
+            <div className="flex flex-1 flex-col justify-center gap-1.5">
+              <SkeletonBlock className="h-3.5 w-3/4" />
               <SkeletonBlock className="h-3 w-1/2" />
             </div>
           </div>
@@ -84,7 +84,7 @@ function ContinueReadingCard({ currentReading, mobile = false }) {
   }
 
   const cardClassName = mobile
-    ? "rounded-xl border border-primary/10 bg-white p-3 dark:bg-primary/5"
+    ? "rounded-lg border border-primary/10 bg-white p-2 dark:bg-primary/5"
     : "overflow-hidden rounded-[2rem] border border-primary/10 bg-white p-6 shadow-sm dark:bg-primary/5";
 
   return (
@@ -94,53 +94,53 @@ function ContinueReadingCard({ currentReading, mobile = false }) {
       storySlug={currentReading.storySlug}
       to={buildChapterHref(currentReading.storySlug, currentReading.chapterSlug)}
     >
-      <motion.article className={cardClassName} whileHover={{ y: -4 }}>
-        <div className={`flex ${mobile ? "gap-3" : "gap-6"}`}>
+      <motion.article className={cardClassName} whileHover={{ y: mobile ? -2 : -4 }}>
+        <div className={`flex ${mobile ? "gap-2" : "gap-6"}`}>
           <img
             alt={currentReading.storyTitle}
-            className={`rounded-xl object-cover shadow-lg ${
-              mobile ? "h-20 w-16" : "h-40 w-28"
+            className={`object-cover shadow-lg ${
+              mobile ? "h-16 w-12 rounded-md" : "h-40 w-28 rounded-xl"
             }`}
             src={currentReading.coverImage}
           />
           <div className="min-w-0 flex-1">
             <p className={`font-black uppercase text-primary ${
-              mobile ? "text-[10px] tracking-[0.16em]" : "text-[11px] tracking-[0.22em]"
+              mobile ? "text-[9px] tracking-[0.16em]" : "text-[11px] tracking-[0.22em]"
             }`}>
               Continue Reading
             </p>
-            <h3 className={`mt-1.5 font-black ${mobile ? "text-base" : "mt-2 text-3xl"}`}>
+            <h3 className={`font-black ${mobile ? "mt-1 text-sm" : "mt-2 text-3xl"}`}>
               {currentReading.storyTitle}
             </h3>
             <p className={`text-slate-500 dark:text-slate-400 ${
-              mobile ? "mt-0.5 text-xs" : "mt-1 text-sm"
+              mobile ? "mt-0.5 text-[11px]" : "mt-1 text-sm"
             }`}>
               {currentReading.chapterLabel} • {currentReading.authorName}
             </p>
             <p className={`leading-relaxed text-slate-600 dark:text-slate-300 ${
-              mobile ? "mt-2 text-xs" : "mt-4 text-sm"
+              mobile ? "mt-1.5 line-clamp-2 text-[11px]" : "mt-4 text-sm"
             }`}>
               {currentReading.resumeLabel || "Resume reading where you left off."}
             </p>
-            <div className={mobile ? "mt-3" : "mt-5"}>
+            <div className={mobile ? "mt-2" : "mt-5"}>
               <div className={`flex items-center justify-between font-bold uppercase text-slate-400 ${
-                mobile ? "mb-1 text-[10px] tracking-wider" : "mb-2 text-[11px] tracking-[0.18em]"
+                mobile ? "mb-0.5 text-[9px] tracking-wider" : "mb-2 text-[11px] tracking-[0.18em]"
               }`}>
                 <span>Progress</span>
                 <span>{currentReading.progressPercent}%</span>
               </div>
-              <div className="h-1.5 overflow-hidden rounded-full bg-slate-200 dark:bg-primary/10">
+              <div className={`overflow-hidden rounded-full bg-slate-200 dark:bg-primary/10 ${mobile ? "h-1" : "h-1.5"}`}>
                 <div
                   className="h-full rounded-full bg-primary"
                   style={{ width: `${currentReading.progressPercent}%` }}
                 />
               </div>
             </div>
-            <div className={`inline-flex items-center gap-1.5 rounded-xl bg-primary font-black uppercase text-background-dark ${
-              mobile ? "mt-3 px-3 py-1.5 text-[10px] tracking-wider" : "mt-5 px-4 py-2 text-xs tracking-widest"
+            <div className={`inline-flex items-center gap-1 rounded-lg bg-primary font-black uppercase text-background-dark ${
+              mobile ? "mt-2 px-2.5 py-1 text-[9px] tracking-wider" : "mt-5 rounded-xl px-4 py-2 text-xs tracking-widest"
             }`}>
               Continue Reading
-              <span className={`material-symbols-outlined ${mobile ? "text-xs" : "text-sm"}`}>
+              <span className={`material-symbols-outlined ${mobile ? "text-[10px]" : "text-sm"}`}>
                 menu_book
               </span>
             </div>
@@ -274,40 +274,40 @@ function MobileLibrary({ currentReading, isLoading, profile, readingList }) {
   return (
     <div className="min-h-screen bg-background-light font-display text-slate-900 dark:bg-background-dark dark:text-slate-100 md:hidden">
       <div className="mx-auto min-h-screen max-w-md bg-background-light dark:bg-background-dark">
-        <main className="space-y-5 px-4 pb-24 pt-4">
+        <main className="space-y-3 px-2 pb-20 pt-2">
           <Reveal>
-            <div className="rounded-xl border border-primary/10 bg-gradient-to-br from-primary/12 via-primary/5 to-transparent p-4">
-              <p className="text-[10px] font-black uppercase tracking-[0.18em] text-primary">
+            <div className="rounded-lg border border-primary/10 bg-gradient-to-br from-primary/12 via-primary/5 to-transparent p-3">
+              <p className="text-[9px] font-black uppercase tracking-[0.18em] text-primary">
                 Reader Library
               </p>
-              <h1 className="mt-2 text-2xl font-black tracking-tight">
+              <h1 className="mt-1.5 text-xl font-black tracking-tight">
                 {profile.displayName ? `${profile.displayName}'s shelf` : "Your shelf"}
               </h1>
-              <p className="mt-2 text-xs leading-relaxed text-slate-600 dark:text-slate-300">
-                Keep your saved books and active chapter in one place.
+              <p className="mt-1 text-[11px] leading-relaxed text-slate-600 dark:text-slate-300">
+                Saved books and active chapter in one place.
               </p>
-              <div className="mt-4 grid grid-cols-2 gap-2">
-                <div className="rounded-xl border border-primary/15 bg-white p-2.5 dark:bg-background-dark">
-                  <p className="text-[9px] font-black uppercase tracking-wider text-slate-400">
+              <div className="mt-3 grid grid-cols-2 gap-1.5">
+                <div className="rounded-lg border border-primary/15 bg-white p-2 dark:bg-background-dark">
+                  <p className="text-[8px] font-black uppercase tracking-wider text-slate-400">
                     Saved
                   </p>
-                  <p className="mt-1.5 text-xl font-black">{readingList.length}</p>
+                  <p className="mt-1 text-lg font-black">{readingList.length}</p>
                 </div>
-                <div className="rounded-xl border border-primary/15 bg-white p-2.5 dark:bg-background-dark">
-                  <p className="text-[9px] font-black uppercase tracking-wider text-slate-400">
+                <div className="rounded-lg border border-primary/15 bg-white p-2 dark:bg-background-dark">
+                  <p className="text-[8px] font-black uppercase tracking-wider text-slate-400">
                     Active
                   </p>
-                  <p className="mt-1.5 text-xl font-black">{currentReading ? "1" : "0"}</p>
+                  <p className="mt-1 text-lg font-black">{currentReading ? "1" : "0"}</p>
                 </div>
               </div>
             </div>
           </Reveal>
 
-          <Reveal as="section" className="space-y-3">
-            <div className="flex items-center justify-between gap-4">
-              <h2 className="text-base font-bold">Continue reading</h2>
+          <Reveal as="section" className="space-y-2">
+            <div className="flex items-center justify-between gap-2">
+              <h2 className="text-sm font-bold">Continue reading</h2>
               <Link
-                className="text-[10px] font-black uppercase tracking-wider text-primary"
+                className="text-[9px] font-black uppercase tracking-wider text-primary"
                 to={buildSearchHref("")}
               >
                 Discover
@@ -320,38 +320,38 @@ function MobileLibrary({ currentReading, isLoading, profile, readingList }) {
             )}
           </Reveal>
 
-          <Reveal as="section" className="space-y-3">
-            <div className="flex items-center justify-between gap-4">
-              <h2 className="text-base font-bold">Saved stories</h2>
-              <span className="text-[10px] font-black uppercase tracking-wider text-slate-400">
+          <Reveal as="section" className="space-y-2">
+            <div className="flex items-center justify-between gap-2">
+              <h2 className="text-sm font-bold">Saved stories</h2>
+              <span className="text-[9px] font-black uppercase tracking-wider text-slate-400">
                 {readingList.length} titles
               </span>
             </div>
             {isLoading ? (
               <LibraryShelfSkeleton mobile />
             ) : readingList.length ? (
-              <div className="space-y-2">
+              <div className="space-y-1.5">
                 {readingList.map((story) => (
                   <PrefetchableStoryLink key={story.storySlug} storySlug={story.storySlug} to={buildStoryHref(story.storySlug)}>
                     <motion.article
-                      className="flex gap-2.5 rounded-xl border border-primary/10 bg-white p-2.5 dark:bg-primary/5"
-                      whileHover={{ y: -4 }}
+                      className="flex gap-2 rounded-lg border border-primary/10 bg-white p-2 dark:bg-primary/5"
+                      whileHover={{ y: -2 }}
                     >
                       <img
                         alt={story.storyTitle}
-                        className="h-20 w-16 shrink-0 rounded-lg object-cover"
+                        className="h-16 w-12 shrink-0 rounded-md object-cover"
                         src={story.coverImage}
                       />
                       <div className="min-w-0 flex-1">
-                        <h3 className="line-clamp-2 text-sm font-bold">
+                        <h3 className="line-clamp-2 text-xs font-bold">
                           {story.storyTitle}
                         </h3>
-                        <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
+                        <p className="mt-0.5 text-[11px] text-slate-500 dark:text-slate-400">
                           {story.authorName}
                         </p>
-                        <div className="mt-2 inline-flex items-center gap-1 text-[10px] font-black uppercase tracking-wider text-primary">
+                        <div className="mt-1.5 inline-flex items-center gap-1 text-[9px] font-black uppercase tracking-wider text-primary">
                           Open Story
-                          <span className="material-symbols-outlined text-xs">
+                          <span className="material-symbols-outlined text-[10px]">
                             arrow_forward
                           </span>
                         </div>

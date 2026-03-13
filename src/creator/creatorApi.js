@@ -36,6 +36,20 @@ export function submitCreatorApplication(input) {
   });
 }
 
+export function fetchCreatorFinance() {
+  return getJson("/creator/finance", {
+    headers: getAuthHeaders(),
+  });
+}
+
+export function createCreatorWithdrawalRequest(input) {
+  return requestJson("/creator/withdrawals", {
+    body: input,
+    headers: getAuthHeaders(),
+    method: "POST",
+  });
+}
+
 export function listAdminCreatorApplications(status) {
   const searchParams = new URLSearchParams();
 

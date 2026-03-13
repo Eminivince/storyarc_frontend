@@ -1,5 +1,12 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useDeferredValue, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
+import {
+  fetchAdminComments,
+  fetchAdminReviews,
+  updateAdminComment,
+  updateAdminReview,
+} from "../admin/adminApi";
 import AdminPageLayout from "../components/AdminPageLayout";
 import Reveal from "../components/Reveal";
 import SkeletonBlock from "../components/SkeletonBlock";
@@ -13,6 +20,8 @@ import { useEffect } from "react";
 
 const moderationFilters = ["All", "Applications", "Flagged", "Resolved"];
 const creatorApplicationsQueryKey = ["admin", "creator-applications"];
+const adminCommentsQueryKey = ["admin", "comments"];
+const adminReviewsQueryKey = ["admin", "reviews"];
 
 function toneClasses(tone) {
   if (tone === "rose") {
@@ -70,6 +79,30 @@ function formatApplicationDate(value) {
   }).format(new Date(value));
 }
 
+function commentStatusClasses(status) {
+  if (status === "Deleted") {
+    return "bg-rose-500/15 text-rose-600 dark:text-rose-300";
+  }
+
+  if (status === "Hidden") {
+    return "bg-amber-500/15 text-amber-600 dark:text-amber-300";
+  }
+
+  return "bg-emerald-500/15 text-emerald-600 dark:text-emerald-300";
+}
+
+function reviewStatusClasses(status) {
+  if (status === "Deleted") {
+    return "bg-rose-500/15 text-rose-600 dark:text-rose-300";
+  }
+
+  if (status === "Hidden") {
+    return "bg-amber-500/15 text-amber-600 dark:text-amber-300";
+  }
+
+  return "bg-emerald-500/15 text-emerald-600 dark:text-emerald-300";
+}
+
 export default function AdminContentModerationPage() {
   const queryClient = useQueryClient();
   const {
@@ -84,6 +117,16 @@ export default function AdminContentModerationPage() {
   const creatorApplicationsQuery = useQuery({
     queryKey: creatorApplicationsQueryKey,
     queryFn: () => listAdminCreatorApplications(),
+    retry: false,
+  });
+  const adminCommentsQuery = useQuery({
+    queryKey: adminCommentsQueryKey,
+    queryFn: () => fetchAdminComments(),
+    retry: false,
+  });
+  const adminReviewsQuery = useQuery({
+    queryKey: adminReviewsQueryKey,
+    queryFn: () => fetchAdminReviews(),
     retry: false,
   });
   const approveApplicationMutation = useMutation({
@@ -122,7 +165,77 @@ export default function AdminContentModerationPage() {
       );
     },
   });
+  const moderateCommentMutation = useMutation({
+    mutationFn: ({ action, commentId }) =>
+      updateAdminComment(commentId, {
+        action,
+        notes: null,
+      }),
+    onError: (error) => {
+      showAdminNotice(
+        error.message || "Could not update that comment.",
+        "info",
+      );
+    },
+    onSuccess: (response) => {
+      queryClient.invalidateQueries({
+        queryKey: adminCommentsQueryKey,
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["admin", "activity"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["reader", "chapter"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["reader", "chapter-comments"],
+      });
+      showAdminNotice(response.message || "Comment updated.");
+    },
+  });
+  const moderateReviewMutation = useMutation({
+    mutationFn: ({ action, reviewId }) =>
+      updateAdminReview(reviewId, {
+        action,
+        notes: null,
+      }),
+    onError: (error) => {
+      showAdminNotice(
+        error.message || "Could not update that review.",
+        "info",
+      );
+    },
+    onSuccess: (response) => {
+      queryClient.invalidateQueries({
+        queryKey: adminReviewsQueryKey,
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["reader", "story"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["reader", "story-reviews"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["admin", "activity"],
+      });
+      showAdminNotice(response.message || "Review updated.");
+    },
+  });
   const creatorApplications = creatorApplicationsQuery.data?.applications ?? [];
+  const adminComments = adminCommentsQuery.data?.comments ?? [];
+  const adminReviews = adminReviewsQuery.data?.reviews ?? [];
+  const adminCommentSummary = adminCommentsQuery.data?.summary ?? {
+    deletedCount: 0,
+    hiddenCount: 0,
+    replyCount: 0,
+    visibleCount: 0,
+  };
+  const adminReviewSummary = adminReviewsQuery.data?.summary ?? {
+    deletedCount: 0,
+    hiddenCount: 0,
+    spoilerCount: 0,
+    visibleCount: 0,
+  };
   const creatorApplicationCounts = {
     approved: creatorApplications.filter((application) => application.status === "APPROVED")
       .length,
@@ -145,6 +258,48 @@ export default function AdminContentModerationPage() {
       return matchesFilter(item, activeFilter) && matchesQuery;
     });
   }, [activeFilter, deferredSearch, reports]);
+  const filteredComments = useMemo(() => {
+    const query = deferredSearch.trim().toLowerCase();
+
+    return adminComments.filter((comment) => {
+      if (!query) {
+        return true;
+      }
+
+      return [
+        comment.authorName,
+        comment.body,
+        comment.chapterTitle,
+        comment.storyTitle,
+        comment.status,
+        comment.parentComment?.authorName ?? "",
+        comment.parentComment?.bodyPreview ?? "",
+      ]
+        .join(" ")
+        .toLowerCase()
+        .includes(query);
+    });
+  }, [adminComments, deferredSearch]);
+  const filteredStoryReviews = useMemo(() => {
+    const query = deferredSearch.trim().toLowerCase();
+
+    return adminReviews.filter((review) => {
+      if (!query) {
+        return true;
+      }
+
+      return [
+        review.authorName,
+        review.body,
+        review.storyTitle,
+        review.status,
+        review.title ?? "",
+      ]
+        .join(" ")
+        .toLowerCase()
+        .includes(query);
+    });
+  }, [adminReviews, deferredSearch]);
   const moderationStats = [
     {
       id: "pending",
@@ -168,6 +323,20 @@ export default function AdminContentModerationPage() {
       value: reports
         .filter((item) => item.detail.toLowerCase().includes("copyright"))
         .length.toString(),
+    },
+    {
+      id: "hidden-comments",
+      icon: "forum",
+      label: "Hidden Comments",
+      tone: "amber",
+      value: adminCommentSummary.hiddenCount.toString(),
+    },
+    {
+      id: "hidden-reviews",
+      icon: "rate_review",
+      label: "Hidden Reviews",
+      tone: "amber",
+      value: adminReviewSummary.hiddenCount.toString(),
     },
   ];
 
@@ -202,7 +371,7 @@ export default function AdminContentModerationPage() {
       subtitle="Resolve safety reports, creator applications, and live content issues before they affect reader trust."
       title="Content Moderation"
     >
-      <section className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+      <section className="grid grid-cols-1 gap-4 lg:grid-cols-5">
         {moderationStats.map((stat, index) => (
           <Reveal
             className="rounded-3xl border border-primary/10 bg-white p-5 dark:bg-primary/5"
@@ -324,6 +493,13 @@ export default function AdminContentModerationPage() {
                       <div className="mt-4 flex flex-wrap gap-2 text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400">
                         <span>{application.primaryGenre || "No genre yet"}</span>
                         <span>{application.experience || "No experience selected"}</span>
+                        <span>
+                          {application.wantsContract
+                            ? application.requestedContractType === "NON_EXCLUSIVE"
+                              ? "Contract: Non-Exclusive"
+                              : "Contract: Exclusive"
+                            : "No contract request"}
+                        </span>
                         <span>{formatApplicationDate(application.submittedAt)}</span>
                       </div>
                       <p className="mt-4 text-sm leading-6 text-slate-600 dark:text-slate-300">
@@ -375,6 +551,374 @@ export default function AdminContentModerationPage() {
           ) : (
             <div className="rounded-3xl border border-dashed border-primary/20 bg-slate-50 px-5 py-8 text-sm text-slate-500 dark:bg-background-dark/50 dark:text-slate-400">
               No creator applications have been submitted yet.
+            </div>
+          )}
+        </div>
+      </section>
+
+      <section className="rounded-[28px] border border-primary/10 bg-white p-6 shadow-[0_24px_60px_-36px_rgba(13,15,22,0.35)] dark:bg-primary/5">
+        <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+          <div>
+            <p className="text-xs font-black uppercase tracking-[0.24em] text-primary">
+              Chapter Comment Moderation
+            </p>
+            <h2 className="mt-2 text-2xl font-black tracking-tight">
+              Real chapter discussion queue
+            </h2>
+            <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-500 dark:text-slate-400">
+              Review reader discussion directly from live chapter threads. You can
+              hide, restore, or delete a comment without leaving the moderation
+              console.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+            <div className="rounded-3xl border border-primary/10 bg-slate-50 px-4 py-3 text-center dark:bg-background-dark/40">
+              <p className="text-[10px] font-black uppercase tracking-[0.22em] text-slate-400">
+                Visible
+              </p>
+              <p className="mt-2 text-2xl font-black">
+                {adminCommentSummary.visibleCount}
+              </p>
+            </div>
+            <div className="rounded-3xl border border-primary/10 bg-slate-50 px-4 py-3 text-center dark:bg-background-dark/40">
+              <p className="text-[10px] font-black uppercase tracking-[0.22em] text-slate-400">
+                Hidden
+              </p>
+              <p className="mt-2 text-2xl font-black">
+                {adminCommentSummary.hiddenCount}
+              </p>
+            </div>
+            <div className="rounded-3xl border border-primary/10 bg-slate-50 px-4 py-3 text-center dark:bg-background-dark/40">
+              <p className="text-[10px] font-black uppercase tracking-[0.22em] text-slate-400">
+                Deleted
+              </p>
+              <p className="mt-2 text-2xl font-black">
+                {adminCommentSummary.deletedCount}
+              </p>
+            </div>
+            <div className="rounded-3xl border border-primary/10 bg-slate-50 px-4 py-3 text-center dark:bg-background-dark/40">
+              <p className="text-[10px] font-black uppercase tracking-[0.22em] text-slate-400">
+                Replies
+              </p>
+              <p className="mt-2 text-2xl font-black">
+                {adminCommentSummary.replyCount}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-6 space-y-4">
+          {adminCommentsQuery.isPending ? (
+            Array.from({ length: 3 }).map((_, index) => (
+              <div
+                className="rounded-3xl border border-primary/10 bg-slate-50 p-5 dark:bg-background-dark/50"
+                key={index}
+              >
+                <SkeletonBlock className="h-5 w-52" />
+                <SkeletonBlock className="mt-3 h-4 w-36" />
+                <SkeletonBlock className="mt-4 h-16 w-full rounded-2xl" />
+              </div>
+            ))
+          ) : adminCommentsQuery.isError ? (
+            <div className="rounded-3xl border border-dashed border-rose-500/20 bg-rose-500/10 px-5 py-8 text-sm text-rose-600 dark:text-rose-300">
+              {adminCommentsQuery.error.message ||
+                "Chapter comments could not be loaded."}
+            </div>
+          ) : filteredComments.length ? (
+            filteredComments.map((comment) => (
+              <div
+                className="rounded-3xl border border-primary/10 bg-slate-50 p-5 dark:bg-background-dark/50"
+                key={comment.id}
+              >
+                <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+                  <div className="min-w-0 flex-1">
+                    <div className="flex flex-wrap items-center gap-3">
+                      <p className="text-lg font-black">
+                        {comment.authorName}
+                      </p>
+                      <span
+                        className={`rounded-full px-3 py-1 text-[10px] font-black uppercase tracking-[0.2em] ${commentStatusClasses(comment.status)}`}
+                      >
+                        {comment.status}
+                      </span>
+                      {comment.isReply ? (
+                        <span className="rounded-full bg-primary/10 px-3 py-1 text-[10px] font-black uppercase tracking-[0.2em] text-primary">
+                          Reply
+                        </span>
+                      ) : null}
+                    </div>
+
+                    <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
+                      {comment.storyTitle} • Chapter {comment.chapterNumber}:{" "}
+                      {comment.chapterTitle} • {comment.createdAtLabel}
+                    </p>
+
+                    <div className="mt-4 rounded-2xl border border-primary/10 bg-white px-4 py-3 text-sm leading-6 text-slate-700 dark:bg-background-dark/50 dark:text-slate-200">
+                      {comment.bodyPreview}
+                    </div>
+
+                    {comment.parentComment ? (
+                      <div className="mt-4 rounded-2xl border border-primary/10 bg-white/70 px-4 py-3 text-sm text-slate-500 dark:bg-background-dark/40 dark:text-slate-300">
+                        <span className="font-black text-primary">
+                          Replying to {comment.parentComment.authorName}:
+                        </span>{" "}
+                        {comment.parentComment.bodyPreview}
+                      </div>
+                    ) : null}
+
+                    {comment.moderationNotes ? (
+                      <div className="mt-4 rounded-2xl border border-primary/10 bg-primary/5 px-4 py-3 text-sm text-slate-600 dark:text-slate-300">
+                        <span className="font-black text-primary">
+                          Moderation note:
+                        </span>{" "}
+                        {comment.moderationNotes}
+                      </div>
+                    ) : null}
+                  </div>
+
+                  <div className="flex flex-col gap-3 lg:w-56">
+                    <Link
+                      className="rounded-2xl border border-primary/20 px-4 py-3 text-center text-sm font-bold text-primary transition-colors hover:bg-primary/10"
+                      to={comment.readHref}
+                    >
+                      Open Chapter
+                    </Link>
+                    {comment.status !== "Hidden" ? (
+                      <button
+                        className="rounded-2xl border border-amber-500/20 px-4 py-3 text-sm font-bold text-amber-600 disabled:cursor-not-allowed disabled:opacity-60 dark:text-amber-300"
+                        disabled={moderateCommentMutation.isPending}
+                        onClick={() =>
+                          moderateCommentMutation.mutate({
+                            action: "HIDE",
+                            commentId: comment.id,
+                          })
+                        }
+                        type="button"
+                      >
+                        Hide Comment
+                      </button>
+                    ) : null}
+                    {comment.status !== "Visible" ? (
+                      <button
+                        className="rounded-2xl border border-emerald-500/20 px-4 py-3 text-sm font-bold text-emerald-600 disabled:cursor-not-allowed disabled:opacity-60 dark:text-emerald-300"
+                        disabled={moderateCommentMutation.isPending}
+                        onClick={() =>
+                          moderateCommentMutation.mutate({
+                            action: "RESTORE",
+                            commentId: comment.id,
+                          })
+                        }
+                        type="button"
+                      >
+                        Restore Comment
+                      </button>
+                    ) : null}
+                    {comment.status !== "Deleted" ? (
+                      <button
+                        className="rounded-2xl bg-rose-500 px-4 py-3 text-sm font-bold text-white disabled:cursor-not-allowed disabled:opacity-60"
+                        disabled={moderateCommentMutation.isPending}
+                        onClick={() =>
+                          moderateCommentMutation.mutate({
+                            action: "DELETE",
+                            commentId: comment.id,
+                          })
+                        }
+                        type="button"
+                      >
+                        Delete Comment
+                      </button>
+                    ) : null}
+                  </div>
+                </div>
+              </div>
+            ))
+          ) : (
+            <div className="rounded-3xl border border-dashed border-primary/20 bg-slate-50 px-5 py-8 text-sm text-slate-500 dark:bg-background-dark/50 dark:text-slate-400">
+              No chapter comments matched the current search.
+            </div>
+          )}
+        </div>
+      </section>
+
+      <section className="rounded-[28px] border border-primary/10 bg-white p-6 shadow-[0_24px_60px_-36px_rgba(13,15,22,0.35)] dark:bg-primary/5">
+        <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+          <div>
+            <p className="text-xs font-black uppercase tracking-[0.24em] text-primary">
+              Story Review Moderation
+            </p>
+            <h2 className="mt-2 text-2xl font-black tracking-tight">
+              Live written review queue
+            </h2>
+            <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-500 dark:text-slate-400">
+              Moderate published written reviews separately from quick star ratings.
+              This queue is backed by the new review model used on the story page.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+            <div className="rounded-3xl border border-primary/10 bg-slate-50 px-4 py-3 text-center dark:bg-background-dark/40">
+              <p className="text-[10px] font-black uppercase tracking-[0.22em] text-slate-400">
+                Visible
+              </p>
+              <p className="mt-2 text-2xl font-black">
+                {adminReviewSummary.visibleCount}
+              </p>
+            </div>
+            <div className="rounded-3xl border border-primary/10 bg-slate-50 px-4 py-3 text-center dark:bg-background-dark/40">
+              <p className="text-[10px] font-black uppercase tracking-[0.22em] text-slate-400">
+                Hidden
+              </p>
+              <p className="mt-2 text-2xl font-black">
+                {adminReviewSummary.hiddenCount}
+              </p>
+            </div>
+            <div className="rounded-3xl border border-primary/10 bg-slate-50 px-4 py-3 text-center dark:bg-background-dark/40">
+              <p className="text-[10px] font-black uppercase tracking-[0.22em] text-slate-400">
+                Deleted
+              </p>
+              <p className="mt-2 text-2xl font-black">
+                {adminReviewSummary.deletedCount}
+              </p>
+            </div>
+            <div className="rounded-3xl border border-primary/10 bg-slate-50 px-4 py-3 text-center dark:bg-background-dark/40">
+              <p className="text-[10px] font-black uppercase tracking-[0.22em] text-slate-400">
+                Spoilers
+              </p>
+              <p className="mt-2 text-2xl font-black">
+                {adminReviewSummary.spoilerCount}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-6 space-y-4">
+          {adminReviewsQuery.isPending ? (
+            Array.from({ length: 3 }).map((_, index) => (
+              <div
+                className="rounded-3xl border border-primary/10 bg-slate-50 p-5 dark:bg-background-dark/50"
+                key={index}
+              >
+                <SkeletonBlock className="h-5 w-52" />
+                <SkeletonBlock className="mt-3 h-4 w-36" />
+                <SkeletonBlock className="mt-4 h-20 w-full rounded-2xl" />
+              </div>
+            ))
+          ) : adminReviewsQuery.isError ? (
+            <div className="rounded-3xl border border-dashed border-rose-500/20 bg-rose-500/10 px-5 py-8 text-sm text-rose-600 dark:text-rose-300">
+              {adminReviewsQuery.error.message ||
+                "Story reviews could not be loaded."}
+            </div>
+          ) : filteredStoryReviews.length ? (
+            filteredStoryReviews.map((review) => (
+              <div
+                className="rounded-3xl border border-primary/10 bg-slate-50 p-5 dark:bg-background-dark/50"
+                key={review.id}
+              >
+                <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+                  <div className="min-w-0 flex-1">
+                    <div className="flex flex-wrap items-center gap-3">
+                      <p className="text-lg font-black">
+                        {review.authorName}
+                      </p>
+                      <span
+                        className={`rounded-full px-3 py-1 text-[10px] font-black uppercase tracking-[0.2em] ${reviewStatusClasses(review.status)}`}
+                      >
+                        {review.status}
+                      </span>
+                      <span className="rounded-full bg-primary/10 px-3 py-1 text-[10px] font-black uppercase tracking-[0.2em] text-primary">
+                        {review.rating}/5
+                      </span>
+                      {review.containsSpoilers ? (
+                        <span className="rounded-full bg-amber-500/10 px-3 py-1 text-[10px] font-black uppercase tracking-[0.2em] text-amber-700 dark:text-amber-300">
+                          Spoilers
+                        </span>
+                      ) : null}
+                    </div>
+
+                    <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
+                      {review.storyTitle} • {review.createdAtLabel}
+                    </p>
+
+                    {review.title ? (
+                      <h3 className="mt-4 text-lg font-black text-primary">
+                        {review.title}
+                      </h3>
+                    ) : null}
+
+                    <div className="mt-4 rounded-2xl border border-primary/10 bg-white px-4 py-3 text-sm leading-6 text-slate-700 dark:bg-background-dark/50 dark:text-slate-200">
+                      {review.bodyPreview}
+                    </div>
+
+                    {review.moderationNotes ? (
+                      <div className="mt-4 rounded-2xl border border-primary/10 bg-primary/5 px-4 py-3 text-sm text-slate-600 dark:text-slate-300">
+                        <span className="font-black text-primary">
+                          Moderation note:
+                        </span>{" "}
+                        {review.moderationNotes}
+                      </div>
+                    ) : null}
+                  </div>
+
+                  <div className="flex flex-col gap-3 lg:w-56">
+                    <Link
+                      className="rounded-2xl border border-primary/20 px-4 py-3 text-center text-sm font-bold text-primary transition-colors hover:bg-primary/10"
+                      to={review.readHref}
+                    >
+                      Open Reviews
+                    </Link>
+                    {review.status !== "Hidden" ? (
+                      <button
+                        className="rounded-2xl border border-amber-500/20 px-4 py-3 text-sm font-bold text-amber-600 disabled:cursor-not-allowed disabled:opacity-60 dark:text-amber-300"
+                        disabled={moderateReviewMutation.isPending}
+                        onClick={() =>
+                          moderateReviewMutation.mutate({
+                            action: "HIDE",
+                            reviewId: review.id,
+                          })
+                        }
+                        type="button"
+                      >
+                        Hide Review
+                      </button>
+                    ) : null}
+                    {review.status !== "Visible" ? (
+                      <button
+                        className="rounded-2xl border border-emerald-500/20 px-4 py-3 text-sm font-bold text-emerald-600 disabled:cursor-not-allowed disabled:opacity-60 dark:text-emerald-300"
+                        disabled={moderateReviewMutation.isPending}
+                        onClick={() =>
+                          moderateReviewMutation.mutate({
+                            action: "RESTORE",
+                            reviewId: review.id,
+                          })
+                        }
+                        type="button"
+                      >
+                        Restore Review
+                      </button>
+                    ) : null}
+                    {review.status !== "Deleted" ? (
+                      <button
+                        className="rounded-2xl bg-rose-500 px-4 py-3 text-sm font-bold text-white disabled:cursor-not-allowed disabled:opacity-60"
+                        disabled={moderateReviewMutation.isPending}
+                        onClick={() =>
+                          moderateReviewMutation.mutate({
+                            action: "DELETE",
+                            reviewId: review.id,
+                          })
+                        }
+                        type="button"
+                      >
+                        Delete Review
+                      </button>
+                    ) : null}
+                  </div>
+                </div>
+              </div>
+            ))
+          ) : (
+            <div className="rounded-3xl border border-dashed border-primary/20 bg-slate-50 px-5 py-8 text-sm text-slate-500 dark:bg-background-dark/50 dark:text-slate-400">
+              No story reviews matched the current search.
             </div>
           )}
         </div>

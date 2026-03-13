@@ -13,7 +13,6 @@ import {
 } from "../data/readerFlow";
 import {
   useChapterQuery,
-  useReaderStoriesQuery,
   useStoryDetailsQuery,
   useUpdateStoryRatingMutation,
 } from "../reader/readerHooks";
@@ -54,12 +53,6 @@ function getChapterCompleteErrorMessage(error) {
 
 function formatCount(value) {
   return Number(value ?? 0).toLocaleString();
-}
-
-function getRecommendedStories(stories, currentStorySlug, limit) {
-  return (stories ?? [])
-    .filter((story) => story.slug !== currentStorySlug)
-    .slice(0, limit);
 }
 
 function AverageStars({ rating, starClassName = "text-primary" }) {
@@ -569,16 +562,9 @@ export default function ChapterCompletePage() {
   const story = storyQuery.data?.story ?? null;
   const chapter = chapterQuery.data?.chapter ?? null;
   const primaryGenre = story?.genres?.[0] ?? "";
-  const recommendationsQuery = useReaderStoriesQuery({
-    genre: primaryGenre || undefined,
-  });
   const [desktopReaction, setDesktopReaction] = useState("Loved it");
   const [mobileReaction, setMobileReaction] = useState("Love");
-  const recommendations = getRecommendedStories(
-    recommendationsQuery.data?.stories,
-    story?.slug ?? null,
-    4,
-  );
+  const recommendations = storyQuery.data?.recommendations ?? [];
 
   if (chapterQuery.isLoading || storyQuery.isLoading) {
     return <LoadingState />;

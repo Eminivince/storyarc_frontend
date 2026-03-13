@@ -12,6 +12,7 @@ import {
   createMonetizationCheckoutSession,
   fetchMonetizationCatalog,
   fetchMonetizationStatus,
+  unlockChapterBatchWithCoinsApi,
   sendGiftApi,
   unlockChapterWithAdApi,
   unlockChapterWithCoinsApi,
@@ -154,6 +155,22 @@ export function MonetizationProvider({ children }) {
     },
   });
 
+  const unlockBatchWithCoinsMutation = useMutation({
+    mutationFn: unlockChapterBatchWithCoinsApi,
+    onSuccess: async (response, variables) => {
+      applyStatusSnapshot(response?.status);
+      await Promise.all([
+        invalidateMonetizationState(),
+        queryClient.invalidateQueries({
+          queryKey: ["reader", "chapter", variables.storySlug, variables.chapterSlug],
+        }),
+      ]);
+      showToast(response?.message || "Chapters unlocked.", {
+        title: "Access updated",
+      });
+    },
+  });
+
   const unlockWithAdMutation = useMutation({
     mutationFn: unlockChapterWithAdApi,
     onSuccess: async (response, variables) => {
@@ -243,6 +260,17 @@ export function MonetizationProvider({ children }) {
     });
   }
 
+  async function spendCoinsForChapterBatch(input) {
+    return unlockBatchWithCoinsMutation.mutateAsync({
+      ...input,
+      idempotencyKey: createIdempotencyKey("chapter-batch-unlock", [
+        input.storySlug,
+        input.chapterSlug,
+        input.mode,
+      ]),
+    });
+  }
+
   async function unlockWithAd(input) {
     return unlockWithAdMutation.mutateAsync({
       ...input,
@@ -288,12 +316,14 @@ export function MonetizationProvider({ children }) {
     isCreatingCheckoutSession: createCheckoutSessionMutation.isPending,
     isSendingGift: sendGiftMutation.isPending,
     isStatusLoading: statusQuery.isLoading,
+    isUnlockingBatchWithCoins: unlockBatchWithCoinsMutation.isPending,
     isUnlockingWithAd: unlockWithAdMutation.isPending,
     isUnlockingWithCoins: unlockWithCoinsMutation.isPending,
     plans: displayPlans,
     refreshStatus: statusQuery.refetch,
     sendGift,
     spendCoinsForChapter,
+    spendCoinsForChapterBatch,
     statusError: statusQuery.error,
     subscription: statusQuery.data?.subscription ?? null,
     unlockWithAd,

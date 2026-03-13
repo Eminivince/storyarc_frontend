@@ -143,7 +143,7 @@ function DesktopCreateStory({
                       Story Title
                     </label>
                     <input
-                      className="w-full rounded-lg border border-slate-200 bg-white px-4 py-3 text-base outline-none transition-all placeholder:text-slate-400 focus:border-transparent focus:ring-2 focus:ring-primary dark:border-slate-700 dark:bg-slate-800"
+                      className="w-full outline-none rounded-lg border border-slate-200 bg-white px-4 py-3 text-base transition-all placeholder:text-slate-400 focus:border-transparent focus:ring-2 focus:ring-primary dark:border-slate-700 dark:bg-slate-800"
                       id="story-title"
                       name="title"
                       onChange={onChange}
@@ -160,7 +160,7 @@ function DesktopCreateStory({
                       Synopsis / Description
                     </label>
                     <textarea
-                      className="w-full resize-none rounded-lg border border-slate-200 bg-white px-4 py-3 text-base outline-none transition-all placeholder:text-slate-400 focus:border-transparent focus:ring-2 focus:ring-primary dark:border-slate-700 dark:bg-slate-800"
+                      className="w-full outline-none resize-none rounded-lg border border-slate-200 bg-white px-4 py-3 text-base transition-all placeholder:text-slate-400 focus:border-transparent focus:ring-2 focus:ring-primary dark:border-slate-700 dark:bg-slate-800"
                       id="story-synopsis"
                       name="synopsis"
                       onChange={onChange}

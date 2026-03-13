@@ -162,6 +162,7 @@ export default function AdminContractEditorPage() {
   const users = lookupsQuery.data?.users ?? [];
   const stories = lookupsQuery.data?.stories ?? [];
   const templates = lookupsQuery.data?.templates ?? [];
+  const revenueShareDefaults = lookupsQuery.data?.revenueShareDefaults ?? null;
 
   const previewBody = useMemo(
     () =>
@@ -187,6 +188,40 @@ export default function AdminContractEditorPage() {
       ...current,
       [key]: value,
     }));
+  }
+
+  function getRecommendedRevenueShare(contractType) {
+    if (contractType === "EXCLUSIVE") {
+      return revenueShareDefaults?.exclusive?.revenueSharePercent ?? null;
+    }
+
+    if (contractType === "NON_EXCLUSIVE") {
+      return revenueShareDefaults?.nonExclusive?.revenueSharePercent ?? null;
+    }
+
+    return null;
+  }
+
+  function handleContractTypeChange(contractType) {
+    setForm((current) => {
+      const previousRecommended = getRecommendedRevenueShare(current.contractType);
+      const nextRecommended = getRecommendedRevenueShare(contractType);
+      const currentRevenueShare = Number(current.revenueSharePercent);
+      const shouldSyncRevenueShare =
+        !current.templateId &&
+        nextRecommended !== null &&
+        (!current.revenueSharePercent ||
+          (Number.isFinite(currentRevenueShare) &&
+            currentRevenueShare === previousRecommended));
+
+      return {
+        ...current,
+        contractType,
+        revenueSharePercent: shouldSyncRevenueShare
+          ? String(nextRecommended)
+          : current.revenueSharePercent,
+      };
+    });
   }
 
   function handleUserChange(userId) {
@@ -507,6 +542,17 @@ export default function AdminContractEditorPage() {
                   <span className="text-sm font-semibold text-slate-500 dark:text-slate-400">
                     Revenue Share (%)
                   </span>
+                  <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                    {form.contractType
+                      ? `Recommended default: ${
+                          getRecommendedRevenueShare(form.contractType) ?? "--"
+                        }% for ${
+                          form.contractType === "NON_EXCLUSIVE"
+                            ? "non-exclusive"
+                            : "exclusive"
+                        } contracts.`
+                      : "Select a contract type to pull the admin default share."}
+                  </p>
                   <div className="relative mt-2">
                     <input
                       className="w-full rounded-xl border border-primary/10 bg-slate-50 px-4 py-3 pr-10 text-sm focus:border-primary/30 focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-background-dark/50"
@@ -568,7 +614,7 @@ export default function AdminContractEditorPage() {
                   </span>
                   <select
                     className="mt-2 w-full rounded-xl border border-primary/10 bg-slate-50 px-4 py-3 text-sm focus:border-primary/30 focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-background-dark/50"
-                    onChange={(event) => updateField("contractType", event.target.value)}
+                    onChange={(event) => handleContractTypeChange(event.target.value)}
                     value={form.contractType}
                   >
                     <option value="">Select contract type</option>

@@ -1,4 +1,12 @@
 import { appEnv } from "../config/env";
+import {
+  clearAuthTokens,
+  getAccessToken,
+  getStoredRefreshToken,
+  persistAuthTokens,
+} from "../auth/authStorage";
+
+export const SESSION_EXPIRED_EVENT = "storyarc:session-expired";
 
 function isAbsoluteUrl(value) {
   return /^https?:\/\//i.test(value);
@@ -66,7 +74,54 @@ export function buildApiUrl(path) {
   return new URL(normalizedPath.replace(/^\//, ""), `${appEnv.apiBaseUrl}/`).toString();
 }
 
-export async function requestJson(path, init = {}) {
+let refreshPromise = null;
+
+async function tryRefreshTokens() {
+  const refreshToken = getStoredRefreshToken();
+
+  if (!refreshToken) {
+    return null;
+  }
+
+  if (refreshPromise) {
+    return refreshPromise;
+  }
+
+  const url = buildApiUrl("/auth/refresh");
+  refreshPromise = (async () => {
+    try {
+      const response = await fetch(url, {
+        body: JSON.stringify({ refreshToken }),
+        credentials: "include",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        method: "POST",
+      });
+
+      const payload = await parseResponseBody(response);
+
+      if (!response.ok || !payload?.tokens) {
+        return null;
+      }
+
+      persistAuthTokens(payload.tokens);
+      return payload.tokens;
+    } finally {
+      refreshPromise = null;
+    }
+  })();
+
+  return refreshPromise;
+}
+
+function isAuthEndpoint(path) {
+  const url = buildApiUrl(path);
+  return url.includes("/auth/refresh") || url.includes("/auth/login");
+}
+
+export async function requestJson(path, init = {}, isRetry = false) {
   const {
     body,
     credentials = "include",
@@ -110,6 +165,22 @@ export async function requestJson(path, init = {}) {
       signal: controller.signal,
     });
     const payload = await parseResponseBody(response);
+
+    if (response.status === 401 && !isRetry && !isAuthEndpoint(path)) {
+      const hadAuth = requestHeaders.has("Authorization");
+      if (hadAuth) {
+        const tokens = await tryRefreshTokens();
+        if (tokens) {
+          const newToken = tokens.accessToken ?? getAccessToken();
+          if (newToken) {
+            requestHeaders.set("Authorization", `Bearer ${newToken}`);
+            return requestJson(path, { ...init, headers: requestHeaders }, true);
+          }
+        }
+        clearAuthTokens();
+        globalThis.dispatchEvent(new CustomEvent(SESSION_EXPIRED_EVENT));
+      }
+    }
 
     if (!response.ok) {
       throw new ApiError(

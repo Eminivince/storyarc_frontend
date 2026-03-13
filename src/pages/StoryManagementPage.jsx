@@ -8,7 +8,7 @@ import UserAvatar from "../components/UserAvatar";
 import { useAuth } from "../context/AuthContext";
 import { useCreator } from "../context/CreatorContext";
 import {
-  authorDashboardHref,
+  creatorStoriesHref,
   creatorStoryCreateHref,
   getCreatorChapterEditorHref,
   getCreatorPublishedChaptersHref,
@@ -282,7 +282,7 @@ function MobileStoryManagement({ onPreview, story }) {
   return (
     <div className="min-h-screen bg-background-light font-display text-slate-900 dark:bg-background-dark dark:text-slate-100 md:hidden">
       <header className="sticky top-0 z-10 flex items-center justify-between border-b border-primary/10 bg-background-light/80 px-4 py-3 backdrop-blur-md dark:bg-background-dark/80">
-        <Link className="flex size-9 items-center justify-center rounded-lg transition-colors hover:bg-primary/10" to={authorDashboardHref}>
+        <Link className="flex size-9 items-center justify-center rounded-lg transition-colors hover:bg-primary/10" to={creatorStoriesHref}>
           <span className="material-symbols-outlined text-xl text-slate-900 dark:text-slate-100">arrow_back</span>
         </Link>
         <h1 className="text-base font-bold tracking-tight">StoryArc</h1>
@@ -443,8 +443,8 @@ export default function StoryManagementPage() {
         ctaLabel="Create A Story"
         ctaTo={creatorStoryCreateHref}
         description="That project is not in your studio right now. Start a new one or head back to the creator dashboard."
-        secondaryLabel="Back To Dashboard"
-        secondaryTo={authorDashboardHref}
+        secondaryLabel="Back To Stories"
+        secondaryTo={creatorStoriesHref}
         title="Story Not Found"
         tone="error"
       />

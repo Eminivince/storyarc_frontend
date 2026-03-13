@@ -26,6 +26,21 @@ export function fetchMonetizationStatus() {
   });
 }
 
+export function fetchMonetizationPurchases() {
+  return getJson("/monetization/purchases", {
+    headers: getAuthHeaders(),
+  });
+}
+
+export function fetchChapterBatchUnlockOptionsApi(storySlug, chapterSlug) {
+  return getJson(
+    `/monetization/chapters/${storySlug}/${chapterSlug}/batch-options`,
+    {
+      headers: getAuthHeaders(),
+    },
+  );
+}
+
 export function createMonetizationCheckoutSession(input) {
   return postJson("/monetization/checkout-session", input, {
     headers: getAuthHeaders(),
@@ -41,6 +56,20 @@ export function confirmMonetizationCheckoutSession(input) {
 export function unlockChapterWithCoinsApi({ chapterSlug, storySlug, ...body }) {
   return postJson(
     `/monetization/chapters/${storySlug}/${chapterSlug}/unlock-with-coins`,
+    body,
+    {
+      headers: getAuthHeaders(),
+    },
+  );
+}
+
+export function unlockChapterBatchWithCoinsApi({
+  chapterSlug,
+  storySlug,
+  ...body
+}) {
+  return postJson(
+    `/monetization/chapters/${storySlug}/${chapterSlug}/unlock-batch`,
     body,
     {
       headers: getAuthHeaders(),

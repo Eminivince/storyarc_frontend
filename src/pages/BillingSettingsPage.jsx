@@ -1,13 +1,14 @@
+import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import AccountSettingsNav from "../components/AccountSettingsNav";
 import { AppDesktopSidebar, AppMobileTabBar } from "../components/AppShellNav";
 import Reveal from "../components/Reveal";
+import SkeletonBlock from "../components/SkeletonBlock";
+import { useAuth } from "../context/AuthContext";
 import { useAccount } from "../context/AccountContext";
 import { useMonetization } from "../context/MonetizationContext";
 import {
-  billingHistory,
   billingSettingsHref,
-  billingUsage,
   paymentMethods,
   profileHref,
 } from "../data/accountFlow";
@@ -17,6 +18,80 @@ import {
   formatPrice,
   freePlanTier,
 } from "../data/monetization";
+import { fetchMonetizationPurchases } from "../monetization/monetizationApi";
+
+function formatPurchaseDate(value) {
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return "Date unavailable";
+  }
+
+  return date.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+}
+
+function getPurchaseStatusLabel(status) {
+  switch (String(status ?? "").toUpperCase()) {
+    case "COMPLETED":
+      return "Paid";
+    case "PENDING":
+      return "Pending";
+    case "FAILED":
+      return "Failed";
+    case "EXPIRED":
+      return "Expired";
+    case "CANCELED":
+      return "Canceled";
+    case "REFUNDED":
+      return "Refunded";
+    default:
+      return "Unknown";
+  }
+}
+
+function getPurchaseStatusClassName(status) {
+  switch (String(status ?? "").toUpperCase()) {
+    case "COMPLETED":
+      return "text-emerald-500";
+    case "PENDING":
+      return "text-amber-500";
+    case "FAILED":
+    case "EXPIRED":
+    case "CANCELED":
+      return "text-rose-500";
+    case "REFUNDED":
+      return "text-slate-500";
+    default:
+      return "text-slate-400";
+  }
+}
+
+function BillingHistorySkeleton({ compact = false }) {
+  return (
+    <div className={compact ? "mt-4 space-y-2" : "mt-5 space-y-3"}>
+      {Array.from({ length: 3 }).map((_, index) => (
+        <div
+          className={`flex items-center justify-between border border-slate-200 bg-slate-50 dark:border-primary/10 dark:bg-background-dark/50 ${
+            compact ? "rounded-lg px-3 py-3" : "rounded-2xl px-4 py-4"
+          }`}
+          key={index}>
+          <div className="space-y-2">
+            <SkeletonBlock className={compact ? "h-4 w-36" : "h-4 w-48"} />
+            <SkeletonBlock className={compact ? "h-3 w-20" : "h-3 w-24"} />
+          </div>
+          <div className="space-y-2 text-right">
+            <SkeletonBlock className={compact ? "ml-auto h-4 w-16" : "ml-auto h-4 w-20"} />
+            <SkeletonBlock className={compact ? "ml-auto h-3 w-12" : "ml-auto h-3 w-14"} />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
 
 function getNextBillingLabel(hasPremium) {
   if (!hasPremium) {
@@ -178,7 +253,13 @@ function PlanCard({
   );
 }
 
-function BillingSections({ compact = false, onManagePayment }) {
+function BillingSections({
+  compact = false,
+  onManagePayment,
+  purchaseHistoryError,
+  purchases,
+  purchasesLoading,
+}) {
   return (
     <>
       <section
@@ -259,40 +340,59 @@ function BillingSections({ compact = false, onManagePayment }) {
         <h2 className={compact ? "text-base font-bold" : "text-xl font-bold"}>
           Billing History
         </h2>
-        <div className={compact ? "mt-4 space-y-2" : "mt-5 space-y-3"}>
-          {billingHistory.map((invoice) => (
-            <div
-              className={`flex items-center justify-between border border-slate-200 bg-slate-50 dark:border-primary/10 dark:bg-background-dark/50 ${
-                compact ? "rounded-lg px-3 py-3" : "rounded-2xl px-4 py-4"
-              }`}
-              key={invoice.id}>
-              <div>
-                <p className={compact ? "text-sm font-bold" : "font-bold"}>
-                  {invoice.description}
-                </p>
-                <p
-                  className={
-                    compact
-                      ? "text-xs text-slate-500"
-                      : "text-sm text-slate-500 dark:text-slate-400"
-                  }>
-                  {invoice.date}
-                </p>
+        {purchasesLoading ? <BillingHistorySkeleton compact={compact} /> : null}
+        {!purchasesLoading && purchaseHistoryError ? (
+          <div
+            className={`rounded-2xl border border-dashed border-rose-200 bg-rose-50 text-sm text-rose-700 dark:border-rose-500/30 dark:bg-rose-500/10 dark:text-rose-200 ${
+              compact ? "mt-4 p-3" : "mt-5 p-4"
+            }`}>
+            {purchaseHistoryError.message || "Billing history could not be loaded right now."}
+          </div>
+        ) : null}
+        {!purchasesLoading && !purchaseHistoryError && !purchases.length ? (
+          <div
+            className={`rounded-2xl border border-dashed border-primary/20 bg-primary/5 text-sm text-slate-500 dark:text-slate-400 ${
+              compact ? "mt-4 p-3" : "mt-5 p-4"
+            }`}>
+            No payments yet. Coin purchases and memberships will appear here after checkout.
+          </div>
+        ) : null}
+        {!purchasesLoading && !purchaseHistoryError && purchases.length ? (
+          <div className={compact ? "mt-4 space-y-2" : "mt-5 space-y-3"}>
+            {purchases.map((purchase) => (
+              <div
+                className={`flex items-center justify-between border border-slate-200 bg-slate-50 dark:border-primary/10 dark:bg-background-dark/50 ${
+                  compact ? "rounded-lg px-3 py-3" : "rounded-2xl px-4 py-4"
+                }`}
+                key={purchase.id}>
+                <div>
+                  <p className={compact ? "text-sm font-bold" : "font-bold"}>
+                    {purchase.description}
+                  </p>
+                  <p
+                    className={
+                      compact
+                        ? "text-xs text-slate-500"
+                        : "text-sm text-slate-500 dark:text-slate-400"
+                    }>
+                    {formatPurchaseDate(purchase.occurredAt)}
+                  </p>
+                </div>
+                <div className="text-right">
+                  <p className={compact ? "text-sm font-bold" : "font-bold"}>
+                    {formatPrice((purchase.amountCents ?? 0) / 100, purchase.currency)}
+                  </p>
+                  <p
+                    className={`font-bold uppercase tracking-widest ${getPurchaseStatusClassName(
+                      purchase.status,
+                    )} ${compact ? "text-[10px]" : "text-xs"}`}>
+                    {getPurchaseStatusLabel(purchase.status)}
+                  </p>
+                </div>
               </div>
-              <div className="text-right">
-                <p className={compact ? "text-sm font-bold" : "font-bold"}>
-                  {invoice.amount}
-                </p>
-                <p
-                  className={`font-bold uppercase tracking-widest text-emerald-500 ${
-                    compact ? "text-[10px]" : "text-xs"
-                  }`}>
-                  {invoice.status}
-                </p>
-              </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        ) : null}
       </section>
     </>
   );
@@ -300,6 +400,9 @@ function BillingSections({ compact = false, onManagePayment }) {
 
 function DesktopBillingSettings({
   onManagePayment,
+  purchaseHistoryError,
+  purchases,
+  purchasesLoading,
   profile,
   billingCycle,
   coinBalance,
@@ -348,7 +451,12 @@ function DesktopBillingSettings({
                   />
                 </Reveal>
                 <Reveal>
-                  <BillingSections onManagePayment={onManagePayment} />
+                  <BillingSections
+                    onManagePayment={onManagePayment}
+                    purchaseHistoryError={purchaseHistoryError}
+                    purchases={purchases}
+                    purchasesLoading={purchasesLoading}
+                  />
                 </Reveal>
               </div>
             </div>
@@ -361,6 +469,9 @@ function DesktopBillingSettings({
 
 function MobileBillingSettings({
   onManagePayment,
+  purchaseHistoryError,
+  purchases,
+  purchasesLoading,
   billingCycle,
   coinBalance,
   currency,
@@ -399,7 +510,13 @@ function MobileBillingSettings({
               getDisplayPlan={getDisplayPlan}
               hasPremium={hasPremium}
             />
-            <BillingSections compact onManagePayment={onManagePayment} />
+            <BillingSections
+              compact
+              onManagePayment={onManagePayment}
+              purchaseHistoryError={purchaseHistoryError}
+              purchases={purchases}
+              purchasesLoading={purchasesLoading}
+            />
           </div>
         </main>
 
@@ -410,6 +527,7 @@ function MobileBillingSettings({
 }
 
 export default function BillingSettingsPage() {
+  const { isAuthenticated } = useAuth();
   const { profile, showNotice } = useAccount();
   const {
     activePlanId,
@@ -419,6 +537,12 @@ export default function BillingSettingsPage() {
     getDisplayPlan,
     hasPremium,
   } = useMonetization();
+  const purchaseHistoryQuery = useQuery({
+    enabled: isAuthenticated,
+    queryFn: fetchMonetizationPurchases,
+    queryKey: ["monetization", "purchases"],
+  });
+  const purchases = purchaseHistoryQuery.data?.purchases ?? [];
 
   function handleManagePayment(message) {
     showNotice(`${message} is available in the next secure billing step.`);
@@ -434,6 +558,9 @@ export default function BillingSettingsPage() {
         getDisplayPlan={getDisplayPlan}
         hasPremium={hasPremium}
         onManagePayment={handleManagePayment}
+        purchaseHistoryError={purchaseHistoryQuery.error}
+        purchases={purchases}
+        purchasesLoading={purchaseHistoryQuery.isLoading}
         profile={profile}
       />
       <MobileBillingSettings
@@ -444,6 +571,9 @@ export default function BillingSettingsPage() {
         getDisplayPlan={getDisplayPlan}
         hasPremium={hasPremium}
         onManagePayment={handleManagePayment}
+        purchaseHistoryError={purchaseHistoryQuery.error}
+        purchases={purchases}
+        purchasesLoading={purchaseHistoryQuery.isLoading}
       />
     </>
   );

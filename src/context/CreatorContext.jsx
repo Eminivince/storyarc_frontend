@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useState } from "react";
 import {
   fetchCreatorApplication,
   saveCreatorApplicationDraft as saveCreatorApplicationDraftRequest,
@@ -18,10 +18,18 @@ import {
   authorDashboardHref,
   createInitialStoryDraft,
   creatorApplicationHref,
+  defaultCreatorContractTerms,
   creatorLandingHref,
   creatorSubmittedHref,
   initialCreatorApplication,
 } from "../data/creatorFlow";
+import {
+  APP_MODE_CREATOR,
+  APP_MODE_READER,
+  clearStoredAppMode,
+  getStoredAppMode,
+  persistAppMode,
+} from "../lib/appMode";
 import { useAuth } from "./AuthContext";
 import { useToast } from "./ToastContext";
 
@@ -65,6 +73,8 @@ function mapApplicationToDraft(application, user) {
     motivation: application.motivation ?? "",
     portfolioUrl: application.portfolioUrl ?? "",
     primaryGenre: application.primaryGenre ?? "",
+    requestedContractType: application.requestedContractType ?? "",
+    wantsContract: Boolean(application.wantsContract),
   };
 }
 
@@ -222,13 +232,16 @@ function cloneStoryWithNewArc(story, volumeId) {
 }
 
 export function CreatorProvider({ children }) {
-  const { refetchCurrentUser, refreshSession, user } = useAuth();
+  const { isBootstrapping, refetchCurrentUser, refreshSession, user } = useAuth();
   const { showToast } = useToast();
-  const [creatorMode, setCreatorMode] = useState("reader");
+  const [creatorMode, setCreatorMode] = useState(APP_MODE_READER);
   const [applicationDraft, setApplicationDraft] = useState(() =>
     createDefaultApplicationDraft(user),
   );
   const [creatorApplication, setCreatorApplication] = useState(null);
+  const [creatorContractTerms, setCreatorContractTerms] = useState(
+    defaultCreatorContractTerms,
+  );
   const [isCreatorApplicationLoading, setIsCreatorApplicationLoading] = useState(false);
   const [isSavingCreatorDraft, setIsSavingCreatorDraft] = useState(false);
   const [isSubmittingCreatorApplication, setIsSubmittingCreatorApplication] =
@@ -251,10 +264,16 @@ export function CreatorProvider({ children }) {
   const hasStudioAccess = user?.role === "CREATOR" || user?.role === "ADMIN";
 
   useEffect(() => {
+    if (isBootstrapping) {
+      return;
+    }
+
     if (!user) {
-      setCreatorMode("reader");
+      setCreatorMode(APP_MODE_READER);
+      clearStoredAppMode();
       setApplicationDraft(createDefaultApplicationDraft(null));
       setCreatorApplication(null);
+      setCreatorContractTerms(defaultCreatorContractTerms);
       setStories([]);
       setActiveStorySlug(null);
       setChapterDrafts({});
@@ -262,10 +281,14 @@ export function CreatorProvider({ children }) {
       return;
     }
 
-    if (hasStudioAccess) {
-      setCreatorMode("writer");
+    if (!hasStudioAccess) {
+      setCreatorMode(APP_MODE_READER);
+      clearStoredAppMode();
+      return;
     }
-  }, [hasStudioAccess, user]);
+
+    setCreatorMode(getStoredAppMode() ?? APP_MODE_CREATOR);
+  }, [hasStudioAccess, isBootstrapping, user]);
 
   async function refreshCreatorState() {
     if (!user) {
@@ -288,6 +311,9 @@ export function CreatorProvider({ children }) {
       }
 
       setCreatorApplication(response.application);
+      setCreatorContractTerms(
+        response.contractTerms ?? defaultCreatorContractTerms,
+      );
       setApplicationDraft(mapApplicationToDraft(response.application, user));
 
       return response.application;
@@ -295,6 +321,7 @@ export function CreatorProvider({ children }) {
       if (error.status === 404) {
         setCreatorApplication(null);
         setApplicationDraft(createDefaultApplicationDraft(user));
+        setCreatorContractTerms(defaultCreatorContractTerms);
         return null;
       }
 
@@ -402,13 +429,30 @@ export function CreatorProvider({ children }) {
     showToast(message, { tone });
   }
 
-  function enterWriterMode() {
-    setCreatorMode("writer");
-  }
+  const syncCreatorMode = useCallback(
+    (nextMode) => {
+      const normalizedMode =
+        nextMode === APP_MODE_CREATOR ? APP_MODE_CREATOR : APP_MODE_READER;
 
-  function enterReaderMode() {
-    setCreatorMode("reader");
-  }
+      setCreatorMode(normalizedMode);
+
+      if (hasStudioAccess) {
+        persistAppMode(normalizedMode);
+        return;
+      }
+
+      clearStoredAppMode();
+    },
+    [hasStudioAccess],
+  );
+
+  const enterWriterMode = useCallback(() => {
+    syncCreatorMode(APP_MODE_CREATOR);
+  }, [syncCreatorMode]);
+
+  const enterReaderMode = useCallback(() => {
+    syncCreatorMode(APP_MODE_READER);
+  }, [syncCreatorMode]);
 
   function getCreatorEntryHref() {
     if (creatorStatus === "approved") {
@@ -449,6 +493,9 @@ export function CreatorProvider({ children }) {
       const response = await saveCreatorApplicationDraftRequest(nextDraft);
 
       setCreatorApplication(response.application);
+      setCreatorContractTerms(
+        response.contractTerms ?? defaultCreatorContractTerms,
+      );
       setApplicationDraft(mapApplicationToDraft(response.application, user));
       showCreatorNotice(response.message || "Creator application draft saved.");
       await refetchCurrentUser();
@@ -472,6 +519,9 @@ export function CreatorProvider({ children }) {
       const response = await submitCreatorApplicationRequest(nextDraft);
 
       setCreatorApplication(response.application);
+      setCreatorContractTerms(
+        response.contractTerms ?? defaultCreatorContractTerms,
+      );
       setApplicationDraft(mapApplicationToDraft(response.application, user));
       showCreatorNotice(
         response.message || "Creator application submitted for review.",
@@ -861,8 +911,9 @@ export function CreatorProvider({ children }) {
         applicationDraft,
         chapterDrafts,
         createStory,
-        creatorApplication,
-        creatorApplicationStatus,
+    creatorApplication,
+    creatorApplicationStatus,
+        creatorContractTerms,
         creatorMode,
         creatorStatus,
         enterReaderMode,
@@ -891,6 +942,7 @@ export function CreatorProvider({ children }) {
         scheduleChapter,
         setActiveStory,
         showCreatorNotice,
+        syncCreatorMode,
         stories,
         storyDraft,
         submitCreatorApplication,

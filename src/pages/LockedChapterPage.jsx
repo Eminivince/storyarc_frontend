@@ -1,8 +1,10 @@
+import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import ReaderStateScreen from "../components/ReaderStateScreen";
 import RouteLoadingScreen from "../components/RouteLoadingScreen";
 import Reveal from "../components/Reveal";
+import SeoMetadata, { createSeoDescription } from "../components/SeoMetadata";
 import { useMonetization } from "../context/MonetizationContext";
 import { useToast } from "../context/ToastContext";
 import {
@@ -19,6 +21,7 @@ import {
   desktopLockedPreview,
   mobileLockedPreview,
 } from "../data/readerFlow";
+import { fetchChapterBatchUnlockOptionsApi } from "../monetization/monetizationApi";
 import { useChapterQuery } from "../reader/readerHooks";
 
 function getSequentialAccessDescription(chapter) {
@@ -29,15 +32,184 @@ function getSequentialAccessDescription(chapter) {
   return `Continue with Chapter ${chapter.requiredPreviousChapter.chapterNumber}: ${chapter.requiredPreviousChapter.title} before opening this chapter.`;
 }
 
+function getLockedChapterSeoDescription(story, chapter) {
+  if (!story || !chapter) {
+    return "";
+  }
+
+  return createSeoDescription(
+    `Unlock Chapter ${chapter.chapterNumber}: ${chapter.chapterTitle} from ${story.title} by ${chapter.authorName} to continue reading on StoryArc.`,
+    190,
+  );
+}
+
+function BatchUnlockOffers({
+  batchOptions,
+  coinBalance,
+  isLoading,
+  isPending,
+  onUnlock,
+  variant = "desktop",
+}) {
+  if (!isLoading && batchOptions.length === 0) {
+    return null;
+  }
+
+  const isMobile = variant === "mobile";
+
+  return (
+    <div
+      className={
+        isMobile
+          ? "mt-4 rounded-lg border border-primary/15 bg-primary/5 p-4 text-left"
+          : "rounded-xl border border-primary/10 bg-background-dark/60 p-4 text-left"
+      }
+    >
+      <div className="flex items-center justify-between gap-3">
+        <div>
+          <p className="text-[11px] font-bold uppercase tracking-[0.24em] text-primary/70">
+            Batch Unlock
+          </p>
+          <p
+            className={
+              isMobile
+                ? "mt-1 text-xs text-slate-500 dark:text-slate-400"
+                : "mt-1 text-xs text-slate-400"
+            }
+          >
+            Unlock more premium chapters in one purchase.
+          </p>
+        </div>
+        {isLoading ? (
+          <span
+            className={
+              isMobile
+                ? "text-[10px] font-semibold uppercase tracking-widest text-slate-400"
+                : "text-[10px] font-semibold uppercase tracking-widest text-slate-500"
+            }
+          >
+            Checking...
+          </span>
+        ) : null}
+      </div>
+
+      {isLoading ? null : (
+        <div className="mt-3 space-y-3">
+          {batchOptions.map((option) => {
+            const canAfford = coinBalance >= option.totalCoins;
+            const missingCoins = Math.max(option.totalCoins - coinBalance, 0);
+
+            return (
+              <button
+                className={
+                  isMobile
+                    ? "w-full rounded-lg border border-slate-200 bg-white p-4 text-left transition-colors hover:border-primary/40 hover:bg-primary/5 disabled:cursor-not-allowed disabled:opacity-60 dark:border-primary/10 dark:bg-background-dark/70 dark:hover:bg-primary/10"
+                    : "w-full rounded-lg border border-primary/15 bg-black/20 p-4 text-left transition-colors hover:border-primary/40 hover:bg-primary/10 disabled:cursor-not-allowed disabled:opacity-60"
+                }
+                disabled={isPending}
+                key={option.mode}
+                onClick={() => onUnlock(option.mode)}
+                type="button"
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span
+                        className={
+                          isMobile
+                            ? "text-sm font-bold text-slate-900 dark:text-slate-100"
+                            : "text-sm font-bold text-slate-100"
+                        }
+                      >
+                        {option.label}
+                      </span>
+                      {option.savingsCoins > 0 ? (
+                        <span className="rounded-full bg-primary/15 px-2 py-1 text-[10px] font-bold uppercase tracking-widest text-primary">
+                          Save {option.savingsCoins}
+                        </span>
+                      ) : null}
+                    </div>
+                    <p
+                      className={
+                        isMobile
+                          ? "mt-1 text-xs leading-relaxed text-slate-500 dark:text-slate-400"
+                          : "mt-1 text-xs leading-relaxed text-slate-400"
+                      }
+                    >
+                      {option.description}
+                    </p>
+                  </div>
+
+                  <div className="shrink-0 text-right">
+                    {option.savingsCoins > 0 ? (
+                      <p
+                        className={
+                          isMobile
+                            ? "text-[11px] text-slate-400 line-through"
+                            : "text-[11px] text-slate-500 line-through"
+                        }
+                      >
+                        {option.originalTotalCoins} coins
+                      </p>
+                    ) : null}
+                    <p
+                      className={
+                        isMobile
+                          ? "text-base font-bold text-slate-900 dark:text-slate-100"
+                          : "text-base font-bold text-slate-100"
+                      }
+                    >
+                      {option.totalCoins} coins
+                    </p>
+                  </div>
+                </div>
+
+                <div className="mt-3 flex items-center justify-between gap-3">
+                  <span
+                    className={
+                      isMobile
+                        ? "text-[10px] font-bold uppercase tracking-widest text-slate-400"
+                        : "text-[10px] font-bold uppercase tracking-widest text-slate-500"
+                    }
+                  >
+                    {option.chapterCount} chapters
+                  </span>
+                  <span
+                    className={
+                      canAfford
+                        ? "text-xs font-bold uppercase tracking-widest text-primary"
+                        : isMobile
+                          ? "text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-300"
+                          : "text-xs font-bold uppercase tracking-widest text-slate-300"
+                    }
+                  >
+                    {canAfford
+                      ? "Unlock batch"
+                      : `Need ${missingCoins} more coins`}
+                  </span>
+                </div>
+              </button>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function DesktopLockedChapter({
+  batchOptions,
   canUnlockWithCoins,
   chapterNumber,
   chapterTitle,
   chapterUnlocked,
   coinStoreTo,
   coinBalance,
+  handleBatchUnlock,
   handlePrimaryAction,
   handleWatchAd,
+  isActionPending,
+  isBatchOptionsLoading,
   lockedChapterCost,
   primaryLabel,
   premiumHref,
@@ -167,7 +339,8 @@ function DesktopLockedChapter({
 
                     <div className="space-y-4">
                       <button
-                        className="flex w-full items-center justify-center gap-3 rounded-lg bg-primary py-4 font-bold text-background-dark transition-all hover:shadow-[0_0_20px_rgba(244,192,37,0.4)]"
+                        className="flex w-full items-center justify-center gap-3 rounded-lg bg-primary py-4 font-bold text-background-dark transition-all hover:shadow-[0_0_20px_rgba(244,192,37,0.4)] disabled:cursor-not-allowed disabled:opacity-60"
+                        disabled={isActionPending}
                         onClick={handlePrimaryAction}
                         type="button"
                       >
@@ -178,6 +351,16 @@ function DesktopLockedChapter({
                         </span>
                         {primaryLabel}
                       </button>
+
+                      {chapterUnlocked ? null : (
+                        <BatchUnlockOffers
+                          batchOptions={batchOptions}
+                          coinBalance={coinBalance}
+                          isLoading={isBatchOptionsLoading}
+                          isPending={isActionPending}
+                          onUnlock={handleBatchUnlock}
+                        />
+                      )}
 
                       <Link
                         className="flex w-full items-center justify-center gap-3 rounded-lg border-2 border-slate-700 py-4 font-bold text-slate-200 transition-all hover:border-primary/50 hover:bg-white/5"
@@ -190,7 +373,8 @@ function DesktopLockedChapter({
                       </Link>
 
                       <button
-                        className="flex w-full items-center justify-center gap-3 rounded-lg border border-primary/20 bg-primary/5 py-4 font-bold text-primary transition-all hover:bg-primary/10"
+                        className="flex w-full items-center justify-center gap-3 rounded-lg border border-primary/20 bg-primary/5 py-4 font-bold text-primary transition-all hover:bg-primary/10 disabled:cursor-not-allowed disabled:opacity-60"
+                        disabled={isActionPending}
                         onClick={handleWatchAd}
                         type="button"
                       >
@@ -244,14 +428,18 @@ function DesktopLockedChapter({
 }
 
 function MobileLockedChapter({
+  batchOptions,
   chapterNumber,
   chapterTitle,
   chapterUnlocked,
   chapterCompleteTo,
   coinStoreTo,
   coinBalance,
+  handleBatchUnlock,
   handlePrimaryAction,
   handleWatchAd,
+  isActionPending,
+  isBatchOptionsLoading,
   lockedChapterCost,
   primaryLabel,
   premiumHref,
@@ -360,12 +548,23 @@ function MobileLockedChapter({
                 </div>
 
                 <button
-                  className="flex w-full items-center justify-center gap-2 rounded-lg bg-primary py-4 font-bold text-background-dark shadow-lg shadow-primary/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
+                  className="flex w-full items-center justify-center gap-2 rounded-lg bg-primary py-4 font-bold text-background-dark shadow-lg shadow-primary/20 transition-all hover:scale-[1.02] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60"
+                  disabled={isActionPending}
                   onClick={handlePrimaryAction}
                   type="button"
                 >
                   <span>{primaryLabel}</span>
                 </button>
+                {chapterUnlocked ? null : (
+                  <BatchUnlockOffers
+                    batchOptions={batchOptions}
+                    coinBalance={coinBalance}
+                    isLoading={isBatchOptionsLoading}
+                    isPending={isActionPending}
+                    onUnlock={handleBatchUnlock}
+                    variant="mobile"
+                  />
+                )}
                 <Link
                   className="mt-4 flex w-full items-center justify-center gap-2 rounded-lg border border-primary/20 bg-primary/5 py-4 text-sm font-bold text-primary transition-colors hover:bg-primary/10"
                   to={premiumHref}
@@ -376,7 +575,8 @@ function MobileLockedChapter({
                   {premiumLabel}
                 </Link>
                 <button
-                  className="mt-4 w-full text-xs font-semibold uppercase tracking-widest text-slate-400 transition-colors hover:text-primary dark:text-primary/60"
+                  className="mt-4 w-full text-xs font-semibold uppercase tracking-widest text-slate-400 transition-colors hover:text-primary disabled:cursor-not-allowed disabled:opacity-60 dark:text-primary/60"
+                  disabled={isActionPending}
                   onClick={handleWatchAd}
                   type="button"
                 >
@@ -453,6 +653,10 @@ export default function LockedChapterPage() {
     coinBalance,
     hasPremium,
     isChapterUnlocked,
+    isUnlockingBatchWithCoins,
+    isUnlockingWithAd,
+    isUnlockingWithCoins,
+    spendCoinsForChapterBatch,
     spendCoinsForChapter,
     unlockWithAd,
   } = useMonetization();
@@ -469,8 +673,29 @@ export default function LockedChapterPage() {
     chapter?.accessState === "READABLE" ||
     hasPremium ||
     isChapterUnlocked(lockedChapterKey);
+  const batchOptionsQuery = useQuery({
+    enabled: Boolean(
+      storySlug &&
+        chapterSlug &&
+        chapter &&
+        story &&
+        chapter.accessState === "UNLOCK_REQUIRED" &&
+        !chapterUnlocked,
+    ),
+    queryFn: () => fetchChapterBatchUnlockOptionsApi(storySlug, chapterSlug),
+    queryKey: ["monetization", "chapter-batch-options", storySlug, chapterSlug],
+    staleTime: 30_000,
+  });
   const canSpendNow = canUnlockWithCoins(lockedChapterCost);
   const missingCoins = Math.max(lockedChapterCost - coinBalance, 0);
+  const batchOptions = (batchOptionsQuery.data?.options ?? []).filter(
+    (option) => option.chapterCount > 1,
+  );
+  const batchOptionMap = new Map(
+    batchOptions.map((option) => [option.mode, option]),
+  );
+  const isActionPending =
+    isUnlockingBatchWithCoins || isUnlockingWithAd || isUnlockingWithCoins;
   const primaryLabel = chapterUnlocked
     ? "Continue Reading"
     : canSpendNow
@@ -521,6 +746,10 @@ export default function LockedChapterPage() {
   }
 
   async function handlePrimaryAction() {
+    if (isActionPending) {
+      return;
+    }
+
     if (chapterUnlocked) {
       navigate(chapterHref);
       return;
@@ -545,7 +774,42 @@ export default function LockedChapterPage() {
     }
   }
 
+  async function handleBatchUnlock(mode) {
+    if (isActionPending) {
+      return;
+    }
+
+    const selectedOption = batchOptionMap.get(mode);
+
+    if (!selectedOption) {
+      return;
+    }
+
+    if (selectedOption.totalCoins > coinBalance) {
+      navigate(coinStoreTo);
+      return;
+    }
+
+    try {
+      await spendCoinsForChapterBatch({
+        chapterSlug,
+        mode,
+        storySlug,
+      });
+      navigate(chapterHref);
+    } catch (unlockError) {
+      showToast(unlockError?.message || "Could not unlock this chapter batch.", {
+        title: "Batch unlock failed",
+        tone: "error",
+      });
+    }
+  }
+
   async function handleWatchAd() {
+    if (isActionPending) {
+      return;
+    }
+
     try {
       await unlockWithAd({
         chapterSlug,
@@ -562,15 +826,28 @@ export default function LockedChapterPage() {
 
   return (
     <>
+      <SeoMetadata
+        author={chapter.authorName}
+        description={getLockedChapterSeoDescription(story, chapter)}
+        image={story.coverImage}
+        imageAlt={`${story.title} cover art`}
+        title={`Unlock ${chapter.chapterTitle} - ${story.title}`}
+        type="article"
+        url={buildLockedChapterHref(story.slug, chapter.chapterSlug)}
+      />
       <DesktopLockedChapter
+        batchOptions={batchOptions}
         canUnlockWithCoins={canSpendNow}
         chapterNumber={chapter.chapterNumber}
         chapterTitle={chapter.chapterTitle}
         chapterUnlocked={chapterUnlocked}
         coinStoreTo={coinStoreTo}
         coinBalance={coinBalance}
+        handleBatchUnlock={handleBatchUnlock}
         handlePrimaryAction={handlePrimaryAction}
         handleWatchAd={handleWatchAd}
+        isActionPending={isActionPending}
+        isBatchOptionsLoading={batchOptionsQuery.isLoading}
         lockedChapterCost={lockedChapterCost}
         premiumHref={premiumHref}
         premiumLabel={premiumLabel}
@@ -579,14 +856,18 @@ export default function LockedChapterPage() {
         storyTo={storyTo}
       />
       <MobileLockedChapter
+        batchOptions={batchOptions}
         chapterNumber={chapter.chapterNumber}
         chapterTitle={chapter.chapterTitle}
         chapterUnlocked={chapterUnlocked}
         chapterCompleteTo={chapterCompleteTo}
         coinStoreTo={coinStoreTo}
         coinBalance={coinBalance}
+        handleBatchUnlock={handleBatchUnlock}
         handlePrimaryAction={handlePrimaryAction}
         handleWatchAd={handleWatchAd}
+        isActionPending={isActionPending}
+        isBatchOptionsLoading={batchOptionsQuery.isLoading}
         lockedChapterCost={lockedChapterCost}
         premiumHref={premiumHref}
         premiumLabel={premiumLabel}

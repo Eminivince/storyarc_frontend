@@ -227,15 +227,15 @@ function MobilePricing({
   return (
     <div className="min-h-screen bg-background-light font-display text-slate-900 dark:bg-background-dark dark:text-slate-100 md:hidden">
       <div className="relative flex min-h-screen w-full flex-col overflow-x-hidden">
-        <div className="sticky top-0 z-10 flex items-center justify-between border-b border-primary/10 bg-background-light p-4 pb-2 dark:bg-background-dark">
-          <Link className="flex h-12 w-12 items-center justify-start" to={returnTo}>
+        <div className="sticky top-0 z-10 flex items-center justify-between border-b border-primary/10 bg-background-light px-3 py-2.5 dark:bg-background-dark">
+          <Link className="flex h-10 w-10 items-center justify-start" to={returnTo}>
             <span className="material-symbols-outlined">arrow_back</span>
           </Link>
-          <h2 className="flex-1 text-center text-lg font-bold tracking-tight">
+          <h2 className="flex-1 text-center text-base font-bold tracking-tight">
             StoryArc Premium
           </h2>
-          <div className="flex w-12 items-center justify-end">
-            <button className="flex h-12 w-12 items-center justify-center rounded-lg" type="button">
+          <div className="flex w-10 items-center justify-end">
+            <button className="flex h-10 w-10 items-center justify-center rounded-lg" type="button">
               <span className="material-symbols-outlined">info</span>
             </button>
           </div>
@@ -243,19 +243,19 @@ function MobilePricing({
 
         <div className="flex-1 overflow-y-auto">
           <Reveal className="@container">
-            <div className="@[480px]:px-4 @[480px]:py-3">
+            <div className="px-3 py-2">
               <div
-                className="relative flex min-h-[240px] flex-col justify-end overflow-hidden bg-background-dark @[480px]:rounded-xl"
+                className="relative flex min-h-[140px] flex-col justify-end overflow-hidden rounded-lg bg-background-dark"
                 style={{
                   backgroundImage:
                     "linear-gradient(0deg, rgba(34, 30, 16, 0.9) 0%, rgba(34, 30, 16, 0.2) 100%), url('https://lh3.googleusercontent.com/aida-public/AB6AXuAhrGQuQatYjRSSFgWqKclPj5KFfJ24lX4kOULWEHHmSm0-ZBUuZra12dNH2_oQ52BvUoYkn1eiRRbuKaRqOLcKwa3oyCHaCWWiwDxNmCg1kkUh6Gx4b62yEfNep1NtjRC5lN2dHIN1OyE3TKBroDJBNung5rweLCc_CPE2wXk0u9b3YG3omSKfDAIzEC9fg27RRHaX_NtfDQwpJQed7HnAMPD03yu23FKD8mLsYCYagWV0tfOKMeICa1zc1sOu2JQGrfS5D6165zE')",
                 }}
               >
-                <div className="flex flex-col gap-2 p-6">
-                  <p className="text-sm font-bold uppercase tracking-widest text-primary">
+                <div className="flex flex-col gap-1 p-4">
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-primary">
                     Elevate Your Reading
                   </p>
-                  <p className="text-3xl font-extrabold leading-tight text-slate-100">
+                  <p className="text-xl font-extrabold leading-tight text-slate-100">
                     Choose Your Journey
                   </p>
                 </div>
@@ -263,11 +263,12 @@ function MobilePricing({
             </div>
           </Reveal>
 
-          <h4 className="px-4 py-4 text-center text-sm font-bold leading-normal tracking-[0.015em] text-primary/80">
+          <h4 className="px-3 py-3 text-center text-xs font-bold leading-normal tracking-[0.015em] text-primary/80">
             Unlock Unlimited Worlds and Exclusive Content
           </h4>
 
-          <div className="mx-auto flex w-full max-w-md flex-col gap-6 px-4 py-3 pb-24">
+          <div className="mx-auto flex w-full max-w-2xl flex-col gap-4 px-3 py-2 pb-20">
+            <div className="grid grid-cols-2 gap-3">
             {plans.map((plan) => {
               const price =
                 billing === "annual" && plan.yearlyPrice
@@ -283,7 +284,7 @@ function MobilePricing({
 
               return (
                 <Reveal
-                  className={`relative flex flex-col gap-4 rounded-xl p-6 ${
+                  className={`relative flex flex-col gap-3 rounded-lg p-4 ${
                     isSilver
                       ? "border-2 border-primary bg-primary/10"
                       : isArcane
@@ -293,42 +294,42 @@ function MobilePricing({
                   key={plan.id}
                 >
                   {isSilver && (
-                    <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                      <p className="rounded-full bg-primary px-4 py-1 text-center text-[10px] font-bold uppercase tracking-wider text-background-dark shadow-lg">
-                        Most Popular
+                    <div className="absolute -top-2 left-1/2 -translate-x-1/2">
+                      <p className="rounded-full bg-primary px-3 py-0.5 text-center text-[9px] font-bold uppercase tracking-wider text-background-dark shadow-lg">
+                        Popular
                       </p>
                     </div>
                   )}
                   {isArcane && (
-                    <div className="absolute -right-16 -top-16 h-32 w-32 rounded-full bg-primary/10 blur-3xl" />
+                    <div className="absolute -right-12 -top-12 h-24 w-24 rounded-full bg-primary/10 blur-3xl" />
                   )}
 
-                  <div className="relative z-10 flex flex-col gap-1">
-                    <div className="flex items-center justify-between">
-                      <h1 className={`text-xl font-bold ${isArcane ? "text-primary" : ""}`}>
+                  <div className="relative z-10 flex flex-col gap-0.5">
+                    <div className="flex min-w-0 items-center justify-between gap-2">
+                      <h1 className={`min-w-0 truncate text-base font-bold ${isArcane ? "text-primary" : ""}`}>
                         {plan.name}
                       </h1>
                       {isSilver && (
-                        <span className="material-symbols-outlined text-primary">
+                        <span className="material-symbols-outlined shrink-0 text-base text-primary">
                           military_tech
                         </span>
                       )}
                       {isArcane && (
-                        <span className="material-symbols-outlined fill-1 text-primary">
+                        <span className="material-symbols-outlined fill-1 shrink-0 text-base text-primary">
                           auto_awesome
                         </span>
                       )}
                     </div>
                     <p className="flex items-baseline gap-1">
-                      <span className="text-3xl font-black tracking-[-0.033em]">
+                      <span className="text-xl font-black tracking-[-0.033em]">
                         {formatPrice(price, currency)}
                       </span>
-                      <span className="text-base font-medium opacity-70">/mo</span>
+                      <span className="text-xs font-medium opacity-70">/mo</span>
                     </p>
                   </div>
 
                   <Link
-                    className={`relative z-10 flex h-12 w-full items-center justify-center rounded-lg px-4 text-sm font-bold ${
+                    className={`relative z-10 flex h-9 w-full items-center justify-center rounded-lg px-3 text-[11px] font-bold ${
                       plan.id === "free"
                         ? "border border-transparent bg-slate-200 text-slate-900 dark:bg-primary/20 dark:text-slate-100"
                         : isSilver
@@ -340,10 +341,10 @@ function MobilePricing({
                     {cta.label}
                   </Link>
 
-                  <div className="relative z-10 mt-2 flex flex-col gap-3">
-                    {plan.features.slice(0, isArcane ? 5 : 4).map((feature) => (
-                      <div className="flex gap-3 text-sm leading-normal" key={feature}>
-                        <span className="material-symbols-outlined text-[20px] text-primary">
+                  <div className="relative z-10 mt-1 flex flex-col gap-1.5">
+                    {plan.features.slice(0, 3).map((feature) => (
+                      <div className="flex gap-2 text-xs leading-normal" key={feature}>
+                        <span className="material-symbols-outlined text-base text-primary shrink-0">
                           check_circle
                         </span>
                         <span className="text-slate-700 dark:text-slate-300">
@@ -355,14 +356,15 @@ function MobilePricing({
                 </Reveal>
               );
             })}
+            </div>
 
-            <div className="flex items-center justify-center rounded-xl border border-primary/20 bg-primary/5 p-1">
+            <div className="flex items-center justify-center rounded-lg border border-primary/20 bg-primary/5 p-1">
               {[
                 ["monthly", "Monthly"],
                 ["annual", "Annual (20% Off)"],
               ].map(([value, label]) => (
                 <button
-                  className={`flex-1 rounded-lg px-4 py-3 text-sm font-bold ${
+                  className={`flex-1 rounded-md px-3 py-2 text-xs font-bold ${
                     billing === value
                       ? "bg-primary text-background-dark"
                       : "text-slate-400"

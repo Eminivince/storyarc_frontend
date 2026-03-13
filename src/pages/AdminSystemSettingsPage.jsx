@@ -4,15 +4,19 @@ import Reveal from "../components/Reveal";
 import { useAdmin } from "../context/AdminContext";
 import { maintenanceActions } from "../data/adminFlow";
 
-function formatCurrencyDraft(valueCents) {
-  if (typeof valueCents !== "number") {
+function formatSettingDraft(setting) {
+  if (typeof setting?.valueCents !== "number") {
     return "";
   }
 
-  return (valueCents / 100).toFixed(2);
+  if (setting.kind === "PERCENTAGE") {
+    return String(setting.valueCents);
+  }
+
+  return (setting.valueCents / 100).toFixed(2);
 }
 
-function parseCurrencyDraft(value) {
+function parseSettingDraft(setting, value) {
   const normalized = value.trim().replace(/,/g, "");
 
   if (!normalized) {
@@ -23,6 +27,14 @@ function parseCurrencyDraft(value) {
 
   if (!Number.isFinite(amount) || amount < 0) {
     return null;
+  }
+
+  if (setting.kind === "PERCENTAGE") {
+    if (amount > 100) {
+      return null;
+    }
+
+    return Math.round(amount);
   }
 
   return Math.round(amount * 100);
@@ -41,8 +53,8 @@ export default function AdminSystemSettingsPage() {
 
   useEffect(() => {
     const nextDrafts = settings.reduce((drafts, item) => {
-      if (item.kind === "CURRENCY_CENTS") {
-        drafts[item.id] = formatCurrencyDraft(item.valueCents);
+      if (["CURRENCY_CENTS", "PERCENTAGE"].includes(item.kind)) {
+        drafts[item.id] = formatSettingDraft(item);
       }
 
       return drafts;
@@ -101,79 +113,90 @@ export default function AdminSystemSettingsPage() {
                 {group}
               </p>
               <div className="mt-5 space-y-4">
-                {items.map((item) => (
-                  <div
-                    className="flex flex-col gap-4 rounded-3xl border border-primary/10 bg-slate-50 p-4 dark:bg-background-dark/50 lg:flex-row lg:items-center lg:justify-between"
-                    key={item.id}
-                  >
-                    <div className="max-w-xl">
-                      <p className="font-black">{item.title}</p>
-                      <p className="mt-2 text-sm leading-6 text-slate-500 dark:text-slate-400">
-                        {item.description}
-                      </p>
-                    </div>
-                    {item.kind === "BOOLEAN" ? (
-                      <button
-                        aria-pressed={item.enabled}
-                        className={`relative h-9 w-16 rounded-full transition-colors ${
-                          item.enabled ? "bg-primary" : "bg-slate-300 dark:bg-slate-700"
-                        }`}
-                        onClick={() => toggleSystemSetting(item.id)}
-                        type="button"
-                      >
-                        <span
-                          className={`absolute top-1 size-7 rounded-full bg-white transition-transform ${
-                            item.enabled ? "translate-x-8" : "translate-x-1"
-                          }`}
-                        />
-                      </button>
-                    ) : (
-                      <div className="w-full max-w-sm">
-                        <label className="text-xs font-black uppercase tracking-[0.22em] text-slate-400">
-                          Monthly Target
-                        </label>
-                        <div className="mt-3 flex items-center gap-3">
-                          <div className="flex min-w-0 flex-1 items-center rounded-2xl border border-primary/10 bg-white px-4 py-3 dark:bg-background-dark">
-                            <span className="text-sm font-bold text-slate-400">$</span>
-                            <input
-                              className="min-w-0 flex-1 bg-transparent pl-2 text-sm font-semibold outline-none"
-                              inputMode="decimal"
-                              onChange={(event) =>
-                                setSettingDrafts((current) => ({
-                                  ...current,
-                                  [item.id]: event.target.value,
-                                }))
-                              }
-                              placeholder="0.00"
-                              type="text"
-                              value={settingDrafts[item.id] ?? ""}
-                            />
-                          </div>
-                          <button
-                            className="rounded-full bg-primary px-4 py-3 text-sm font-bold text-background-dark transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
-                            disabled={
-                              parseCurrencyDraft(settingDrafts[item.id] ?? "") === null ||
-                              parseCurrencyDraft(settingDrafts[item.id] ?? "") ===
-                                item.valueCents
-                            }
-                            onClick={() =>
-                              updateSystemSetting(
-                                item.id,
-                                parseCurrencyDraft(settingDrafts[item.id] ?? ""),
-                              )
-                            }
-                            type="button"
-                          >
-                            Save
-                          </button>
-                        </div>
-                        <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
-                          Current target: {item.formattedValue}
+                {items.map((item) => {
+                  const parsedDraftValue = parseSettingDraft(
+                    item,
+                    settingDrafts[item.id] ?? "",
+                  );
+                  const isCurrency = item.kind === "CURRENCY_CENTS";
+
+                  return (
+                    <div
+                      className="flex flex-col gap-4 rounded-3xl border border-primary/10 bg-slate-50 p-4 dark:bg-background-dark/50 lg:flex-row lg:items-center lg:justify-between"
+                      key={item.id}
+                    >
+                      <div className="max-w-xl">
+                        <p className="font-black">{item.title}</p>
+                        <p className="mt-2 text-sm leading-6 text-slate-500 dark:text-slate-400">
+                          {item.description}
                         </p>
                       </div>
-                    )}
-                  </div>
-                ))}
+                      {item.kind === "BOOLEAN" ? (
+                        <button
+                          aria-pressed={item.enabled}
+                          className={`relative h-9 w-16 rounded-full transition-colors ${
+                            item.enabled ? "bg-primary" : "bg-slate-300 dark:bg-slate-700"
+                          }`}
+                          onClick={() => toggleSystemSetting(item.id)}
+                          type="button"
+                        >
+                          <span
+                            className={`absolute top-1 size-7 rounded-full bg-white transition-transform ${
+                              item.enabled ? "translate-x-8" : "translate-x-1"
+                            }`}
+                          />
+                        </button>
+                      ) : (
+                        <div className="w-full max-w-sm">
+                          <label className="text-xs font-black uppercase tracking-[0.22em] text-slate-400">
+                            {isCurrency ? "Currency Value" : "Percentage Value"}
+                          </label>
+                          <div className="mt-3 flex items-center gap-3">
+                            <div className="flex min-w-0 flex-1 items-center rounded-2xl border border-primary/10 bg-white px-4 py-3 dark:bg-background-dark">
+                              {isCurrency ? (
+                                <span className="text-sm font-bold text-slate-400">$</span>
+                              ) : null}
+                              <input
+                                className={`min-w-0 flex-1 bg-transparent text-sm font-semibold outline-none ${
+                                  isCurrency ? "pl-2" : ""
+                                }`}
+                                inputMode="decimal"
+                                onChange={(event) =>
+                                  setSettingDrafts((current) => ({
+                                    ...current,
+                                    [item.id]: event.target.value,
+                                  }))
+                                }
+                                placeholder={isCurrency ? "0.00" : "0"}
+                                type="text"
+                                value={settingDrafts[item.id] ?? ""}
+                              />
+                              {!isCurrency ? (
+                                <span className="text-sm font-bold text-slate-400">%</span>
+                              ) : null}
+                            </div>
+                            <button
+                              className="rounded-full bg-primary px-4 py-3 text-sm font-bold text-background-dark transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
+                              disabled={
+                                parsedDraftValue === null ||
+                                parsedDraftValue === item.valueCents
+                              }
+                              onClick={() =>
+                                updateSystemSetting(item.id, parsedDraftValue)
+                              }
+                              type="button"
+                            >
+                              Save
+                            </button>
+                          </div>
+                          <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
+                            Current value: {item.formattedValue}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
             </Reveal>
           ))}

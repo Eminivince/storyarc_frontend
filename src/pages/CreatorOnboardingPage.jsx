@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Reveal from "../components/Reveal";
 import { useCreator } from "../context/CreatorContext";
@@ -292,15 +291,7 @@ function MobileCreatorOnboarding({ onStart, status }) {
 
 export default function CreatorOnboardingPage() {
   const navigate = useNavigate();
-  const {
-    creatorStatus,
-    enterWriterMode,
-    getCreatorNextStepHref,
-  } = useCreator();
-
-  useEffect(() => {
-    enterWriterMode();
-  }, []);
+  const { creatorStatus, getCreatorNextStepHref } = useCreator();
 
   function handleStart() {
     navigate(getCreatorNextStepHref());

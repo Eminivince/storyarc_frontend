@@ -11,6 +11,7 @@ import {
   buildChapterHref,
   buildSearchHref,
   buildStoryHref,
+  followingHref,
 } from "../data/readerFlow";
 import { useCreator } from "../context/CreatorContext";
 import { useOnboarding } from "../context/OnboardingContext";
@@ -134,6 +135,12 @@ function DesktopDashboard({
             </div>
 
             <div className="ml-4 flex items-center gap-4">
+              <Link
+                className="hidden rounded-xl px-4 py-2 text-sm font-semibold transition-colors hover:bg-primary/10 lg:inline-flex"
+                to={followingHref}
+              >
+                Following
+              </Link>
               <Link
                 className="relative flex size-10 items-center justify-center rounded-full text-slate-600 hover:bg-primary/10 dark:text-slate-300"
                 to={notificationsHref}
@@ -303,6 +310,21 @@ function MobileDashboard({
             value={searchTerm}
           />
         </form>
+
+        <Link
+          className="flex items-center justify-between rounded-2xl border border-primary/10 bg-white px-4 py-3 dark:bg-primary/5"
+          to={followingHref}
+        >
+          <div>
+            <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-primary">
+              Following
+            </p>
+            <p className="text-sm font-semibold">Open your tracked release feed</p>
+          </div>
+          <span className="material-symbols-outlined text-slate-400">
+            chevron_right
+          </span>
+        </Link>
 
         {data?.featured ? (
           <Reveal>

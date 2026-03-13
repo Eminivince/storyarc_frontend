@@ -223,13 +223,11 @@ export default function CreatorApplicationSubmittedPage() {
   const {
     creatorStatus,
     enterReaderMode,
-    enterWriterMode,
     getCreatorEntryHref,
     refreshCreatorState,
   } = useCreator();
 
   useEffect(() => {
-    enterWriterMode();
     refreshCreatorState();
   }, []);
 

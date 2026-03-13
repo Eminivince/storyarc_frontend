@@ -1,3 +1,12 @@
+import {
+  APP_MODE_CREATOR,
+  APP_MODE_READER,
+  getStoredAppMode,
+  isCreatorCapableRole,
+  isCreatorEntryPath,
+  isCreatorStudioPath,
+} from "../lib/appMode";
+
 export const authenticatedRoles = ["READER", "CREATOR", "MODERATOR", "ADMIN"];
 export const creatorRoles = ["CREATOR", "ADMIN"];
 export const adminRoles = ["ADMIN"];
@@ -7,15 +16,10 @@ const publicPaths = new Set(["/", "/about", "/terms"]);
 
 export function isUnauthenticatedRoute(pathname) {
   if (publicPaths.has(pathname)) return true;
+  if (pathname.startsWith("/reading-lists/shared")) return true;
   if (pathname.startsWith("/auth")) return true;
   return false;
 }
-const creatorEntryPaths = new Set([
-  "/creator",
-  "/creator/apply",
-  "/creator/application-submitted",
-]);
-
 export function getOnboardingEntryPath(user) {
   if (!user || !readerRoles.includes(user.role) || user.onboarding?.isComplete) {
     return null;
@@ -36,13 +40,22 @@ export function getDefaultSignedInPath(userOrRole) {
   }
 
   const role = typeof userOrRole === "string" ? userOrRole : userOrRole?.role;
+  const preferredMode = isCreatorCapableRole(role) ? getStoredAppMode() : null;
 
   if (role === "ADMIN") {
+    if (preferredMode === APP_MODE_READER) {
+      return "/dashboard";
+    }
+
+    if (preferredMode === APP_MODE_CREATOR) {
+      return "/creator/dashboard";
+    }
+
     return "/admin";
   }
 
   if (role === "CREATOR") {
-    return "/creator/dashboard";
+    return preferredMode === APP_MODE_READER ? "/dashboard" : "/creator/dashboard";
   }
 
   return "/dashboard";
@@ -53,22 +66,22 @@ export function getRouteAccess(pathname) {
     return { kind: "public" };
   }
 
+  if (pathname.startsWith("/reading-lists/shared")) {
+    return { kind: "public" };
+  }
+
   if (pathname.startsWith("/auth")) {
     return { kind: "guest" };
   }
 
-  if (creatorEntryPaths.has(pathname)) {
+  if (isCreatorEntryPath(pathname)) {
     return {
       kind: "authenticated",
       roles: authenticatedRoles,
     };
   }
 
-  if (
-    pathname.startsWith("/creator/dashboard") ||
-    pathname.startsWith("/creator/community") ||
-    pathname.startsWith("/creator/stories")
-  ) {
+  if (isCreatorStudioPath(pathname)) {
     return {
       kind: "authenticated",
       roles: creatorRoles,
