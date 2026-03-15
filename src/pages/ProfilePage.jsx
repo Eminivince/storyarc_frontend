@@ -646,7 +646,7 @@ function MobileLogoutSection({ isLoggingOut, onLogout }) {
           </div>
           <div className="flex-1">
             <h3 className="text-sm font-black uppercase tracking-widest">
-              Exit StoryArc
+              Exit TaleStead
             </h3>
             <p className="mt-2 text-sm leading-relaxed text-slate-500 dark:text-slate-400">
               Log out of this device and end your current session. You can sign
@@ -833,7 +833,7 @@ function MobileProfile({
             <span className="material-symbols-outlined text-2xl">settings</span>
           </Link>
           <h2 className="flex-1 text-center text-lg font-bold uppercase tracking-widest">
-            StoryArc
+            TaleStead
           </h2>
           <div className="flex w-12 items-center justify-end">
             <button className="flex h-12 items-center justify-center rounded-lg bg-transparent" type="button">

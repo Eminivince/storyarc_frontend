@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { resetPasswordWithToken } from "../auth/authApi";
+import { sanitizePassword, isPasswordValid } from "../lib/formSanitize";
 import {
   clearPendingPasswordReset,
   getPendingPasswordReset,
@@ -19,6 +20,7 @@ function getPasswordChecks(password) {
     uppercase: /[A-Z]/.test(password),
     number: /\d/.test(password),
     special: /[^A-Za-z0-9]/.test(password),
+    noSpaces: isPasswordValid(password),
   };
 }
 
@@ -59,7 +61,7 @@ function DesktopCreateNewPassword({ email, onSubmit, pending, resetToken }) {
                 <path d="M44 11.2727C44 14.0109 39.8386 16.3957 33.69 17.6364C39.8386 18.877 44 21.2618 44 24C44 26.7382 39.8386 29.123 33.69 30.3636C39.8386 31.6043 44 33.9891 44 36.7273C44 40.7439 35.0457 44 24 44C12.9543 44 4 40.7439 4 36.7273C4 33.9891 8.16144 31.6043 14.31 30.3636C8.16144 29.123 4 26.7382 4 24C4 21.2618 8.16144 18.877 14.31 17.6364C8.16144 16.3957 4 14.0109 4 11.2727C4 7.25611 12.9543 4 24 4C35.0457 4 44 7.25611 44 11.2727Z" />
               </svg>
             </div>
-            <h1 className="text-xl font-bold tracking-tight text-slate-900 dark:text-white">StoryArc</h1>
+            <h1 className="text-xl font-bold tracking-tight text-slate-900 dark:text-white">TaleStead</h1>
           </div>
           <div className="flex items-center gap-4">
             <span className="hidden text-sm text-slate-500 dark:text-slate-400 md:block">Need help?</span>
@@ -80,7 +82,7 @@ function DesktopCreateNewPassword({ email, onSubmit, pending, resetToken }) {
           <div className="mb-8 text-center md:text-left">
             <h2 className="mb-3 text-3xl font-black text-slate-900 dark:text-white md:text-4xl">Create New Password</h2>
             <p className="text-base text-slate-600 dark:text-slate-400">
-              Enter your new credentials below to secure your StoryArc account.
+              Enter your new credentials below to secure your TaleStead account.
             </p>
           </div>
 
@@ -96,7 +98,7 @@ function DesktopCreateNewPassword({ email, onSubmit, pending, resetToken }) {
                 <input
                   className="h-14 w-full rounded-lg border border-slate-200 bg-slate-50 px-4 pr-12 text-slate-900 outline-none transition-all placeholder:text-slate-400 focus:border-primary focus:ring-2 focus:ring-primary/50 dark:border-primary/20 dark:bg-background-dark dark:text-white dark:placeholder:text-slate-600"
                   id="new-password-desktop"
-                  onChange={(event) => setPassword(event.target.value)}
+                  onChange={(event) => setPassword(sanitizePassword(event.target.value))}
                   placeholder="••••••••"
                   required
                   type={showPassword ? "text" : "password"}
@@ -120,7 +122,7 @@ function DesktopCreateNewPassword({ email, onSubmit, pending, resetToken }) {
                 <input
                   className="h-14 w-full rounded-lg border border-slate-200 bg-slate-50 px-4 pr-12 text-slate-900 outline-none transition-all placeholder:text-slate-400 focus:border-primary focus:ring-2 focus:ring-primary/50 dark:border-primary/20 dark:bg-background-dark dark:text-white dark:placeholder:text-slate-600"
                   id="confirm-password-desktop"
-                  onChange={(event) => setConfirmPassword(event.target.value)}
+                  onChange={(event) => setConfirmPassword(sanitizePassword(event.target.value))}
                   placeholder="••••••••"
                   required
                   type={showConfirmPassword ? "text" : "password"}
@@ -143,6 +145,7 @@ function DesktopCreateNewPassword({ email, onSubmit, pending, resetToken }) {
                 ["Contains an uppercase letter", checks.uppercase],
                 ["Contains a number", checks.number],
                 ["Contains a special character", checks.special],
+                ["No spaces", checks.noSpaces],
               ].map(([label, met]) => (
                 <div className={`flex items-center gap-3 ${met ? "" : "opacity-50"}`} key={label}>
                   <div className={`flex h-5 w-5 items-center justify-center rounded border-2 ${met ? "border-primary bg-primary text-background-dark" : "border-slate-300 bg-white dark:border-primary/30 dark:bg-background-dark"}`}>
@@ -173,7 +176,7 @@ function DesktopCreateNewPassword({ email, onSubmit, pending, resetToken }) {
       </main>
 
       <footer className="w-full border-t border-slate-200 px-6 py-8 text-center dark:border-primary/10">
-        <p className="text-sm text-slate-500 dark:text-slate-400">© 2024 StoryArc Inc. All rights reserved. Secure Cloud Storage.</p>
+        <p className="text-sm text-slate-500 dark:text-slate-400">© 2024 TaleStead Inc. All rights reserved. Secure Cloud Storage.</p>
       </footer>
     </div>
   );
@@ -208,7 +211,7 @@ function MobileCreateNewPassword({ email, onSubmit, pending, resetToken }) {
           </div>
           <h1 className="text-center text-3xl font-bold leading-tight">Create New Password</h1>
           <p className="mt-4 text-center text-base leading-relaxed text-slate-600 dark:text-slate-400">
-            Your new password must be different from previous passwords used with your StoryArc account.
+            Your new password must be different from previous passwords used with your TaleStead account.
           </p>
         </div>
 
@@ -229,7 +232,7 @@ function MobileCreateNewPassword({ email, onSubmit, pending, resetToken }) {
               <input
                 className="h-14 w-full rounded-xl border border-slate-300 bg-white px-4 text-slate-900 transition-all placeholder:text-slate-400 focus:border-primary focus:ring-2 focus:ring-primary/20 dark:border-primary/20 dark:bg-background-dark/50 dark:text-slate-100 dark:placeholder:text-slate-500"
                 id="new-password-mobile"
-                onChange={(event) => setPassword(event.target.value)}
+                onChange={(event) => setPassword(sanitizePassword(event.target.value))}
                 placeholder="Enter your new password"
                 required
                 type={showPassword ? "text" : "password"}
@@ -257,7 +260,7 @@ function MobileCreateNewPassword({ email, onSubmit, pending, resetToken }) {
               <input
                 className="h-14 w-full rounded-xl border border-slate-300 bg-white px-4 text-slate-900 transition-all placeholder:text-slate-400 focus:border-primary focus:ring-2 focus:ring-primary/20 dark:border-primary/20 dark:bg-background-dark/50 dark:text-slate-100 dark:placeholder:text-slate-500"
                 id="confirm-password-mobile"
-                onChange={(event) => setConfirmPassword(event.target.value)}
+                onChange={(event) => setConfirmPassword(sanitizePassword(event.target.value))}
                 placeholder="Confirm your new password"
                 required
                 type={showConfirmPassword ? "text" : "password"}
@@ -280,6 +283,7 @@ function MobileCreateNewPassword({ email, onSubmit, pending, resetToken }) {
                 ["At least 8 characters", checks.minLength],
                 ["One uppercase & one number", checks.uppercase && checks.number],
                 ["One special character", checks.special],
+                ["No spaces", checks.noSpaces],
               ].map(([label, met]) => (
                 <li className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400" key={label}>
                   <span className={`material-symbols-outlined text-lg ${met ? "text-primary" : "text-slate-400 dark:text-slate-600"}`}>
@@ -351,7 +355,18 @@ export default function CreateNewPasswordPage() {
   async function handleSubmit(event, { confirmPassword, password, resetToken: token }) {
     event.preventDefault();
 
-    if (password !== confirmPassword) {
+    const cleanPassword = sanitizePassword(password);
+    const cleanConfirmPassword = sanitizePassword(confirmPassword);
+
+    if (!isPasswordValid(password)) {
+      showToast("Password cannot contain spaces.", {
+        tone: "error",
+        title: "Invalid password",
+      });
+      return;
+    }
+
+    if (cleanPassword !== cleanConfirmPassword) {
       showToast("Passwords do not match.", {
         tone: "error",
         title: "Check your password",
@@ -361,7 +376,7 @@ export default function CreateNewPasswordPage() {
 
     try {
       await resetPasswordMutation.mutateAsync({
-        password,
+        password: cleanPassword,
         resetToken: token,
       });
       clearPendingPasswordReset();

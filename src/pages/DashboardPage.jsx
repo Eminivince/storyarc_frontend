@@ -481,7 +481,7 @@ export default function DashboardPage() {
         ctaLabel="Try Search"
         ctaTo={buildSearchHref(topGenre)}
         description={getDashboardErrorMessage(error)}
-        secondaryLabel="About StoryArc"
+        secondaryLabel="About TaleStead"
         secondaryTo="/about"
         title="Dashboard Unavailable"
         tone="error"

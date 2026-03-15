@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
+import AppFooter from "../components/AppFooter";
 import { AppDesktopSidebar, AppMobileTabBar } from "../components/AppShellNav";
 import CreateReadingListModal from "../components/CreateReadingListModal";
 import ReaderStateScreen from "../components/ReaderStateScreen";
@@ -164,7 +165,7 @@ function DesktopListCard({ list, onDelete, onEdit, onShare }) {
       </div>
       <h3 className="mb-2 text-xl font-bold">{list.name}</h3>
       <p className="mb-6 line-clamp-2 flex-grow text-sm text-slate-500 dark:text-slate-400">
-        {list.description || "A custom StoryArc shelf for your next reading run."}
+        {list.description || "A custom TaleStead shelf for your next reading run."}
       </p>
       <div className="mt-auto flex items-end justify-between gap-4">
         <div className="flex flex-col">
@@ -416,20 +417,7 @@ function DesktopReadingLists({
             </div>
           </div>
 
-          <footer className="mt-auto flex items-center justify-between border-t border-primary/10 px-8 py-8 text-xs text-slate-500">
-            <p>© 2024 StoryArc Inc. All rights reserved.</p>
-            <div className="flex gap-6">
-              <Link className="transition-colors hover:text-primary" to="/privacy">
-                Privacy Policy
-              </Link>
-              <Link className="transition-colors hover:text-primary" to="/terms">
-                Terms of Service
-              </Link>
-              <Link className="transition-colors hover:text-primary" to="/account/help">
-                Help Center
-              </Link>
-            </div>
-          </footer>
+          <AppFooter className="mt-auto" />
         </main>
       </div>
     </div>
@@ -594,7 +582,7 @@ function useListModalState() {
 export default function ReadingListsPage() {
   const { profile } = useAccount();
   const { showToast } = useToast();
-  const memberName = profile?.displayName ?? "StoryArc Reader";
+  const memberName = profile?.displayName ?? "TaleStead Reader";
   const topGenre = profile?.topGenre ?? "fantasy";
   const [searchTerm, setSearchTerm] = useState("");
   const modal = useListModalState();

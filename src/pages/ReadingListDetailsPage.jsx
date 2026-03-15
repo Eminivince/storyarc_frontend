@@ -100,7 +100,7 @@ function DesktopReadingListDetails({
           <div className="flex items-center gap-8">
             <Link className="flex items-center gap-2 text-primary" to={readingListsHref}>
               <span className="material-symbols-outlined text-3xl">layers</span>
-              <h2 className="text-xl font-bold leading-tight tracking-tight">StoryArc</h2>
+              <h2 className="text-xl font-bold leading-tight tracking-tight">TaleStead</h2>
             </Link>
             <div className="hidden md:flex items-center">
               <div className="relative">
@@ -202,7 +202,7 @@ function DesktopReadingListDetails({
               </div>
             </div>
             <p className="max-w-2xl text-lg leading-relaxed text-slate-600 dark:text-slate-300">
-              {list.description || "A custom StoryArc shelf curated from live stories."}
+              {list.description || "A custom TaleStead shelf curated from live stories."}
             </p>
             <div className="grid gap-4 sm:grid-cols-3">
               <div className="rounded-2xl border border-primary/10 bg-white p-4 dark:bg-primary/5">
@@ -380,7 +380,7 @@ function MobileReadingListDetails({
                 {list.name}
               </h2>
               <p className="line-clamp-2 text-xs leading-relaxed text-slate-600 dark:text-slate-400">
-                {list.description || "A custom StoryArc shelf curated from live stories."}
+                {list.description || "A custom TaleStead shelf curated from live stories."}
               </p>
             </div>
           </div>
@@ -538,7 +538,7 @@ export default function ReadingListDetailsPage() {
   const { profile } = useAccount();
   const { showToast } = useToast();
   const topGenre = profile?.topGenre ?? "fantasy";
-  const memberName = profile?.displayName ?? "StoryArc Reader";
+  const memberName = profile?.displayName ?? "TaleStead Reader";
   const [activeTab, setActiveTab] = useState("all");
   const listQuery = useReadingListDetailsQuery(listId);
   const updateReadingListMutation = useUpdateReadingListMutation();

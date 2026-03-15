@@ -50,7 +50,7 @@ function DesktopPricing({
             <span className="material-symbols-outlined text-3xl text-primary">
               auto_stories
             </span>
-            <h2 className="text-xl font-bold tracking-tight">StoryArc</h2>
+            <h2 className="text-xl font-bold tracking-tight">TaleStead</h2>
           </Link>
 
           <div className="hidden flex-1 items-center justify-end gap-10 md:flex">
@@ -94,7 +94,7 @@ function DesktopPricing({
               </h1>
               <p className="max-w-2xl text-lg text-slate-400 md:text-xl">
                 Unlock exclusive early access, support your favorite authors,
-                and dive deeper into the worlds you love with StoryArc Premium.
+                and dive deeper into the worlds you love with TaleStead Premium.
               </p>
               <div className="mt-6 flex items-center rounded-xl border border-primary/10 bg-primary/5 p-1">
                 {[
@@ -232,7 +232,7 @@ function MobilePricing({
             <span className="material-symbols-outlined">arrow_back</span>
           </Link>
           <h2 className="flex-1 text-center text-base font-bold tracking-tight">
-            StoryArc Premium
+            TaleStead Premium
           </h2>
           <div className="flex w-10 items-center justify-end">
             <button className="flex h-10 w-10 items-center justify-center rounded-lg" type="button">

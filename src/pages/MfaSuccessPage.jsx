@@ -12,7 +12,7 @@ function downloadCodesFile(codes) {
   const anchor = document.createElement("a");
 
   anchor.href = url;
-  anchor.download = "storyarc-recovery-codes.txt";
+  anchor.download = "talestead-recovery-codes.txt";
   document.body.append(anchor);
   anchor.click();
   anchor.remove();
@@ -33,7 +33,7 @@ function DesktopSuccess({
             <div className="flex size-6 items-center justify-center">
               <span className="material-symbols-outlined text-3xl">auto_stories</span>
             </div>
-            <h2 className="text-xl font-bold tracking-tight text-slate-100">StoryArc</h2>
+            <h2 className="text-xl font-bold tracking-tight text-slate-100">TaleStead</h2>
           </div>
           <Link
             className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary transition-colors hover:bg-primary/20"
@@ -53,7 +53,7 @@ function DesktopSuccess({
                 MFA Setup Successful
               </h1>
               <p className="text-base text-slate-400">
-                Multi-factor authentication is now active on your StoryArc account.
+                Multi-factor authentication is now active on your TaleStead account.
                 Your data is now more secure.
               </p>
             </div>
@@ -124,7 +124,7 @@ function DesktopSuccess({
           </div>
 
           <p className="mt-8 text-center text-xs text-slate-500">
-            StoryArc Security Protocol v4.2 • Protected by End-to-End Encryption
+            TaleStead Security Protocol v4.2 • Protected by End-to-End Encryption
           </p>
         </main>
       </div>
@@ -159,7 +159,7 @@ function MobileSuccess({
             <div className="text-center">
               <h1 className="text-2xl font-bold tracking-tight">MFA Setup Successful</h1>
               <p className="mt-2 text-sm leading-relaxed text-slate-600 dark:text-slate-400">
-                Your StoryArc account is now protected with multi-factor authentication.
+                Your TaleStead account is now protected with multi-factor authentication.
                 Save your recovery codes in a safe place.
               </p>
             </div>
@@ -214,7 +214,7 @@ function MobileSuccess({
             <span className="material-symbols-outlined shrink-0 text-red-500">warning</span>
             <p className="text-xs leading-normal text-red-500/90">
               Warning: These codes are the only way to access your account if you lose
-              your MFA device. StoryArc cannot recover them for you.
+              your MFA device. TaleStead cannot recover them for you.
             </p>
           </div>
         </div>

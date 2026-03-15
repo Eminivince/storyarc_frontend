@@ -46,7 +46,7 @@ function DesktopMissions({
               <span className="material-symbols-outlined text-3xl">auto_stories</span>
             </div>
             <h2 className="text-xl font-bold leading-tight tracking-tight text-slate-100">
-              StoryArc <span className="text-primary">Missions</span>
+              TaleStead <span className="text-primary">Missions</span>
             </h2>
           </div>
           <div className="flex flex-1 items-center justify-end gap-4 lg:gap-8">

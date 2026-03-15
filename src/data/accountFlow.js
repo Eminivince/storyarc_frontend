@@ -3,6 +3,7 @@ import { adminDashboardHref } from "./adminFlow";
 export const profileHref = "/account/profile";
 export const editProfileHref = "/account/profile/edit";
 export const notificationsHref = "/account/notifications";
+export const notificationSettingsHref = "/account/settings/notifications";
 export const accountSettingsHref = "/account/settings";
 export const securitySettingsHref = "/account/settings/security";
 export const billingSettingsHref = "/account/settings/billing";
@@ -122,16 +123,16 @@ export const notificationSections = [
 
 export const accountSettingsTabs = [
   {
-    id: "notifications",
-    label: "Notifications",
-    href: notificationsHref,
-    icon: "notifications",
-  },
-  {
     id: "account",
     label: "Account",
     href: accountSettingsHref,
     icon: "person",
+  },
+  {
+    id: "notification-settings",
+    label: "Alerts",
+    href: notificationSettingsHref,
+    icon: "notifications_active",
   },
   {
     id: "security",
@@ -225,10 +226,10 @@ export const paymentMethods = [
     primary: true,
   },
   {
-    id: "paypal",
-    label: "PayPal",
-    detail: "alex@storyarc.world",
-    icon: "account_balance_wallet",
+    id: "cryptomus",
+    label: "Cryptomus",
+    detail: "Hosted crypto checkout",
+    icon: "currency_bitcoin",
   },
 ];
 

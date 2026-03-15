@@ -62,7 +62,7 @@ const planPresentationById = {
       },
       {
         description:
-          "Show your supporter status with a premium badge across StoryArc.",
+          "Show your supporter status with a premium badge across TaleStead.",
         icon: "verified",
         title: "Silver Badge",
       },
@@ -82,7 +82,7 @@ const planPresentationById = {
       },
       {
         description:
-          "Badges, themes, and premium discussion spaces inside the StoryArc community.",
+          "Badges, themes, and premium discussion spaces inside the TaleStead community.",
         icon: "verified_user",
         title: "Community perks",
       },
@@ -269,7 +269,7 @@ function buildGenericPlanTestimonial(plan) {
     image:
       "https://lh3.googleusercontent.com/aida-public/AB6AXuCbTlq5lmDh6pWNcix4s4MgWPPkVnHjQxafVna97SPYN-GFwpKeWyq42wBe4y7FPoG6foQX2-nzu14TSf7U8u6wRz90t5qQaQ8mLC0mqGsC0TkDjOYuYt82GxV6jeUGcCwcL2hiAcggSKyHCim3L_i4Qia9X-6yKhnOdc5zEiJ_sb9GTwebzb3XOaOZVUQYbpBpugNKl6keehxlPpSWMMwyZzV88Kp6HISqhwQwYaBc8LtrH-vIh2MwL8ssE0zQBUHeFI2JPClbUgc",
     meta: `${plan.name} member`,
-    name: "StoryArc Reader",
+    name: "TaleStead Reader",
     quote: `${plan.name} keeps premium reading simple. I get membership access, monthly coins, and a better reading rhythm without having to think about it.`,
   };
 }

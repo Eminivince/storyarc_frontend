@@ -94,7 +94,7 @@ function getChapterSeoDescription(story, chapter) {
 
   const introParagraph = chapter.paragraphs.find((paragraph) => paragraph?.trim());
   const introExcerpt = createSeoDescription(introParagraph, 120);
-  const baseDescription = `Read Chapter ${chapter.chapterNumber}: ${chapter.chapterTitle} from ${story.title} by ${chapter.authorName} on StoryArc.`;
+  const baseDescription = `Read Chapter ${chapter.chapterNumber}: ${chapter.chapterTitle} from ${story.title} by ${chapter.authorName} on TaleStead.`;
 
   return createSeoDescription(
     introExcerpt
@@ -201,7 +201,7 @@ function DesktopReader({
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-background-dark">
               <span className="material-symbols-outlined">auto_stories</span>
             </div>
-            <h1 className="text-xl font-bold tracking-tight">StoryArc</h1>
+            <h1 className="text-xl font-bold tracking-tight">TaleStead</h1>
           </Link>
 
           <div className="flex items-center gap-2 md:gap-6">
@@ -561,7 +561,7 @@ function MobileReader({
             onClick={onNextClick}
             to={nextHref}
           >
-            {nextLabel}
+            {nextLabel.slice(0, 12)}...
             <span className="material-symbols-outlined text-base">chevron_right</span>
           </Link>
         </nav>

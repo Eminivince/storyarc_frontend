@@ -86,6 +86,10 @@ export function MonetizationProvider({ children }) {
   const billingCycle = statusQuery.data?.billingCycle ?? "monthly";
   const currency =
     catalogQuery.data?.currency ?? statusQuery.data?.currency ?? "USD";
+  const checkoutProvider =
+    catalogQuery.data?.checkoutProvider ??
+    statusQuery.data?.checkoutProvider ??
+    "paystack";
   const coinBalance = statusQuery.data?.coinBalance ?? 0;
   const hasPremium = Boolean(statusQuery.data?.hasPremium);
   const isCatalogReady = !catalogQuery.isLoading && !catalogQuery.error;
@@ -298,6 +302,7 @@ export function MonetizationProvider({ children }) {
     canUnlockWithCoins,
     catalogError: catalogQuery.error,
     chapterEntitlements,
+    checkoutProvider,
     coinBalance,
     coinPackages: displayCoinPackages,
     freePlan: freePlanTier,

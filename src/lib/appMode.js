@@ -1,4 +1,4 @@
-export const APP_MODE_COOKIE_NAME = "storyarc.app-mode";
+export const APP_MODE_COOKIE_NAME = "talestead.app-mode";
 export const APP_MODE_READER = "reader";
 export const APP_MODE_CREATOR = "creator";
 

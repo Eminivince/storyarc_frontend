@@ -1,7 +1,7 @@
 /**
  * SqueezeLoader / LoadingIndicator
  * Custom animated loading spinner with two morphing shapes.
- * Matches StoryArc color scheme: primary gold #f4c025, surface-dark #2a261f.
+ * Matches TaleStead color scheme: primary gold #f4c025, surface-dark #2a261f.
  * Use for unauthenticated pages (landing, sign in/up, about) - no skeleton.
  *
  * Keyframes: index.css (squeeze-loader-squeeze, squeeze-loader-spin)

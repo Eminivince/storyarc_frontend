@@ -34,7 +34,7 @@ export default function PaymentSuccessPage() {
   return (
     <PaymentStatusLayout
       balanceLabel={balanceLabel}
-      description="Your payment has been confirmed and StoryArc has refreshed your live wallet and access state."
+      description="Your payment has been confirmed and TaleStead has refreshed your live wallet and access state."
       icon="check_circle"
       note={note}
       primaryLabel={getResumeReadingLabel(resumeTo, returnTo)}

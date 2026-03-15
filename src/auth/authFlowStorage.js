@@ -1,5 +1,5 @@
-const pendingVerificationKey = "storyarc.auth.pending-verification";
-const pendingPasswordResetKey = "storyarc.auth.pending-password-reset";
+const pendingVerificationKey = "talestead.auth.pending-verification";
+const pendingPasswordResetKey = "talestead.auth.pending-password-reset";
 
 function getSessionStorage() {
   if (typeof window === "undefined") {

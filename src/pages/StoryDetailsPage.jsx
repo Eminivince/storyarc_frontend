@@ -48,7 +48,7 @@ function getStorySeoDescription(story) {
   return createSeoDescription(
     story.synopsis ||
       story.shortSynopsis ||
-      `Read ${story.title} by ${story.authorName} on StoryArc.`,
+      `Read ${story.title} by ${story.authorName} on TaleStead.`,
     190,
   );
 }
@@ -498,7 +498,7 @@ function DesktopStoryDetails({
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-background-dark">
               <span className="material-symbols-outlined">auto_stories</span>
             </div>
-            <h2 className="text-xl font-bold tracking-tight">StoryArc</h2>
+            <h2 className="text-xl font-bold tracking-tight">TaleStead</h2>
           </Link>
 
           <form className="hidden min-w-56 md:block" onSubmit={onSearchSubmit}>

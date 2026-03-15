@@ -63,7 +63,7 @@ function CreatorDesktopHeader({ authorName }) {
             <span className="material-symbols-outlined">auto_stories</span>
           </div>
           <h2 className="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
-            StoryArc
+            TaleStead
           </h2>
         </Link>
       </div>
@@ -385,7 +385,7 @@ function DesktopEarnings({ authorName, errorMessage, finance, isLoading }) {
                   </h1>
                   <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-500 dark:text-slate-400">
                     {finance?.contracts?.message ??
-                      "Track premium chapter revenue that is eligible under your StoryArc contracts."}
+                      "Track premium chapter revenue that is eligible under your TaleStead contracts."}
                   </p>
                 </div>
                 <Link
@@ -513,7 +513,7 @@ function MobileEarnings({ authorName, errorMessage, finance, isLoading }) {
             <h2 className="mt-1 text-lg font-black tracking-tight">Contract earnings</h2>
             <p className="mt-1 text-[11px] leading-5 text-slate-500 dark:text-slate-400 line-clamp-2">
               {finance?.contracts?.message ??
-                "Track premium chapter revenue that qualifies under StoryArc contracts."}
+                "Track premium chapter revenue that qualifies under TaleStead contracts."}
             </p>
           </div>
 
@@ -591,7 +591,7 @@ export default function CreatorEarningsPage() {
   });
   const finance = financeQuery.data ?? null;
   const authorName =
-    finance?.creator?.displayName || user?.displayName || "StoryArc Creator";
+    finance?.creator?.displayName || user?.displayName || "TaleStead Creator";
   const errorMessage = financeQuery.isError
     ? financeQuery.error?.message || "Creator earnings could not be loaded."
     : null;

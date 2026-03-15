@@ -241,7 +241,7 @@ export default function AdminContractManagementPage() {
           </Link>
         </>
       }
-      subtitle="Monitor legal agreements, manage intellectual property rights, and track signature statuses for active StoryArc contracts."
+      subtitle="Monitor legal agreements, manage intellectual property rights, and track signature statuses for active TaleStead contracts."
       title="Contract Management"
     >
       <section className="rounded-[28px] border border-primary/10 bg-[#151006] p-4 shadow-[0_28px_80px_-40px_rgba(16,12,8,0.9)] sm:p-6">

@@ -18,7 +18,7 @@ function DesktopCreatorApplicationSubmitted({
                 <path d="M44 11.2727C44 14.0109 39.8386 16.3957 33.69 17.6364C39.8386 18.877 44 21.2618 44 24C44 26.7382 39.8386 29.123 33.69 30.3636C39.8386 31.6043 44 33.9891 44 36.7273C44 40.7439 35.0457 44 24 44C12.9543 44 4 40.7439 4 36.7273C4 33.9891 8.16144 31.6043 14.31 30.3636C8.16144 29.123 4 26.7382 4 24C4 21.2618 8.16144 18.877 14.31 17.6364C8.16144 16.3957 4 14.0109 4 11.2727C4 7.25611 12.9543 4 24 4C35.0457 4 44 7.25611 44 11.2727Z" fill="currentColor" />
               </svg>
             </div>
-            <h2 className="text-xl font-bold tracking-tight">StoryArc</h2>
+            <h2 className="text-xl font-bold tracking-tight">TaleStead</h2>
           </div>
           <div className="flex flex-1 items-center justify-end gap-8">
             <nav className="hidden items-center gap-9 md:flex">
@@ -67,7 +67,7 @@ function DesktopCreatorApplicationSubmitted({
                 Thank You for Applying!
               </h1>
               <p className="mx-auto max-w-2xl text-lg font-normal leading-relaxed text-slate-600 dark:text-slate-400 md:text-xl">
-                Your application to become a <span className="font-semibold text-primary">StoryArc Author</span> has
+                Your application to become a <span className="font-semibold text-primary">TaleStead Author</span> has
                 been successfully received and added to our review queue.
               </p>
             </div>
@@ -107,7 +107,7 @@ function DesktopCreatorApplicationSubmitted({
         <footer className="border-t border-primary/10 px-6 py-10 md:px-20 lg:px-40">
           <div className="flex flex-col items-center justify-between gap-6 md:flex-row">
             <p className="text-sm text-slate-500 dark:text-slate-500">
-              © 2024 StoryArc Media. All rights reserved.
+              © 2024 TaleStead Media. All rights reserved.
             </p>
             <div className="flex gap-6">
               <Link className="text-sm text-slate-500 transition-colors hover:text-primary dark:text-slate-500" to="/privacy">
@@ -149,7 +149,7 @@ function MobileCreatorApplicationSubmitted({
           <h2 className="mb-1.5 text-[10px] font-bold uppercase tracking-wider text-primary">Success!</h2>
           <h3 className="mb-3 text-lg font-bold">Application Submitted</h3>
           <p className="text-sm leading-relaxed text-slate-600 dark:text-slate-400">
-            Thank you for applying to StoryArc. Your application has been successfully
+            Thank you for applying to TaleStead. Your application has been successfully
             received and is now under review by our editorial team.
           </p>
         </div>

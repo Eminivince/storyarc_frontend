@@ -88,14 +88,14 @@ function DesktopStoryManagement({ onPreview, story }) {
               <div className="mx-2 h-8 w-px bg-primary/10" />
               <div className="flex items-center gap-3">
                 <div className="hidden text-right sm:block">
-                  <p className="text-sm font-bold">{user?.displayName ?? "StoryArc Creator"}</p>
+                  <p className="text-sm font-bold">{user?.displayName ?? "TaleStead Creator"}</p>
                   <p className="text-[10px] font-semibold uppercase text-primary/70">Author</p>
                 </div>
                 <UserAvatar
                   alt="Creator avatar"
                   className="h-10 w-10 rounded-full border-2 border-primary/20 bg-primary/10 p-0.5"
                   fallbackClassName="text-sm"
-                  name={user?.displayName ?? "StoryArc Creator"}
+                  name={user?.displayName ?? "TaleStead Creator"}
                   src={user?.avatarUrl}
                 />
               </div>
@@ -285,7 +285,7 @@ function MobileStoryManagement({ onPreview, story }) {
         <Link className="flex size-9 items-center justify-center rounded-lg transition-colors hover:bg-primary/10" to={creatorStoriesHref}>
           <span className="material-symbols-outlined text-xl text-slate-900 dark:text-slate-100">arrow_back</span>
         </Link>
-        <h1 className="text-base font-bold tracking-tight">StoryArc</h1>
+        <h1 className="text-base font-bold tracking-tight">TaleStead</h1>
         <button className="flex size-9 items-center justify-center rounded-lg transition-colors hover:bg-primary/10" type="button">
           <span className="material-symbols-outlined text-xl text-slate-900 dark:text-slate-100">more_vert</span>
         </button>

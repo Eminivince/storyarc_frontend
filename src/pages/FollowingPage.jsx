@@ -61,6 +61,7 @@ function EmptyFollowingState() {
 }
 
 function FollowSummaries({
+  compact = false,
   followedAuthors,
   followedStories,
   isAuthorPending,
@@ -69,35 +70,35 @@ function FollowSummaries({
   onUnfollowStory,
 }) {
   return (
-    <div className="grid gap-6 xl:grid-cols-2">
-      <section className="rounded-3xl border border-primary/10 bg-white p-6 dark:bg-primary/5">
-        <div className="flex items-center justify-between gap-3">
+    <div className={`grid gap-4 xl:grid-cols-2 ${compact ? "gap-3" : "gap-6"}`}>
+      <section className={`rounded-2xl border border-primary/10 bg-white dark:bg-primary/5 ${compact ? "p-3" : "rounded-3xl p-6"}`}>
+        <div className="flex items-center justify-between gap-2">
           <div>
-            <p className="text-xs font-bold uppercase tracking-[0.18em] text-primary">
+            <p className={`font-bold uppercase tracking-[0.18em] text-primary ${compact ? "text-[10px]" : "text-xs"}`}>
               Authors
             </p>
-            <h2 className="mt-2 text-2xl font-black">Followed creators</h2>
+            <h2 className={`font-black ${compact ? "mt-0.5 text-base" : "mt-2 text-2xl"}`}>Followed creators</h2>
           </div>
-          <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-bold text-primary">
+          <span className={`rounded-full bg-primary/10 font-bold text-primary ${compact ? "px-2 py-0.5 text-[10px]" : "px-3 py-1 text-xs"}`}>
             {followedAuthors.length}
           </span>
         </div>
         {followedAuthors.length ? (
-          <div className="mt-5 space-y-3">
+          <div className={compact ? "mt-2 space-y-2" : "mt-5 space-y-3"}>
             {followedAuthors.map((author) => (
               <div
-                className="flex items-center justify-between gap-3 rounded-2xl border border-primary/10 bg-primary/5 p-4"
+                className={`flex items-center justify-between gap-2 rounded-xl border border-primary/10 bg-primary/5 ${compact ? "p-2" : "rounded-2xl p-4"}`}
                 key={author.id}
               >
-                <div className="flex items-center gap-3">
+                <div className={`flex min-w-0 items-center gap-2 ${compact ? "gap-2" : "gap-3"}`}>
                   {author.avatarUrl ? (
                     <img
                       alt={author.name}
-                      className="h-12 w-12 rounded-full object-cover"
+                      className={`shrink-0 rounded-full object-cover ${compact ? "h-9 w-9" : "h-12 w-12"}`}
                       src={author.avatarUrl}
                     />
                   ) : (
-                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-sm font-black text-primary">
+                    <div className={`flex shrink-0 items-center justify-center rounded-full bg-primary/10 font-black text-primary ${compact ? "h-9 w-9 text-xs" : "h-12 w-12 text-sm"}`}>
                       {author.name
                         .split(" ")
                         .slice(0, 2)
@@ -105,9 +106,9 @@ function FollowSummaries({
                         .join("")}
                     </div>
                   )}
-                  <div>
-                    <p className="font-bold">{author.name}</p>
-                    <p className="text-xs text-slate-500 dark:text-slate-400">
+                  <div className="min-w-0">
+                    <p className={`truncate font-bold ${compact ? "text-sm" : ""}`}>{author.name}</p>
+                    <p className={`truncate text-slate-500 dark:text-slate-400 ${compact ? "text-[10px]" : "text-xs"}`}>
                       {author.storyCount} live {author.storyCount === 1 ? "story" : "stories"}
                     </p>
                   </div>
@@ -124,32 +125,32 @@ function FollowSummaries({
             ))}
           </div>
         ) : (
-          <p className="mt-5 text-sm text-slate-500 dark:text-slate-400">
+          <p className={`text-slate-500 dark:text-slate-400 ${compact ? "mt-2 text-[11px]" : "mt-5 text-sm"}`}>
             Followed authors will appear here.
           </p>
         )}
       </section>
 
-      <section className="rounded-3xl border border-primary/10 bg-white p-6 dark:bg-primary/5">
-        <div className="flex items-center justify-between gap-3">
+      <section className={`rounded-2xl border border-primary/10 bg-white dark:bg-primary/5 ${compact ? "p-3" : "rounded-3xl p-6"}`}>
+        <div className="flex items-center justify-between gap-2">
           <div>
-            <p className="text-xs font-bold uppercase tracking-[0.18em] text-primary">
+            <p className={`font-bold uppercase tracking-[0.18em] text-primary ${compact ? "text-[10px]" : "text-xs"}`}>
               Stories
             </p>
-            <h2 className="mt-2 text-2xl font-black">Tracked series</h2>
+            <h2 className={`font-black ${compact ? "mt-0.5 text-base" : "mt-2 text-2xl"}`}>Tracked series</h2>
           </div>
-          <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-bold text-primary">
+          <span className={`rounded-full bg-primary/10 font-bold text-primary ${compact ? "px-2 py-0.5 text-[10px]" : "px-3 py-1 text-xs"}`}>
             {followedStories.length}
           </span>
         </div>
         {followedStories.length ? (
-          <div className="mt-5 space-y-3">
+          <div className={compact ? "mt-2 space-y-2" : "mt-5 space-y-3"}>
             {followedStories.map((story) => (
               <div
-                className="flex items-center justify-between gap-3 rounded-2xl border border-primary/10 bg-primary/5 p-4"
+                className={`flex items-center justify-between gap-2 rounded-xl border border-primary/10 bg-primary/5 ${compact ? "p-2" : "rounded-2xl p-4"}`}
                 key={story.id}
               >
-                <div className="flex min-w-0 items-center gap-3">
+                <div className={`flex min-w-0 items-center gap-2 ${compact ? "gap-2" : "gap-3"}`}>
                   <PrefetchableStoryLink
                     className="block shrink-0"
                     storySlug={story.slug}
@@ -157,16 +158,16 @@ function FollowSummaries({
                   >
                     <img
                       alt={story.title}
-                      className="h-16 w-12 rounded-xl object-cover"
+                      className={`rounded-lg object-cover ${compact ? "h-12 w-9" : "h-16 w-12 rounded-xl"}`}
                       src={story.coverImage}
                     />
                   </PrefetchableStoryLink>
                   <div className="min-w-0">
-                    <p className="line-clamp-1 font-bold">{story.title}</p>
-                    <p className="line-clamp-1 text-xs text-slate-500 dark:text-slate-400">
+                    <p className={`line-clamp-1 font-bold ${compact ? "text-sm" : ""}`}>{story.title}</p>
+                    <p className={`line-clamp-1 text-slate-500 dark:text-slate-400 ${compact ? "text-[10px]" : "text-xs"}`}>
                       {story.authorName}
                     </p>
-                    <p className="mt-1 line-clamp-1 text-[11px] uppercase tracking-[0.16em] text-primary">
+                    <p className={`line-clamp-1 uppercase tracking-[0.16em] text-primary ${compact ? "mt-0.5 text-[9px]" : "mt-1 text-[11px]"}`}>
                       {story.latestPublishedAtLabel || "Waiting for a new chapter"}
                     </p>
                   </div>
@@ -183,7 +184,7 @@ function FollowSummaries({
             ))}
           </div>
         ) : (
-          <p className="mt-5 text-sm text-slate-500 dark:text-slate-400">
+          <p className={`text-slate-500 dark:text-slate-400 ${compact ? "mt-2 text-[11px]" : "mt-5 text-sm"}`}>
             Followed stories will appear here.
           </p>
         )}
@@ -192,17 +193,17 @@ function FollowSummaries({
   );
 }
 
-function FeedList({ items }) {
+function FeedList({ compact = false, items }) {
   if (!items.length) {
     return (
-      <div className="rounded-3xl border border-primary/10 bg-white p-6 text-sm text-slate-500 dark:bg-primary/5 dark:text-slate-400">
+      <div className={`rounded-2xl border border-primary/10 bg-white text-slate-500 dark:bg-primary/5 dark:text-slate-400 ${compact ? "p-3 text-xs" : "rounded-3xl p-6 text-sm"}`}>
         No new chapters yet. We will stack fresh releases here as soon as followed authors or stories publish.
       </div>
     );
   }
 
   return (
-    <div className="space-y-4">
+    <div className={compact ? "space-y-2" : "space-y-4"}>
       {items.map((item, index) => (
         <Reveal delay={index * 0.03} key={item.id}>
           <PrefetchableChapterLink
@@ -211,31 +212,33 @@ function FeedList({ items }) {
             storySlug={item.storySlug}
             to={buildChapterHref(item.storySlug, item.chapterSlug)}
           >
-            <article className="rounded-3xl border border-primary/10 bg-white p-4 transition-colors hover:bg-primary/5 dark:bg-primary/5">
-              <div className="flex gap-4">
+            <article className={`rounded-2xl border border-primary/10 bg-white transition-colors hover:bg-primary/5 dark:bg-primary/5 ${compact ? "p-2" : "rounded-3xl p-4"}`}>
+              <div className={`flex gap-3 ${compact ? "gap-2" : "gap-4"}`}>
                 <img
                   alt={item.storyTitle}
-                  className="h-28 w-20 rounded-2xl object-cover"
+                  className={`shrink-0 rounded-xl object-cover ${compact ? "h-16 w-12" : "h-28 w-20 rounded-2xl"}`}
                   src={item.coverImage}
                 />
                 <div className="min-w-0 flex-1">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <span className="rounded-full bg-primary/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-primary">
-                      Chapter {item.chapterNumber}
+                  <div className="flex flex-wrap items-center gap-1.5">
+                    <span className={`rounded-full bg-primary/10 font-bold uppercase tracking-[0.16em] text-primary ${compact ? "px-2 py-0.5 text-[9px]" : "px-2.5 py-1 text-[10px]"}`}>
+                      Ch. {item.chapterNumber}
                     </span>
-                    <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
+                    <span className={`font-semibold uppercase tracking-[0.18em] text-slate-400 ${compact ? "text-[9px]" : "text-[11px]"}`}>
                       {item.publishedAtLabel}
                     </span>
                   </div>
-                  <h3 className="mt-3 text-xl font-black">{item.chapterTitle}</h3>
-                  <p className="mt-1 text-sm font-semibold text-primary">
-                    {item.storyTitle} by {item.authorName}
+                  <h3 className={`font-black ${compact ? "mt-1.5 line-clamp-1 text-sm" : "mt-3 text-xl"}`}>{item.chapterTitle}</h3>
+                  <p className={`font-semibold text-primary ${compact ? "mt-0.5 line-clamp-1 text-xs" : "mt-1 text-sm"}`}>
+                    {item.storyTitle} · {item.authorName}
                   </p>
-                  <p className="mt-3 text-xs text-slate-500 dark:text-slate-400">
-                    Published {formatFeedDate(item.publishedAt)}
-                  </p>
+                  {!compact && (
+                    <p className="mt-3 text-xs text-slate-500 dark:text-slate-400">
+                      Published {formatFeedDate(item.publishedAt)}
+                    </p>
+                  )}
                 </div>
-                <div className="hidden items-center text-slate-400 md:flex">
+                <div className="hidden shrink-0 items-center text-slate-400 md:flex">
                   <span className="material-symbols-outlined text-2xl">
                     chevron_right
                   </span>
@@ -330,28 +333,29 @@ function MobileFollowing({
 }) {
   return (
     <div className="min-h-screen bg-background-light font-display text-slate-900 dark:bg-background-dark dark:text-slate-100 md:hidden">
-      <main className="space-y-5 px-4 pb-24 pt-4">
+      <main className="space-y-3 px-3 pb-24 pt-3">
         <Reveal>
-          <div className="flex items-center justify-between gap-3">
+          <div className="flex items-center justify-between gap-2">
             <div>
               <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-primary">
                 Reader Feed
               </p>
-              <h1 className="text-2xl font-black">Following</h1>
+              <h1 className="text-xl font-black">Following</h1>
             </div>
             <Link
-              className="flex size-10 items-center justify-center rounded-full border border-primary/10 bg-white dark:bg-primary/5"
+              className="flex size-9 shrink-0 items-center justify-center rounded-full border border-primary/10 bg-white dark:bg-primary/5"
               to={notificationsHref}
             >
-              <span className="material-symbols-outlined">notifications</span>
+              <span className="material-symbols-outlined text-lg">notifications</span>
             </Link>
           </div>
-          <p className="mt-3 text-sm text-slate-600 dark:text-slate-400">
+          <p className="mt-1.5 line-clamp-2 text-xs text-slate-600 dark:text-slate-400">
             Fresh chapters from the stories and creators you follow.
           </p>
         </Reveal>
 
         <FollowSummaries
+          compact
           followedAuthors={data.followedAuthors}
           followedStories={data.followedStories}
           isAuthorPending={isAuthorPending}
@@ -360,14 +364,14 @@ function MobileFollowing({
           onUnfollowStory={onUnfollowStory}
         />
 
-        <Reveal as="section" className="space-y-3">
-          <div className="flex items-center justify-between gap-3">
-            <h2 className="text-lg font-black">Latest releases</h2>
-            <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
+        <Reveal as="section" className="space-y-2">
+          <div className="flex items-center justify-between gap-2">
+            <h2 className="text-base font-black">Latest releases</h2>
+            <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-400">
               {data.items.length}
             </span>
           </div>
-          <FeedList items={data.items} />
+          <FeedList compact items={data.items} />
         </Reveal>
       </main>
 

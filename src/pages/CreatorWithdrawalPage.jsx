@@ -57,7 +57,7 @@ function CreatorDesktopHeader({ authorName }) {
             <span className="material-symbols-outlined">auto_stories</span>
           </div>
           <h2 className="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
-            StoryArc
+            TaleStead
           </h2>
         </Link>
       </div>
@@ -455,7 +455,7 @@ export default function CreatorWithdrawalPage() {
   });
   const finance = financeQuery.data ?? null;
   const authorName =
-    finance?.creator?.displayName || user?.displayName || "StoryArc Creator";
+    finance?.creator?.displayName || user?.displayName || "TaleStead Creator";
   const errorMessage = financeQuery.isError
     ? financeQuery.error?.message || "Withdrawal data could not be loaded."
     : null;

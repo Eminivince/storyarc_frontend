@@ -24,7 +24,7 @@ function DesktopChooseMethod({
                 <span className="material-symbols-outlined font-bold">auto_stories</span>
               </div>
               <div>
-                <h1 className="text-base font-bold leading-tight">StoryArc Premium</h1>
+                <h1 className="text-base font-bold leading-tight">TaleStead Premium</h1>
                 <p className="text-xs font-medium uppercase tracking-wider text-primary">
                   Golden Member
                 </p>
@@ -87,7 +87,7 @@ function DesktopChooseMethod({
               </div>
               <h2 className="mb-4 text-3xl font-black">Secure Your Account</h2>
               <p className="leading-relaxed text-slate-600 dark:text-slate-400">
-                Add an extra layer of protection to your StoryArc library. Multi-factor
+                Add an extra layer of protection to your TaleStead library. Multi-factor
                 authentication ensures only you can access your creative works.
               </p>
             </div>
@@ -161,7 +161,7 @@ function DesktopChooseMethod({
                 <div className="mt-4 px-6 text-left text-sm leading-relaxed text-slate-500 dark:text-slate-400">
                   MFA blocks the vast majority of account takeover attacks. Even if
                   someone discovers your password, they still need your second factor
-                  to access your StoryArc account.
+                  to access your TaleStead account.
                 </div>
               </details>
             </div>
@@ -193,7 +193,7 @@ function MobileChooseMethod({
           </div>
           <h3 className="mb-3 text-2xl font-bold leading-tight">Protect your account</h3>
           <p className="text-base leading-relaxed text-slate-600 dark:text-slate-400">
-            Choose how you want to receive your security codes to keep StoryArc secure.
+            Choose how you want to receive your security codes to keep TaleStead secure.
           </p>
         </div>
 

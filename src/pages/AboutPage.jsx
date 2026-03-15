@@ -1,5 +1,7 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import AppFooter from "../components/AppFooter";
+import PublicNav from "../components/PublicNav";
 import Reveal from "../components/Reveal";
 
 const readerHighlights = [
@@ -61,77 +63,7 @@ const mobileOffers = [
 function DesktopAbout() {
   return (
     <div className="hidden bg-background-light text-slate-900 dark:bg-background-dark dark:text-slate-100 md:block">
-      <header className="sticky top-0 z-50 w-full border-b border-accent-dark/30 bg-background-dark/80 px-6 py-4 backdrop-blur-md md:px-20">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-8">
-          <div className="flex items-center gap-10">
-            <Link className="flex items-center gap-2 text-primary" to="/">
-              <span className="material-symbols-outlined text-3xl">
-                auto_stories
-              </span>
-              <span className="text-xl font-bold tracking-tight text-white">
-                StoryArc
-              </span>
-            </Link>
-            <nav className="hidden items-center gap-8 md:flex">
-              <Link
-                className="text-sm font-medium text-slate-300 transition-colors hover:text-primary"
-                to="/"
-              >
-                Home
-              </Link>
-              <a
-                className="text-sm font-medium text-slate-300 transition-colors hover:text-primary"
-                href="#"
-              >
-                Browse
-              </a>
-              <a
-                className="text-sm font-medium text-slate-300 transition-colors hover:text-primary"
-                href="#"
-              >
-                Writers
-              </a>
-              <Link
-                className="border-b-2 border-primary pb-1 text-sm font-semibold text-primary transition-colors"
-                to="/about"
-              >
-                About
-              </Link>
-            </nav>
-          </div>
-          <div className="flex flex-1 items-center justify-end gap-6">
-            <label className="hidden w-64 items-center rounded-lg border border-accent-dark bg-accent-dark/50 px-3 py-1.5 lg:flex">
-              <span className="material-symbols-outlined text-xl text-slate-400">
-                search
-              </span>
-              <input
-                className="ml-2 w-full border-none bg-transparent text-base text-white placeholder-slate-400 focus:ring-0"
-                placeholder="Search stories..."
-                type="text"
-              />
-            </label>
-            <motion.div
-              transition={{ duration: 0.2 }}
-              whileHover={{ scale: 1.03, filter: "brightness(1.08)" }}
-              whileTap={{ scale: 0.98 }}
-            >
-              <Link
-                className="rounded-lg bg-primary px-5 py-2 text-sm font-bold text-background-dark"
-                to="/auth"
-              >
-                Get Started
-              </Link>
-            </motion.div>
-            <div
-              className="h-10 w-10 rounded-full border-2 border-accent-dark bg-cover bg-center"
-              style={{
-                backgroundImage:
-                  "url('https://lh3.googleusercontent.com/aida-public/AB6AXuCP_MrKiKDWcuUYrjK-sdW26FqHgiyOZ6qXceHiZb1s0Sd5BNzV4NEPURJXbx8OdywtAIkPZInki5r-gNBJ1s84Ad3NaBIJGwaI-czoia2oa00GDsKC55D6euQu7MJvPu4ETowSviXpFOE1fqjGM25FZo7MGKQoi78FVSdPVnXkXNCvloVxIZbH3gB9RqPG_69ubAgHF8XFBBw-LQ9nqZsht3pigSAhjb5F-eJ8_3IXrMjYnI4cLEqCBr8WMdNftz2hqmTNElG5o6w')",
-              }}
-            />
-          </div>
-        </div>
-      </header>
+      <PublicNav ctaLabel="Get Started" variant="dark" />
 
       <main className="w-full">
         <section className="relative flex min-h-[70vh] w-full items-center justify-center overflow-hidden">
@@ -154,7 +86,7 @@ function DesktopAbout() {
               <span className="text-primary">storytellers</span>
             </h1>
             <p className="mx-auto max-w-2xl text-lg font-medium leading-relaxed text-slate-300 md:text-xl">
-              StoryArc is a premium webnovel platform where imagination meets
+              TaleStead is a premium webnovel platform where imagination meets
               AI potential, creating a sanctuary for creators and a playground
               for readers.
             </p>
@@ -194,7 +126,7 @@ function DesktopAbout() {
               </h2>
               <div className="space-y-6">
                 <p className="text-lg leading-relaxed text-slate-300">
-                  At StoryArc, we believe that the soul of every great story
+                  At TaleStead, we believe that the soul of every great story
                   lies in human imagination. However, the future of literature
                   is being shaped by the symbiotic relationship between authors
                   and technology.
@@ -384,108 +316,7 @@ function DesktopAbout() {
         </Reveal>
       </main>
 
-      <footer className="border-t border-accent-dark bg-background-dark px-6 py-12 text-slate-400 md:px-20">
-        <div className="mx-auto grid max-w-7xl grid-cols-2 gap-10 md:grid-cols-4 lg:grid-cols-5">
-          <div className="col-span-2 lg:col-span-2">
-            <Link className="mb-6 flex items-center gap-2 text-white" to="/">
-              <span className="material-symbols-outlined text-2xl text-primary">
-                auto_stories
-              </span>
-              <span className="text-lg font-bold">StoryArc</span>
-            </Link>
-            <p className="mb-6 max-w-xs">
-              The premier platform for high-quality webnovels and creator
-              empowerment.
-            </p>
-            <div className="flex gap-4">
-              {["alternate_email", "share", "forum"].map((icon) => (
-                <a className="hover:text-primary" href="#" key={icon}>
-                  <span className="material-symbols-outlined">{icon}</span>
-                </a>
-              ))}
-            </div>
-          </div>
-          <div>
-            <h4 className="mb-4 font-bold text-white">Platform</h4>
-            <ul className="space-y-2 text-sm">
-              <li>
-                <a className="transition-colors hover:text-primary" href="#">
-                  Browse Novels
-                </a>
-              </li>
-              <li>
-                <a className="transition-colors hover:text-primary" href="#">
-                  Top Charts
-                </a>
-              </li>
-              <li>
-                <a className="transition-colors hover:text-primary" href="#">
-                  New Releases
-                </a>
-              </li>
-              <li>
-                <a className="transition-colors hover:text-primary" href="#">
-                  Mobile App
-                </a>
-              </li>
-            </ul>
-          </div>
-          <div>
-            <h4 className="mb-4 font-bold text-white">Writers</h4>
-            <ul className="space-y-2 text-sm">
-              <li>
-                <a className="transition-colors hover:text-primary" href="#">
-                  Write for Us
-                </a>
-              </li>
-              <li>
-                <a className="transition-colors hover:text-primary" href="#">
-                  Monetization
-                </a>
-              </li>
-              <li>
-                <a className="transition-colors hover:text-primary" href="#">
-                  Writing Tools
-                </a>
-              </li>
-              <li>
-                <a className="transition-colors hover:text-primary" href="#">
-                  Creator Fund
-                </a>
-              </li>
-            </ul>
-          </div>
-          <div>
-            <h4 className="mb-4 font-bold text-white">Company</h4>
-            <ul className="space-y-2 text-sm">
-              <li>
-                <Link className="transition-colors hover:text-primary" to="/about">
-                  About Us
-                </Link>
-              </li>
-              <li>
-                <a className="transition-colors hover:text-primary" href="#">
-                  Careers
-                </a>
-              </li>
-              <li>
-                <Link className="transition-colors hover:text-primary" to="/privacy">
-                  Privacy Policy
-                </Link>
-              </li>
-              <li>
-                <Link className="transition-colors hover:text-primary" to="/terms">
-                  Terms of Service
-                </Link>
-              </li>
-            </ul>
-          </div>
-        </div>
-        <div className="mx-auto mt-12 max-w-7xl border-t border-accent-dark pt-8 text-center text-xs">
-          © 2024 StoryArc Inc. All rights reserved. Crafting stories for the
-          cosmic generation.
-        </div>
-      </footer>
+      <AppFooter variant="full" />
     </div>
   );
 }
@@ -493,27 +324,10 @@ function DesktopAbout() {
 function MobileAbout() {
   return (
     <div className="flex min-h-screen flex-col bg-background-light text-slate-900 dark:bg-background-dark dark:text-slate-100 md:hidden">
-      <header className="sticky top-0 z-50 flex items-center justify-between border-b border-primary/10 bg-background-light p-4 backdrop-blur-sm dark:bg-background-dark/95">
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center text-primary">
-          <span className="material-symbols-outlined text-3xl">menu</span>
-        </div>
-        <span className="flex-1 text-center font-display text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
-          StoryArc
-        </span>
-        <div className="flex w-10 items-center justify-end">
-          <button
-            className="flex h-10 w-10 items-center justify-center rounded-lg bg-transparent text-primary"
-            type="button"
-          >
-            <span className="material-symbols-outlined text-3xl">
-              account_circle
-            </span>
-          </button>
-        </div>
-      </header>
+      <PublicNav compact variant="dark" />
 
-      <main className="flex-1 pb-12">
-        <section className="relative flex h-[70vh] w-full flex-col items-center justify-center overflow-hidden px-6 text-center">
+      <main className="flex-1 pb-8 pt-12">
+        <section className="relative flex h-[50vh] min-h-[280px] w-full flex-col items-center justify-center overflow-hidden px-4 text-center">
           <div className="absolute inset-0 z-0">
             <div className="absolute inset-0 z-10 bg-gradient-to-t from-background-dark via-background-dark/60 to-transparent" />
             <img
@@ -522,21 +336,21 @@ function MobileAbout() {
               src="https://lh3.googleusercontent.com/aida-public/AB6AXuDjC2VbMcoofBUwPCcGfXrEZ3at1crLnr9lKq-olQ9-TaNLMHlF9i42n7rqFe1iocx_N0aXYAlPvslN9KxOb-QIra-p_KETF_o5i1ws7Iak28n8HJSk6XYbSu8vFLLeRv7uvmFuh-wfzBsOZGWhh5hMXN1nHHw9blqHXDeYBeSGbpNtJYob5mPCrv5X7r4ug4-XfO2La-HIiAve_8SmGZpSrioUQpZrAPn_cJC7-wxFCuI-ZrYj1Lufd_pVOFlpFkR2BcQ6kQ0lWbQ"
             />
           </div>
-          <Reveal className="relative z-20 space-y-6">
-            <h1 className="font-display text-4xl font-extrabold leading-tight tracking-tight text-slate-100">
+          <Reveal className="relative z-20 space-y-3">
+            <h1 className="font-display text-2xl font-extrabold leading-tight tracking-tight text-slate-100">
               Empowering the next generation of{" "}
               <span className="text-primary">storytellers</span>
             </h1>
-            <p className="mx-auto max-w-xs text-lg font-normal text-slate-300">
+            <p className="mx-auto max-w-[260px] text-sm font-normal text-slate-300">
               Where every voice finds its stage and every story finds its home.
             </p>
-            <div className="pt-4">
+            <div className="pt-2">
               <motion.div
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.98 }}
               >
                 <Link
-                  className="rounded-full bg-primary px-8 py-3 text-lg font-bold text-background-dark shadow-lg shadow-primary/20"
+                  className="rounded-full bg-primary px-6 py-2.5 text-sm font-bold text-background-dark shadow-lg shadow-primary/20"
                   to="/auth"
                 >
                   Join the Journey
@@ -546,52 +360,52 @@ function MobileAbout() {
           </Reveal>
         </section>
 
-        <Reveal as="section" className="space-y-8 px-6 py-12">
-          <div className="inline-block border-l-4 border-primary pl-4">
-            <h2 className="font-display text-2xl font-bold uppercase tracking-widest text-primary/80">
+        <Reveal as="section" className="space-y-4 px-4 py-6">
+          <div className="inline-block border-l-4 border-primary pl-3">
+            <h2 className="font-display text-lg font-bold uppercase tracking-widest text-primary/80">
               Our Mission
             </h2>
           </div>
-          <p className="text-lg leading-relaxed text-slate-600 dark:text-slate-300">
+          <p className="text-sm leading-relaxed text-slate-600 dark:text-slate-300">
             To cultivate a global community where creativity knows no bounds. We
             bridge the gap between imagination and publication, providing tools
             that turn aspiring writers into celebrated authors.
           </p>
-          <div className="overflow-hidden rounded-xl shadow-2xl">
+          <div className="overflow-hidden rounded-lg shadow-2xl">
             <img
               alt="Atmospheric stack of old vintage books"
-              className="h-48 w-full object-cover"
+              className="h-36 w-full object-cover"
               src="https://lh3.googleusercontent.com/aida-public/AB6AXuCOjhgcIx--cgeBZutGcmZKlxn5BMvDWwQadJyvGUb5AJJEskmIEK71hWAs4gMmNwZpcvoJB87POAx4-T4UzahX4eHTb4a2dXuP0_KBFb5kF1e_H12WTvh4h45Cm0rMOl1NOspBnRn50rhXQb_z_rg2ovhJNPehbtIA8djxNE972X-I5A67OIffQp-TKk0X87WJ_JeaIMfgKim_6JXrZKQgSAuE-oq4biFoO2WN3bl9FMc35PiP9lSVW2qh1F_h_Z2krZ2ZobXAmfE"
             />
           </div>
         </Reveal>
 
-        <Reveal as="section" className="space-y-6 bg-primary/5 px-6 py-8 dark:bg-primary/5">
-          <h2 className="mb-8 text-center font-display text-2xl font-bold">
+        <Reveal as="section" className="space-y-4 bg-primary/5 px-4 py-6 dark:bg-primary/5">
+          <h2 className="mb-4 text-center font-display text-xl font-bold">
             What We Offer
           </h2>
           {mobileOffers.map((offer) => (
             <motion.article
-              className="space-y-4 rounded-2xl border border-primary/10 bg-white p-6 shadow-sm dark:bg-white/5"
+              className="space-y-2 rounded-xl border border-primary/10 bg-white p-4 shadow-sm dark:bg-white/5"
               key={offer.title}
-              whileHover={{ y: -4 }}
+              whileHover={{ y: -2 }}
             >
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/20 text-primary">
-                <span className="material-symbols-outlined text-3xl">
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/20 text-primary">
+                <span className="material-symbols-outlined text-2xl">
                   {offer.icon}
                 </span>
               </div>
-              <h3 className="font-display text-xl font-bold">{offer.title}</h3>
-              <p className="text-slate-600 dark:text-slate-400">
+              <h3 className="font-display text-base font-bold">{offer.title}</h3>
+              <p className="text-sm text-slate-600 dark:text-slate-400">
                 {offer.description}
               </p>
-              <ul className="space-y-2 pt-2">
+              <ul className="space-y-1 pt-1">
                 {offer.points.map((point) => (
                   <li
-                    className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400"
+                    className="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400"
                     key={point}
                   >
-                    <span className="material-symbols-outlined text-lg text-primary">
+                    <span className="material-symbols-outlined text-base text-primary">
                       check_circle
                     </span>
                     {point}
@@ -602,9 +416,9 @@ function MobileAbout() {
           ))}
         </Reveal>
 
-        <Reveal as="section" className="space-y-8 px-6 py-16 text-center">
-          <h2 className="font-display text-3xl font-bold">Ready to begin?</h2>
-          <p className="mx-auto max-w-xs text-slate-600 dark:text-slate-400">
+        <Reveal as="section" className="space-y-4 px-4 py-8 text-center">
+          <h2 className="font-display text-xl font-bold">Ready to begin?</h2>
+          <p className="mx-auto max-w-[260px] text-sm text-slate-600 dark:text-slate-400">
             Join thousands of creators and readers today. Your next great
             adventure starts here.
           </p>
@@ -613,7 +427,7 @@ function MobileAbout() {
             whileTap={{ scale: 0.98 }}
           >
             <Link
-              className="block w-full rounded-xl bg-primary py-4 text-lg font-extrabold uppercase tracking-widest text-background-dark shadow-xl shadow-primary/30"
+              className="block w-full rounded-xl bg-primary py-3 text-sm font-extrabold uppercase tracking-widest text-background-dark shadow-xl shadow-primary/30"
               to="/auth"
             >
               Create Your Story
@@ -621,19 +435,7 @@ function MobileAbout() {
           </motion.div>
         </Reveal>
 
-        <footer className="space-y-4 border-t border-primary/10 px-6 py-12 text-center">
-          <span className="font-display font-bold text-primary">StoryArc</span>
-          <div className="flex justify-center gap-6 text-slate-500 dark:text-slate-400">
-            {["public", "share", "mail"].map((icon) => (
-              <span className="material-symbols-outlined" key={icon}>
-                {icon}
-              </span>
-            ))}
-          </div>
-          <p className="text-xs text-slate-500 dark:text-slate-500">
-            © 2024 StoryArc Inc. All rights reserved.
-          </p>
-        </footer>
+        <AppFooter className="py-8" />
       </main>
 
     </div>

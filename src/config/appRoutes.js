@@ -75,6 +75,7 @@ const MfaChooseMethodPage = lazy(() => import("../pages/MfaChooseMethodPage"));
 const MfaSetupPage = lazy(() => import("../pages/MfaSetupPage"));
 const MfaSuccessPage = lazy(() => import("../pages/MfaSuccessPage"));
 const MissionsPage = lazy(() => import("../pages/MissionsPage"));
+const NotificationsPage = lazy(() => import("../pages/NotificationsPage"));
 const NotificationSettingsPage = lazy(() =>
   import("../pages/NotificationSettingsPage"),
 );
@@ -119,6 +120,7 @@ const SubscriptionPage = lazy(() => import("../pages/SubscriptionPage"));
 const TermsPage = lazy(() => import("../pages/TermsPage"));
 const VerifyCodePage = lazy(() => import("../pages/VerifyCodePage"));
 const VolumeManagerPage = lazy(() => import("../pages/VolumeManagerPage"));
+const WriterBenefitsPage = lazy(() => import("../pages/WriterBenefitsPage"));
 
 export const workingProductSurface = Object.freeze({
   lockReason:
@@ -187,6 +189,7 @@ export const appRouteGroups = [
     routes: [
       { path: "/", component: HomePage, page: "HomePage" },
       { path: "/about", component: AboutPage, page: "AboutPage" },
+      { path: "/writer-benefits", component: WriterBenefitsPage, page: "WriterBenefitsPage" },
       { path: "/privacy", component: PrivacyPage, page: "PrivacyPage" },
       { path: "/terms", component: TermsPage, page: "TermsPage" },
     ],
@@ -297,6 +300,11 @@ export const appRouteGroups = [
       },
       {
         path: "/account/notifications",
+        component: NotificationsPage,
+        page: "NotificationsPage",
+      },
+      {
+        path: "/account/settings/notifications",
         component: NotificationSettingsPage,
         page: "NotificationSettingsPage",
       },

@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { AppDesktopSidebar, AppMobileTabBar } from "../components/AppShellNav";
+import NotificationBellLink from "../components/NotificationBellLink";
 import ReaderStateScreen from "../components/ReaderStateScreen";
 import Reveal from "../components/Reveal";
 import RouteLoadingScreen from "../components/RouteLoadingScreen";
@@ -42,9 +43,10 @@ function DesktopScheduledChapters({ onReschedule, story }) {
                   type="text"
                 />
               </label>
-              <button className="flex size-10 items-center justify-center rounded-lg bg-slate-100 text-slate-600 transition-colors hover:text-primary dark:bg-primary/5 dark:text-slate-400" type="button">
-                <span className="material-symbols-outlined">notifications</span>
-              </button>
+              <NotificationBellLink
+                className="flex size-10 items-center justify-center rounded-lg bg-slate-100 text-slate-600 transition-colors hover:text-primary dark:bg-primary/5 dark:text-slate-400"
+                iconClassName="text-inherit"
+              />
             </div>
           </header>
 

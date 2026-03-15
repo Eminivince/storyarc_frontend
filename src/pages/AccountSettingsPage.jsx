@@ -147,7 +147,7 @@ function SettingsSections({
                 Display Language
               </p>
               <p className={compact ? "text-xs text-slate-500" : "text-sm text-slate-500 dark:text-slate-400"}>
-                The language used across the StoryArc interface.
+                The language used across the TaleStead interface.
               </p>
             </div>
             <select
@@ -241,7 +241,7 @@ function DesktopAccountSettings({
                 <h1 className="mt-3 text-4xl font-black tracking-tight">Account Settings</h1>
                 <p className="mt-2 max-w-2xl text-base text-slate-500 dark:text-slate-400">
                   Update your personal information, connected identities, and reader
-                  preferences without leaving the main StoryArc shell.
+                  preferences without leaving the main TaleStead shell.
                 </p>
               </div>
             </Reveal>

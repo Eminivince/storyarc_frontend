@@ -1,8 +1,8 @@
 import { useEffect } from "react";
 
-const SITE_NAME = "StoryArc";
+const SITE_NAME = "TaleStead";
 const DEFAULT_DESCRIPTION =
-  "Read, write, and share serialized stories on StoryArc.";
+  "Read, write, and share serialized stories on TaleStead.";
 const DEFAULT_IMAGE = "/favicon.svg";
 
 function normalizeText(value) {

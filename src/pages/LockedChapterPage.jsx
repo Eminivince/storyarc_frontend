@@ -38,7 +38,7 @@ function getLockedChapterSeoDescription(story, chapter) {
   }
 
   return createSeoDescription(
-    `Unlock Chapter ${chapter.chapterNumber}: ${chapter.chapterTitle} from ${story.title} by ${chapter.authorName} to continue reading on StoryArc.`,
+    `Unlock Chapter ${chapter.chapterNumber}: ${chapter.chapterTitle} from ${story.title} by ${chapter.authorName} to continue reading on TaleStead.`,
     190,
   );
 }
@@ -224,7 +224,7 @@ function DesktopLockedChapter({
           <Link className="flex items-center gap-4 text-primary" to="/dashboard">
             <span className="material-symbols-outlined text-3xl">auto_stories</span>
             <h2 className="text-lg font-bold tracking-tight text-slate-100">
-              StoryArc
+              TaleStead
             </h2>
           </Link>
 
@@ -419,7 +419,7 @@ function DesktopLockedChapter({
 
         <footer className="border-t border-primary/10 bg-background-dark px-10 py-6 text-center">
           <p className="text-sm text-slate-500">
-            © 2024 StoryArc Chronicles. All rights reserved.
+            © 2024 TaleStead Chronicles. All rights reserved.
           </p>
         </footer>
       </div>

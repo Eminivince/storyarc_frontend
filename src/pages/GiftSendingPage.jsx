@@ -249,7 +249,7 @@ function DesktopGiftSending({
             Send Gift
           </button>
           <p className="mt-3 text-center text-xs text-slate-500 dark:text-slate-400">
-            Reader gifts are a direct support signal for creators on StoryArc.
+            Reader gifts are a direct support signal for creators on TaleStead.
           </p>
         </Reveal>
       </main>
@@ -422,7 +422,7 @@ export default function GiftSendingPage() {
     authorImage: null,
     authorName: storyQuery.data?.story?.authorName ?? "Creator",
     storySlug: storyQuery.data?.story?.slug ?? storySlug ?? "",
-    storyTitle: storyQuery.data?.story?.title ?? "StoryArc Story",
+    storyTitle: storyQuery.data?.story?.title ?? "TaleStead Story",
   };
   const selectedGift =
     giftCatalog.find((gift) => gift.id === selectedGiftId) ?? null;

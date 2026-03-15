@@ -433,7 +433,7 @@ export function ChapterCommentsSection({ compact = false, story, chapter, theme 
       <div className="mb-4 flex items-start gap-3">
         <UserAvatar
           className={compact ? "mt-1 size-9 rounded-full" : "mt-1 size-10 rounded-full"}
-          name={user?.displayName ?? "StoryArc Reader"}
+          name={user?.displayName ?? "TaleStead Reader"}
           src={user?.avatarUrl}
         />
         <div className="min-w-0 flex-1">

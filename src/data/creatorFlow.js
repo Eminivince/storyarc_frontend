@@ -110,7 +110,7 @@ export const creatorExperienceLevels = [
 export const creatorContractTypeOptions = [
   {
     description:
-      "StoryArc gets platform exclusivity for contracted titles in exchange for the higher standard revenue share.",
+      "TaleStead gets platform exclusivity for contracted titles in exchange for the higher standard revenue share.",
     label: "Exclusive",
     value: "EXCLUSIVE",
   },
@@ -137,12 +137,12 @@ export const defaultCreatorContractTerms = {
 
 export const initialCreatorApplication = {
   fullName: "Alex Thorne",
-  email: "alex@storyarc.world",
+  email: "alex@talestead.world",
   primaryGenre: "High Fantasy & Magic",
   experience: "Aspiring Pro",
-  portfolioUrl: "https://storyarc.world/alex",
+  portfolioUrl: "https://talestead.world/alex",
   motivation:
-    "I want to join StoryArc because I’m building a premium long-form fantasy saga and I want an audience that values deep lore, consistent updates, and community-driven momentum. I’m looking for a platform that treats authors like long-term partners and gives me the tools to grow sustainably.",
+    "I want to join TaleStead because I’m building a premium long-form fantasy saga and I want an audience that values deep lore, consistent updates, and community-driven momentum. I’m looking for a platform that treats authors like long-term partners and gives me the tools to grow sustainably.",
   requestedContractType: "",
   wantsContract: false,
 };

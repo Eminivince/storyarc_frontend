@@ -92,7 +92,7 @@ function DesktopVerifyCode({
       <header className="flex items-center justify-between border-b border-primary/10 bg-background-light px-6 py-4 dark:bg-background-dark lg:px-20">
         <div className="flex items-center gap-2 text-primary">
           <span className="material-symbols-outlined text-3xl">layers</span>
-          <h2 className="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100">StoryArc</h2>
+          <h2 className="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100">TaleStead</h2>
         </div>
         <div className="flex items-center gap-4">
           <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border-2 border-primary/30 bg-primary/10">
@@ -175,7 +175,7 @@ function DesktopVerifyCode({
       </main>
 
       <footer className="p-6 text-center text-xs text-slate-500">
-        © 2024 StoryArc Inc. All rights reserved. Premium content delivery for modern storytellers.
+        © 2024 TaleStead Inc. All rights reserved. Premium content delivery for modern storytellers.
       </footer>
     </div>
   );
@@ -344,7 +344,7 @@ export default function VerifyCodePage() {
         clearPendingVerification();
         clearPendingPasswordReset();
 
-        showToast(`Welcome to StoryArc, ${response.user.displayName}.`, {
+        showToast(`Welcome to TaleStead, ${response.user.displayName}.`, {
           title: "Account verified",
         });
         navigate(resolvePostLoginPath(response.user), { replace: true });

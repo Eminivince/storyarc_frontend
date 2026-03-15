@@ -412,6 +412,10 @@ function getActiveKey(mode, pathname) {
     return "rankings";
   }
 
+  if (pathname === followingHref || pathname.startsWith(`${followingHref}/`)) {
+    return "following";
+  }
+
   if (pathname === readingListsHref || pathname.startsWith(`${readingListsHref}/`)) {
     return "reading-lists";
   }
@@ -534,7 +538,7 @@ export function AppDesktopSidebar({
   }
 
   const activeKey = getActiveKey(mode, pathname);
-  const resolvedMemberName = memberName ?? user?.displayName ?? "StoryArc Reader";
+  const resolvedMemberName = memberName ?? user?.displayName ?? "TaleStead Reader";
   const roleLabel =
     memberLabel ??
     (user?.role === "ADMIN"
@@ -557,10 +561,21 @@ export function AppDesktopSidebar({
     navigate("/auth", { replace: true });
   }
 
+  const logoHref = config.homeHref ?? "/dashboard";
+
   return (
     <aside className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col border-r border-primary/10 bg-background-light dark:bg-background-dark lg:flex">
-
-      <nav className="mt-4 flex-1 space-y-2 px-4">
+      <div className="shrink-0 px-4 pt-4 pb-2">
+        <Link className="flex items-center gap-3 text-primary" to={logoHref}>
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary text-background-dark">
+            <span className="material-symbols-outlined text-xl">auto_stories</span>
+          </div>
+          <span className="text-lg font-bold tracking-tight text-slate-900 dark:text-slate-100">
+            TaleStead
+          </span>
+        </Link>
+      </div>
+      <nav className="mt-2 flex-1 space-y-2 px-4">
         {config.primary.map((item) => (
           <DesktopNavLink
             active={activeKey === item.id}

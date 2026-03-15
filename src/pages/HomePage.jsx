@@ -1,5 +1,8 @@
+import { useState, useRef, useCallback } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import AppFooter from "../components/AppFooter";
+import PublicNav from "../components/PublicNav";
 import Reveal from "../components/Reveal";
 import LoadingSpinner from "../components/LoadingSpinner";
 import PageLoadingSpinner from "../components/PageLoadingSpinner";
@@ -53,14 +56,18 @@ function getHomeErrorMessage(error) {
     return "The public story shelves are empty right now. Publish stories in the backend to populate the homepage.";
   }
 
-  return error?.message || "We could not load the live homepage catalog right now.";
+  return (
+    error?.message || "We could not load the live homepage catalog right now."
+  );
 }
 
-function LiveCatalogNotice({ message }) {
+function LiveCatalogNotice({ compact, message }) {
   return (
-    <div className="rounded-2xl border border-primary/10 bg-primary/5 p-6 text-center">
-      <h4 className="text-lg font-bold">Live catalog unavailable</h4>
-      <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">{message}</p>
+    <div className={`border border-primary/10 bg-primary/5 text-center ${compact ? "rounded-xl p-3" : "rounded-2xl p-6"}`}>
+      <h4 className={compact ? "text-sm font-bold" : "text-lg font-bold"}>Live catalog unavailable</h4>
+      <p className={`text-slate-500 dark:text-slate-400 ${compact ? "mt-1 text-xs" : "mt-2 text-sm"}`}>
+        {message}
+      </p>
     </div>
   );
 }
@@ -79,79 +86,9 @@ function DesktopHome({
   return (
     <div className="hidden bg-background-light text-slate-900 dark:bg-background-dark dark:text-slate-100 md:block">
       <div className="relative flex min-h-screen w-full flex-col overflow-x-hidden">
-        <header className="sticky top-0 z-50 w-full border-b border-primary/10 bg-background-light/80 px-6 py-3 backdrop-blur-md dark:bg-background-dark/80 md:px-10">
-          <div className="mx-auto flex max-w-7xl items-center justify-between gap-8">
-            <div className="flex items-center gap-10">
-              <Link className="flex items-center gap-2 text-primary" to="/">
-                <span className="material-symbols-outlined text-3xl font-bold">
-                  auto_stories
-                </span>
-                <span className="text-xl font-extrabold tracking-tight text-slate-900 dark:text-slate-100">
-                  StoryArc
-                </span>
-              </Link>
-              <nav className="hidden items-center gap-8 md:flex">
-                <a
-                  className="text-sm font-semibold transition-colors hover:text-primary"
-                  href="#"
-                >
-                  Browse
-                </a>
-                <a
-                  className="text-sm font-semibold transition-colors hover:text-primary"
-                  href="#"
-                >
-                  Community
-                </a>
-                <Link
-                  className="text-sm font-semibold transition-colors hover:text-primary"
-                  to="/about"
-                >
-                  About
-                </Link>
-                <Link
-                  className="text-sm font-semibold transition-colors hover:text-primary"
-                  to="/creator"
-                >
-                  Write
-                </Link>
-              </nav>
-            </div>
-            <div className="flex flex-1 items-center justify-end gap-4">
-              <label className="relative hidden w-full max-w-xs items-center lg:flex">
-                <span className="material-symbols-outlined absolute left-3 text-lg text-slate-500">
-                  search
-                </span>
-                <input
-                  className="w-full rounded-lg border-none bg-slate-200/50 py-2 pl-10 pr-4 text-base placeholder:text-slate-500 focus:ring-2 focus:ring-primary/50 dark:bg-primary/10"
-                  placeholder="Search stories, authors..."
-                  type="text"
-                />
-              </label>
-              <motion.div
-                className="hidden sm:flex"
-                transition={{ duration: 0.2 }}
-                whileHover={{ scale: 1.04 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                <Link
-                  className="flex h-10 items-center justify-center rounded-lg bg-primary px-6 text-sm font-bold text-background-dark"
-                  to="/auth"
-                >
-                  Log In / Sign Up
-                </Link>
-              </motion.div>
-              <button
-                className="text-slate-900 dark:text-slate-100 md:hidden"
-                type="button"
-              >
-                <span className="material-symbols-outlined">menu</span>
-              </button>
-            </div>
-          </div>
-        </header>
+        <PublicNav showSearch />
 
-        <main className="flex-grow">
+        <main className="flex-grow mt-16">
           <section className="relative w-full px-4 py-10 md:px-10 md:py-20">
             <div className="mx-auto max-w-7xl">
               <div className="relative flex min-h-[500px] flex-col items-center justify-center overflow-hidden rounded-3xl bg-slate-900 p-6 text-center dark:bg-primary/5 md:min-h-[600px] md:p-12">
@@ -186,12 +123,10 @@ function DesktopHome({
                         scale: 1.02,
                         boxShadow: "0 0 30px rgba(244,192,37,0.4)",
                       }}
-                      whileTap={{ scale: 0.98 }}
-                    >
+                      whileTap={{ scale: 0.98 }}>
                       <Link
                         className="flex h-14 min-w-[180px] items-center justify-center gap-2 rounded-xl bg-primary px-8 text-lg font-bold text-background-dark"
-                        to="/auth"
-                      >
+                        to="/auth">
                         <span className="material-symbols-outlined">
                           auto_stories
                         </span>
@@ -201,14 +136,17 @@ function DesktopHome({
                     <motion.div
                       className="flex"
                       transition={{ duration: 0.22 }}
-                      whileHover={{ scale: 1.02, backgroundColor: "rgba(255,255,255,0.18)" }}
-                      whileTap={{ scale: 0.98 }}
-                    >
+                      whileHover={{
+                        scale: 1.02,
+                        backgroundColor: "rgba(255,255,255,0.18)",
+                      }}
+                      whileTap={{ scale: 0.98 }}>
                       <Link
                         className="flex h-14 min-w-[180px] items-center justify-center gap-2 rounded-xl border border-white/20 bg-white/10 px-8 text-lg font-bold text-white backdrop-blur-sm"
-                        to="/creator"
-                      >
-                        <span className="material-symbols-outlined">edit_note</span>
+                        to="/writer-benefits">
+                        <span className="material-symbols-outlined">
+                          edit_note
+                        </span>
                         Start Writing
                       </Link>
                     </motion.div>
@@ -234,8 +172,7 @@ function DesktopHome({
                 </div>
                 <Link
                   className="flex items-center gap-1 font-bold text-primary hover:underline"
-                  to={trendingHref}
-                >
+                  to={trendingHref}>
                   See all{" "}
                   <span className="material-symbols-outlined text-sm">
                     arrow_forward
@@ -254,13 +191,11 @@ function DesktopHome({
                     <Link
                       className="block"
                       key={story.slug}
-                      to={buildStoryHref(story.slug)}
-                    >
+                      to={buildStoryHref(story.slug)}>
                       <motion.article
                         className="group w-64 flex-shrink-0 cursor-pointer snap-start"
                         transition={{ duration: 0.24 }}
-                        whileHover={{ y: -8 }}
-                      >
+                        whileHover={{ y: -8 }}>
                         <div className="relative mb-4 aspect-[2/3] overflow-hidden rounded-2xl shadow-lg">
                           <img
                             alt={story.title}
@@ -307,8 +242,7 @@ function DesktopHome({
                     className="rounded-2xl border border-primary/10 bg-background-light p-8 shadow-xl dark:bg-background-dark"
                     key={feature.title}
                     transition={{ duration: 0.25, delay: index * 0.04 }}
-                    whileHover={{ y: -6, borderColor: "rgba(244,192,37,0.4)" }}
-                  >
+                    whileHover={{ y: -6, borderColor: "rgba(244,192,37,0.4)" }}>
                     <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-xl bg-primary/10 text-primary">
                       <span className="material-symbols-outlined text-3xl">
                         {feature.icon}
@@ -348,7 +282,7 @@ function DesktopHome({
                     <span className="text-primary">Creative Empire</span>
                   </h2>
                   <p className="mb-10 text-lg leading-relaxed text-slate-500 dark:text-slate-400">
-                    StoryArc isn't just a platform; it's a launchpad for your
+                    TaleStead isn't just a platform; it's a launchpad for your
                     career. We provide the tools you need to write, grow, and
                     monetize your passion.
                   </p>
@@ -360,7 +294,9 @@ function DesktopHome({
                             check_circle
                           </span>
                           <div>
-                            <h4 className="text-lg font-bold">{benefit.title}</h4>
+                            <h4 className="text-lg font-bold">
+                              {benefit.title}
+                            </h4>
                             <p className="text-slate-500 dark:text-slate-400">
                               {benefit.description}
                             </p>
@@ -371,19 +307,24 @@ function DesktopHome({
                   ) : (
                     <LiveCatalogNotice message="Creator benefits will appear here once the landing content feed is available." />
                   )}
-                  <motion.div
-                    className="mt-12 flex"
-                    transition={{ duration: 0.2 }}
-                    whileHover={{ scale: 1.04 }}
-                    whileTap={{ scale: 0.98 }}
-                  >
+                  <div className="mt-12 flex flex-wrap items-center gap-4">
+                    <motion.div
+                      className="flex"
+                      transition={{ duration: 0.2 }}
+                      whileHover={{ scale: 1.04 }}
+                      whileTap={{ scale: 0.98 }}>
+                      <Link
+                        className="flex h-14 items-center rounded-xl bg-primary px-10 text-lg font-bold text-background-dark"
+                        to="/auth">
+                        Open Your Studio
+                      </Link>
+                    </motion.div>
                     <Link
-                      className="flex h-14 items-center rounded-xl bg-primary px-10 text-lg font-bold text-background-dark"
-                      to="/auth"
-                    >
-                      Open Your Studio
+                      className="text-primary font-semibold transition-colors hover:underline"
+                      to="/writer-benefits">
+                      View writer benefits →
                     </Link>
-                  </motion.div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -436,132 +377,80 @@ function DesktopHome({
           </Reveal>
         </main>
 
-        <footer className="border-t border-primary/10 bg-slate-950 px-4 pb-10 pt-20 dark:bg-background-dark md:px-10">
-          <div className="mx-auto max-w-7xl">
-            <div className="mb-20 grid grid-cols-2 gap-12 md:grid-cols-4 lg:grid-cols-5">
-              <div className="col-span-2 lg:col-span-2">
-                <Link className="mb-6 flex items-center gap-2 text-primary" to="/">
-                  <span className="material-symbols-outlined text-3xl font-bold">
-                    auto_stories
-                  </span>
-                  <span className="text-2xl font-black tracking-tight text-white">
-                    StoryArc
-                  </span>
-                </Link>
-                <p className="mb-8 max-w-sm text-slate-400">
-                  Empowering the next generation of storytellers. Discover,
-                  read, and write original fiction across every genre
-                  imaginable.
-                </p>
-                <div className="flex gap-4">
-                  {["public", "alternate_email", "video_library"].map((icon) => (
-                    <a
-                      className="flex h-10 w-10 items-center justify-center rounded-full bg-white/5 text-slate-300 transition-all hover:bg-primary hover:text-background-dark"
-                      href="#"
-                      key={icon}
-                    >
-                      <span className="material-symbols-outlined">{icon}</span>
-                    </a>
-                  ))}
-                </div>
-              </div>
-              <div>
-                <h4 className="mb-6 font-bold text-white">Platform</h4>
-                <ul className="space-y-4 text-slate-400">
-                  <li>
-                    <a className="transition-colors hover:text-primary" href="#">
-                      Browse Library
-                    </a>
-                  </li>
-                  <li>
-                    <a className="transition-colors hover:text-primary" href="#">
-                      Premium Reading
-                    </a>
-                  </li>
-                  <li>
-                    <a className="transition-colors hover:text-primary" href="#">
-                      Mobile App
-                    </a>
-                  </li>
-                  <li>
-                    <a className="transition-colors hover:text-primary" href="#">
-                      Gift Cards
-                    </a>
-                  </li>
-                </ul>
-              </div>
-              <div>
-                <h4 className="mb-6 font-bold text-white">Creators</h4>
-                <ul className="space-y-4 text-slate-400">
-                  <li>
-                    <a className="transition-colors hover:text-primary" href="#">
-                      Creator Studio
-                    </a>
-                  </li>
-                  <li>
-                    <a className="transition-colors hover:text-primary" href="#">
-                      Monetization
-                    </a>
-                  </li>
-                  <li>
-                    <a className="transition-colors hover:text-primary" href="#">
-                      Contests
-                    </a>
-                  </li>
-                  <li>
-                    <a className="transition-colors hover:text-primary" href="#">
-                      Success Stories
-                    </a>
-                  </li>
-                </ul>
-              </div>
-              <div>
-                <h4 className="mb-6 font-bold text-white">Support</h4>
-                <ul className="space-y-4 text-slate-400">
-                  <li>
-                    <a className="transition-colors hover:text-primary" href="#">
-                      Help Center
-                    </a>
-                  </li>
-                  <li>
-                    <a className="transition-colors hover:text-primary" href="#">
-                      Community Rules
-                    </a>
-                  </li>
-                  <li>
-                    <Link className="transition-colors hover:text-primary" to="/about">
-                      About StoryArc
-                    </Link>
-                  </li>
-                  <li>
-                    <Link className="transition-colors hover:text-primary" to="/terms">
-                      Terms of Service
-                    </Link>
-                  </li>
-                </ul>
-              </div>
-            </div>
-            <div className="flex flex-col items-center justify-between gap-6 border-t border-white/5 pt-10 md:flex-row">
-              <p className="text-sm text-slate-500">
-                © 2024 StoryArc Inc. All rights reserved.
-              </p>
-              <div className="flex items-center gap-6">
-                <img
-                  alt="Download on App Store"
-                  className="h-10"
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuCUDLAs9GYbfSGtG6s2RmWQ9Cs_lVVehRI4Er6Yh5Ssq8ESVtNPj4sk-EIiOBZLplwx8ynogbwOmYPERTxppjunUCJ5dKaUlDNeW0z0LJijMIMzrkAKH4JxZYL5yf8vs5Csf6m6pEWeVaoRbV8P64bp4yPj5v6hcJKhEXX9SIKxlmO7qZ13Pf_yAmqrC47Mx-GIfunzu34YghOyAYBOb-epL5tQxvQ0ANUjzKSe4nlxqtLgWXjnA8XLsNLlMLHsNwXUjNSTzo1XzkQ"
-                />
-                <img
-                  alt="Get it on Google Play"
-                  className="h-10"
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuCauHA_BS6MTA_xucMMgcff3nYWKtOZrbOXoa3M8woBKk6gtuii2IeyyT9xudU9twxHW1YErMBCU9bxGL1E825skwQle-xpSsQ26ZFN_4vMH_T5keu4Ekdf3Q064DZdjuxvbggQVxMxehzPr_ICVF2kHhkOG6KRsDs4WfCrm3BXHxiPrspy15w2na_SXteoHDBWraqPPJs75YoSrAECy8GHGJI6sb98-SMa2A0mRByqLvdP2d2xs6XjwBGyH_gf-F8GSBOMwo6GYEw"
-                />
-              </div>
-            </div>
-          </div>
-        </footer>
+        <AppFooter variant="full" />
       </div>
     </div>
+  );
+}
+
+function ReaderParadiseCarousel() {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const scrollRef = useRef(null);
+
+  const handleScroll = useCallback(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const pageSize = el.scrollWidth / mobileFeatures.length;
+    const index = Math.round(el.scrollLeft / pageSize);
+    setActiveIndex(Math.max(0, Math.min(index, mobileFeatures.length - 1)));
+  }, []);
+
+  const goToSlide = useCallback((index) => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const pageSize = el.scrollWidth / mobileFeatures.length;
+    el.scrollTo({ left: index * pageSize, behavior: "smooth" });
+  }, []);
+
+  return (
+    <Reveal as="section" className="space-y-4 px-3 py-6">
+      <div className="flex flex-col items-center space-y-1.5 text-center">
+        <h3 className="text-lg font-bold">A Reader's Paradise</h3>
+        <div className="h-0.5 w-8 rounded-full bg-primary" />
+      </div>
+      <div
+        ref={scrollRef}
+        className="no-scrollbar flex snap-x snap-mandatory gap-3 overflow-x-auto overflow-y-visible pb-2"
+        style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+        onScroll={handleScroll}
+      >
+        {mobileFeatures.map((feature, index) => (
+          <motion.article
+            className="relative flex w-[85vw] min-w-[85vw] flex-shrink-0 snap-center flex-col gap-2 rounded-xl border border-slate-100/10 bg-gradient-to-br from-slate-100/5 to-transparent p-4"
+            key={feature.title}
+            initial={{ opacity: 0.8, y: 8 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.5 }}
+            transition={{ type: "spring", stiffness: 400, damping: 30, delay: index * 0.05 }}
+          >
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/20 text-primary">
+              <span className="material-symbols-outlined text-2xl">{feature.icon}</span>
+            </div>
+            <h4 className="text-sm font-bold text-primary">{feature.title}</h4>
+            <p className="text-xs leading-relaxed text-slate-400">
+              {feature.description}
+            </p>
+          </motion.article>
+        ))}
+      </div>
+      <div className="flex justify-center gap-1.5">
+        {mobileFeatures.map((_, i) => (
+          <motion.button
+            key={i}
+            type="button"
+            aria-label={`Go to slide ${i + 1}`}
+            className={`h-1.5 rounded-full transition-all duration-300 ${
+              i === activeIndex
+                ? "w-6 bg-primary"
+                : "w-1.5 bg-slate-300 dark:bg-slate-600"
+            }`}
+            onClick={() => goToSlide(i)}
+            whileTap={{ scale: 0.9 }}
+            transition={{ type: "spring", stiffness: 400, damping: 25 }}
+          />
+        ))}
+      </div>
+    </Reveal>
   );
 }
 
@@ -577,29 +466,9 @@ function MobileHome({
 
   return (
     <div className="bg-background-light font-display text-slate-900 transition-colors duration-300 dark:bg-background-dark dark:text-slate-100 md:hidden">
-      <header className="sticky top-0 z-50 flex items-center justify-between border-b border-primary/10 bg-background-light/80 px-4 py-3 backdrop-blur-md dark:bg-background-dark/80">
-        <Link className="flex items-center gap-2" to="/">
-          <span className="material-symbols-outlined text-3xl text-primary">
-            menu_book
-          </span>
-          <span className="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
-            Story<span className="text-primary">Arc</span>
-          </span>
-        </Link>
-        <div className="flex items-center gap-3">
-          <button className="rounded-full p-2 hover:bg-primary/10" type="button">
-            <span className="material-symbols-outlined">search</span>
-          </button>
-          <button
-            className="rounded-full bg-primary p-2 text-background-dark"
-            type="button"
-          >
-            <span className="material-symbols-outlined">person</span>
-          </button>
-        </div>
-      </header>
+      <PublicNav compact />
 
-      <main className="pb-12">
+      <main className="pb-12 mt-12">
         <section className="relative overflow-hidden px-4 pb-12 pt-6">
           <div className="absolute inset-0 z-0">
             <div className="absolute inset-0 z-10 bg-gradient-to-b from-transparent via-background-dark/60 to-background-dark" />
@@ -609,235 +478,133 @@ function MobileHome({
               src="https://lh3.googleusercontent.com/aida-public/AB6AXuDyG3r-EEqU5bPZ3D4VuFlRhBHyo0Zlzsul6dXbaf0fxAUbYZO2h-ZmSJ0HF-fjDs8AYWBrxfUkZx9o2k4kG1ZR4u8-jW1rPgkHf68KLW_vpAD-qP1RimgElRNH5ZcJ0Kah-KQl2RmgiWqVf6A1Ox5nHW4qvkXTZVz7iER6ljXaVu39hbBmufRdaxnG47EAS70l86R9zI2cu4ciBYoNLIZWhy0Qjbe6Vb-bzEa6-It1y3qmmA6ys-o4ayuGHAnhNpYsYMwXKOz2xaY"
             />
           </div>
-          <Reveal className="relative z-20 mt-32 flex flex-col items-center space-y-6 text-center">
-            <div className="inline-flex items-center rounded-full border border-primary/30 bg-primary/20 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-primary">
+          <Reveal className="relative z-20 mt-24 flex flex-col items-center space-y-3 text-center">
+            <div className="inline-flex items-center rounded-full border border-primary/30 bg-primary/20 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-primary">
               The Future of Narrative
             </div>
-            <h2 className="text-4xl font-extrabold leading-tight tracking-tight">
+            <h2 className="text-3xl font-extrabold leading-tight tracking-tight">
               <>
                 Enter Your Next <br />
                 <span className="italic text-primary">Great Story</span>
               </>
             </h2>
-            <p className="mx-auto max-w-xs text-sm text-slate-400">
-              Immerse yourself in worlds crafted by AI intelligence and
-              boundless human imagination.
+            <p className="mx-auto max-w-[260px] text-xs leading-relaxed text-slate-400">
+              Immerse yourself in worlds crafted by AI and boundless human imagination.
             </p>
-            <div className="flex w-full flex-col gap-3 pt-4">
+            <div className="flex w-full flex-row gap-2 pt-2">
               <motion.div
+                className="flex-1"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
               >
                 <Link
-                  className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-4 font-bold text-background-dark shadow-lg shadow-primary/20"
+                  className="flex w-full items-center justify-center gap-1.5 rounded-lg bg-primary py-3 text-sm font-bold text-background-dark shadow-lg shadow-primary/20"
                   to="/auth"
                 >
-                  <span className="material-symbols-outlined">auto_stories</span>
-                  Start Reading
+                  <span className="material-symbols-outlined text-lg">auto_stories</span>
+                  Read
                 </Link>
               </motion.div>
               <motion.div
+                className="flex-1"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
               >
                 <Link
-                  className="flex w-full items-center justify-center gap-2 rounded-xl border border-slate-100/20 bg-slate-100/10 py-4 font-bold text-slate-100 backdrop-blur-sm"
-                  to="/creator"
+                  className="flex w-full items-center justify-center gap-1.5 rounded-lg border border-slate-100/20 bg-slate-100/10 py-3 text-sm font-bold text-slate-100 backdrop-blur-sm"
+                  to="/writer-benefits"
                 >
-                  <span className="material-symbols-outlined">edit_note</span>
-                  Start Writing
+                  <span className="material-symbols-outlined text-lg">edit_note</span>
+                  Write
                 </Link>
               </motion.div>
             </div>
           </Reveal>
         </section>
 
-        <Reveal as="section" className="py-8">
-          <div className="mb-6 flex items-center justify-between px-4">
-            <h3 className="text-xl font-bold">Trending Stories</h3>
+        <Reveal as="section" className="py-4">
+          <div className="mb-3 flex items-center justify-between px-3">
+            <h3 className="text-base font-bold">Trending</h3>
             <Link
-              className="flex items-center gap-1 text-sm font-medium text-primary"
+              className="flex items-center gap-0.5 text-xs font-medium text-primary"
               to={trendingHref}
             >
-              See All{" "}
-              <span className="material-symbols-outlined text-sm">
-                chevron_right
-              </span>
+              See All
+              <span className="material-symbols-outlined text-xs">chevron_right</span>
             </Link>
           </div>
           {isHomeLoading ? (
-            <div className="flex items-center justify-center py-12">
-              <LoadingSpinner size={48} />
+            <div className="flex items-center justify-center py-8">
+              <LoadingSpinner size={36} />
             </div>
           ) : homeError ? (
-            <div className="px-4">
-              <LiveCatalogNotice message={getHomeErrorMessage(homeError)} />
+            <div className="px-3">
+              <LiveCatalogNotice compact message={getHomeErrorMessage(homeError)} />
             </div>
           ) : trendingStories.length ? (
-            <div className="no-scrollbar flex gap-4 overflow-x-auto px-4">
+            <div className="no-scrollbar flex gap-3 overflow-x-auto px-3">
               {trendingStories.slice(0, 3).map((story) => (
-                <Link className="block w-44 flex-none" key={story.slug} to={buildStoryHref(story.slug)}>
-                  <motion.article className="group" whileHover={{ y: -6 }}>
-                    <div className="relative mb-3 aspect-[3/4] overflow-hidden rounded-xl border border-slate-100/10">
+                <Link className="block w-36 flex-none" key={story.slug} to={buildStoryHref(story.slug)}>
+                  <motion.article className="group" whileHover={{ y: -4 }}>
+                    <div className="relative mb-2 aspect-[3/4] overflow-hidden rounded-lg border border-slate-100/10">
                       <img
                         alt={story.title}
                         className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                         src={story.coverImage}
                       />
-                      <div className="absolute right-2 top-2 flex items-center gap-1 rounded-md bg-black/60 px-2 py-1 text-[10px] font-bold text-primary backdrop-blur-md">
-                        <span className="material-symbols-outlined fill-1 text-[12px]">
-                          star
-                        </span>
+                      <div className="absolute right-1.5 top-1.5 flex items-center gap-0.5 rounded bg-black/60 px-1.5 py-0.5 text-[9px] font-bold text-primary backdrop-blur-md">
+                        <span className="material-symbols-outlined fill-1 text-[10px]">star</span>
                         {story.averageRating.toFixed(1)}
                       </div>
                     </div>
-                    <h4 className="line-clamp-1 text-sm font-bold">{story.title}</h4>
-                    <p className="text-xs text-slate-500">
-                      {story.genreLabel} • {story.readsLabel} reads
-                    </p>
+                    <h4 className="line-clamp-1 text-xs font-bold">{story.title}</h4>
+                    <p className="text-[10px] text-slate-500">{story.genreLabel}</p>
                   </motion.article>
                 </Link>
               ))}
             </div>
           ) : (
-            <div className="px-4">
-              <LiveCatalogNotice message="Publish stories to populate the live trending shelf." />
+            <div className="px-3">
+              <LiveCatalogNotice compact message="Publish stories to populate the live trending shelf." />
             </div>
           )}
         </Reveal>
 
-        <Reveal as="section" className="space-y-10 px-4 py-12">
-          <div className="flex flex-col items-center space-y-3 text-center">
-            <h3 className="text-2xl font-bold">A Reader's Paradise</h3>
-            <div className="h-1 w-12 rounded-full bg-primary" />
-          </div>
-          <div className="grid gap-6">
-            {mobileFeatures.map((feature) => (
-              <motion.article
-                className="flex flex-col gap-4 rounded-2xl border border-slate-100/10 bg-gradient-to-br from-slate-100/5 to-transparent p-6"
-                key={feature.title}
-                whileHover={{ y: -4, borderColor: "rgba(244,192,37,0.25)" }}
-              >
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/20 text-primary">
-                  <span className="material-symbols-outlined text-3xl">
-                    {feature.icon}
-                  </span>
-                </div>
-                <h4 className="text-lg font-bold text-primary">
-                  {feature.title}
-                </h4>
-                <p className="text-sm leading-relaxed text-slate-400">
-                  {feature.description}
-                </p>
-              </motion.article>
-            ))}
-          </div>
-        </Reveal>
+        <ReaderParadiseCarousel />
 
-        <Reveal as="section" className="mx-4 my-8 overflow-hidden rounded-3xl bg-primary p-8">
+        <Reveal as="section" className="mx-3 my-4 overflow-hidden rounded-2xl bg-primary p-5">
           <div className="absolute" />
-          <div className="relative z-10 space-y-6">
-            <h3 className="text-3xl font-black leading-tight text-background-dark">
-              Unleash Your <br />
-              Creative Empire
+          <div className="relative z-10 space-y-4">
+            <h3 className="text-xl font-black leading-tight text-background-dark">
+              Unleash Your Creative Empire
             </h3>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-3">
               <div className="flex flex-col">
-                <span className="text-2xl font-bold text-background-dark">
-                  85%
-                </span>
-                <span className="text-xs font-medium uppercase text-background-dark/70">
+                <span className="text-xl font-bold text-background-dark">85%</span>
+                <span className="text-[10px] font-medium uppercase text-background-dark/70">
                   Rev Share
                 </span>
               </div>
               <div className="flex flex-col">
-                <span className="text-2xl font-bold text-background-dark">
-                  1.2M+
-                </span>
-                <span className="text-xs font-medium uppercase text-background-dark/70">
+                <span className="text-xl font-bold text-background-dark">1.2M+</span>
+                <span className="text-[10px] font-medium uppercase text-background-dark/70">
                   Authors
                 </span>
               </div>
             </div>
-            <motion.div
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.98 }}
-            >
+            <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
               <Link
-                className="flex items-center gap-2 rounded-xl bg-background-dark px-6 py-3 font-bold text-primary"
+                className="flex items-center justify-center gap-1.5 rounded-lg bg-background-dark px-4 py-2.5 text-sm font-bold text-primary"
                 to="/auth"
               >
                 Open Your Studio
-                <span className="material-symbols-outlined">rocket_launch</span>
+                <span className="material-symbols-outlined text-base">rocket_launch</span>
               </Link>
             </motion.div>
           </div>
         </Reveal>
 
-        <footer className="mt-16 border-t border-slate-100/10 px-6 py-12">
-          <div className="mb-12 grid grid-cols-2 gap-8">
-            <div>
-              <div className="mb-1 text-2xl font-black text-primary">12M+</div>
-              <div className="text-xs font-semibold uppercase tracking-widest text-slate-500">
-                Global Reads
-              </div>
-            </div>
-            <div>
-              <div className="mb-1 text-2xl font-black text-primary">45k+</div>
-              <div className="text-xs font-semibold uppercase tracking-widest text-slate-500">
-                New Weekly
-              </div>
-            </div>
-          </div>
-          <div className="space-y-8">
-            <div className="flex flex-col gap-4">
-              <h5 className="text-sm font-bold uppercase tracking-widest text-slate-100">
-                Quick Links
-              </h5>
-              <ul className="space-y-3 text-sm text-slate-400">
-                <li>
-                  <a className="hover:text-primary" href="#">
-                    Discover Stories
-                  </a>
-                </li>
-                <li>
-                  <a className="hover:text-primary" href="#">
-                    Creator Hub
-                  </a>
-                </li>
-                <li>
-                  <a className="hover:text-primary" href="#">
-                    StoryArc Premium
-                  </a>
-                </li>
-                <li>
-                  <Link className="hover:text-primary" to="/about">
-                    About StoryArc
-                  </Link>
-                </li>
-              </ul>
-            </div>
-            <div className="flex flex-col gap-6">
-              <div className="flex gap-4">
-                {["public", "alternate_email", "chat"].map((icon) => (
-                  <a
-                    className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-100/5 text-slate-100 hover:bg-primary/20"
-                    href="#"
-                    key={icon}
-                  >
-                    <span className="material-symbols-outlined text-lg">
-                      {icon}
-                    </span>
-                  </a>
-                ))}
-              </div>
-              <p className="text-[10px] leading-relaxed text-slate-600">
-                © 2024 StoryArc Inc. All rights reserved. Crafted at the
-                intersection of magic and machine learning.
-              </p>
-            </div>
-          </div>
-        </footer>
+        <AppFooter className="mt-8" variant="full" />
       </main>
 
     </div>

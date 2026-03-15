@@ -107,7 +107,7 @@ function DesktopGenreSelection() {
                 auto_stories
               </span>
             </div>
-            <h2 className="text-lg font-bold tracking-[-0.015em]">StoryArc</h2>
+            <h2 className="text-lg font-bold tracking-[-0.015em]">TaleStead</h2>
           </div>
           <Link
             className="flex h-10 w-10 items-center justify-center rounded-lg bg-slate-200 text-slate-900 dark:bg-primary/10 dark:text-primary"

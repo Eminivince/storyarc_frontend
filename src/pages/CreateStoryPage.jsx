@@ -280,7 +280,7 @@ function DesktopCreateStory({
                       className="text-sm text-slate-600 dark:text-slate-400"
                       htmlFor="story-terms">
                       I confirm that I own the rights to this story and agree to
-                      StoryArc&apos;s{" "}
+                      TaleStead&apos;s{" "}
                       <Link
                         className="text-primary hover:underline"
                         onClick={(event) => event.stopPropagation()}
@@ -334,7 +334,7 @@ function MobileCreateStory({
             </span>
           </Link>
           <h2 className="text-base font-bold tracking-tight text-primary">
-            StoryArc
+            TaleStead
           </h2>
         </div>
         <div className="flex size-9 items-center justify-center rounded-full bg-primary/10 text-primary">

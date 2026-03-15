@@ -33,7 +33,7 @@ const defaultProfile = {
   contentFiltering: true,
   discord: "",
   displayLanguage: "English (US)",
-  displayName: "StoryArc Reader",
+  displayName: "TaleStead Reader",
   email: "",
   location: "",
   privateLibrary: true,
@@ -118,6 +118,8 @@ export function AccountProvider({ children }) {
     queryKey: engagementQueryKey,
     queryFn: fetchEngagementOverview,
     enabled: Boolean(user),
+    refetchInterval: user ? 30_000 : false,
+    refetchIntervalInBackground: false,
     staleTime: 30_000,
   });
 

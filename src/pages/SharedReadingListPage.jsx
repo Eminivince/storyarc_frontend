@@ -77,7 +77,7 @@ export default function SharedReadingListPage() {
             Curated by {list.ownerDisplayName}
           </p>
           <p className="mt-4 max-w-3xl text-sm leading-relaxed text-slate-600 dark:text-slate-300 md:text-base">
-            {list.description || "A public StoryArc shelf shared with the community."}
+            {list.description || "A public TaleStead shelf shared with the community."}
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
             <div className="rounded-2xl border border-primary/15 bg-white px-4 py-3 dark:bg-background-dark">

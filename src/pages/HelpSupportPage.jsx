@@ -273,7 +273,7 @@ function DesktopHelp({
               <div className="flex flex-col gap-2 text-center md:text-left">
                 <h3 className="text-2xl font-bold">Still need help?</h3>
                 <p className="max-w-md text-slate-600 dark:text-slate-400">
-                  Open a live support request and the StoryArc team will follow
+                  Open a live support request and the TaleStead team will follow
                   up from your ticket inbox.
                 </p>
               </div>

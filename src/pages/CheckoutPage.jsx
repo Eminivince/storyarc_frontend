@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Link, Navigate, useLocation, useSearchParams } from "react-router-dom";
 import ReaderStateScreen from "../components/ReaderStateScreen";
 import Reveal from "../components/Reveal";
@@ -14,11 +13,26 @@ import {
   lockedChapterHref,
   pricingHref,
 } from "../data/monetization";
-const paymentOptions = [
-  { id: "card", label: "Card", icon: "credit_card" },
-  { id: "paypal", label: "PayPal", icon: "account_balance_wallet" },
-  { id: "apple", label: "Apple Pay", icon: "contactless" },
-];
+
+function getCheckoutProviderMeta(checkoutProvider) {
+  if (checkoutProvider === "cryptomus") {
+    return {
+      description:
+        "You will finish payment on Cryptomus, where you can pick your supported coin, wallet, and network securely.",
+      icon: "currency_bitcoin",
+      label: "Cryptomus",
+      note: "Wallet selection happens on the hosted checkout page.",
+    };
+  }
+
+  return {
+    description:
+      "You will finish payment on Paystack's hosted checkout page. TaleStead never collects your payment details directly.",
+    icon: "payments",
+    label: "Paystack",
+    note: "Payment details are handled on the provider page.",
+  };
+}
 
 function getOrderDetails({
   billing,
@@ -89,9 +103,8 @@ function DesktopCheckout({
   details,
   isBusy,
   onSubmit,
-  paymentMethod,
+  providerMeta,
   returnTo,
-  setPaymentMethod,
 }) {
   return (
     <div className="hidden min-h-screen bg-background-light font-display text-slate-900 dark:bg-background-dark dark:text-slate-100 md:block">
@@ -110,7 +123,7 @@ function DesktopCheckout({
               />
             </svg>
             <h2 className="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
-              StoryArc
+              TaleStead
             </h2>
           </Link>
 
@@ -206,94 +219,64 @@ function DesktopCheckout({
 
             <div className="lg:col-span-7">
               <Reveal className="rounded-xl border border-slate-200 bg-white p-8 shadow-sm dark:border-slate-800 dark:bg-background-dark/50">
-                <h3 className="mb-6 text-xl font-bold">Payment Method</h3>
+                <h3 className="mb-6 text-xl font-bold">Payment Gateway</h3>
 
-                <div className="mb-8 grid grid-cols-3 gap-3">
-                  {paymentOptions.map((option) => (
-                    <button
-                      className={`flex flex-col items-center justify-center gap-2 rounded-lg border-2 p-4 transition-all ${
-                        paymentMethod === option.id
-                          ? "border-primary bg-primary/10 text-primary"
-                          : "border-slate-200 hover:border-primary/50 dark:border-slate-800"
-                      }`}
-                      key={option.id}
-                      onClick={() => setPaymentMethod(option.id)}
-                      type="button"
-                    >
-                      <span className="material-symbols-outlined">{option.icon}</span>
-                      <span className="text-xs font-bold uppercase">
-                        {option.label}
+                <div className="mb-8 rounded-2xl border border-primary/20 bg-primary/5 p-5 dark:bg-primary/10">
+                  <div className="flex items-start gap-4">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/15 text-primary">
+                      <span className="material-symbols-outlined">
+                        {providerMeta.icon}
                       </span>
-                    </button>
-                  ))}
+                    </div>
+                    <div className="space-y-2">
+                      <p className="text-sm font-bold uppercase tracking-[0.25em] text-primary">
+                        {providerMeta.label}
+                      </p>
+                      <p className="font-semibold text-slate-900 dark:text-slate-100">
+                        Hosted checkout
+                      </p>
+                      <p className="text-sm text-slate-600 dark:text-slate-300">
+                        {providerMeta.description}
+                      </p>
+                    </div>
+                  </div>
                 </div>
 
                 <form className="space-y-6" onSubmit={onSubmit}>
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium text-slate-600 dark:text-slate-400">
-                      Cardholder Name
-                    </label>
-                    <input
-                      className="w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-primary dark:border-slate-700 dark:bg-background-dark"
-                      defaultValue="StoryArc Reader"
-                      type="text"
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium text-slate-600 dark:text-slate-400">
-                      Card Number
-                    </label>
-                    <div className="relative">
-                      <input
-                        className="w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-primary dark:border-slate-700 dark:bg-background-dark"
-                        defaultValue="4242 4242 4242 4242"
-                        type="text"
-                      />
-                      <div className="absolute right-4 top-1/2 flex -translate-y-1/2 gap-1 opacity-50">
-                        <span className="material-symbols-outlined">
-                          credit_card_heart
-                        </span>
+                  <div className="grid gap-4 rounded-2xl border border-slate-200 bg-slate-50 p-5 dark:border-slate-800 dark:bg-background-dark/70">
+                    <div className="flex items-start gap-3">
+                      <span className="material-symbols-outlined text-primary">
+                        verified_user
+                      </span>
+                      <div>
+                        <p className="font-semibold">Provider-hosted flow</p>
+                        <p className="text-sm text-slate-500 dark:text-slate-400">
+                          TaleStead redirects you to {providerMeta.label} to complete the charge securely.
+                        </p>
                       </div>
                     </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <label className="text-sm font-medium text-slate-600 dark:text-slate-400">
-                        Expiry Date
-                      </label>
-                      <input
-                        className="w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-primary dark:border-slate-700 dark:bg-background-dark"
-                        defaultValue="09 / 28"
-                        type="text"
-                      />
+                    <div className="flex items-start gap-3">
+                      <span className="material-symbols-outlined text-primary">
+                        account_balance_wallet
+                      </span>
+                      <div>
+                        <p className="font-semibold">Choose payment details there</p>
+                        <p className="text-sm text-slate-500 dark:text-slate-400">
+                          {providerMeta.note}
+                        </p>
+                      </div>
                     </div>
-                    <div className="space-y-2">
-                      <label className="text-sm font-medium text-slate-600 dark:text-slate-400">
-                        CVV
-                      </label>
-                      <input
-                        className="w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 outline-none transition-all focus:border-transparent focus:ring-2 focus:ring-primary dark:border-slate-700 dark:bg-background-dark"
-                        defaultValue="123"
-                        type="password"
-                      />
+                    <div className="flex items-start gap-3">
+                      <span className="material-symbols-outlined text-primary">
+                        sync_lock
+                      </span>
+                      <div>
+                        <p className="font-semibold">Automatic access refresh</p>
+                        <p className="text-sm text-slate-500 dark:text-slate-400">
+                          Your wallet, membership, and premium access will refresh after the provider confirms payment.
+                        </p>
+                      </div>
                     </div>
-                  </div>
-
-                  <div className="flex items-center gap-3 py-2">
-                    <input
-                      className="rounded border-slate-300 bg-background-light text-primary focus:ring-primary dark:border-slate-700 dark:bg-background-dark"
-                      defaultChecked
-                      id="save-card-desktop"
-                      type="checkbox"
-                    />
-                    <label
-                      className="text-sm text-slate-500 dark:text-slate-400"
-                      htmlFor="save-card-desktop"
-                    >
-                      Save card information for future purchases
-                    </label>
                   </div>
 
                   <button
@@ -303,12 +286,12 @@ function DesktopCheckout({
                   >
                     <span className="material-symbols-outlined">lock</span>
                     {isBusy
-                      ? "Redirecting to Paystack..."
-                      : `Continue to Paystack • ${formatPrice(details.total, currency)}`}
+                      ? `Redirecting to ${providerMeta.label}...`
+                      : `Continue to ${providerMeta.label} • ${formatPrice(details.total, currency)}`}
                   </button>
 
                   <p className="px-8 text-center text-xs text-slate-500 dark:text-slate-400">
-                    By clicking Pay Now, you agree to StoryArc&apos;s{" "}
+                    By clicking Pay Now, you agree to TaleStead&apos;s{" "}
                     <Link className="underline" to="/terms">
                       Terms of Service
                     </Link>{" "}
@@ -326,7 +309,7 @@ function DesktopCheckout({
 
         <footer className="border-t border-primary/10 px-6 py-8 text-center text-sm text-slate-500 dark:text-slate-400">
           <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 md:flex-row">
-            <p>© 2024 StoryArc Inc. All rights reserved.</p>
+            <p>© 2024 TaleStead Inc. All rights reserved.</p>
             <div className="flex gap-6">
               <a className="transition-colors hover:text-primary" href="#">
                 Help Center
@@ -350,9 +333,8 @@ function MobileCheckout({
   details,
   isBusy,
   onSubmit,
-  paymentMethod,
+  providerMeta,
   returnTo,
-  setPaymentMethod,
 }) {
   return (
     <div className="min-h-screen max-w-md bg-background-light font-display text-slate-900 antialiased dark:bg-background-dark dark:text-slate-100 md:hidden">
@@ -404,89 +386,40 @@ function MobileCheckout({
         </div>
 
         <div className="px-4 py-2">
-          <h3 className="mb-4 text-lg font-bold">Payment Method</h3>
-          <div className="mb-6 grid grid-cols-3 gap-3">
-            {paymentOptions.map((option) => (
-              <button
-                className={`flex flex-col items-center justify-center gap-2 rounded-xl border p-3 ${
-                  paymentMethod === option.id
-                    ? "border-primary bg-primary text-background-dark"
-                    : "border-slate-200 bg-white/5 text-slate-500 dark:border-primary/20 dark:bg-primary/5 dark:text-primary/60"
-                }`}
-                key={option.id}
-                onClick={() => setPaymentMethod(option.id)}
-                type="button"
-              >
-                <span className="material-symbols-outlined">{option.icon}</span>
-                <span className="text-xs font-semibold">{option.label}</span>
-              </button>
-            ))}
+          <h3 className="mb-4 text-lg font-bold">Payment Gateway</h3>
+          <div className="mb-6 rounded-xl border border-primary/20 bg-primary/5 p-4 dark:border-primary/30 dark:bg-primary/10">
+            <div className="flex items-start gap-3">
+              <span className="material-symbols-outlined text-primary">
+                {providerMeta.icon}
+              </span>
+              <div>
+                <p className="font-semibold">{providerMeta.label}</p>
+                <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">
+                  {providerMeta.description}
+                </p>
+              </div>
+            </div>
           </div>
         </div>
 
         <form className="space-y-4 px-4 pb-10" onSubmit={onSubmit}>
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-slate-600 dark:text-primary/80">
-              Cardholder Name
-            </label>
-            <input
-              className="w-full rounded-lg border border-slate-200 bg-white px-4 py-3 text-slate-900 outline-none focus:ring-2 focus:ring-primary/50 dark:border-primary/20 dark:bg-primary/5 dark:text-slate-100"
-              defaultValue="StoryArc Reader"
-              type="text"
-            />
-          </div>
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-slate-600 dark:text-primary/80">
-              Card Number
-            </label>
-            <div className="relative">
-              <input
-                className="w-full rounded-lg border border-slate-200 bg-white py-3 pl-4 pr-12 text-slate-900 outline-none focus:ring-2 focus:ring-primary/50 dark:border-primary/20 dark:bg-primary/5 dark:text-slate-100"
-                defaultValue="4242 4242 4242 4242"
-                type="text"
-              />
-              <div className="absolute right-3 top-1/2 flex -translate-y-1/2 gap-1">
-                <span className="material-symbols-outlined text-slate-400 dark:text-primary/40">
-                  credit_card
-                </span>
-              </div>
+          <div className="space-y-3 rounded-xl border border-slate-200 bg-white px-4 py-4 dark:border-primary/20 dark:bg-primary/5">
+            <div className="flex items-start gap-3">
+              <span className="material-symbols-outlined text-primary">
+                verified_user
+              </span>
+              <p className="text-sm text-slate-600 dark:text-slate-300">
+                TaleStead will redirect you to {providerMeta.label} to complete the payment securely.
+              </p>
             </div>
-          </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-slate-600 dark:text-primary/80">
-                Expiry Date
-              </label>
-              <input
-                className="w-full rounded-lg border border-slate-200 bg-white px-4 py-3 text-slate-900 outline-none focus:ring-2 focus:ring-primary/50 dark:border-primary/20 dark:bg-primary/5 dark:text-slate-100"
-                defaultValue="09/28"
-                type="text"
-              />
+            <div className="flex items-start gap-3">
+              <span className="material-symbols-outlined text-primary">
+                account_balance_wallet
+              </span>
+              <p className="text-sm text-slate-600 dark:text-slate-300">
+                {providerMeta.note}
+              </p>
             </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-slate-600 dark:text-primary/80">
-                CVV
-              </label>
-              <input
-                className="w-full rounded-lg border border-slate-200 bg-white px-4 py-3 text-slate-900 outline-none focus:ring-2 focus:ring-primary/50 dark:border-primary/20 dark:bg-primary/5 dark:text-slate-100"
-                defaultValue="123"
-                type="password"
-              />
-            </div>
-          </div>
-          <div className="flex items-center gap-3 pt-2">
-            <input
-              className="rounded border-slate-300 bg-transparent text-primary focus:ring-primary dark:border-primary/30"
-              defaultChecked
-              id="save-card-mobile"
-              type="checkbox"
-            />
-            <label
-              className="text-sm text-slate-600 dark:text-slate-400"
-              htmlFor="save-card-mobile"
-            >
-              Save card for future purchases
-            </label>
           </div>
 
           <div className="sticky bottom-0 border-t border-slate-200 bg-background-light p-4 dark:border-primary/10 dark:bg-background-dark">
@@ -505,8 +438,8 @@ function MobileCheckout({
             >
               <span>
                 {isBusy
-                  ? "Redirecting to Paystack..."
-                  : `Continue to Paystack • ${formatPrice(details.total, currency)}`}
+                  ? `Redirecting to ${providerMeta.label}...`
+                  : `Continue to ${providerMeta.label} • ${formatPrice(details.total, currency)}`}
               </span>
               <span className="material-symbols-outlined">arrow_forward</span>
             </button>
@@ -523,6 +456,7 @@ export default function CheckoutPage() {
   const { showToast } = useToast();
   const {
     catalogError,
+    checkoutProvider,
     coinPackages,
     createCheckoutSession,
     currency,
@@ -534,7 +468,6 @@ export default function CheckoutPage() {
     plans,
   } = useMonetization();
   const [searchParams] = useSearchParams();
-  const [paymentMethod, setPaymentMethod] = useState("card");
   const kind = searchParams.get("kind") === "coins" ? "coins" : "plan";
   const billing = searchParams.get("billing") === "annual" ? "annual" : "monthly";
   const defaultProductId =
@@ -559,10 +492,11 @@ export default function CheckoutPage() {
           returnTo,
         })
       : null;
+  const providerMeta = getCheckoutProviderMeta(checkoutProvider);
   const unavailableReturnLink =
     kind === "coins" ? buildCoinStoreHref(returnTo) : pricingHref;
 
-  if (reference || isCanceled) {
+  if (reference) {
     return (
       <Navigate
         replace
@@ -622,7 +556,7 @@ export default function CheckoutPage() {
       });
 
       if (!response?.checkoutUrl) {
-        throw new Error("Paystack authorization URL was not returned.");
+        throw new Error(`${providerMeta.label} checkout URL was not returned.`);
       }
 
       window.location.assign(response.checkoutUrl);
@@ -641,18 +575,16 @@ export default function CheckoutPage() {
         details={details}
         isBusy={isCheckoutBusy}
         onSubmit={handleSubmit}
-        paymentMethod={paymentMethod}
+        providerMeta={providerMeta}
         returnTo={returnTo}
-        setPaymentMethod={setPaymentMethod}
       />
       <MobileCheckout
         currency={currency}
         details={details}
         isBusy={isCheckoutBusy}
         onSubmit={handleSubmit}
-        paymentMethod={paymentMethod}
+        providerMeta={providerMeta}
         returnTo={returnTo}
-        setPaymentMethod={setPaymentMethod}
       />
     </>
   );

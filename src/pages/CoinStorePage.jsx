@@ -22,7 +22,7 @@ function DesktopCoinStore({ coinBalance, currency, packages, returnTo }) {
             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-background-dark">
               <span className="material-symbols-outlined font-bold">menu_book</span>
             </div>
-            <h2 className="text-xl font-bold tracking-tight">StoryArc</h2>
+            <h2 className="text-xl font-bold tracking-tight">TaleStead</h2>
           </Link>
 
           <div className="flex items-center gap-4">
@@ -151,7 +151,7 @@ function DesktopCoinStore({ coinBalance, currency, packages, returnTo }) {
                 <h4 className="mb-2 text-lg font-bold">Secure Transactions</h4>
                 <p className="text-sm text-slate-500 dark:text-slate-400">
                   All purchases are processed securely through our partners. Your
-                  payment information is never stored on StoryArc servers.
+                  payment information is never stored on TaleStead servers.
                 </p>
               </div>
             </Reveal>
@@ -189,7 +189,7 @@ function DesktopCoinStore({ coinBalance, currency, packages, returnTo }) {
                 </span>
               </div>
               <span className="text-sm font-bold text-slate-400">
-                © 2024 StoryArc Reader. All rights reserved.
+                © 2024 TaleStead Reader. All rights reserved.
               </span>
             </div>
             <div className="flex gap-8">
@@ -243,7 +243,7 @@ function MobileCoinStore({ coinBalance, currency, packages, returnTo }) {
               </span>
               <div>
                 <h1 className="text-lg font-bold text-slate-100 leading-tight">
-                  Get StoryArc Coins
+                  Get TaleStead Coins
                 </h1>
                 <p className="text-xs text-primary/80">
                   Unlock premium chapters and exclusive art

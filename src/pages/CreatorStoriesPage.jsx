@@ -364,7 +364,7 @@ function MobileCreatorStories({ memberName, onOpenStory, stories }) {
             <span className="material-symbols-outlined text-slate-100">menu</span>
           </Link>
           <h2 className="text-xl font-bold leading-tight tracking-tight text-primary">
-            StoryArc
+            TaleStead
           </h2>
         </div>
         <Link
@@ -409,7 +409,7 @@ export default function CreatorStoriesPage() {
   const { user } = useAuth();
   const { enterWriterMode, isStudioLoading, setActiveStory, stories } = useCreator();
   const [searchTerm, setSearchTerm] = useState("");
-  const memberName = user?.displayName ?? "StoryArc Creator";
+  const memberName = user?.displayName ?? "TaleStead Creator";
 
   useEffect(() => {
     enterWriterMode();
@@ -451,7 +451,7 @@ export default function CreatorStoriesPage() {
 
         <div className="flex min-h-screen flex-col px-4 py-6 pb-24 md:hidden">
           <header className="mb-6 flex items-center justify-between">
-            <h2 className="text-xl font-bold text-primary">StoryArc</h2>
+            <h2 className="text-xl font-bold text-primary">TaleStead</h2>
             <Link
               className="flex size-10 items-center justify-center rounded-full border border-primary/20 bg-primary/10"
               to="/account/profile"

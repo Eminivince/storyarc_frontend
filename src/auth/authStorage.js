@@ -1,4 +1,4 @@
-const REFRESH_TOKEN_STORAGE_KEY = "storyarc.auth.refresh-token";
+const REFRESH_TOKEN_STORAGE_KEY = "talestead.auth.refresh-token";
 
 let accessToken = null;
 

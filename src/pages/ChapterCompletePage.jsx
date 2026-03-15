@@ -143,7 +143,7 @@ function DesktopChapterComplete({
               </svg>
             </div>
             <h2 className="text-xl font-bold tracking-tight text-slate-900 dark:text-white">
-              StoryArc
+              TaleStead
             </h2>
           </Link>
 
@@ -320,7 +320,7 @@ function DesktopChapterComplete({
 
         <footer className="border-t border-primary/10 bg-black/20 px-6 py-8">
           <div className="mx-auto flex max-w-[960px] flex-col items-center justify-between gap-4 text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-primary/40 md:flex-row">
-            <p>© 2024 StoryArc Media</p>
+            <p>© 2024 TaleStead Media</p>
             <div className="flex gap-6">
               <a className="transition-colors hover:text-primary" href="#">
                 Privacy

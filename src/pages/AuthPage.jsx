@@ -2,11 +2,15 @@ import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { buildGoogleAuthStartUrl } from "../auth/authApi";
+import { sanitizeDisplayName, sanitizeEmail, sanitizePassword, isPasswordValid } from "../lib/formSanitize";
 import { persistPendingVerification } from "../auth/authFlowStorage";
 import { resolvePostLoginPath } from "../auth/authRouting";
 import { useAuth } from "../context/AuthContext";
 import { useToast } from "../context/ToastContext";
+import AppFooter from "../components/AppFooter";
+import PublicNav from "../components/PublicNav";
 import Reveal from "../components/Reveal";
+import { useRef } from "react";
 
 function getErrorMessage(error) {
   return error?.message || "Something went wrong. Please try again.";
@@ -55,6 +59,7 @@ function useAuthFormModel() {
   const [isGoogleRedirecting, setIsGoogleRedirecting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
 
   const isSignIn = mode === "signin";
   const isPending = isSignIn ? isLoggingIn : isRegistering;
@@ -65,7 +70,7 @@ function useAuthFormModel() {
     }
 
     if (typeof location.state?.email === "string") {
-      setEmail(location.state.email);
+      setEmail(sanitizeEmail(location.state.email));
     }
   }, [location.state]);
 
@@ -73,7 +78,32 @@ function useAuthFormModel() {
     event.preventDefault();
     setError(null);
 
-    if (!isSignIn && password !== confirmPassword) {
+    if (!isSignIn && !agreedToTerms) {
+      const msg = "You must agree to the Terms of Service and Privacy Policy to create an account.";
+      setError(msg);
+      showToast(msg, {
+        tone: "error",
+        title: "Agreement required",
+      });
+      return;
+    }
+
+    const trimmedEmail = sanitizeEmail(email);
+    const trimmedDisplayName = sanitizeDisplayName(displayName);
+    const cleanPassword = sanitizePassword(password);
+    const cleanConfirmPassword = sanitizePassword(confirmPassword);
+
+    if (!isPasswordValid(password)) {
+      const msg = "Password cannot contain spaces.";
+      setError(msg);
+      showToast(msg, {
+        tone: "error",
+        title: "Invalid password",
+      });
+      return;
+    }
+
+    if (!isSignIn && cleanPassword !== cleanConfirmPassword) {
       const msg = "Passwords do not match.";
       setError(msg);
       showToast(msg, {
@@ -86,8 +116,8 @@ function useAuthFormModel() {
     try {
       if (isSignIn) {
         const response = await login({
-          email,
-          password,
+          email: trimmedEmail,
+          password: cleanPassword,
         });
 
         showToast(`Welcome back, ${response.user.displayName}.`, {
@@ -100,13 +130,13 @@ function useAuthFormModel() {
       }
 
       await register({
-        displayName,
-        email,
-        password,
+        displayName: trimmedDisplayName,
+        email: trimmedEmail,
+        password: cleanPassword,
       });
 
       persistPendingVerification({
-        email,
+        email: trimmedEmail,
         flow: "register",
       });
 
@@ -116,7 +146,7 @@ function useAuthFormModel() {
       navigate("/auth/verify-code", {
         replace: true,
         state: {
-          email,
+          email: trimmedEmail,
           flow: "register",
         },
       });
@@ -133,9 +163,19 @@ function useAuthFormModel() {
   function switchMode(nextMode) {
     setMode(nextMode);
     setError(null);
+    setAgreedToTerms(false);
   }
 
   function continueWithGoogle() {
+    if (!isSignIn && !agreedToTerms) {
+      const msg = "You must agree to the Terms of Service and Privacy Policy to create an account.";
+      setError(msg);
+      showToast(msg, {
+        tone: "error",
+        title: "Agreement required",
+      });
+      return;
+    }
     const nextPath = getRequestedPath(location.state?.from);
 
     setIsGoogleRedirecting(true);
@@ -143,6 +183,7 @@ function useAuthFormModel() {
   }
 
   return {
+    agreedToTerms,
     confirmPassword,
     continueWithGoogle,
     displayName,
@@ -154,6 +195,7 @@ function useAuthFormModel() {
     isSignIn,
     mode,
     password,
+    setAgreedToTerms,
     setConfirmPassword,
     setDisplayName,
     setEmail,
@@ -168,6 +210,7 @@ function useAuthFormModel() {
 
 function DesktopAuth() {
   const {
+    agreedToTerms,
     confirmPassword,
     displayName,
     email,
@@ -178,6 +221,7 @@ function DesktopAuth() {
     isPending,
     isSignIn,
     password,
+    setAgreedToTerms,
     setConfirmPassword,
     setDisplayName,
     setEmail,
@@ -191,29 +235,7 @@ function DesktopAuth() {
 
   return (
     <div className="hidden min-h-screen flex-col bg-background-light font-display text-slate-900 dark:bg-background-dark dark:text-slate-100 md:flex">
-      <header className="flex items-center justify-between border-b border-primary/20 bg-background-light px-6 py-4 dark:bg-background-dark md:px-10">
-        <Link className="flex items-center gap-4 text-primary" to="/">
-          <div className="size-6">
-            <svg fill="currentColor" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-              <path d="M44 11.2727C44 14.0109 39.8386 16.3957 33.69 17.6364C39.8386 18.877 44 21.2618 44 24C44 26.7382 39.8386 29.123 33.69 30.3636C39.8386 31.6043 44 33.9891 44 36.7273C44 40.7439 35.0457 44 24 44C12.9543 44 4 40.7439 4 36.7273C4 33.9891 8.16144 31.6043 14.31 30.3636C8.16144 29.123 4 26.7382 4 24C4 21.2618 8.16144 18.877 14.31 17.6364C8.16144 16.3957 4 14.0109 4 11.2727C4 7.25611 12.9543 4 24 4C35.0457 4 44 7.25611 44 11.2727Z" />
-            </svg>
-          </div>
-          <span className="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
-            StoryArc
-          </span>
-        </Link>
-        <div className="hidden items-center gap-6 md:flex">
-          <a className="text-sm font-medium transition-colors hover:text-primary" href="#">
-            Browse
-          </a>
-          <a className="text-sm font-medium transition-colors hover:text-primary" href="#">
-            Library
-          </a>
-          <a className="text-sm font-medium transition-colors hover:text-primary" href="#">
-            Community
-          </a>
-        </div>
-      </header>
+      <PublicNav showCta={false} />
 
       <main className="relative flex flex-1 items-center justify-center overflow-hidden p-4 md:p-8">
         <div className="pointer-events-none absolute inset-0 z-0 opacity-20">
@@ -293,7 +315,7 @@ function DesktopAuth() {
                 <p className="mb-8 text-sm text-slate-500 dark:text-slate-400">
                   {isSignIn
                     ? "Enter your credentials to access your library."
-                    : "Start reading, writing, and building your StoryArc identity."}
+                    : "Start reading, writing, and building your TaleStead identity."}
                 </p>
 
                 <form className="space-y-5" onSubmit={handleSubmit}>
@@ -312,7 +334,7 @@ function DesktopAuth() {
                         </span>
                         <input
                           className="w-full rounded-lg border border-slate-200 bg-slate-100 py-3.5 pl-12 pr-4 text-base text-slate-900 outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary dark:border-primary/20 dark:bg-primary/5 dark:text-white"
-                          onChange={(event) => setDisplayName(event.target.value)}
+                          onChange={(event) => setDisplayName(sanitizeDisplayName(event.target.value))}
                           placeholder="Alex Thorne"
                           required
                           type="text"
@@ -330,7 +352,7 @@ function DesktopAuth() {
                       </span>
                       <input
                         className="w-full rounded-lg border border-slate-200 bg-slate-100 py-3.5 pl-12 pr-4 text-base text-slate-900 outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary dark:border-primary/20 dark:bg-primary/5 dark:text-white"
-                        onChange={(event) => setEmail(event.target.value)}
+                        onChange={(event) => setEmail(sanitizeEmail(event.target.value))}
                         placeholder="name@example.com"
                         required
                         type="email"
@@ -357,7 +379,7 @@ function DesktopAuth() {
                       </span>
                       <input
                         className="w-full rounded-lg border border-slate-200 bg-slate-100 py-3.5 pl-12 pr-12 text-base text-slate-900 outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary dark:border-primary/20 dark:bg-primary/5 dark:text-white"
-                        onChange={(event) => setPassword(event.target.value)}
+                        onChange={(event) => setPassword(sanitizePassword(event.target.value))}
                         placeholder="••••••••"
                         required
                         type={showPassword ? "text" : "password"}
@@ -385,7 +407,7 @@ function DesktopAuth() {
                         </span>
                         <input
                           className="w-full rounded-lg border border-slate-200 bg-slate-100 py-3.5 pl-12 pr-12 text-base text-slate-900 outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary dark:border-primary/20 dark:bg-primary/5 dark:text-white"
-                          onChange={(event) => setConfirmPassword(event.target.value)}
+                          onChange={(event) => setConfirmPassword(sanitizePassword(event.target.value))}
                           placeholder="••••••••"
                           required
                           type={showConfirmPassword ? "text" : "password"}
@@ -405,20 +427,42 @@ function DesktopAuth() {
                     </div>
                   )}
 
+                  {!isSignIn && (
+                    <label className="flex cursor-pointer items-start gap-3 rounded-lg border border-slate-200 p-4 dark:border-primary/20">
+                      <input
+                        checked={agreedToTerms}
+                        className="mt-1 h-4 w-4 shrink-0 rounded border-slate-300 text-primary focus:ring-primary"
+                        onChange={(e) => setAgreedToTerms(e.target.checked)}
+                        type="checkbox"
+                      />
+                      <span className="text-sm leading-relaxed text-slate-600 dark:text-slate-400">
+                        By continuing, you agree to TaleStead&apos;s{" "}
+                        <Link className="font-medium text-primary hover:underline" to="/terms">
+                          Terms of Service
+                        </Link>{" "}
+                        and{" "}
+                        <Link className="font-medium text-primary hover:underline" to="/privacy">
+                          Privacy Policy
+                        </Link>
+                        .
+                      </span>
+                    </label>
+                  )}
+
                   <motion.button
                     className="w-full rounded-lg bg-primary py-4 text-base font-bold text-background-dark shadow-lg shadow-primary/20 disabled:cursor-not-allowed disabled:opacity-60"
-                    disabled={isPending}
+                    disabled={isPending || (!isSignIn && !agreedToTerms)}
                     type="submit"
-                    whileHover={isPending ? undefined : { scale: 1.01 }}
-                    whileTap={isPending ? undefined : { scale: 0.98 }}
+                    whileHover={isPending || (!isSignIn && !agreedToTerms) ? undefined : { scale: 1.01 }}
+                    whileTap={isPending || (!isSignIn && !agreedToTerms) ? undefined : { scale: 0.98 }}
                   >
                     {isPending
                       ? isSignIn
                         ? "Signing In..."
                         : "Creating Account..."
                       : isSignIn
-                        ? "Sign In to StoryArc"
-                        : "Create StoryArc Account"}
+                        ? "Sign In to TaleStead"
+                        : "Create TaleStead Account"}
                   </motion.button>
                 </form>
 
@@ -435,7 +479,7 @@ function DesktopAuth() {
 
                 <button
                   className="flex w-full items-center justify-center gap-3 rounded-lg border border-slate-200 px-4 py-3 transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60 dark:border-primary/20 dark:hover:bg-primary/5"
-                  disabled={isGoogleRedirecting}
+                  disabled={isGoogleRedirecting || (!isSignIn && !agreedToTerms)}
                   onClick={continueWithGoogle}
                   type="button"
                 >
@@ -452,43 +496,33 @@ function DesktopAuth() {
                   </span>
                 </button>
 
-                <p className="mt-10 text-center text-xs leading-relaxed text-slate-500">
-                  By continuing, you agree to StoryArc&apos;s{" "}
-                  <Link className="text-primary hover:underline" to="/terms">
-                    Terms of Service
-                  </Link>{" "}
-                  and{" "}
-                  <Link className="text-primary hover:underline" to="/privacy">
-                    Privacy Policy
-                  </Link>
-                  .
-                </p>
+                {isSignIn && (
+                  <p className="mt-8 text-center text-xs leading-relaxed text-slate-500">
+                    By continuing, you agree to TaleStead&apos;s{" "}
+                    <Link className="text-primary hover:underline" to="/terms">
+                      Terms of Service
+                    </Link>{" "}
+                    and{" "}
+                    <Link className="text-primary hover:underline" to="/privacy">
+                      Privacy Policy
+                    </Link>
+                    .
+                  </p>
+                )}
               </motion.div>
             </div>
           </div>
         </Reveal>
       </main>
 
-      <footer className="flex flex-col items-center justify-between gap-4 border-t border-primary/10 bg-background-light px-10 py-6 text-sm text-slate-500 dark:bg-background-dark md:flex-row">
-        <p>© 2024 StoryArc Inc. All rights reserved.</p>
-        <div className="flex gap-6">
-          <a className="transition-colors hover:text-primary" href="#">
-            Help Center
-          </a>
-          <a className="transition-colors hover:text-primary" href="#">
-            Contact
-          </a>
-          <a className="transition-colors hover:text-primary" href="#">
-            English (US)
-          </a>
-        </div>
-      </footer>
+      <AppFooter className="px-10 py-6" />
     </div>
   );
 }
 
 function MobileAuth() {
   const {
+    agreedToTerms,
     confirmPassword,
     displayName,
     email,
@@ -499,6 +533,7 @@ function MobileAuth() {
     isPending,
     isSignIn,
     password,
+    setAgreedToTerms,
     setConfirmPassword,
     setDisplayName,
     setEmail,
@@ -513,18 +548,9 @@ function MobileAuth() {
   return (
     <div className="min-h-screen bg-background-light font-display text-slate-900 dark:bg-background-dark dark:text-slate-100 md:hidden">
       <div className="relative flex min-h-screen w-full flex-col overflow-x-hidden overflow-y-auto bg-background-light dark:bg-background-dark">
-        <header className="flex shrink-0 items-center justify-between border-b border-primary/10 px-4 py-3">
-          <Link
-            className="flex size-9 items-center justify-center rounded-lg transition-colors hover:bg-slate-200 dark:hover:bg-primary/20"
-            to="/"
-          >
-            <span className="material-symbols-outlined text-xl">close</span>
-          </Link>
-          <span className="text-lg font-bold tracking-tight">StoryArc</span>
-          <div className="w-9" />
-        </header>
+        <PublicNav showCta={false} />
 
-        <div className="mx-4 mt-4 flex h-10 shrink-0 items-center rounded-lg border border-primary/10 bg-slate-200/50 p-1 dark:bg-primary/10">
+        <div className="mx-4 mt-28 flex h-10 shrink-0 items-center rounded-lg border border-primary/10 bg-slate-200/50 p-1 dark:bg-primary/10">
           <button
             className={`flex h-full flex-1 items-center justify-center rounded-md text-sm font-semibold transition-all ${
               isSignIn ? "bg-primary text-background-dark shadow-sm" : "text-slate-600 dark:text-slate-400"
@@ -553,12 +579,10 @@ function MobileAuth() {
           transition={{ duration: 0.2 }}
         >
           <div className="rounded-xl border border-primary/10 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-white/5">
-            <h1 className="text-xl font-bold">
+            {/* <h1 className="text-xl font-bold">
               {isSignIn ? "Welcome back" : "Create your account"}
-            </h1>
-            <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
-              {isSignIn ? "Sign in to continue" : "Join StoryArc to start reading"}
-            </p>
+            </h1> */}
+
 
             <form className="mt-4 flex flex-col gap-3" onSubmit={handleSubmit}>
               {error && (
@@ -572,8 +596,8 @@ function MobileAuth() {
                   <span className="text-base font-medium text-slate-600 dark:text-slate-400">Display Name</span>
                   <input
                     className="h-10 w-full rounded-lg border border-slate-200 bg-white px-3 text-base text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-primary/30 dark:border-primary/20 dark:bg-primary/5 dark:text-slate-100"
-                    onChange={(e) => setDisplayName(e.target.value)}
-                    placeholder="Alex Thorne"
+                    onChange={(e) => setDisplayName(sanitizeDisplayName(e.target.value))}
+                    placeholder="John Doe"
                     required
                     type="text"
                     value={displayName}
@@ -584,8 +608,8 @@ function MobileAuth() {
                 <span className="text-base font-medium text-slate-600 dark:text-slate-400">Email</span>
                 <input
                   className="h-10 w-full rounded-lg border border-slate-200 bg-white px-3 text-base text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-primary/30 dark:border-primary/20 dark:bg-primary/5 dark:text-slate-100"
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="name@example.com"
+                  onChange={(e) => setEmail(sanitizeEmail(e.target.value))}
+                  placeholder="john.doe@example.com"
                   required
                   type="email"
                   value={email}
@@ -596,7 +620,7 @@ function MobileAuth() {
                 <div className="relative">
                   <input
                     className="h-10 w-full rounded-lg border border-slate-200 bg-white px-3 pr-10 text-base text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-primary/30 dark:border-primary/20 dark:bg-primary/5 dark:text-slate-100"
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={(e) => setPassword(sanitizePassword(e.target.value))}
                     placeholder="••••••••"
                     required
                     type={showPassword ? "text" : "password"}
@@ -620,7 +644,7 @@ function MobileAuth() {
                   <div className="relative">
                     <input
                       className="h-10 w-full rounded-lg border border-slate-200 bg-white px-3 pr-10 text-base text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-primary/30 dark:border-primary/20 dark:bg-primary/5 dark:text-slate-100"
-                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      onChange={(e) => setConfirmPassword(sanitizePassword(e.target.value))}
                       placeholder="••••••••"
                       required
                       type={showConfirmPassword ? "text" : "password"}
@@ -646,12 +670,33 @@ function MobileAuth() {
                   </Link>
                 </div>
               )}
+              {!isSignIn && (
+                <label className="flex cursor-pointer items-start gap-2.5 rounded-lg border border-slate-200 p-3 dark:border-primary/20">
+                  <input
+                    checked={agreedToTerms}
+                    className="mt-0.5 h-4 w-4 shrink-0 rounded border-slate-300 text-primary focus:ring-primary"
+                    onChange={(e) => setAgreedToTerms(e.target.checked)}
+                    type="checkbox"
+                  />
+                  <span className="text-xs leading-relaxed text-slate-600 dark:text-slate-400">
+                    By continuing, you agree to TaleStead&apos;s{" "}
+                    <Link className="font-medium text-primary hover:underline" to="/terms">
+                      Terms
+                    </Link>{" "}
+                    and{" "}
+                    <Link className="font-medium text-primary hover:underline" to="/privacy">
+                      Privacy Policy
+                    </Link>
+                    .
+                  </span>
+                </label>
+              )}
               <motion.button
                 className="mt-1 h-10 rounded-lg bg-primary text-base font-semibold text-background-dark transition-all disabled:cursor-not-allowed disabled:opacity-60"
-                disabled={isPending}
+                disabled={isPending || (!isSignIn && !agreedToTerms)}
                 type="submit"
-                whileHover={isPending ? undefined : { scale: 1.01 }}
-                whileTap={isPending ? undefined : { scale: 0.98 }}
+                whileHover={isPending || (!isSignIn && !agreedToTerms) ? undefined : { scale: 1.01 }}
+                whileTap={isPending || (!isSignIn && !agreedToTerms) ? undefined : { scale: 0.98 }}
               >
                 {isPending
                   ? isSignIn ? "Signing In..." : "Creating Account..."
@@ -672,8 +717,8 @@ function MobileAuth() {
           </div>
 
           <button
-            className="flex w-full items-center justify-center gap-2.5 rounded-lg border border-slate-200 bg-white py-2.5 text-base font-medium text-slate-900 shadow-sm disabled:opacity-60 dark:border-primary/20 dark:bg-white/5 dark:text-slate-100"
-            disabled={isGoogleRedirecting}
+            className="flex w-full items-center justify-center gap-2.5 rounded-lg border border-slate-200 bg-white py-2.5 text-base font-medium text-slate-900 shadow-sm disabled:cursor-not-allowed disabled:opacity-60 dark:border-primary/20 dark:bg-white/5 dark:text-slate-100"
+            disabled={isGoogleRedirecting || (!isSignIn && !agreedToTerms)}
             onClick={continueWithGoogle}
             type="button"
           >
@@ -689,18 +734,20 @@ function MobileAuth() {
           </button>
         </motion.div>
 
-        <div className="mt-auto shrink-0 px-4 py-5 text-center">
-          <p className="text-xs text-slate-500">
-            By continuing, you agree to StoryArc&apos;s{" "}
-            <Link className="text-primary underline" to="/terms">
-              Terms of Service
-            </Link>{" "}
-            and{" "}
-            <Link className="text-primary underline" to="/privacy">
-              Privacy Policy
-            </Link>
-          </p>
-        </div>
+        {isSignIn && (
+          <div className="mt-auto shrink-0 px-4 py-5 text-center">
+            <p className="text-xs text-slate-500">
+              By continuing, you agree to TaleStead&apos;s{" "}
+              <Link className="text-primary underline" to="/terms">
+                Terms
+              </Link>{" "}
+              and{" "}
+              <Link className="text-primary underline" to="/privacy">
+                Privacy Policy
+              </Link>
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -709,10 +756,12 @@ function MobileAuth() {
 export default function AuthPage() {
   const location = useLocation();
   const { showToast } = useToast();
-  const [hasShownRedirectNotice, setHasShownRedirectNotice] = useState(false);
+
+  // useRef so the toast is only shown once regardless of re-renders
+  const hasShownRef = useRef(false);
 
   useEffect(() => {
-    if (!location.state?.from || hasShownRedirectNotice) {
+    if (!location.state?.from || hasShownRef.current) {
       return;
     }
 
@@ -720,8 +769,9 @@ export default function AuthPage() {
       tone: "info",
       title: "Authentication required",
     });
-    setHasShownRedirectNotice(true);
-  }, [hasShownRedirectNotice, location.state, showToast]);
+    hasShownRef.current = true;
+    // eslint-disable-next-line
+  }, [location.state, showToast]); // don't include hasShownRef to avoid effect firing again
 
   return (
     <>

@@ -10,6 +10,8 @@ export default {
         "background-dark": "#181611",
         "accent-dark": "#393528",
         "surface-dark": "#2a261f",
+        "neutral-dark": "#1c1a16",
+        "neutral-border": "#393528",
       },
       fontFamily: {
         display: ["Spline Sans", "sans-serif"],

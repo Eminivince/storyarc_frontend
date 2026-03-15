@@ -76,7 +76,7 @@ function DesktopReportModal({
             <div>
               <p className="mb-4 text-sm text-slate-600 dark:text-slate-400">
                 Please let us know what&apos;s wrong with this chapter. Your feedback
-                helps keep StoryArc safe and high-quality.
+                helps keep TaleStead safe and high-quality.
               </p>
 
               <div className="grid gap-3">

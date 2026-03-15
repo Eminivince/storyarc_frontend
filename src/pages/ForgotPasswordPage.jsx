@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { requestPasswordReset } from "../auth/authApi";
+import { sanitizeEmail } from "../lib/formSanitize";
 import { persistPendingVerification } from "../auth/authFlowStorage";
 import { useToast } from "../context/ToastContext";
 
@@ -20,7 +21,7 @@ function DesktopForgotPassword({ email, onChange, onSubmit, pending }) {
           <div className="text-primary">
             <span className="material-symbols-outlined text-3xl">auto_stories</span>
           </div>
-          <h2 className="text-xl font-bold tracking-tight">StoryArc</h2>
+          <h2 className="text-xl font-bold tracking-tight">TaleStead</h2>
         </div>
         <div className="flex items-center gap-6">
           <Link className="text-sm font-medium transition-colors hover:text-primary" to="/auth">
@@ -73,7 +74,7 @@ function DesktopForgotPassword({ email, onChange, onSubmit, pending }) {
                 <input
                   className="w-full rounded-lg border border-primary/20 bg-background-light py-3.5 pl-11 pr-4 text-base text-slate-900 outline-none transition-all placeholder:text-slate-500 focus:border-primary focus:ring-2 focus:ring-primary/40 dark:bg-background-dark dark:text-slate-100"
                   id="forgot-email-desktop"
-                  onChange={(event) => onChange(event.target.value)}
+                  onChange={(event) => onChange(sanitizeEmail(event.target.value))}
                   placeholder="name@example.com"
                   required
                   type="email"
@@ -128,7 +129,7 @@ function DesktopForgotPassword({ email, onChange, onSubmit, pending }) {
           </Link>
         </div>
         <div className="flex items-center justify-center gap-2 text-xs text-slate-500 dark:text-slate-400">
-          <span>© 2024 StoryArc.</span>
+          <span>© 2024 TaleStead.</span>
           <div className="size-1 rounded-full bg-primary/40" />
           <span>Crafted for creators.</span>
         </div>
@@ -162,7 +163,7 @@ function MobileForgotPassword({ email, onChange, onSubmit, pending }) {
                     menu_book
                   </span>
                 </div>
-                <h1 className="text-2xl font-bold tracking-tight text-primary">StoryArc</h1>
+                <h1 className="text-2xl font-bold tracking-tight text-primary">TaleStead</h1>
               </div>
             </div>
           </div>
@@ -193,7 +194,7 @@ function MobileForgotPassword({ email, onChange, onSubmit, pending }) {
               <input
                 className="form-input h-14 w-full rounded-lg border border-primary/20 bg-white pl-12 pr-4 text-base font-normal text-slate-900 placeholder:text-slate-400 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/50 dark:bg-primary/5 dark:text-slate-100"
                 id="forgot-email-mobile"
-                onChange={(event) => onChange(event.target.value)}
+                onChange={(event) => onChange(sanitizeEmail(event.target.value))}
                 placeholder="yourname@example.com"
                 required
                 type="email"
@@ -241,21 +242,22 @@ export default function ForgotPasswordPage() {
 
   async function handleSubmit(event) {
     event.preventDefault();
+    const trimmedEmail = sanitizeEmail(email);
 
     try {
-      const response = await forgotPasswordMutation.mutateAsync({ email });
+      const response = await forgotPasswordMutation.mutateAsync({ email: trimmedEmail });
 
       showToast(response.message, {
         title: "Reset code sent",
       });
       persistPendingVerification({
-        email,
+        email: trimmedEmail,
         flow: "password-reset",
       });
       navigate(verifyCodeHref, {
         replace: true,
         state: {
-          email,
+          email: trimmedEmail,
           flow: "password-reset",
         },
       });

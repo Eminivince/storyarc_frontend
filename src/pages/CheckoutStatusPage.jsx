@@ -25,8 +25,10 @@ function buildBaseParams({ billing, kind, productId, reference, returnTo }) {
 export default function CheckoutStatusPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const { confirmCheckoutSession, spendCoinsForChapter } = useMonetization();
+  const { checkoutProvider, confirmCheckoutSession, spendCoinsForChapter } =
+    useMonetization();
   const { showToast } = useToast();
+  const providerLabel = checkoutProvider === "cryptomus" ? "Cryptomus" : "Paystack";
   const billing = searchParams.get("billing") === "annual" ? "annual" : "monthly";
   const kind = searchParams.get("kind") === "coins" ? "coins" : "plan";
   const productId = searchParams.get("productId") || "";
@@ -169,7 +171,7 @@ export default function CheckoutStatusPage() {
 
   return (
     <ReaderStateScreen
-      description="We are verifying your Paystack payment and updating your wallet, plan access, and chapter entitlements."
+      description={`We are verifying your ${providerLabel} payment and updating your wallet, plan access, and chapter entitlements.`}
       title="Finalizing Payment"
       tone="loading"
     />

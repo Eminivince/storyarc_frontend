@@ -32,7 +32,7 @@ function DesktopCreatorOnboarding({ onStart, status }) {
               <span className="material-symbols-outlined text-3xl">auto_stories</span>
             </div>
             <h2 className="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
-              StoryArc
+              TaleStead
             </h2>
           </div>
           <div className="flex flex-1 items-center justify-end gap-8">
@@ -88,7 +88,7 @@ function DesktopCreatorOnboarding({ onStart, status }) {
                     Your story deserves an audience.
                   </h1>
                   <p className="text-xl font-medium text-primary">
-                    Join the StoryArc Circle of Creators.
+                    Join the TaleStead Circle of Creators.
                   </p>
                 </div>
               </div>
@@ -97,7 +97,7 @@ function DesktopCreatorOnboarding({ onStart, status }) {
             <div className="flex max-w-2xl flex-col gap-4 px-2">
               <h2 className="text-3xl font-bold">Welcome to the inner circle.</h2>
               <p className="text-lg leading-relaxed text-slate-600 dark:text-primary/70">
-                StoryArc isn&apos;t just a platform; it&apos;s a sanctuary for high-fidelity
+                TaleStead isn&apos;t just a platform; it&apos;s a sanctuary for high-fidelity
                 digital narratives. We&apos;re looking for writers who push boundaries,
                 craft deep lore, and engage readers in ways never seen before.
               </p>
@@ -188,7 +188,7 @@ function DesktopCreatorOnboarding({ onStart, status }) {
               Support
             </Link>
           </div>
-          <p>© 2024 StoryArc Circle. All rights reserved.</p>
+          <p>© 2024 TaleStead Circle. All rights reserved.</p>
         </footer>
       </div>
     </div>

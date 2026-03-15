@@ -57,7 +57,7 @@ function DesktopSetup({
               </svg>
             </div>
             <h2 className="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
-              StoryArc
+              TaleStead
             </h2>
           </div>
           <div className="flex items-center gap-6">
@@ -178,7 +178,7 @@ function DesktopSetup({
               <p className="text-xs leading-relaxed text-slate-600 dark:text-slate-300">
                 <strong className="text-primary">Important:</strong> Save your backup
                 recovery codes in a secure place. If you lose access to your device,
-                these codes will be the only way to recover your StoryArc account.
+                these codes will be the only way to recover your TaleStead account.
               </p>
             </div>
 
@@ -224,7 +224,7 @@ function MobileSetup({
       <main className="flex-1 overflow-y-auto px-6 pb-12">
         <div className="pb-8 pt-4 text-center">
           <h3 className="text-3xl font-bold tracking-tight">
-            {usingSms ? "Verify SMS MFA" : "Setup MFA for StoryArc"}
+            {usingSms ? "Verify SMS MFA" : "Setup MFA for TaleStead"}
           </h3>
           <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">
             Protect your account with a secondary layer of security.
@@ -326,7 +326,7 @@ function MobileSetup({
           <span className="material-symbols-outlined">check_circle</span>
         </button>
         <p className="mt-4 text-center text-xs text-slate-500 dark:text-slate-500">
-          Security powered by StoryArc Gold standard
+          Security powered by TaleStead Gold standard
         </p>
       </footer>
     </div>

@@ -19,9 +19,9 @@ function getGoogleAuthErrorMessage(errorCode) {
     case "google_access_denied":
       return "Google sign-in was cancelled before completion.";
     case "google_account_conflict":
-      return "That Google account is already linked to a different StoryArc user.";
+      return "That Google account is already linked to a different TaleStead user.";
     case "google_account_unavailable":
-      return "This StoryArc account is currently unavailable.";
+      return "This TaleStead account is currently unavailable.";
     case "google_email_unverified":
       return "Use a Google account with a verified email address.";
     case "google_not_configured":

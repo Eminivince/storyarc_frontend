@@ -671,7 +671,7 @@ export function CreatorProvider({ children }) {
       {
         ...nextDraft,
         chapterId: nextDraft.chapterId ?? chapterId ?? null,
-        storyTitle: nextDraft.storyTitle ?? getStory(storySlug)?.title ?? "StoryArc",
+        storyTitle: nextDraft.storyTitle ?? getStory(storySlug)?.title ?? "TaleStead",
       },
       chapterId,
     );

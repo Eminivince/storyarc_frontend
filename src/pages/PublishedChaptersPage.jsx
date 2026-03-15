@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { AppDesktopSidebar, AppMobileTabBar } from "../components/AppShellNav";
+import NotificationBellLink from "../components/NotificationBellLink";
 import ReaderStateScreen from "../components/ReaderStateScreen";
 import Reveal from "../components/Reveal";
 import RouteLoadingScreen from "../components/RouteLoadingScreen";
@@ -40,10 +41,11 @@ function DesktopPublishedChapters({ onArchive, story }) {
               </label>
             </div>
             <div className="flex items-center gap-4">
-              <button className="relative flex size-10 items-center justify-center rounded-lg transition-colors hover:bg-slate-100 dark:hover:bg-primary/10" type="button">
-                <span className="material-symbols-outlined text-slate-600 dark:text-slate-400">notifications</span>
-                <span className="absolute right-2 top-2 size-2 rounded-full bg-primary" />
-              </button>
+              <NotificationBellLink
+                badgeClassName="right-1 top-1"
+                className="flex size-10 items-center justify-center rounded-lg transition-colors hover:bg-slate-100 dark:hover:bg-primary/10"
+                iconClassName="text-slate-600 dark:text-slate-400"
+              />
               <Link
                 className="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-bold text-background-dark transition-opacity hover:opacity-90"
                 to={getChapterEditHref(story.slug)}

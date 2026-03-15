@@ -82,7 +82,7 @@ function ProfilePictureSection({
   user,
 }) {
   const hasAvatar = Boolean(user?.avatarUrl);
-  const displayName = user?.displayName ?? "StoryArc User";
+  const displayName = user?.displayName ?? "TaleStead User";
 
   return (
     <section className={compact ? "px-4 pt-4" : "flex flex-col gap-4 px-4"}>
@@ -190,7 +190,7 @@ function DesktopReadingPreferences() {
                 auto_stories
               </span>
             </div>
-            <h2 className="text-lg font-bold tracking-tight">StoryArc</h2>
+            <h2 className="text-lg font-bold tracking-tight">TaleStead</h2>
           </div>
           <Link
             className="flex h-10 w-10 items-center justify-center rounded-lg bg-slate-200 text-slate-700 transition-colors hover:bg-primary hover:text-white dark:bg-primary/10 dark:text-primary"

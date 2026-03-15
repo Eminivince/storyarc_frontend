@@ -46,7 +46,7 @@ function DesktopSubscription({
             <span className="material-symbols-outlined text-3xl text-primary">
               auto_stories
             </span>
-            <h2 className="text-xl font-bold tracking-tight">StoryArc</h2>
+            <h2 className="text-xl font-bold tracking-tight">TaleStead</h2>
           </Link>
           <nav className="hidden items-center gap-8 md:flex">
             <Link className="text-sm font-medium transition-colors hover:text-primary" to="/dashboard">
@@ -267,7 +267,7 @@ function MobileSubscription({
               Step Into the {plan.name}
             </h1>
             <p className="mx-auto max-w-[280px] text-base text-slate-300">
-              Experience StoryArc with premium mystical perks and stronger unlock power.
+              Experience TaleStead with premium mystical perks and stronger unlock power.
             </p>
           </div>
         </div>

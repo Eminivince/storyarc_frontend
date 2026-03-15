@@ -6,7 +6,7 @@ import {
   persistAuthTokens,
 } from "../auth/authStorage";
 
-export const SESSION_EXPIRED_EVENT = "storyarc:session-expired";
+export const SESSION_EXPIRED_EVENT = "talestead:session-expired";
 
 function isAbsoluteUrl(value) {
   return /^https?:\/\//i.test(value);

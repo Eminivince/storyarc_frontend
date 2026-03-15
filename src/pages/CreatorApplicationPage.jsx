@@ -73,7 +73,7 @@ function ContractPreferenceSection({
           >
             <p className="text-sm font-black">Apply for a contract</p>
             <p className="mt-1 text-xs leading-5 text-slate-500 dark:text-slate-400">
-              You want StoryArc to review your catalog for premium chapter revenue
+              You want TaleStead to review your catalog for premium chapter revenue
               sharing.
             </p>
           </button>
@@ -143,7 +143,7 @@ function ContractPreferenceSection({
                   an admin activates a story contract.
                 </>
               ) : (
-                "Select a contract basis so StoryArc can quote the right revenue share in review."
+                "Select a contract basis so TaleStead can quote the right revenue share in review."
               )}
             </div>
           </div>
@@ -176,7 +176,7 @@ function DesktopCreatorApplication({
                 <path d="M44 11.2727C44 14.0109 39.8386 16.3957 33.69 17.6364C39.8386 18.877 44 21.2618 44 24C44 26.7382 39.8386 29.123 33.69 30.3636C39.8386 31.6043 44 33.9891 44 36.7273C44 40.7439 35.0457 44 24 44C12.9543 44 4 40.7439 4 36.7273C4 33.9891 8.16144 31.6043 14.31 30.3636C8.16144 29.123 4 26.7382 4 24C4 21.2618 8.16144 18.877 14.31 17.6364C8.16144 16.3957 4 14.0109 4 11.2727C4 7.25611 12.9543 4 24 4C35.0457 4 44 7.25611 44 11.2727Z" fill="currentColor" />
               </svg>
             </div>
-            <h2 className="text-xl font-bold tracking-tight">StoryArc</h2>
+            <h2 className="text-xl font-bold tracking-tight">TaleStead</h2>
           </div>
           <div className="flex flex-1 items-center justify-end gap-8">
             <nav className="hidden items-center gap-8 md:flex">
@@ -212,7 +212,7 @@ function DesktopCreatorApplication({
             <div className="flex flex-wrap items-center justify-between gap-6 rounded-xl border border-primary/20 bg-primary/5 p-8">
               <div className="flex max-w-lg flex-col gap-3">
                 <h1 className="text-4xl font-black leading-tight tracking-tight lg:text-5xl">
-                  Become a StoryArc Author
+                  Become a TaleStead Author
                 </h1>
                 <p className="text-lg leading-relaxed text-slate-600 dark:text-slate-400">
                   Join our community of elite storytellers and share your voice with a
@@ -327,7 +327,7 @@ function DesktopCreatorApplication({
                   <span className="flex size-8 items-center justify-center rounded-full bg-primary font-bold text-background-dark">
                     4
                   </span>
-                  <h2 className="text-xl font-bold">Why StoryArc?</h2>
+                  <h2 className="text-xl font-bold">Why TaleStead?</h2>
                 </div>
                 <div className="flex flex-col gap-2">
                   <label className="text-sm font-medium text-slate-500 dark:text-slate-400">
@@ -338,7 +338,7 @@ function DesktopCreatorApplication({
                     className="block w-full resize-none rounded-lg border border-slate-300 bg-slate-50 p-4 text-base text-slate-900 transition-all placeholder:text-slate-400 focus:border-primary focus:ring-primary dark:border-primary/20 dark:bg-background-dark dark:text-white dark:placeholder:text-slate-600 disabled:cursor-not-allowed disabled:opacity-70"
                     disabled={isSubmitted}
                     onChange={onChange("motivation")}
-                    placeholder="I want to join StoryArc because..."
+                    placeholder="I want to join TaleStead because..."
                     rows="5"
                     value={form.motivation}
                   />

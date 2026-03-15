@@ -10,7 +10,8 @@ export default function PaymentFailedPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [verifyReference, setVerifyReference] = useState("");
-  const { coinBalance } = useMonetization();
+  const { checkoutProvider, coinBalance } = useMonetization();
+  const providerLabel = checkoutProvider === "cryptomus" ? "Cryptomus" : "Paystack";
   const returnTo = searchParams.get("returnTo") || lockedChapterHref;
   const resumeTo = searchParams.get("resumeTo") || returnTo;
   const reason = searchParams.get("reason") || null;
@@ -20,9 +21,9 @@ export default function PaymentFailedPage() {
   const balanceLabel = `${coinBalance.toLocaleString()} coins available`;
   const note =
     reason === "missing-reference"
-      ? "Paystack did not return a usable payment reference, so StoryArc could not verify the charge. If you completed payment, enter your reference below to verify."
+      ? `${providerLabel} did not return a usable payment reference, so TaleStead could not verify the charge. If you completed payment, enter your reference below to verify.`
       : reason === "verification-failed"
-        ? "StoryArc could not verify this charge against the signed-in account."
+        ? "TaleStead could not verify this charge against the signed-in account."
         : "No wallet credit was applied. You can resume reading, return to the dashboard, or review your wallet before trying again.";
 
   const handleVerifyPayment = (e) => {
@@ -50,13 +51,13 @@ export default function PaymentFailedPage() {
                 className="mb-1 block text-xs font-bold uppercase tracking-wider text-slate-400"
                 htmlFor="verify-reference"
               >
-                Paystack reference
+                {providerLabel} reference
               </label>
               <input
                 className="w-full rounded-xl border border-slate-600 bg-slate-900 px-4 py-2.5 text-slate-100 placeholder-slate-500 focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/30"
                 id="verify-reference"
                 onChange={(e) => setVerifyReference(e.target.value)}
-                placeholder="e.g. storyarc-xxx or Paystack reference"
+                placeholder={`Enter your ${providerLabel} reference`}
                 type="text"
                 value={verifyReference}
               />

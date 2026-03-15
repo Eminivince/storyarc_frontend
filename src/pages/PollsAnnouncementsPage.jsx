@@ -347,7 +347,7 @@ function MobileCommunity({
               <p className="text-[9px] font-bold uppercase tracking-widest text-primary">
                 Creator Hub
               </p>
-              <h1 className="text-sm font-bold">StoryArc Community</h1>
+              <h1 className="text-sm font-bold">TaleStead Community</h1>
             </div>
             <div className="flex items-center gap-0.5">
               <button className="rounded-full p-1.5 transition-colors hover:bg-primary/10" type="button">
@@ -429,7 +429,7 @@ export default function PollsAnnouncementsPage() {
     try {
       if (action.id === "poll") {
         const response = await pollMutation.mutateAsync({
-          body: "Choose the next bonus drop your readers will see in StoryArc Community.",
+          body: "Choose the next bonus drop your readers will see in TaleStead Community.",
           options: [
             { label: "Character dossiers" },
             { label: "Lore and worldbuilding notes" },

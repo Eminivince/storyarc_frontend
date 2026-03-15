@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { AppDesktopSidebar, AppMobileTabBar } from "./AppShellNav";
 import { adminDashboardHref } from "../data/adminFlow";
 
-const adminConsoleLabel = "StoryArc Admin";
+const adminConsoleLabel = "TaleStead Admin";
 
 function IconAction({ icon, label, onClick, to }) {
   const classes =
@@ -36,7 +36,7 @@ function SearchField({ onSearchChange, placeholder, searchTerm }) {
         to={adminDashboardHref}
       >
         <span className="material-symbols-outlined text-base">admin_panel_settings</span>
-        StoryArc Admin Console
+        TaleStead Admin Console
       </Link>
     );
   }

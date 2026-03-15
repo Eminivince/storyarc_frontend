@@ -13,7 +13,7 @@ function DesktopPasswordResetSuccess() {
               </svg>
             </div>
             <h2 className="text-xl font-bold tracking-tight text-slate-900 dark:text-white">
-              StoryArc
+              TaleStead
             </h2>
           </div>
           <div className="flex flex-1 justify-end gap-8">
@@ -148,7 +148,7 @@ function DesktopPasswordResetSuccess() {
               </span>
             </div>
             <p className="text-sm font-normal text-slate-500 dark:text-slate-500">
-              © 2024 StoryArc Webnovels. All rights reserved.
+              © 2024 TaleStead Webnovels. All rights reserved.
             </p>
           </div>
         </footer>
@@ -185,7 +185,7 @@ function MobilePasswordResetSuccess() {
             <h1 className="text-3xl font-bold tracking-tight">Success!</h1>
             <p className="max-w-[280px] text-base leading-relaxed text-slate-600 dark:text-slate-400">
               Your password has been successfully reset. You can now use your new
-              password to log in to your StoryArc account.
+              password to log in to your TaleStead account.
             </p>
           </div>
 

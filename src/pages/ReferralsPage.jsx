@@ -19,7 +19,7 @@ const desktopTrustSignals = [
   },
   {
     title: "Unlimited Invites",
-    description: "There is no cap on how many readers you can bring into StoryArc.",
+    description: "There is no cap on how many readers you can bring into TaleStead.",
     icon: "group_add",
   },
   {
@@ -53,7 +53,7 @@ function DesktopReferrals({
                 <path d="M44 11.2727C44 14.0109 39.8386 16.3957 33.69 17.6364C39.8386 18.877 44 21.2618 44 24C44 26.7382 39.8386 29.123 33.69 30.3636C39.8386 31.6043 44 33.9891 44 36.7273C44 40.7439 35.0457 44 24 44C12.9543 44 4 40.7439 4 36.7273C4 33.9891 8.16144 31.6043 14.31 30.3636C8.16144 29.123 4 26.7382 4 24C4 21.2618 8.16144 18.877 14.31 17.6364C8.16144 16.3957 4 14.0109 4 11.2727C4 7.25611 12.9543 4 24 4C35.0457 4 44 7.25611 44 11.2727Z" />
               </svg>
             </div>
-            <h1 className="text-xl font-bold tracking-tight">StoryArc</h1>
+            <h1 className="text-xl font-bold tracking-tight">TaleStead</h1>
           </div>
           <div className="flex items-center gap-6">
             <nav className="hidden items-center gap-8 md:flex">
@@ -97,7 +97,7 @@ function DesktopReferrals({
                 Invite Your Inner Circle
               </h2>
               <p className="mt-3 max-w-2xl text-lg text-slate-700 dark:text-slate-300">
-                Share the magic of StoryArc. Give a week of Premium access to your
+                Share the magic of TaleStead. Give a week of Premium access to your
                 friends and earn <span className="font-bold text-primary">{referrals.rewardLabel}</span> for every
                 successful journey they begin.
               </p>
@@ -273,7 +273,7 @@ function MobileReferrals({
                 </span>
                 <h2 className="text-3xl font-bold leading-tight text-white">Give $20, Get $20</h2>
                 <p className="text-sm text-slate-300">
-                  Invite friends to join the premium StoryArc circle.
+                  Invite friends to join the premium TaleStead circle.
                 </p>
               </div>
             </Reveal>

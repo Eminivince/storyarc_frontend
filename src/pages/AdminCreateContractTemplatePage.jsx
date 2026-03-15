@@ -302,7 +302,7 @@ export default function AdminCreateContractTemplatePage() {
                 <input
                   className="mt-2 w-full rounded-xl border border-primary/10 bg-slate-50 px-4 py-3 text-sm focus:border-primary/30 focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-background-dark/50"
                   onChange={(event) => updateField("companyName", event.target.value)}
-                  placeholder="e.g., StoryArc Publishing LLC"
+                  placeholder="e.g., TaleStead Publishing LLC"
                   type="text"
                   value={form.companyName}
                 />

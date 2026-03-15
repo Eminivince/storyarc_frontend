@@ -262,7 +262,7 @@ function AnalyticsEmptyPanel({ onCreateStory }) {
     <div className="rounded-3xl border border-dashed border-primary/20 bg-white/90 px-6 py-10 text-center dark:bg-primary/5">
       <p className="text-lg font-bold">Analytics will appear after you publish chapters.</p>
       <p className="mt-2 text-sm text-slate-500 dark:text-primary/60">
-        StoryArc is ready to track daily views, retention, chapter drop-off, and revenue as soon as readers arrive.
+        TaleStead is ready to track daily views, retention, chapter drop-off, and revenue as soon as readers arrive.
       </p>
       <button
         className="mt-5 inline-flex items-center gap-2 rounded-2xl bg-primary px-5 py-3 text-sm font-bold text-background-dark"
@@ -713,7 +713,7 @@ function DesktopAuthorDashboard({
                 <span className="material-symbols-outlined">auto_stories</span>
               </div>
               <h2 className="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
-                StoryArc
+                TaleStead
               </h2>
             </div>
             <label className="hidden min-w-64 md:flex">
@@ -1336,7 +1336,7 @@ export default function AuthorDashboardPage() {
   });
   const analytics = analyticsQuery.data ?? null;
   const authorName =
-    applicationDraft.fullName || user?.displayName || "StoryArc Creator";
+    applicationDraft.fullName || user?.displayName || "TaleStead Creator";
   const stats = getAuthorStats(stories);
   const quickActions = getAuthorQuickActions(stories);
   const recentActivity = getAuthorRecentActivity(stories);
