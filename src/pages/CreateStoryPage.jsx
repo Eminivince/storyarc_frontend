@@ -293,7 +293,8 @@ function DesktopCreateStory({
 
                   <div className="flex justify-center pt-4">
                     <button
-                      className="flex items-center justify-center gap-2 rounded-lg bg-primary px-12 py-4 font-black uppercase tracking-wider text-background-dark transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/20"
+                      className="flex items-center justify-center gap-2 rounded-lg bg-primary px-12 py-4 font-black uppercase tracking-wider text-background-dark transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/20 disabled:cursor-not-allowed disabled:opacity-60"
+                      disabled={isCreating || !form.termsAccepted}
                       onClick={onSubmit}
                       type="button">
                       <span className="material-symbols-outlined font-bold">
@@ -521,7 +522,7 @@ function MobileCreateStory({
           <div className="pt-6">
             <button
               className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-3 text-sm font-bold text-slate-900 shadow-lg shadow-primary/20 transition-all disabled:cursor-not-allowed disabled:opacity-60"
-              disabled={isCreating}
+              disabled={isCreating || !form.termsAccepted}
               onClick={onSubmit}
               type="button">
               <span className="material-symbols-outlined text-lg">
