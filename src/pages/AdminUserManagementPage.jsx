@@ -35,9 +35,12 @@ function statusClasses(status) {
 
 export default function AdminUserManagementPage() {
   const {
+    isLoadingMoreUsers,
+    loadMoreUsers,
     showAdminNotice,
     suspendUser,
     users,
+    usersPageInfo,
   } = useAdmin();
   const [activeRole, setActiveRole] = useState("All");
   const [searchTerm, setSearchTerm] = useState("");
@@ -253,6 +256,22 @@ export default function AdminUserManagementPage() {
             </div>
           ))}
         </div>
+
+        {usersPageInfo?.hasMore ? (
+          <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-400">
+              Showing {users.length} users
+            </p>
+            <button
+              className="rounded-full border border-primary/20 bg-primary/5 px-5 py-2 text-xs font-bold uppercase tracking-[0.2em] text-primary transition-colors hover:bg-primary/10 disabled:cursor-not-allowed disabled:opacity-60"
+              disabled={isLoadingMoreUsers}
+              onClick={loadMoreUsers}
+              type="button"
+            >
+              {isLoadingMoreUsers ? "Loading..." : "Load More Users"}
+            </button>
+          </div>
+        ) : null}
       </section>
     </AdminPageLayout>
   );

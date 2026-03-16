@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useDeferredValue, useMemo, useState } from "react";
+import { useDeferredValue, useMemo, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import {
   fetchAdminComments,
@@ -16,12 +16,18 @@ import {
   rejectCreatorApplication,
 } from "../creator/creatorApi";
 import { useAdmin } from "../context/AdminContext";
-import { useEffect } from "react";
 
 const moderationFilters = ["All", "Applications", "Flagged", "Resolved"];
 const creatorApplicationsQueryKey = ["admin", "creator-applications"];
 const adminCommentsQueryKey = ["admin", "comments"];
 const adminReviewsQueryKey = ["admin", "reviews"];
+const ADMIN_LIST_PAGE_SIZE = 200;
+const emptyPageInfo = {
+  hasMore: false,
+  limit: ADMIN_LIST_PAGE_SIZE,
+  nextOffset: null,
+  offset: 0,
+};
 
 function toneClasses(tone) {
   if (tone === "rose") {
@@ -106,7 +112,10 @@ function reviewStatusClasses(status) {
 export default function AdminContentModerationPage() {
   const queryClient = useQueryClient();
   const {
+    isLoadingMoreReports,
+    loadMoreReports,
     reports,
+    reportsPageInfo,
     resolveModerationItem,
     showAdminNotice,
   } = useAdmin();
@@ -114,6 +123,12 @@ export default function AdminContentModerationPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedId, setSelectedId] = useState(reports[0]?.id ?? null);
   const deferredSearch = useDeferredValue(searchTerm);
+  const [adminComments, setAdminComments] = useState([]);
+  const [adminReviews, setAdminReviews] = useState([]);
+  const [commentsPageInfo, setCommentsPageInfo] = useState(emptyPageInfo);
+  const [reviewsPageInfo, setReviewsPageInfo] = useState(emptyPageInfo);
+  const [isLoadingMoreComments, setIsLoadingMoreComments] = useState(false);
+  const [isLoadingMoreReviews, setIsLoadingMoreReviews] = useState(false);
   const creatorApplicationsQuery = useQuery({
     queryKey: creatorApplicationsQueryKey,
     queryFn: () => listAdminCreatorApplications(),
@@ -121,12 +136,20 @@ export default function AdminContentModerationPage() {
   });
   const adminCommentsQuery = useQuery({
     queryKey: adminCommentsQueryKey,
-    queryFn: () => fetchAdminComments(),
+    queryFn: () =>
+      fetchAdminComments({
+        limit: ADMIN_LIST_PAGE_SIZE,
+        offset: 0,
+      }),
     retry: false,
   });
   const adminReviewsQuery = useQuery({
     queryKey: adminReviewsQueryKey,
-    queryFn: () => fetchAdminReviews(),
+    queryFn: () =>
+      fetchAdminReviews({
+        limit: ADMIN_LIST_PAGE_SIZE,
+        offset: 0,
+      }),
     retry: false,
   });
   const approveApplicationMutation = useMutation({
@@ -222,20 +245,52 @@ export default function AdminContentModerationPage() {
     },
   });
   const creatorApplications = creatorApplicationsQuery.data?.applications ?? [];
-  const adminComments = adminCommentsQuery.data?.comments ?? [];
-  const adminReviews = adminReviewsQuery.data?.reviews ?? [];
-  const adminCommentSummary = adminCommentsQuery.data?.summary ?? {
-    deletedCount: 0,
-    hiddenCount: 0,
-    replyCount: 0,
-    visibleCount: 0,
-  };
-  const adminReviewSummary = adminReviewsQuery.data?.summary ?? {
-    deletedCount: 0,
-    hiddenCount: 0,
-    spoilerCount: 0,
-    visibleCount: 0,
-  };
+  const adminCommentSummary = useMemo(
+    () =>
+      adminComments.reduce(
+        (summary, comment) => {
+          if (comment.status === "Deleted") {
+            summary.deletedCount += 1;
+          } else if (comment.status === "Hidden") {
+            summary.hiddenCount += 1;
+          } else if (comment.status === "Visible") {
+            summary.visibleCount += 1;
+          }
+
+          if (comment.isReply) {
+            summary.replyCount += 1;
+          }
+
+          return summary;
+        },
+        { deletedCount: 0, hiddenCount: 0, replyCount: 0, visibleCount: 0 },
+      ),
+    [adminComments],
+  );
+  const adminReviewSummary = useMemo(
+    () =>
+      adminReviews.reduce(
+        (summary, review) => {
+          if (review.status === "Deleted") {
+            summary.deletedCount += 1;
+          } else if (review.status === "Hidden") {
+            summary.hiddenCount += 1;
+          } else if (review.status === "Visible") {
+            summary.visibleCount += 1;
+          }
+
+          if (review.containsSpoilers) {
+            summary.spoilerCount += 1;
+          }
+
+          return summary;
+        },
+        { deletedCount: 0, hiddenCount: 0, spoilerCount: 0, visibleCount: 0 },
+      ),
+    [adminReviews],
+  );
+  const hasMoreComments = commentsPageInfo?.hasMore;
+  const hasMoreReviews = reviewsPageInfo?.hasMore;
   const creatorApplicationCounts = {
     approved: creatorApplications.filter((application) => application.status === "APPROVED")
       .length,
@@ -350,6 +405,70 @@ export default function AdminContentModerationPage() {
       setSelectedId(filteredReports[0].id);
     }
   }, [filteredReports, selectedId]);
+
+  useEffect(() => {
+    if (!adminCommentsQuery.data) {
+      return;
+    }
+
+    setAdminComments(adminCommentsQuery.data.comments ?? []);
+    setCommentsPageInfo(adminCommentsQuery.data.pageInfo ?? emptyPageInfo);
+  }, [adminCommentsQuery.data]);
+
+  useEffect(() => {
+    if (!adminReviewsQuery.data) {
+      return;
+    }
+
+    setAdminReviews(adminReviewsQuery.data.reviews ?? []);
+    setReviewsPageInfo(adminReviewsQuery.data.pageInfo ?? emptyPageInfo);
+  }, [adminReviewsQuery.data]);
+
+  async function loadMoreComments() {
+    if (
+      isLoadingMoreComments ||
+      adminCommentsQuery.isPending ||
+      !commentsPageInfo.hasMore
+    ) {
+      return;
+    }
+
+    setIsLoadingMoreComments(true);
+
+    try {
+      const response = await fetchAdminComments({
+        limit: ADMIN_LIST_PAGE_SIZE,
+        offset: commentsPageInfo.nextOffset ?? 0,
+      });
+      setAdminComments((current) => [...current, ...(response?.comments ?? [])]);
+      setCommentsPageInfo(response?.pageInfo ?? emptyPageInfo);
+    } finally {
+      setIsLoadingMoreComments(false);
+    }
+  }
+
+  async function loadMoreReviews() {
+    if (
+      isLoadingMoreReviews ||
+      adminReviewsQuery.isPending ||
+      !reviewsPageInfo.hasMore
+    ) {
+      return;
+    }
+
+    setIsLoadingMoreReviews(true);
+
+    try {
+      const response = await fetchAdminReviews({
+        limit: ADMIN_LIST_PAGE_SIZE,
+        offset: reviewsPageInfo.nextOffset ?? 0,
+      });
+      setAdminReviews((current) => [...current, ...(response?.reviews ?? [])]);
+      setReviewsPageInfo(response?.pageInfo ?? emptyPageInfo);
+    } finally {
+      setIsLoadingMoreReviews(false);
+    }
+  }
 
   const selectedReport =
     filteredReports.find((item) => item.id === selectedId) ?? filteredReports[0] ?? reports[0];
@@ -739,6 +858,19 @@ export default function AdminContentModerationPage() {
             </div>
           )}
         </div>
+
+        {hasMoreComments ? (
+          <div className="mt-6 flex justify-end">
+            <button
+              className="rounded-full border border-primary/20 bg-primary/5 px-5 py-2 text-xs font-bold uppercase tracking-[0.2em] text-primary transition-colors hover:bg-primary/10 disabled:cursor-not-allowed disabled:opacity-60"
+              disabled={isLoadingMoreComments}
+              onClick={loadMoreComments}
+              type="button"
+            >
+              {isLoadingMoreComments ? "Loading..." : "Load More Comments"}
+            </button>
+          </div>
+        ) : null}
       </section>
 
       <section className="rounded-[28px] border border-primary/10 bg-white p-6 shadow-[0_24px_60px_-36px_rgba(13,15,22,0.35)] dark:bg-primary/5">
@@ -922,6 +1054,19 @@ export default function AdminContentModerationPage() {
             </div>
           )}
         </div>
+
+        {hasMoreReviews ? (
+          <div className="mt-6 flex justify-end">
+            <button
+              className="rounded-full border border-primary/20 bg-primary/5 px-5 py-2 text-xs font-bold uppercase tracking-[0.2em] text-primary transition-colors hover:bg-primary/10 disabled:cursor-not-allowed disabled:opacity-60"
+              disabled={isLoadingMoreReviews}
+              onClick={loadMoreReviews}
+              type="button"
+            >
+              {isLoadingMoreReviews ? "Loading..." : "Load More Reviews"}
+            </button>
+          </div>
+        ) : null}
       </section>
 
       <section className="grid grid-cols-1 gap-6 xl:grid-cols-[1.05fr_0.95fr]">
@@ -1006,6 +1151,19 @@ export default function AdminContentModerationPage() {
               </div>
             )}
           </div>
+
+          {reportsPageInfo?.hasMore ? (
+            <div className="mt-6 flex justify-end">
+              <button
+                className="rounded-full border border-primary/20 bg-primary/5 px-5 py-2 text-xs font-bold uppercase tracking-[0.2em] text-primary transition-colors hover:bg-primary/10 disabled:cursor-not-allowed disabled:opacity-60"
+                disabled={isLoadingMoreReports}
+                onClick={loadMoreReports}
+                type="button"
+              >
+                {isLoadingMoreReports ? "Loading..." : "Load More Reports"}
+              </button>
+            </div>
+          ) : null}
         </Reveal>
 
         <Reveal className="rounded-[28px] border border-primary/10 bg-white p-6 shadow-[0_24px_60px_-36px_rgba(13,15,22,0.35)] dark:bg-primary/5">

@@ -31,6 +31,13 @@ const emptyFinancialHealth = {
   monthlyTarget: "$0.00",
   width: "0%",
 };
+const ADMIN_LIST_PAGE_SIZE = 200;
+const emptyPageInfo = {
+  hasMore: false,
+  limit: ADMIN_LIST_PAGE_SIZE,
+  nextOffset: null,
+  offset: 0,
+};
 
 function getErrorMessage(error, fallbackMessage) {
   return error?.message || fallbackMessage;
@@ -60,6 +67,12 @@ export function AdminProvider({ children }) {
   const { showToast } = useToast();
   const [selectedConversationId, setSelectedConversationId] = useState(null);
   const [userDetailsById, setUserDetailsById] = useState({});
+  const [users, setUsers] = useState([]);
+  const [usersPageInfo, setUsersPageInfo] = useState(emptyPageInfo);
+  const [usersLoadingMore, setUsersLoadingMore] = useState(false);
+  const [reports, setReports] = useState([]);
+  const [reportsPageInfo, setReportsPageInfo] = useState(emptyPageInfo);
+  const [reportsLoadingMore, setReportsLoadingMore] = useState(false);
   const isAdmin = user?.role === "ADMIN";
   const queryScope = user?.id ?? "guest";
 
@@ -72,13 +85,13 @@ export function AdminProvider({ children }) {
   const usersQuery = useQuery({
     enabled: isAdmin,
     queryKey: ["admin", "users", queryScope],
-    queryFn: fetchAdminUsers,
+    queryFn: () => fetchAdminUsers({ limit: ADMIN_LIST_PAGE_SIZE, offset: 0 }),
     staleTime: 30_000,
   });
   const reportsQuery = useQuery({
     enabled: isAdmin,
     queryKey: ["admin", "reports", queryScope],
-    queryFn: fetchAdminReports,
+    queryFn: () => fetchAdminReports({ limit: ADMIN_LIST_PAGE_SIZE, offset: 0 }),
     staleTime: 15_000,
   });
   const monetizationQuery = useQuery({
@@ -113,10 +126,31 @@ export function AdminProvider({ children }) {
 
     setSelectedConversationId(null);
     setUserDetailsById({});
+    setUsers([]);
+    setUsersPageInfo(emptyPageInfo);
+    setUsersLoadingMore(false);
+    setReports([]);
+    setReportsPageInfo(emptyPageInfo);
+    setReportsLoadingMore(false);
   }, [isAdmin]);
 
-  const users = usersQuery.data?.users ?? [];
-  const reports = reportsQuery.data?.reports ?? [];
+  useEffect(() => {
+    if (!usersQuery.data) {
+      return;
+    }
+
+    setUsers(usersQuery.data.users ?? []);
+    setUsersPageInfo(usersQuery.data.pageInfo ?? emptyPageInfo);
+  }, [usersQuery.data]);
+
+  useEffect(() => {
+    if (!reportsQuery.data) {
+      return;
+    }
+
+    setReports(reportsQuery.data.reports ?? []);
+    setReportsPageInfo(reportsQuery.data.pageInfo ?? emptyPageInfo);
+  }, [reportsQuery.data]);
   const settings = settingsQuery.data?.settings ?? [];
   const activityGroups = activityQuery.data?.activityGroups ?? [];
   const conversations = messagesQuery.data?.conversations ?? [];
@@ -165,6 +199,46 @@ export function AdminProvider({ children }) {
         queryKey: key,
       });
     });
+  }
+
+  async function loadMoreUsers() {
+    if (usersLoadingMore || usersQuery.isPending || !usersPageInfo.hasMore) {
+      return;
+    }
+
+    setUsersLoadingMore(true);
+
+    try {
+      const response = await fetchAdminUsers({
+        limit: ADMIN_LIST_PAGE_SIZE,
+        offset: usersPageInfo.nextOffset ?? 0,
+      });
+      const nextUsers = response?.users ?? [];
+      setUsers((current) => [...current, ...nextUsers]);
+      setUsersPageInfo(response?.pageInfo ?? emptyPageInfo);
+    } finally {
+      setUsersLoadingMore(false);
+    }
+  }
+
+  async function loadMoreReports() {
+    if (reportsLoadingMore || reportsQuery.isPending || !reportsPageInfo.hasMore) {
+      return;
+    }
+
+    setReportsLoadingMore(true);
+
+    try {
+      const response = await fetchAdminReports({
+        limit: ADMIN_LIST_PAGE_SIZE,
+        offset: reportsPageInfo.nextOffset ?? 0,
+      });
+      const nextReports = response?.reports ?? [];
+      setReports((current) => [...current, ...nextReports]);
+      setReportsPageInfo(response?.pageInfo ?? emptyPageInfo);
+    } finally {
+      setReportsLoadingMore(false);
+    }
   }
 
   async function loadUserDetails(userId) {
@@ -499,7 +573,11 @@ export function AdminProvider({ children }) {
     isLoadingReports: reportsQuery.isPending,
     isLoadingSettings: settingsQuery.isPending,
     isLoadingUsers: usersQuery.isPending,
+    isLoadingMoreReports: reportsLoadingMore,
+    isLoadingMoreUsers: usersLoadingMore,
     loadUserDetails,
+    loadMoreReports,
+    loadMoreUsers,
     monetizationStats,
     monetizationStreams,
     overviewStats,
@@ -508,6 +586,7 @@ export function AdminProvider({ children }) {
     recentUsers,
     releasePayout,
     reports,
+    reportsPageInfo,
     resolveModerationItem,
     resetUserPassword,
     reviewPayout,
@@ -524,6 +603,7 @@ export function AdminProvider({ children }) {
     topCoinPackages,
     updateSystemSetting,
     users,
+    usersPageInfo,
   };
 
   return <AdminContext.Provider value={value}>{children}</AdminContext.Provider>;

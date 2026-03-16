@@ -14,6 +14,25 @@ function getAuthHeaders(headers = {}) {
   };
 }
 
+function withQueryParams(path, params) {
+  if (!params) {
+    return path;
+  }
+
+  const searchParams = new URLSearchParams();
+
+  Object.entries(params).forEach(([key, value]) => {
+    if (value === undefined || value === null) {
+      return;
+    }
+
+    searchParams.set(key, String(value));
+  });
+
+  const query = searchParams.toString();
+  return query ? `${path}?${query}` : path;
+}
+
 export function fetchAdminOverview() {
   return getJson("/admin/dashboard", {
     headers: getAuthHeaders(),
@@ -114,8 +133,8 @@ export function updateAdminBookConfig(bookSlug, input) {
   });
 }
 
-export function fetchAdminUsers() {
-  return getJson("/admin/users", {
+export function fetchAdminUsers(pagination) {
+  return getJson(withQueryParams("/admin/users", pagination), {
     headers: getAuthHeaders(),
   });
 }
@@ -148,8 +167,8 @@ export function resetAdminUserPassword(userId) {
   });
 }
 
-export function fetchAdminReports() {
-  return getJson("/admin/reports", {
+export function fetchAdminReports(pagination) {
+  return getJson(withQueryParams("/admin/reports", pagination), {
     headers: getAuthHeaders(),
   });
 }
@@ -162,8 +181,8 @@ export function updateAdminReport(reportId, input) {
   });
 }
 
-export function fetchAdminComments() {
-  return getJson("/admin/comments", {
+export function fetchAdminComments(pagination) {
+  return getJson(withQueryParams("/admin/comments", pagination), {
     headers: getAuthHeaders(),
   });
 }
@@ -176,8 +195,8 @@ export function updateAdminComment(commentId, input) {
   });
 }
 
-export function fetchAdminReviews() {
-  return getJson("/admin/reviews", {
+export function fetchAdminReviews(pagination) {
+  return getJson(withQueryParams("/admin/reviews", pagination), {
     headers: getAuthHeaders(),
   });
 }
