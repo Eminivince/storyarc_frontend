@@ -176,3 +176,23 @@ export function fetchReactionHeatmap({ storySlug, chapterSlug }) {
     { headers: getAuthHeaders() },
   );
 }
+
+// ── Reading Challenges ─────────────────────────────────────────────
+
+export function fetchActiveChallenges() {
+  return getJson("/engagement/challenges", {
+    headers: getAuthHeaders(),
+  });
+}
+
+export function claimChallengeReward(challengeId) {
+  return postJson(`/engagement/challenges/${challengeId}/claim`, undefined, {
+    headers: getAuthHeaders(),
+  });
+}
+
+export function fetchChallengeLeaderboard(challengeId) {
+  return getJson(`/engagement/challenges/${challengeId}/leaderboard`, {
+    headers: getAuthHeaders(),
+  });
+}

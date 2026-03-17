@@ -1,6 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
+  claimChallengeReward,
+  fetchActiveChallenges,
   fetchBadges,
+  fetchChallengeLeaderboard,
   fetchChapterReactions,
   fetchReactionHeatmap,
   purchaseStreakShield,
@@ -120,5 +123,37 @@ export function useReactionHeatmapQuery(storySlug, chapterSlug) {
     queryFn: () => fetchReactionHeatmap({ storySlug, chapterSlug }),
     staleTime: STALE_5_MIN,
     enabled: Boolean(storySlug && chapterSlug),
+  });
+}
+
+// ── Challenges ─────────────────────────────────────────────────────
+
+export function useActiveChallengesQuery() {
+  return useQuery({
+    queryKey: ["challenges"],
+    queryFn: fetchActiveChallenges,
+    staleTime: STALE_5_MIN,
+  });
+}
+
+export function useClaimChallengeRewardMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: claimChallengeReward,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["challenges"] });
+      queryClient.invalidateQueries({ queryKey: ["engagement-overview"] });
+      queryClient.invalidateQueries({ queryKey: ["engagement"] });
+    },
+  });
+}
+
+export function useChallengeLeaderboardQuery(challengeId) {
+  return useQuery({
+    queryKey: ["challenge-leaderboard", challengeId],
+    queryFn: () => fetchChallengeLeaderboard(challengeId),
+    staleTime: STALE_5_MIN,
+    enabled: Boolean(challengeId),
   });
 }

@@ -19,6 +19,7 @@ import {
 import { useCreator } from "../context/CreatorContext";
 import { useOnboarding } from "../context/OnboardingContext";
 import { useReaderDashboardQuery } from "../reader/readerHooks";
+import { useActiveChallengesQuery } from "../engagement/engagementHooks";
 
 function LoadingState() {
   return <RouteLoadingScreen />;
@@ -108,7 +109,47 @@ function StoryRow({ row }) {
   );
 }
 
+function ActiveChallengesWidget({ challenges }) {
+  if (!challenges?.length) return null;
+  const top = challenges.slice(0, 3);
+
+  return (
+    <Reveal as="section" className="space-y-3">
+      <div className="flex items-center justify-between">
+        <h2 className="text-lg font-bold md:text-xl">Active Challenges</h2>
+        <Link className="text-xs font-semibold text-primary hover:underline" to="/account/challenges">
+          View all
+        </Link>
+      </div>
+      <div className="grid gap-3 md:grid-cols-3">
+        {top.map((c) => {
+          const progress = Math.min(c.currentValue / c.targetValue, 1);
+          return (
+            <Link
+              key={c.id}
+              to="/account/challenges"
+              className="rounded-xl border border-primary/10 bg-primary/5 p-3 transition-colors hover:bg-primary/10"
+            >
+              <p className="text-sm font-bold">{c.title}</p>
+              <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-zinc-800">
+                <div
+                  className="h-full rounded-full bg-primary"
+                  style={{ width: `${progress * 100}%` }}
+                />
+              </div>
+              <p className="mt-1 text-[10px] text-zinc-500">
+                {c.currentValue}/{c.targetValue} · +{c.rewardPoints} pts
+              </p>
+            </Link>
+          );
+        })}
+      </div>
+    </Reveal>
+  );
+}
+
 function DesktopDashboard({
+  activeChallenges,
   data,
   onSearchSubmit,
   searchTerm,
@@ -280,6 +321,8 @@ function DesktopDashboard({
               </Reveal>
             ) : null}
 
+            <ActiveChallengesWidget challenges={activeChallenges} />
+
             {data?.rows?.length ? (
               data.rows.map((row) => <StoryRow key={row.id} row={row} />)
             ) : (
@@ -293,6 +336,7 @@ function DesktopDashboard({
 }
 
 function MobileDashboard({
+  activeChallenges,
   data,
   onSearchSubmit,
   searchTerm,
@@ -402,6 +446,8 @@ function MobileDashboard({
           </Reveal>
         ) : null}
 
+        <ActiveChallengesWidget challenges={activeChallenges} />
+
         {data?.rows?.map((row) =>
           row.stories?.length ? (
             <Reveal as="section" className="space-y-3" key={row.id}>
@@ -455,6 +501,7 @@ export default function DashboardPage() {
   const { enterWriterMode, getCreatorEntryHref } = useCreator();
   const { selectedGenres } = useOnboarding();
   const { data, error, isError, isLoading } = useReaderDashboardQuery();
+  const challengesQuery = useActiveChallengesQuery();
   const [searchTerm, setSearchTerm] = useState("");
   const topGenre = selectedGenres[0] || data?.availableGenres?.[0] || "Fantasy";
 
@@ -502,6 +549,7 @@ export default function DashboardPage() {
   return (
     <>
       <DesktopDashboard
+        activeChallenges={challengesQuery.data}
         data={data}
         onSearchSubmit={handleSearchSubmit}
         onWriteStory={handleWriteStory}
@@ -510,6 +558,7 @@ export default function DashboardPage() {
         topGenre={topGenre}
       />
       <MobileDashboard
+        activeChallenges={challengesQuery.data}
         data={data}
         onSearchSubmit={handleSearchSubmit}
         searchTerm={searchTerm}

@@ -38,6 +38,7 @@ const AuthPage = lazy(() => import("../pages/AuthPage"));
 const AuthorDashboardPage = lazy(() => import("../pages/AuthorDashboardPage"));
 const BillingSettingsPage = lazy(() => import("../pages/BillingSettingsPage"));
 const BrowsePage = lazy(() => import("../pages/BrowsePage"));
+const ChallengesPage = lazy(() => import("../pages/ChallengesPage"));
 const ChapterCompletePage = lazy(() => import("../pages/ChapterCompletePage"));
 const ChapterEditorPage = lazy(() => import("../pages/ChapterEditorPage"));
 const CheckoutPage = lazy(() => import("../pages/CheckoutPage"));
@@ -335,6 +336,7 @@ export const appRouteGroups = [
         page: "LeaderboardPage",
       },
       { path: "/account/badges", component: BadgesPage, page: "BadgesPage" },
+      { path: "/account/challenges", component: ChallengesPage, page: "ChallengesPage" },
       {
         path: "/account/security/mfa",
         component: MfaChooseMethodPage,
