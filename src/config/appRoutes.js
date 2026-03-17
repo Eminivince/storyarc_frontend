@@ -33,6 +33,7 @@ const AdminUserDetailsPage = lazy(() => import("../pages/AdminUserDetailsPage"))
 const AdminUserManagementPage = lazy(() =>
   import("../pages/AdminUserManagementPage"),
 );
+const BadgesPage = lazy(() => import("../pages/BadgesPage"));
 const AuthPage = lazy(() => import("../pages/AuthPage"));
 const AuthorDashboardPage = lazy(() => import("../pages/AuthorDashboardPage"));
 const BillingSettingsPage = lazy(() => import("../pages/BillingSettingsPage"));
@@ -332,6 +333,7 @@ export const appRouteGroups = [
         component: LeaderboardPage,
         page: "LeaderboardPage",
       },
+      { path: "/account/badges", component: BadgesPage, page: "BadgesPage" },
       {
         path: "/account/security/mfa",
         component: MfaChooseMethodPage,

@@ -3,6 +3,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useScrollHide } from "../hooks/useScrollHide";
 import { Link, Navigate, useParams } from "react-router-dom";
 import { ChapterCommentsSection } from "../components/ChapterCommentsSection";
+import { LogoBrand } from "../components/LogoBrand";
 import ReaderStateScreen from "../components/ReaderStateScreen";
 import RouteLoadingScreen from "../components/RouteLoadingScreen";
 import SeoMetadata, { createSeoDescription } from "../components/SeoMetadata";
@@ -21,6 +22,9 @@ import {
   useRemoveBookmarkMutation,
   useSaveReadingProgressMutation,
 } from "../reader/readerHooks";
+import { useRecordReadingTimeMutation } from "../engagement/engagementHooks";
+import { recordReadingTime } from "../engagement/engagementApi";
+import { getStoredReadingTheme, persistReadingTheme } from "../lib/readingTheme";
 
 const readerThemes = {
   dark: {
@@ -197,12 +201,7 @@ function DesktopReader({
     <div className={`hidden min-h-screen font-display antialiased selection:bg-primary/30 md:block ${theme.shell}`}>
       <header className={`sticky top-0 z-50 border-b backdrop-blur-md ${theme.chrome}`}>
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
-          <Link className="flex items-center gap-4 text-primary" to={readerLibraryHref}>
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-background-dark">
-              <span className="material-symbols-outlined">auto_stories</span>
-            </div>
-            <h1 className="text-xl font-bold tracking-tight">TaleStead</h1>
-          </Link>
+          <LogoBrand to={readerLibraryHref} />
 
           <div className="flex items-center gap-2 md:gap-6">
             <nav className="hidden items-center gap-6 md:flex">
@@ -739,11 +738,15 @@ export default function ReadingPage() {
   const saveProgressMutation = useSaveReadingProgressMutation();
   const createBookmarkMutation = useCreateBookmarkMutation();
   const removeBookmarkMutation = useRemoveBookmarkMutation();
+  const recordReadingTimeMutation = useRecordReadingTimeMutation();
+  const readingStartRef = useRef(Date.now());
+  const lastHeartbeatRef = useRef(Date.now());
   const [fontFamily, setFontFamily] = useState("serif");
   const [fontSize, setFontSize] = useState(18);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [commentsOpen, setCommentsOpen] = useState(false);
-  const [readerTheme, setReaderTheme] = useState(mapPreferenceToTheme(readingTheme));
+  const initialThemePreference = getStoredReadingTheme() ?? readingTheme;
+  const [readerTheme, setReaderTheme] = useState(mapPreferenceToTheme(initialThemePreference));
   const [bookmarkState, setBookmarkState] = useState({
     bookmarkId: null,
     isBookmarked: false,
@@ -904,6 +907,45 @@ export default function ReadingPage() {
     };
   }, [chapter, isRestoringResume, paragraphIndex, progressPercent, saveProgressMutation, story]);
 
+  useEffect(() => {
+    if (!story || !chapter || chapter.accessState !== "READABLE") {
+      return undefined;
+    }
+
+    const intervalId = window.setInterval(() => {
+      const now = Date.now();
+      const elapsed = now - lastHeartbeatRef.current;
+
+      if (elapsed >= 5 * 60 * 1000) {
+        lastHeartbeatRef.current = now;
+        recordReadingTimeMutation.mutate(
+          { storySlug: story.slug, chapterSlug: chapter.chapterSlug, minutesRead: 5 },
+          {
+            onSuccess: (response) => {
+              if (response?.pointsEarned > 0) {
+                showToast(`+${response.pointsEarned} XP`, { tone: "success", durationMs: 3000 });
+              }
+            },
+          },
+        );
+      }
+    }, 60_000);
+
+    return () => {
+      window.clearInterval(intervalId);
+    };
+  }, [chapter, recordReadingTimeMutation, showToast, story]);
+
+  useEffect(() => {
+    return () => {
+      const elapsedMs = Date.now() - lastHeartbeatRef.current;
+      const remainingMinutes = Math.floor(elapsedMs / 60_000);
+      if (remainingMinutes >= 1 && story && chapter) {
+        recordReadingTime({ storySlug: story.slug, chapterSlug: chapter.chapterSlug, minutesRead: remainingMinutes });
+      }
+    };
+  }, []);
+
   if (isLoading) {
     return <LoadingState />;
   }
@@ -957,6 +999,11 @@ export default function ReadingPage() {
     : readerLibraryHref;
   const nextLabel = chapter.nextChapter ? chapter.nextChapter.title : "Back to Library";
 
+  function handleSetReaderTheme(nextTheme) {
+    setReaderTheme(nextTheme);
+    persistReadingTheme(nextTheme);
+  }
+
   async function handleBookmarkToggle() {
     try {
       if (bookmarkState.isBookmarked && bookmarkState.bookmarkId) {
@@ -988,6 +1035,22 @@ export default function ReadingPage() {
   }
 
   function handleNextClick() {
+    const elapsedMs = Date.now() - lastHeartbeatRef.current;
+    const remainingMinutes = Math.floor(elapsedMs / 60_000);
+    if (remainingMinutes >= 1) {
+      lastHeartbeatRef.current = Date.now();
+      recordReadingTimeMutation.mutate(
+        { storySlug: story.slug, chapterSlug: chapter.chapterSlug, minutesRead: remainingMinutes },
+        {
+          onSuccess: (response) => {
+            if (response?.pointsEarned > 0) {
+              showToast(`+${response.pointsEarned} XP`, { tone: "success", durationMs: 3000 });
+            }
+          },
+        },
+      );
+    }
+
     saveProgressMutation.mutate({
       chapterSlug: chapter.chapterSlug,
       paragraphIndex: Math.max(chapter.paragraphs.length - 1, 0),
@@ -1021,7 +1084,7 @@ export default function ReadingPage() {
         onIncreaseFont={() => setFontSize((current) => Math.min(current + 1, 24))}
         onNextClick={handleNextClick}
         onSetFontFamily={setFontFamily}
-        onSetReaderTheme={setReaderTheme}
+        onSetReaderTheme={handleSetReaderTheme}
         onSetFontSize={handleSetFontSize}
         onToggleComments={() => {
           setCommentsOpen((c) => !c);
@@ -1046,7 +1109,7 @@ export default function ReadingPage() {
         onBookmarkToggle={handleBookmarkToggle}
         onNextClick={handleNextClick}
         onSetFontFamily={setFontFamily}
-        onSetReaderTheme={setReaderTheme}
+        onSetReaderTheme={handleSetReaderTheme}
         onSetFontSize={handleSetFontSize}
         onToggleComments={() => {
           setCommentsOpen((c) => !c);

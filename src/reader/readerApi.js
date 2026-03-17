@@ -298,3 +298,10 @@ export function removeBookmark(bookmarkId) {
     method: "DELETE",
   });
 }
+
+export function fetchChapterCompletionStats(storySlug, chapterSlug) {
+  return getJson(
+    `/reader/stories/${storySlug}/chapters/${chapterSlug}/completion-stats`,
+    { headers: getAuthHeaders() },
+  );
+}

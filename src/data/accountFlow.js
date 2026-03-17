@@ -238,6 +238,10 @@ export const initialRewards = {
   weeklyEarned: 250,
   streakDays: 5,
   checkedInToday: false,
+  streakMultiplier: 1,
+  streakShields: 0,
+  nextMultiplierAt: 3,
+  readerTitle: "New Reader",
 };
 
 export const rewardCalendar = {
@@ -435,15 +439,8 @@ export const leaderboard = {
 export const initialMfa = {
   method: "app",
   enabled: false,
-  secret: "ABCD-1234-EFGH-5678",
-  recoveryCodes: [
-    "ARCA-8291-XQ21",
-    "ARCA-4402-WL99",
-    "ARCA-1120-MZ84",
-    "ARCA-9932-PL01",
-    "ARCA-5567-BK22",
-    "ARCA-3301-NP10",
-  ],
+  secret: "",
+  recoveryCodes: [],
 };
 
 export const mfaMethods = [

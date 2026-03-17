@@ -3,6 +3,8 @@ import Reveal from "../components/Reveal";
 import UserAvatar from "../components/UserAvatar";
 import { useAccount } from "../context/AccountContext";
 import { useAuth } from "../context/AuthContext";
+import { usePurchaseStreakShieldMutation } from "../engagement/engagementHooks";
+import { useToast } from "../context/ToastContext";
 import {
   editProfileHref,
   leaderboardHref,
@@ -49,11 +51,16 @@ function RewardsCalendar({ checkedInToday, rewardCalendar }) {
 
 function DesktopRewards({
   claimedMissionIds,
+  isShieldPurchasing,
   missionList,
+  nextMultiplierAt,
   onCheckIn,
+  onPurchaseShield,
   points,
   rewardCalendar,
   streakDays,
+  streakMultiplier,
+  streakShields,
   weeklyEarned,
 }) {
   const { user } = useAuth();
@@ -182,6 +189,55 @@ function DesktopRewards({
                 </div>
               </Reveal>
 
+              <Reveal className="rounded-xl border border-primary/20 bg-primary/5 p-5">
+                <div className="mb-3 flex items-center justify-between">
+                  <h3 className="font-bold">Streak Multiplier</h3>
+                  <span className="rounded bg-primary/20 px-2 py-0.5 text-sm font-bold text-primary">
+                    {streakMultiplier}x
+                  </span>
+                </div>
+                <div className="mb-2 h-2 w-full overflow-hidden rounded-full bg-slate-700">
+                  <div
+                    className="h-full rounded-full bg-primary transition-all"
+                    style={{ width: `${Math.min((streakDays / nextMultiplierAt) * 100, 100)}%` }}
+                  />
+                </div>
+                <p className="text-xs text-slate-400">
+                  {nextMultiplierAt - streakDays > 0
+                    ? `${nextMultiplierAt - streakDays} more days to ${streakMultiplier + 0.5}x`
+                    : "Max multiplier reached!"}
+                </p>
+              </Reveal>
+
+              <Reveal className="rounded-xl border border-primary/20 bg-primary/5 p-5">
+                <div className="mb-3 flex items-center justify-between">
+                  <h3 className="font-bold">Streak Shields</h3>
+                  <div className="flex gap-1">
+                    {[0, 1].map((i) => (
+                      <span
+                        className={`material-symbols-outlined text-lg ${
+                          i < streakShields ? "text-primary fill-1" : "text-slate-600"
+                        }`}
+                        key={i}
+                      >
+                        shield
+                      </span>
+                    ))}
+                  </div>
+                </div>
+                <p className="mb-3 text-xs text-slate-400">
+                  Protects your streak if you miss a day
+                </p>
+                <button
+                  className="w-full rounded-lg bg-primary py-2 text-sm font-bold text-background-dark transition-all hover:shadow-lg hover:shadow-primary/20 active:scale-95 disabled:cursor-not-allowed disabled:opacity-60"
+                  disabled={isShieldPurchasing || points < 500 || streakShields >= 2}
+                  onClick={onPurchaseShield}
+                  type="button"
+                >
+                  Buy Shield (500 pts)
+                </button>
+              </Reveal>
+
               <Reveal className="rounded-xl border border-slate-200 bg-slate-50 p-5 dark:border-primary/10 dark:bg-slate-900/50">
                 <div className="mb-4 flex items-center justify-between">
                   <h3 className="font-bold">Quick Tasks</h3>
@@ -263,12 +319,17 @@ function DesktopRewards({
 
 function MobileRewards({
   claimedMissionIds,
+  isShieldPurchasing,
   missionList,
+  nextMultiplierAt,
   onCheckIn,
+  onPurchaseShield,
   points,
   rewardCalendar,
   streakDays,
+  streakMultiplier,
   streakRewards,
+  streakShields,
 }) {
   const quickTasks = missionList.filter((mission) =>
     ["share-results", "active-critic", "profile-complete"].includes(mission.id),
@@ -382,6 +443,49 @@ function MobileRewards({
           </section>
 
           <section className="px-4 py-2">
+            <div className="flex gap-3">
+              <div className="flex-1 rounded-xl border border-primary/10 bg-primary/5 p-4">
+                <p className="text-xs font-bold uppercase tracking-wider text-slate-400">Multiplier</p>
+                <p className="mt-1 text-2xl font-bold text-primary">{streakMultiplier}x</p>
+                <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-slate-700">
+                  <div
+                    className="h-full rounded-full bg-primary"
+                    style={{ width: `${Math.min((streakDays / nextMultiplierAt) * 100, 100)}%` }}
+                  />
+                </div>
+                <p className="mt-1 text-[10px] text-slate-400">
+                  {nextMultiplierAt - streakDays > 0
+                    ? `${nextMultiplierAt - streakDays} days to next`
+                    : "Max reached!"}
+                </p>
+              </div>
+              <div className="flex-1 rounded-xl border border-primary/10 bg-primary/5 p-4">
+                <p className="text-xs font-bold uppercase tracking-wider text-slate-400">Shields</p>
+                <div className="mt-1 flex gap-1">
+                  {[0, 1].map((i) => (
+                    <span
+                      className={`material-symbols-outlined text-2xl ${
+                        i < streakShields ? "text-primary fill-1" : "text-slate-600"
+                      }`}
+                      key={i}
+                    >
+                      shield
+                    </span>
+                  ))}
+                </div>
+                <button
+                  className="mt-2 w-full rounded-lg bg-primary py-1.5 text-xs font-bold text-background-dark disabled:cursor-not-allowed disabled:opacity-60"
+                  disabled={isShieldPurchasing || points < 500 || streakShields >= 2}
+                  onClick={onPurchaseShield}
+                  type="button"
+                >
+                  Buy (500 pts)
+                </button>
+              </div>
+            </div>
+          </section>
+
+          <section className="px-4 py-2">
             <h3 className="mb-3 text-lg font-bold">Quick Tasks</h3>
             <div className="flex flex-col gap-3">
               {quickTasks.map((task) => {
@@ -476,25 +580,45 @@ export default function RewardsPage() {
     streakRewards,
   } = useAccount();
 
+  const shieldMutation = usePurchaseStreakShieldMutation();
+  const { showToast } = useToast();
+
+  const handlePurchaseShield = () => {
+    shieldMutation.mutate(undefined, {
+      onSuccess: () => showToast("Streak shield purchased!", "success"),
+      onError: () => showToast("Failed to purchase shield", "error"),
+    });
+  };
+
   return (
     <>
       <DesktopRewards
         claimedMissionIds={claimedMissionIds}
+        isShieldPurchasing={shieldMutation.isPending}
         missionList={missions}
+        nextMultiplierAt={rewards.nextMultiplierAt}
         onCheckIn={claimDailyCheckIn}
+        onPurchaseShield={handlePurchaseShield}
         points={rewards.points}
         rewardCalendar={rewardCalendar}
         streakDays={rewards.streakDays}
+        streakMultiplier={rewards.streakMultiplier}
+        streakShields={rewards.streakShields}
         weeklyEarned={rewards.weeklyEarned}
       />
       <MobileRewards
         claimedMissionIds={claimedMissionIds}
+        isShieldPurchasing={shieldMutation.isPending}
         missionList={missions}
+        nextMultiplierAt={rewards.nextMultiplierAt}
         onCheckIn={claimDailyCheckIn}
+        onPurchaseShield={handlePurchaseShield}
         points={rewards.points}
         rewardCalendar={rewardCalendar}
         streakDays={rewards.streakDays}
+        streakMultiplier={rewards.streakMultiplier}
         streakRewards={streakRewards}
+        streakShields={rewards.streakShields}
       />
     </>
   );

@@ -5,6 +5,7 @@ import Reveal from "../components/Reveal";
 import SkeletonBlock from "../components/SkeletonBlock";
 import UserAvatar from "../components/UserAvatar";
 import { useAccount } from "../context/AccountContext";
+import { useBadgesQuery } from "../engagement/engagementHooks";
 import { useAuth } from "../context/AuthContext";
 import { useMonetization } from "../context/MonetizationContext";
 import { useToast } from "../context/ToastContext";
@@ -671,9 +672,11 @@ function MobileLogoutSection({ isLoggingOut, onLogout }) {
 }
 
 function DesktopProfile({
+  badgesData,
   coinBalance,
   currentReading,
   isAccountLoading,
+  isBadgesLoading,
   isCoinBalanceLoading,
   profile,
   profileStats,
@@ -713,6 +716,11 @@ function DesktopProfile({
                     Pro
                   </span>
                 </div>
+                {badgesData?.readerTitle && (
+                  <p className="text-xs font-bold uppercase tracking-widest text-primary/70">
+                    {badgesData.readerTitle}
+                  </p>
+                )}
                 {profile.tagline ? (
                   <p className="max-w-xl text-sm text-primary">{profile.tagline}</p>
                 ) : null}
@@ -755,6 +763,47 @@ function DesktopProfile({
                 ))}
               </div>
             </div>
+
+            <Reveal className="mb-6">
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-bold">Badges</h3>
+                <Link className="text-xs font-bold uppercase tracking-widest text-primary hover:underline" to="/account/badges">
+                  View all
+                </Link>
+              </div>
+              {badgesData ? (
+                <>
+                  {badgesData.featuredBadgeIds?.length > 0 && (
+                    <div className="mt-4 flex gap-4">
+                      {badgesData.badges
+                        .filter((b) => badgesData.featuredBadgeIds.includes(b.id))
+                        .map((badge) => (
+                          <div className="flex flex-col items-center gap-2 rounded-xl border border-primary/20 bg-primary/5 p-4" key={badge.id}>
+                            <div className={`flex h-12 w-12 items-center justify-center rounded-full text-white text-lg font-bold ${
+                              badge.rarity === "LEGENDARY" ? "bg-amber-500" :
+                              badge.rarity === "EPIC" ? "bg-purple-500" :
+                              badge.rarity === "RARE" ? "bg-blue-500" :
+                              badge.rarity === "UNCOMMON" ? "bg-green-500" : "bg-gray-400"
+                            }`}>
+                              {badge.title?.[0] ?? "?"}
+                            </div>
+                            <p className="text-xs font-bold">{badge.title}</p>
+                          </div>
+                        ))}
+                    </div>
+                  )}
+                  <p className="mt-3 text-sm text-slate-500 dark:text-slate-400">
+                    {badgesData.badges.filter((b) => b.earned).length} of {badgesData.badges.length} badges earned
+                  </p>
+                </>
+              ) : isBadgesLoading ? (
+                <div className="mt-4 flex gap-4">
+                  {Array.from({ length: 3 }).map((_, i) => (
+                    <div className="h-24 w-24 animate-pulse rounded-xl bg-primary/10" key={i} />
+                  ))}
+                </div>
+              ) : null}
+            </Reveal>
 
             <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
               <div className="space-y-6 lg:col-span-2">
@@ -814,9 +863,11 @@ function DesktopProfile({
 }
 
 function MobileProfile({
+  badgesData,
   coinBalance,
   currentReading,
   isAccountLoading,
+  isBadgesLoading,
   isCoinBalanceLoading,
   isLoggingOut,
   onLogout,
@@ -859,6 +910,11 @@ function MobileProfile({
               <p className="text-center text-[24px] font-bold leading-tight">
                 {profile.displayName}
               </p>
+              {badgesData?.readerTitle && (
+                <p className="mt-0.5 text-xs font-bold uppercase tracking-widest text-primary/70">
+                  {badgesData.readerTitle}
+                </p>
+              )}
               {profile.tagline ? (
                 <p className="mt-1 text-center text-sm font-medium text-primary">
                   {profile.tagline}
@@ -896,6 +952,50 @@ function MobileProfile({
                 </button>
               ))}
             </div>
+          </div>
+
+          <div className="px-4 py-4">
+            <div className="flex items-center justify-between">
+              <h3 className="flex items-center gap-2 text-lg font-bold">
+                <span className="material-symbols-outlined text-primary">military_tech</span>
+                Badges
+              </h3>
+              <Link className="text-[11px] font-bold uppercase tracking-widest text-primary" to="/account/badges">
+                View All
+              </Link>
+            </div>
+            {badgesData ? (
+              <>
+                {badgesData.featuredBadgeIds?.length > 0 && (
+                  <div className="mt-3 flex gap-3">
+                    {badgesData.badges
+                      .filter((b) => badgesData.featuredBadgeIds.includes(b.id))
+                      .map((badge) => (
+                        <div className="flex flex-col items-center gap-1.5 rounded-xl border border-primary/10 bg-primary/5 p-3" key={badge.id}>
+                          <div className={`flex h-10 w-10 items-center justify-center rounded-full text-white text-sm font-bold ${
+                            badge.rarity === "LEGENDARY" ? "bg-amber-500" :
+                            badge.rarity === "EPIC" ? "bg-purple-500" :
+                            badge.rarity === "RARE" ? "bg-blue-500" :
+                            badge.rarity === "UNCOMMON" ? "bg-green-500" : "bg-gray-400"
+                          }`}>
+                            {badge.title?.[0] ?? "?"}
+                          </div>
+                          <p className="text-[10px] font-bold">{badge.title}</p>
+                        </div>
+                      ))}
+                  </div>
+                )}
+                <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
+                  {badgesData.badges.filter((b) => b.earned).length} of {badgesData.badges.length} earned
+                </p>
+              </>
+            ) : isBadgesLoading ? (
+              <div className="mt-3 flex gap-3">
+                {Array.from({ length: 3 }).map((_, i) => (
+                  <div className="h-20 w-20 animate-pulse rounded-xl bg-primary/10" key={i} />
+                ))}
+              </div>
+            ) : null}
           </div>
 
           <MobileCurrentReading
@@ -977,6 +1077,8 @@ export default function ProfilePage() {
     recentActivity,
   } = useAccount();
   const { showToast } = useToast();
+  const badgesQuery = useBadgesQuery();
+  const badgesData = badgesQuery.data ?? null;
 
   async function handleLogout() {
     await logout();
@@ -987,9 +1089,11 @@ export default function ProfilePage() {
   return (
     <>
       <DesktopProfile
+        badgesData={badgesData}
         coinBalance={coinBalance}
         currentReading={currentReading}
         isAccountLoading={isAccountLoading}
+        isBadgesLoading={badgesQuery.isLoading}
         isCoinBalanceLoading={isStatusLoading}
         profile={profile}
         profileStats={profileStats}
@@ -997,9 +1101,11 @@ export default function ProfilePage() {
         recentActivity={recentActivity}
       />
       <MobileProfile
+        badgesData={badgesData}
         coinBalance={coinBalance}
         currentReading={currentReading}
         isAccountLoading={isAccountLoading}
+        isBadgesLoading={badgesQuery.isLoading}
         isCoinBalanceLoading={isStatusLoading}
         isLoggingOut={isLoggingOut}
         onLogout={handleLogout}

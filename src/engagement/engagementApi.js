@@ -20,6 +20,12 @@ export function fetchEngagementOverview() {
   });
 }
 
+export function fetchEngagementNotifications() {
+  return getJson("/engagement/notifications", {
+    headers: getAuthHeaders(),
+  });
+}
+
 export function claimDailyCheckIn() {
   return postJson("/engagement/check-in", undefined, {
     headers: getAuthHeaders(),
@@ -98,6 +104,31 @@ export function markNotificationRead(notificationId) {
 
 export function markAllNotificationsRead() {
   return postJson("/engagement/notifications/read-all", undefined, {
+    headers: getAuthHeaders(),
+  });
+}
+
+export function purchaseStreakShield() {
+  return postJson("/engagement/streak-shield/purchase", undefined, {
+    headers: getAuthHeaders(),
+  });
+}
+
+export function recordReadingTime(body) {
+  return postJson("/engagement/reading-time", body, {
+    headers: getAuthHeaders(),
+  });
+}
+
+export function fetchBadges() {
+  return getJson("/engagement/badges", {
+    headers: getAuthHeaders(),
+  });
+}
+
+export function toggleBadgeFeatured(badgeId) {
+  return requestJson(`/engagement/badges/${badgeId}/feature`, {
+    method: "PUT",
     headers: getAuthHeaders(),
   });
 }

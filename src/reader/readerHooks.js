@@ -8,6 +8,7 @@ import {
   deleteStoryReview,
   deleteChapterComment,
   fetchChapterComments,
+  fetchChapterCompletionStats,
   fetchPublicReadingLists,
   fetchReadingListDetails,
   fetchReadingLists,
@@ -37,6 +38,7 @@ import {
 } from "./readerApi";
 
 const STALE_2_MIN = 2 * 60 * 1000;
+const STALE_5_MIN = 5 * 60 * 1000;
 
 async function invalidateFollowQueries(queryClient) {
   await Promise.all([
@@ -96,7 +98,7 @@ export function useReaderFollowingQuery() {
   return useQuery({
     queryKey: ["reader", "following"],
     queryFn: fetchReaderFollowing,
-    staleTime: 60_000,
+    staleTime: STALE_5_MIN,
   });
 }
 
@@ -104,7 +106,7 @@ export function useReaderHomeQuery() {
   return useQuery({
     queryKey: ["reader", "home"],
     queryFn: fetchReaderHome,
-    staleTime: STALE_2_MIN,
+    staleTime: STALE_5_MIN,
   });
 }
 
@@ -112,7 +114,7 @@ export function useReaderStoriesQuery(input) {
   return useQuery({
     queryKey: ["reader", "stories", input ?? {}],
     queryFn: () => fetchReaderStories(input),
-    staleTime: STALE_2_MIN,
+    staleTime: STALE_5_MIN,
   });
 }
 
@@ -120,7 +122,7 @@ export function useStoryRankingsQuery(input) {
   return useQuery({
     queryKey: ["reader", "rankings", input ?? {}],
     queryFn: () => fetchStoryRankings(input),
-    staleTime: 60_000,
+    staleTime: STALE_5_MIN,
   });
 }
 
@@ -128,7 +130,7 @@ export function useReaderSearchQuery(query) {
   return useQuery({
     queryKey: ["reader", "search", query ?? ""],
     queryFn: () => searchReaderCatalog({ query }),
-    staleTime: STALE_2_MIN,
+    staleTime: STALE_5_MIN,
   });
 }
 
@@ -206,7 +208,7 @@ export function usePublicReadingListsQuery(input = {}) {
   return useQuery({
     queryKey: ["reader", "public-reading-lists", input],
     queryFn: () => fetchPublicReadingLists(input),
-    staleTime: 60_000,
+    staleTime: STALE_5_MIN,
   });
 }
 
@@ -411,6 +413,15 @@ export function useRegenerateReadingListShareSlugMutation() {
   return useMutation({
     mutationFn: regenerateReadingListShareSlug,
     onSuccess: () => invalidateReadingListQueries(queryClient),
+  });
+}
+
+export function useChapterCompletionStatsQuery(storySlug, chapterSlug) {
+  return useQuery({
+    enabled: Boolean(storySlug && chapterSlug),
+    queryKey: ["chapter-completion-stats", storySlug, chapterSlug],
+    queryFn: () => fetchChapterCompletionStats(storySlug, chapterSlug),
+    staleTime: STALE_5_MIN,
   });
 }
 

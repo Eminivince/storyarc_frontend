@@ -12,6 +12,7 @@ import {
   buildStoryHref,
 } from "../data/readerFlow";
 import {
+  useChapterCompletionStatsQuery,
   useChapterQuery,
   useStoryDetailsQuery,
   useUpdateStoryRatingMutation,
@@ -121,6 +122,7 @@ function getRatingHelperText(story) {
 
 function DesktopChapterComplete({
   chapter,
+  completionStats,
   isSubmittingRating,
   nextHref,
   nextLabel,
@@ -231,6 +233,11 @@ function DesktopChapterComplete({
                   to={nextHref}
                 >
                   <span>{nextLabel}</span>
+                  {completionStats?.nextChapter?.estimatedMinutes && (
+                    <span className="text-sm font-normal opacity-70">
+                      ~{completionStats.nextChapter.estimatedMinutes} min read
+                    </span>
+                  )}
                   <span className="material-symbols-outlined transition-transform group-hover:translate-x-1">
                     arrow_forward
                   </span>
@@ -264,6 +271,65 @@ function DesktopChapterComplete({
                 <p className="mt-2 text-lg font-bold">{story.status}</p>
               </div>
             </Reveal>
+
+            {completionStats && (
+              <Reveal className="mb-12 grid gap-6 md:grid-cols-3">
+                <div className="flex flex-col items-center rounded-2xl border border-primary/10 bg-primary/5 p-6">
+                  <div className="relative mb-3 h-20 w-20">
+                    <svg className="h-full w-full -rotate-90" viewBox="0 0 36 36">
+                      <circle cx="18" cy="18" r="15.9" fill="none" stroke="currentColor" strokeWidth="2" className="text-slate-700" />
+                      <circle cx="18" cy="18" r="15.9" fill="none" stroke="currentColor" strokeWidth="2.5" strokeDasharray={`${(completionStats.percentile ?? 0)}, 100`} strokeLinecap="round" className="text-primary" />
+                    </svg>
+                    <span className="absolute inset-0 flex items-center justify-center text-lg font-bold">
+                      {completionStats.percentile ?? 0}%
+                    </span>
+                  </div>
+                  <p className="text-center text-sm font-semibold">
+                    You're further than {completionStats.percentile ?? 0}% of readers
+                  </p>
+                </div>
+                <div className="flex flex-col items-center justify-center rounded-2xl border border-primary/10 bg-primary/5 p-6">
+                  <span className="material-symbols-outlined mb-2 text-3xl text-primary">group</span>
+                  <p className="text-2xl font-bold">{(completionStats.totalReaders ?? 0).toLocaleString()}</p>
+                  <p className="text-sm text-slate-400">readers finished this chapter</p>
+                </div>
+                <div className="flex flex-col items-center justify-center rounded-2xl border border-primary/10 bg-primary/5 p-6">
+                  <span className="material-symbols-outlined mb-2 text-3xl text-primary">local_fire_department</span>
+                  <p className="text-2xl font-bold">{completionStats.streakDays ?? 0}-day streak</p>
+                  <p className="text-sm text-slate-400">{completionStats.streakMultiplier ?? 1}x multiplier</p>
+                </div>
+              </Reveal>
+            )}
+
+            {completionStats?.missionProgress?.length > 0 && (
+              <Reveal className="mb-12">
+                <h3 className="mb-4 text-xl font-bold">Mission Progress</h3>
+                <div className="grid gap-3 md:grid-cols-3">
+                  {completionStats.missionProgress.slice(0, 3).map((mission) => (
+                    <div
+                      className="flex items-center gap-4 rounded-xl border border-primary/10 bg-primary/5 p-4"
+                      key={mission.id ?? mission.title}
+                    >
+                      {mission.current >= mission.target ? (
+                        <span className="material-symbols-outlined text-2xl text-green-500">check_circle</span>
+                      ) : (
+                        <span className="material-symbols-outlined text-2xl text-primary">flag</span>
+                      )}
+                      <div className="flex-1">
+                        <p className="text-sm font-bold">{mission.title}</p>
+                        <div className="mt-1 h-1.5 w-full overflow-hidden rounded-full bg-slate-700">
+                          <div
+                            className="h-full rounded-full bg-primary transition-all"
+                            style={{ width: `${Math.min((mission.current / mission.target) * 100, 100)}%` }}
+                          />
+                        </div>
+                        <p className="mt-1 text-xs text-slate-400">{mission.current}/{mission.target}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </Reveal>
+            )}
 
             <Reveal className="border-t border-primary/10 pt-12">
               <div className="mb-8 flex items-center justify-between">
@@ -342,6 +408,7 @@ function DesktopChapterComplete({
 function MobileChapterComplete({
   chapter,
   chapterHref,
+  completionStats,
   isSubmittingRating,
   nextHref,
   nextLabel,
@@ -438,12 +505,66 @@ function MobileChapterComplete({
           </div>
         </Reveal>
 
+        {completionStats && (
+          <Reveal as="section" className="px-4 py-4">
+            <div className="grid grid-cols-3 gap-3">
+              <div className="flex flex-col items-center rounded-xl border border-primary/10 bg-primary/5 p-3">
+                <div className="relative mb-2 h-14 w-14">
+                  <svg className="h-full w-full -rotate-90" viewBox="0 0 36 36">
+                    <circle cx="18" cy="18" r="15.9" fill="none" stroke="currentColor" strokeWidth="2" className="text-slate-700" />
+                    <circle cx="18" cy="18" r="15.9" fill="none" stroke="currentColor" strokeWidth="2.5" strokeDasharray={`${completionStats.percentile ?? 0}, 100`} strokeLinecap="round" className="text-primary" />
+                  </svg>
+                  <span className="absolute inset-0 flex items-center justify-center text-xs font-bold">
+                    {completionStats.percentile ?? 0}%
+                  </span>
+                </div>
+                <p className="text-center text-[10px] font-bold text-slate-400">Percentile</p>
+              </div>
+              <div className="flex flex-col items-center justify-center rounded-xl border border-primary/10 bg-primary/5 p-3">
+                <span className="material-symbols-outlined mb-1 text-xl text-primary">group</span>
+                <p className="text-lg font-bold">{(completionStats.totalReaders ?? 0).toLocaleString()}</p>
+                <p className="text-center text-[10px] font-bold text-slate-400">Readers</p>
+              </div>
+              <div className="flex flex-col items-center justify-center rounded-xl border border-primary/10 bg-primary/5 p-3">
+                <span className="material-symbols-outlined mb-1 text-xl text-primary">local_fire_department</span>
+                <p className="text-lg font-bold">{completionStats.streakDays ?? 0}d</p>
+                <p className="text-center text-[10px] font-bold text-slate-400">{completionStats.streakMultiplier ?? 1}x</p>
+              </div>
+            </div>
+          </Reveal>
+        )}
+
+        {completionStats?.missionProgress?.length > 0 && (
+          <Reveal as="section" className="px-4 py-2">
+            <h3 className="mb-3 text-base font-bold">Missions</h3>
+            <div className="space-y-2">
+              {completionStats.missionProgress.slice(0, 3).map((mission) => (
+                <div className="flex items-center gap-3 rounded-xl border border-primary/10 bg-primary/5 p-3" key={mission.id ?? mission.title}>
+                  <span className={`material-symbols-outlined text-lg ${mission.current >= mission.target ? "text-green-500" : "text-primary"}`}>
+                    {mission.current >= mission.target ? "check_circle" : "flag"}
+                  </span>
+                  <div className="flex-1">
+                    <p className="text-xs font-bold">{mission.title}</p>
+                    <div className="mt-1 h-1 w-full overflow-hidden rounded-full bg-slate-700">
+                      <div className="h-full rounded-full bg-primary" style={{ width: `${Math.min((mission.current / mission.target) * 100, 100)}%` }} />
+                    </div>
+                  </div>
+                  <span className="text-[10px] font-bold text-slate-400">{mission.current}/{mission.target}</span>
+                </div>
+              ))}
+            </div>
+          </Reveal>
+        )}
+
         <Reveal as="section" className="flex flex-col gap-3 p-4">
           <Link
             className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-4 font-bold text-background-dark shadow-lg shadow-primary/20 transition-transform active:scale-95"
             to={nextHref}
           >
             {nextLabel}
+            {completionStats?.nextChapter?.estimatedMinutes && (
+              <span className="text-xs font-normal opacity-70">~{completionStats.nextChapter.estimatedMinutes} min</span>
+            )}
             <span className="material-symbols-outlined">arrow_forward</span>
           </Link>
           <Link
@@ -559,6 +680,8 @@ export default function ChapterCompletePage() {
   const chapterQuery = useChapterQuery(storySlug, chapterSlug);
   const storyQuery = useStoryDetailsQuery(storySlug);
   const updateStoryRatingMutation = useUpdateStoryRatingMutation(storySlug);
+  const completionStatsQuery = useChapterCompletionStatsQuery(storySlug, chapterSlug);
+  const completionStats = completionStatsQuery.data ?? null;
   const story = storyQuery.data?.story ?? null;
   const chapter = chapterQuery.data?.chapter ?? null;
   const primaryGenre = story?.genres?.[0] ?? "";
@@ -635,6 +758,7 @@ export default function ChapterCompletePage() {
     <>
       <DesktopChapterComplete
         chapter={chapter}
+        completionStats={completionStats}
         isSubmittingRating={updateStoryRatingMutation.isPending}
         nextHref={nextHref}
         nextLabel={nextLabel}
@@ -649,6 +773,7 @@ export default function ChapterCompletePage() {
       <MobileChapterComplete
         chapter={chapter}
         chapterHref={chapterHref}
+        completionStats={completionStats}
         isSubmittingRating={updateStoryRatingMutation.isPending}
         nextHref={nextHref}
         nextLabel={nextLabel}
