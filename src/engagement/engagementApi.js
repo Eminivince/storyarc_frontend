@@ -238,3 +238,29 @@ export function fetchOwnActivity({ cursor, limit = 20 } = {}) {
     headers: getAuthHeaders(),
   });
 }
+
+// ── Churn / Returning User ────────────────────────────────────────
+
+export function fetchReturningUserCheck() {
+  return getJson("/engagement/returning-user-check", {
+    headers: getAuthHeaders(),
+  });
+}
+
+export function recordInterventionClick(interventionId) {
+  return postJson(`/engagement/interventions/${interventionId}/click`, undefined, {
+    headers: getAuthHeaders(),
+  });
+}
+
+export function recordInterventionConversion(interventionId) {
+  return postJson(`/engagement/interventions/${interventionId}/convert`, undefined, {
+    headers: getAuthHeaders(),
+  });
+}
+
+export function fetchChurnMetrics() {
+  return getJson("/engagement/admin/churn-metrics", {
+    headers: getAuthHeaders(),
+  });
+}

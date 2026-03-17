@@ -5,8 +5,12 @@ import {
   fetchBadges,
   fetchChallengeLeaderboard,
   fetchChapterReactions,
+  fetchChurnMetrics,
   fetchReactionHeatmap,
+  fetchReturningUserCheck,
   purchaseStreakShield,
+  recordInterventionClick,
+  recordInterventionConversion,
   recordReadingTime,
   removeParagraphReaction,
   removeChapterReaction,
@@ -210,5 +214,40 @@ export function useOwnActivityQuery() {
     queryKey: ["own-activity"],
     queryFn: () => fetchOwnActivity(),
     staleTime: 60 * 1000,
+  });
+}
+
+// ── Churn / Returning User ────────────────────────────────────────
+
+export function useReturningUserCheckQuery() {
+  return useQuery({
+    queryKey: ["returning-user-check"],
+    queryFn: fetchReturningUserCheck,
+    staleTime: STALE_5_MIN,
+  });
+}
+
+export function useInterventionClickMutation() {
+  return useMutation({
+    mutationFn: recordInterventionClick,
+  });
+}
+
+export function useInterventionConversionMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: recordInterventionConversion,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["returning-user-check"] });
+    },
+  });
+}
+
+export function useChurnMetricsQuery() {
+  return useQuery({
+    queryKey: ["churn-metrics"],
+    queryFn: fetchChurnMetrics,
+    staleTime: STALE_5_MIN,
   });
 }

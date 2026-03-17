@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   PrefetchableChapterLink,
@@ -19,8 +19,15 @@ import {
 import { useCreator } from "../context/CreatorContext";
 import { useOnboarding } from "../context/OnboardingContext";
 import { useReaderDashboardQuery } from "../reader/readerHooks";
-import { useActiveChallengesQuery, useActivityFeedQuery } from "../engagement/engagementHooks";
+import {
+  useActiveChallengesQuery,
+  useActivityFeedQuery,
+  useInterventionClickMutation,
+  useInterventionConversionMutation,
+  useReturningUserCheckQuery,
+} from "../engagement/engagementHooks";
 import ActivityFeedSection from "../components/ActivityFeedSection";
+import WelcomeBackModal from "../components/WelcomeBackModal";
 
 function LoadingState() {
   return <RouteLoadingScreen />;
@@ -518,7 +525,20 @@ export default function DashboardPage() {
   const { data, error, isError, isLoading } = useReaderDashboardQuery();
   const challengesQuery = useActiveChallengesQuery();
   const activityFeedQuery = useActivityFeedQuery();
+  const returningUserQuery = useReturningUserCheckQuery();
+  const interventionClick = useInterventionClickMutation();
+  const interventionConvert = useInterventionConversionMutation();
   const [searchTerm, setSearchTerm] = useState("");
+  const [showWelcomeBack, setShowWelcomeBack] = useState(false);
+
+  const returningData = returningUserQuery.data;
+
+  useEffect(() => {
+    if (returningData?.interventionId) {
+      setShowWelcomeBack(true);
+      interventionClick.mutate(returningData.interventionId);
+    }
+  }, [returningData?.interventionId]);
   const topGenre = selectedGenres[0] || data?.availableGenres?.[0] || "Fantasy";
 
   function handleSearchSubmit(event) {
@@ -564,6 +584,16 @@ export default function DashboardPage() {
 
   return (
     <>
+      <WelcomeBackModal
+        data={returningData}
+        onClose={() => setShowWelcomeBack(false)}
+        onConvert={() => {
+          if (returningData?.interventionId) {
+            interventionConvert.mutate(returningData.interventionId);
+          }
+        }}
+        open={showWelcomeBack}
+      />
       <DesktopDashboard
         activeChallenges={challengesQuery.data}
         activityFeed={activityFeedQuery.data}
