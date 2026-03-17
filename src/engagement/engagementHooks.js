@@ -11,7 +11,9 @@ import {
   removeParagraphReaction,
   removeChapterReaction,
   toggleBadgeFeatured,
+  fetchActivityFeed,
   fetchMyShopItems,
+  fetchOwnActivity,
   fetchShopCatalog,
   purchaseShopItem,
   upsertChapterReaction,
@@ -190,5 +192,23 @@ export function useMyShopItemsQuery() {
     queryKey: ["my-shop-items"],
     queryFn: fetchMyShopItems,
     staleTime: STALE_5_MIN,
+  });
+}
+
+// ── Activity Feed ──────────────────────────────────────────────────
+
+export function useActivityFeedQuery() {
+  return useQuery({
+    queryKey: ["activity-feed"],
+    queryFn: () => fetchActivityFeed(),
+    staleTime: 60 * 1000,
+  });
+}
+
+export function useOwnActivityQuery() {
+  return useQuery({
+    queryKey: ["own-activity"],
+    queryFn: () => fetchOwnActivity(),
+    staleTime: 60 * 1000,
   });
 }

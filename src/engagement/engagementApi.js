@@ -216,3 +216,25 @@ export function fetchMyShopItems() {
     headers: getAuthHeaders(),
   });
 }
+
+// ── Activity Feed ──────────────────────────────────────────────────
+
+export function fetchActivityFeed({ cursor, limit = 20 } = {}) {
+  const params = new URLSearchParams();
+  if (cursor) params.set("cursor", cursor);
+  if (limit) params.set("limit", String(limit));
+  const suffix = params.toString();
+  return getJson(`/engagement/activity-feed${suffix ? `?${suffix}` : ""}`, {
+    headers: getAuthHeaders(),
+  });
+}
+
+export function fetchOwnActivity({ cursor, limit = 20 } = {}) {
+  const params = new URLSearchParams();
+  if (cursor) params.set("cursor", cursor);
+  if (limit) params.set("limit", String(limit));
+  const suffix = params.toString();
+  return getJson(`/engagement/activity-feed/me${suffix ? `?${suffix}` : ""}`, {
+    headers: getAuthHeaders(),
+  });
+}

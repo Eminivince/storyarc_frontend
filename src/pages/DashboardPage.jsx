@@ -19,7 +19,8 @@ import {
 import { useCreator } from "../context/CreatorContext";
 import { useOnboarding } from "../context/OnboardingContext";
 import { useReaderDashboardQuery } from "../reader/readerHooks";
-import { useActiveChallengesQuery } from "../engagement/engagementHooks";
+import { useActiveChallengesQuery, useActivityFeedQuery } from "../engagement/engagementHooks";
+import ActivityFeedSection from "../components/ActivityFeedSection";
 
 function LoadingState() {
   return <RouteLoadingScreen />;
@@ -150,7 +151,9 @@ function ActiveChallengesWidget({ challenges }) {
 
 function DesktopDashboard({
   activeChallenges,
+  activityFeed,
   data,
+  isActivityLoading,
   onSearchSubmit,
   searchTerm,
   setSearchTerm,
@@ -323,6 +326,11 @@ function DesktopDashboard({
 
             <ActiveChallengesWidget challenges={activeChallenges} />
 
+            <ActivityFeedSection
+              data={activityFeed}
+              isLoading={isActivityLoading}
+            />
+
             {data?.rows?.length ? (
               data.rows.map((row) => <StoryRow key={row.id} row={row} />)
             ) : (
@@ -337,7 +345,9 @@ function DesktopDashboard({
 
 function MobileDashboard({
   activeChallenges,
+  activityFeed,
   data,
+  isActivityLoading,
   onSearchSubmit,
   searchTerm,
   setSearchTerm,
@@ -448,6 +458,11 @@ function MobileDashboard({
 
         <ActiveChallengesWidget challenges={activeChallenges} />
 
+        <ActivityFeedSection
+          data={activityFeed}
+          isLoading={isActivityLoading}
+        />
+
         {data?.rows?.map((row) =>
           row.stories?.length ? (
             <Reveal as="section" className="space-y-3" key={row.id}>
@@ -502,6 +517,7 @@ export default function DashboardPage() {
   const { selectedGenres } = useOnboarding();
   const { data, error, isError, isLoading } = useReaderDashboardQuery();
   const challengesQuery = useActiveChallengesQuery();
+  const activityFeedQuery = useActivityFeedQuery();
   const [searchTerm, setSearchTerm] = useState("");
   const topGenre = selectedGenres[0] || data?.availableGenres?.[0] || "Fantasy";
 
@@ -550,7 +566,9 @@ export default function DashboardPage() {
     <>
       <DesktopDashboard
         activeChallenges={challengesQuery.data}
+        activityFeed={activityFeedQuery.data}
         data={data}
+        isActivityLoading={activityFeedQuery.isLoading}
         onSearchSubmit={handleSearchSubmit}
         onWriteStory={handleWriteStory}
         searchTerm={searchTerm}
@@ -559,7 +577,9 @@ export default function DashboardPage() {
       />
       <MobileDashboard
         activeChallenges={challengesQuery.data}
+        activityFeed={activityFeedQuery.data}
         data={data}
+        isActivityLoading={activityFeedQuery.isLoading}
         onSearchSubmit={handleSearchSubmit}
         searchTerm={searchTerm}
         setSearchTerm={setSearchTerm}

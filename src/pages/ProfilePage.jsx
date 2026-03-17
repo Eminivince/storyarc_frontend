@@ -5,7 +5,8 @@ import Reveal from "../components/Reveal";
 import SkeletonBlock from "../components/SkeletonBlock";
 import UserAvatar from "../components/UserAvatar";
 import { useAccount } from "../context/AccountContext";
-import { useBadgesQuery } from "../engagement/engagementHooks";
+import { useBadgesQuery, useOwnActivityQuery } from "../engagement/engagementHooks";
+import ActivityFeedSection from "../components/ActivityFeedSection";
 import { useAuth } from "../context/AuthContext";
 import { useMonetization } from "../context/MonetizationContext";
 import { useToast } from "../context/ToastContext";
@@ -678,6 +679,8 @@ function DesktopProfile({
   isAccountLoading,
   isBadgesLoading,
   isCoinBalanceLoading,
+  isOwnActivityLoading,
+  ownActivity,
   profile,
   profileStats,
   readingList,
@@ -853,6 +856,14 @@ function DesktopProfile({
                     items={recentActivity}
                   />
                 </Reveal>
+
+                <ActivityFeedSection
+                  data={ownActivity}
+                  icon="history"
+                  isLoading={isOwnActivityLoading}
+                  own
+                  title="Reading Activity"
+                />
               </div>
             </div>
           </div>
@@ -870,7 +881,9 @@ function MobileProfile({
   isBadgesLoading,
   isCoinBalanceLoading,
   isLoggingOut,
+  isOwnActivityLoading,
   onLogout,
+  ownActivity,
   profile,
   profileStats,
   readingList,
@@ -1052,6 +1065,16 @@ function MobileProfile({
             />
           </div>
 
+          <div className="px-4 py-4">
+            <ActivityFeedSection
+              data={ownActivity}
+              icon="history"
+              isLoading={isOwnActivityLoading}
+              own
+              title="Reading Activity"
+            />
+          </div>
+
           <MobileLogoutSection
             isLoggingOut={isLoggingOut}
             onLogout={onLogout}
@@ -1079,6 +1102,7 @@ export default function ProfilePage() {
   const { showToast } = useToast();
   const badgesQuery = useBadgesQuery();
   const badgesData = badgesQuery.data ?? null;
+  const ownActivityQuery = useOwnActivityQuery();
 
   async function handleLogout() {
     await logout();
@@ -1095,6 +1119,8 @@ export default function ProfilePage() {
         isAccountLoading={isAccountLoading}
         isBadgesLoading={badgesQuery.isLoading}
         isCoinBalanceLoading={isStatusLoading}
+        isOwnActivityLoading={ownActivityQuery.isLoading}
+        ownActivity={ownActivityQuery.data}
         profile={profile}
         profileStats={profileStats}
         readingList={readingList}
@@ -1108,7 +1134,9 @@ export default function ProfilePage() {
         isBadgesLoading={badgesQuery.isLoading}
         isCoinBalanceLoading={isStatusLoading}
         isLoggingOut={isLoggingOut}
+        isOwnActivityLoading={ownActivityQuery.isLoading}
         onLogout={handleLogout}
+        ownActivity={ownActivityQuery.data}
         profile={profile}
         profileStats={profileStats}
         readingList={readingList}
