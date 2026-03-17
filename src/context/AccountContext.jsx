@@ -4,6 +4,7 @@ import { updateCurrentUserProfile as updateCurrentUserProfileRequest } from "../
 import {
   claimDailyCheckIn as claimDailyCheckInRequest,
   claimMission as claimMissionRequest,
+  fetchEngagementNotifications,
   fetchEngagementOverview,
   markAllNotificationsRead as markAllNotificationsReadRequest,
   markNotificationRead as markNotificationReadRequest,
@@ -112,25 +113,47 @@ export function AccountProvider({ children }) {
   const { updateCurrentUser, user } = useAuth();
   const [profile, setProfile] = useState(() => buildProfileState(null, null));
   const [mfa, setMfa] = useState(initialMfa);
+  const [lastWheelResult, setLastWheelResult] = useState(null);
   const { showToast } = useToast();
   const engagementQueryKey = ["engagement", "overview", user?.id ?? "guest"];
+  const notificationsQueryKey = ["engagement", "notifications", user?.id ?? "guest"];
   const engagementQuery = useQuery({
     queryKey: engagementQueryKey,
     queryFn: fetchEngagementOverview,
     enabled: Boolean(user),
-    refetchInterval: user ? 30_000 : false,
+    staleTime: 30 * 60 * 1000,
+  });
+  const notificationsQuery = useQuery({
+    queryKey: notificationsQueryKey,
+    queryFn: fetchEngagementNotifications,
+    enabled: Boolean(user),
+    refetchInterval: user ? 10_000 : false,
     refetchIntervalInBackground: false,
-    staleTime: 30_000,
+    staleTime: 10_000,
   });
 
   useEffect(() => {
     if (!user) {
       setProfile(buildProfileState(null, null));
+      setMfa(initialMfa);
       return;
     }
 
     setProfile(buildProfileState(user, engagementQuery.data?.profile ?? null));
   }, [engagementQuery.data?.profile, user]);
+
+  useEffect(() => {
+    if (!user) {
+      return;
+    }
+
+    if (typeof user.has2FA === "boolean") {
+      setMfa((current) => ({
+        ...current,
+        enabled: user.has2FA,
+      }));
+    }
+  }, [user]);
 
   const dailyCheckInMutation = useMutation({
     mutationFn: claimDailyCheckInRequest,
@@ -155,6 +178,9 @@ export function AccountProvider({ children }) {
   });
 
   const overview = user ? engagementQuery.data : null;
+  const notificationSnapshot = user
+    ? notificationsQuery.data ?? overview?.notifications ?? null
+    : null;
   const currentReading = overview?.currentReading ?? null;
   const rewards = overview?.rewards ?? initialRewards;
   const missions = overview?.missions ?? initialMissions;
@@ -165,9 +191,9 @@ export function AccountProvider({ children }) {
   const notifications =
     overview?.notificationPreferences ?? initialNotifications;
   const notificationFeed = (
-    overview?.notifications?.items ?? []
+    notificationSnapshot?.items ?? []
   ).map(cloneNotificationFeedItem);
-  const unreadNotificationCount = overview?.notifications?.unreadCount ?? 0;
+  const unreadNotificationCount = notificationSnapshot?.unreadCount ?? 0;
   const referrals = overview?.referrals
     ? {
         code: overview.referrals.code,
@@ -191,6 +217,12 @@ export function AccountProvider({ children }) {
 
   function patchOverview(updater) {
     queryClient.setQueryData(engagementQueryKey, (current) =>
+      current ? updater(current) : current,
+    );
+  }
+
+  function patchNotifications(updater) {
+    queryClient.setQueryData(notificationsQueryKey, (current) =>
       current ? updater(current) : current,
     );
   }
@@ -281,6 +313,11 @@ export function AccountProvider({ children }) {
       await refetchOverview();
     }
 
+    if (response.wheelResult) {
+      setLastWheelResult(response.wheelResult);
+      return response.wheelResult;
+    }
+
     showNotice(response.message || "Daily check-in claimed.");
     return true;
   }
@@ -314,19 +351,11 @@ export function AccountProvider({ children }) {
     showNotice(`${label} started. Support will meet you there.`);
   }
 
-  function setMfaMethod(method) {
+  function setMfaEnabled(enabled) {
     setMfa((current) => ({
       ...current,
-      method,
+      enabled: Boolean(enabled),
     }));
-  }
-
-  function completeMfaSetup() {
-    setMfa((current) => ({
-      ...current,
-      enabled: true,
-    }));
-    showNotice("Multi-factor authentication is now active.");
   }
 
   async function shareReferral(channel) {
@@ -348,32 +377,59 @@ export function AccountProvider({ children }) {
       notificationId,
     );
 
-    patchOverview((current) => ({
+    patchNotifications((current) => ({
       ...current,
-      notifications: {
-        ...current.notifications,
-        items: current.notifications.items.map((item) =>
-          item.id === notificationId ? response.notification : item,
-        ),
-        unreadCount: Math.max((current.notifications.unreadCount ?? 1) - 1, 0),
-      },
+      items: current.items.map((item) =>
+        item.id === notificationId ? response.notification : item,
+      ),
+      unreadCount: Math.max((current.unreadCount ?? 1) - 1, 0),
     }));
+    patchOverview((current) => {
+      if (!current?.notifications) {
+        return current;
+      }
+
+      return {
+        ...current,
+        notifications: {
+          ...current.notifications,
+          items: current.notifications.items.map((item) =>
+            item.id === notificationId ? response.notification : item,
+          ),
+          unreadCount: Math.max((current.notifications.unreadCount ?? 1) - 1, 0),
+        },
+      };
+    });
   }
 
   async function markAllNotificationsRead() {
     await markAllNotificationsReadMutation.mutateAsync();
 
-    patchOverview((current) => ({
+    patchNotifications((current) => ({
       ...current,
-      notifications: {
-        ...current.notifications,
-        items: (current.notifications.items ?? []).map((item) => ({
-          ...item,
-          readAt: item.readAt ?? new Date().toISOString(),
-        })),
-        unreadCount: 0,
-      },
+      items: (current.items ?? []).map((item) => ({
+        ...item,
+        readAt: item.readAt ?? new Date().toISOString(),
+      })),
+      unreadCount: 0,
     }));
+    patchOverview((current) => {
+      if (!current?.notifications) {
+        return current;
+      }
+
+      return {
+        ...current,
+        notifications: {
+          ...current.notifications,
+          items: (current.notifications.items ?? []).map((item) => ({
+            ...item,
+            readAt: item.readAt ?? new Date().toISOString(),
+          })),
+          unreadCount: 0,
+        },
+      };
+    });
     showNotice("All notifications marked as read.");
   }
 
@@ -381,12 +437,12 @@ export function AccountProvider({ children }) {
     claimDailyCheckIn,
     claimMission,
     claimedMissionIds,
-    completeMfaSetup,
     copyValue,
     currentReading,
     isAccountLoading: Boolean(user) && engagementQuery.isLoading,
     isNotificationsSaving: notificationPreferenceMutation.isPending,
     isProfileSaving: profileMutation.isPending,
+    lastWheelResult,
     markAllNotificationsRead,
     markNotificationRead,
     mfa,
@@ -403,7 +459,8 @@ export function AccountProvider({ children }) {
     rewardCalendar,
     rewards,
     saveNotifications,
-    setMfaMethod,
+    setLastWheelResult,
+    setMfaEnabled,
     shareReferral,
     showNotice,
     streakRewards,

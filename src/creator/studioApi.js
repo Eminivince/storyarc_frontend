@@ -98,3 +98,9 @@ export function uploadStudioCover(input) {
     timeoutMs: 30000,
   });
 }
+
+export function fetchCreatorScorecard() {
+  return getJson("/engagement/creator-scorecard", {
+    headers: getAuthHeaders(),
+  });
+}

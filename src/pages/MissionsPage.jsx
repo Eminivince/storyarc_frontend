@@ -1,4 +1,6 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { LogoBrand } from "../components/LogoBrand";
 import Reveal from "../components/Reveal";
 import UserAvatar from "../components/UserAvatar";
 import { useAccount } from "../context/AccountContext";
@@ -9,6 +11,29 @@ import {
   profileHref,
   rewardsHref,
 } from "../data/accountFlow";
+
+function useCountdownToMidnight() {
+  const [timeLeft, setTimeLeft] = useState("");
+
+  useEffect(() => {
+    function update() {
+      const now = new Date();
+      const midnight = new Date(now);
+      midnight.setUTCDate(midnight.getUTCDate() + 1);
+      midnight.setUTCHours(0, 0, 0, 0);
+      const diff = midnight.getTime() - now.getTime();
+      const hours = Math.floor(diff / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      setTimeLeft(`${hours}h ${minutes}m`);
+    }
+
+    update();
+    const interval = setInterval(update, 60_000);
+    return () => clearInterval(interval);
+  }, []);
+
+  return timeLeft;
+}
 
 function getMissionStatus(mission, claimedMissionIds, rewards) {
   if (claimedMissionIds.includes(mission.id)) {
@@ -41,14 +66,10 @@ function DesktopMissions({
     <div className="hidden min-h-screen bg-background-light font-display text-slate-900 dark:bg-background-dark dark:text-slate-100 md:block">
       <div className="relative flex min-h-screen w-full flex-col overflow-x-hidden">
         <header className="sticky top-0 z-50 flex items-center justify-between border-b border-primary/20 bg-background-dark/50 px-6 py-4 backdrop-blur-md lg:px-40">
-          <div className="flex items-center gap-4">
-            <div className="text-primary">
-              <span className="material-symbols-outlined text-3xl">auto_stories</span>
-            </div>
-            <h2 className="text-xl font-bold leading-tight tracking-tight text-slate-100">
-              TaleStead <span className="text-primary">Missions</span>
-            </h2>
-          </div>
+          <LogoBrand
+            suffix={<span className="text-primary"> Missions</span>}
+            textClassName="text-slate-100"
+          />
           <div className="flex flex-1 items-center justify-end gap-4 lg:gap-8">
             <div className="flex gap-2">
               <Link className="flex h-10 w-10 items-center justify-center rounded-lg border border-primary/20 bg-primary/10 text-primary transition-colors hover:bg-primary/20" to={rewardsHref}>
@@ -121,10 +142,13 @@ function DesktopMissions({
               </div>
 
               <div className="flex flex-col gap-4">
-                <h3 className="flex items-center gap-2 text-lg font-bold text-slate-100">
-                  <span className="material-symbols-outlined text-primary">event</span>
-                  Reader Quests
-                </h3>
+                <div className="flex items-center justify-between">
+                  <h3 className="flex items-center gap-2 text-lg font-bold text-slate-100">
+                    <span className="material-symbols-outlined text-primary">event</span>
+                    Today's Missions
+                  </h3>
+                  <MissionRefreshCountdown />
+                </div>
                 {readerMissions.map((mission) => {
                   const status = getMissionStatus(mission, claimedMissionIds, rewards);
                   const progress = Math.min((mission.current / mission.target) * 100, 100);
@@ -134,10 +158,15 @@ function DesktopMissions({
                       className="group flex flex-col items-center gap-6 rounded-xl border border-primary/10 bg-background-dark p-5 transition-all hover:border-primary/30 md:flex-row"
                       key={mission.id}
                     >
-                      <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+                      <div className="relative flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
                         <span className="material-symbols-outlined text-3xl">
                           {mission.icon}
                         </span>
+                        {mission.poolOnly && (
+                          <span className="absolute -right-1 -top-1 rounded-full bg-amber-500 px-1.5 py-0.5 text-[8px] font-bold text-black">
+                            NEW
+                          </span>
+                        )}
                       </div>
                       <div className="w-full flex-1">
                         <div className="mb-2 flex items-start justify-between">
@@ -242,13 +271,7 @@ function DesktopMissions({
                   );
                 })}
 
-                <div className="flex items-center justify-center rounded-xl border border-dashed border-primary/20 bg-primary/5 p-5">
-                  <div className="text-center">
-                    <p className="text-sm italic text-slate-400">
-                      New missions unlock in 14 hours...
-                    </p>
-                  </div>
-                </div>
+                <MissionRefreshBanner />
               </div>
             </div>
           </section>
@@ -265,10 +288,8 @@ function MobileMissions({
   points,
   rewards,
 }) {
-  const dailyMissions = missionList.filter((mission) =>
-    ["daily-check-in", "share-results", "active-critic"].includes(mission.id),
-  );
-  const authorMission = missionList.find((mission) => mission.id === "writer-flow");
+  const dailyMissions = missionList.filter((mission) => mission.group === "Reader");
+  const authorMissions = missionList.filter((mission) => mission.group === "Author");
 
   return (
     <div className="min-h-screen bg-background-light font-display text-slate-900 dark:bg-background-dark dark:text-slate-100 md:hidden">
@@ -330,7 +351,7 @@ function MobileMissions({
             <h3 className="text-sm font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">
               Daily Missions
             </h3>
-            <span className="text-xs font-medium text-primary">Resets in 14h 22m</span>
+            <MissionRefreshCountdown />
           </div>
           {dailyMissions.map((mission) => {
             const status = getMissionStatus(mission, claimedMissionIds, rewards);
@@ -392,35 +413,53 @@ function MobileMissions({
           })}
         </section>
 
-        {authorMission ? (
+        {authorMissions.length > 0 ? (
           <section className="space-y-4">
             <div className="flex items-center justify-between">
               <h3 className="text-sm font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">
                 Author Missions
               </h3>
-              <span className="text-xs text-slate-400">Sponsored</span>
             </div>
-            <div className="overflow-hidden rounded-xl border border-slate-800 bg-slate-900">
-              <div
-                className="h-32 bg-cover bg-center"
-                style={{
-                  backgroundImage:
-                    "url('https://lh3.googleusercontent.com/aida-public/AB6AXuAhMXVqJ9LABvJDqy_eiLekhAwD5OJzEaKvyd07w2wuff2fJQFevdq-IynbAZ45EXLgvLe2t8mcymLsA8gTH_wH2dLdNPMqGu2O3GuUxr1t4MV8QKe1tigztFjCM9MFw9J0oQ4-FR3TAtZc7upBtmglabk8yegmdjrDm4zZ4vv3KLlUo__kPOokfHpix7bxzPbkuYkSz-ocUFAzETaEZyPcZWby0z5ycZQCjdNW_ecd88EO1TPmv27hKsxNjg7drN1eyAVyvj-AuOQ')",
-                }}
-              />
-              <div className="p-4">
-                <h4 className="mb-1 font-bold text-white">{authorMission.title}</h4>
-                <p className="mb-4 text-xs text-slate-400">{authorMission.description}</p>
-                <div className="flex items-center justify-between">
-                  <div className="text-xs text-slate-400">
-                    {authorMission.current}/{authorMission.target} words
+            {authorMissions.map((mission) => {
+              const status = getMissionStatus(mission, claimedMissionIds, rewards);
+              const progress = Math.min((mission.current / mission.target) * 100, 100);
+
+              return (
+                <div
+                  className="overflow-hidden rounded-xl border border-slate-800 bg-slate-900 p-4"
+                  key={mission.id}
+                >
+                  <div className="mb-1 flex items-start justify-between">
+                    <h4 className="font-bold text-white">{mission.title}</h4>
+                    <span className="text-[10px] font-bold text-primary">+{mission.reward} XP</span>
                   </div>
-                  <Link className="rounded-full bg-white px-6 py-2 text-xs font-bold text-slate-900" to={authorMission.href || profileHref}>
-                    Start Quest
-                  </Link>
+                  <p className="mb-3 text-xs text-slate-400">{mission.description}</p>
+                  <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-800">
+                    <div className="h-full rounded-full bg-primary" style={{ width: `${progress}%` }} />
+                  </div>
+                  <div className="mt-2 flex items-center justify-between">
+                    <div className="text-xs text-slate-400">
+                      {mission.current}/{mission.target}
+                    </div>
+                    {status === "ready" ? (
+                      <button
+                        className="rounded-full bg-primary px-4 py-1.5 text-xs font-bold text-background-dark"
+                        onClick={() => onClaim(mission.id)}
+                        type="button"
+                      >
+                        Claim
+                      </button>
+                    ) : status === "claimed" ? (
+                      <span className="text-xs font-bold text-primary">Claimed</span>
+                    ) : (
+                      <Link className="rounded-full bg-white px-4 py-1.5 text-xs font-bold text-slate-900" to={mission.href || profileHref}>
+                        {mission.actionLabel}
+                      </Link>
+                    )}
+                  </div>
                 </div>
-              </div>
-            </div>
+              );
+            })}
           </section>
         ) : null}
       </main>
@@ -445,6 +484,32 @@ function MobileMissions({
           </Link>
         </div>
       </nav>
+    </div>
+  );
+}
+
+function MissionRefreshCountdown() {
+  const timeLeft = useCountdownToMidnight();
+
+  return (
+    <span className="flex items-center gap-1 text-xs font-medium text-primary">
+      <span className="material-symbols-outlined text-sm">schedule</span>
+      Refreshes in {timeLeft}
+    </span>
+  );
+}
+
+function MissionRefreshBanner() {
+  const timeLeft = useCountdownToMidnight();
+
+  return (
+    <div className="flex items-center justify-center rounded-xl border border-dashed border-primary/20 bg-primary/5 p-5">
+      <div className="flex items-center gap-2 text-center">
+        <span className="material-symbols-outlined text-sm text-primary">autorenew</span>
+        <p className="text-sm italic text-slate-400">
+          New missions in {timeLeft}
+        </p>
+      </div>
     </div>
   );
 }

@@ -1,9 +1,13 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AppDesktopSidebar, AppMobileTabBar } from "../components/AppShellNav";
+import { LogoBrand } from "../components/LogoBrand";
 import Reveal from "../components/Reveal";
 import UserAvatar from "../components/UserAvatar";
-import { useStudioAnalyticsQuery } from "../creator/studioHooks";
+import {
+  useCreatorScorecardQuery,
+  useStudioAnalyticsQuery,
+} from "../creator/studioHooks";
 import { useAuth } from "../context/AuthContext";
 import { useCreator } from "../context/CreatorContext";
 import { profileHref } from "../data/accountFlow";
@@ -708,14 +712,7 @@ function DesktopAuthorDashboard({
       <div className="relative flex min-h-screen flex-col overflow-x-hidden">
         <header className="sticky top-0 z-50 flex items-center justify-between border-b border-primary/10 bg-background-light px-6 py-3 dark:bg-background-dark lg:px-10">
           <div className="flex items-center gap-8">
-            <div className="flex items-center gap-3 text-primary">
-              <div className="flex size-8 items-center justify-center rounded-lg bg-primary/10">
-                <span className="material-symbols-outlined">auto_stories</span>
-              </div>
-              <h2 className="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
-                TaleStead
-              </h2>
-            </div>
+            <LogoBrand textClassName="text-slate-900 dark:text-slate-100" />
             <label className="hidden min-w-64 md:flex">
               <div className="flex h-10 w-full items-center rounded-lg bg-slate-200/50 px-4 dark:bg-primary/5">
                 <span className="material-symbols-outlined text-[20px] text-slate-500 dark:text-primary/60">
@@ -843,6 +840,8 @@ function DesktopAuthorDashboard({
                   </Reveal>
                 ))}
               </div>
+
+              <CreatorScorecardWidget />
 
               <div className="grid grid-cols-1 gap-8 xl:grid-cols-3">
                 <div className="space-y-4 xl:col-span-2">
@@ -1197,6 +1196,10 @@ function MobileAuthorDashboard({
           </section>
 
           <section className="px-4 py-2">
+            <CreatorScorecardWidget />
+          </section>
+
+          <section className="px-4 py-2">
             <div className="mb-3 flex items-center justify-between">
               <h2 className="text-base font-bold">My Stories</h2>
               <Link
@@ -1316,6 +1319,118 @@ function MobileAuthorDashboard({
         <AppMobileTabBar mode="creator" />
       </div>
     </div>
+  );
+}
+
+function TrendArrow({ direction }) {
+  if (direction === "up") {
+    return <span className="text-emerald-500">↑</span>;
+  }
+
+  if (direction === "down") {
+    return <span className="text-red-500">↓</span>;
+  }
+
+  return <span className="text-slate-400">→</span>;
+}
+
+function ScorecardSparkline({ data }) {
+  if (!data || data.length < 2) {
+    return null;
+  }
+
+  const max = Math.max(...data, 1);
+  const width = 80;
+  const height = 24;
+  const points = data.map((value, index) => {
+    const x = (index / (data.length - 1)) * width;
+    const y = height - (value / max) * height;
+    return `${x},${y}`;
+  });
+
+  return (
+    <svg className="text-primary" height={height} viewBox={`0 0 ${width} ${height}`} width={width}>
+      <polyline
+        fill="none"
+        points={points.join(" ")}
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="2"
+      />
+    </svg>
+  );
+}
+
+function CreatorScorecardWidget() {
+  const { data, isLoading, isError } = useCreatorScorecardQuery();
+
+  if (isLoading) {
+    return (
+      <div className="animate-pulse rounded-xl border border-primary/10 bg-primary/5 p-6">
+        <div className="mb-4 h-5 w-48 rounded bg-slate-700" />
+        <div className="grid grid-cols-2 gap-4">
+          {[0, 1, 2, 3].map((i) => (
+            <div className="h-16 rounded-lg bg-slate-700/50" key={i} />
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  if (isError || !data) {
+    return null;
+  }
+
+  const { currentWeek, history, trends } = data;
+  const viewsHistory = history.map((h) => h.totalViews);
+  const readersHistory = history.map((h) => h.totalReaders);
+  const followersHistory = history.map((h) => h.newFollowers);
+  const chaptersHistory = history.map((h) => h.chaptersPublished);
+
+  const weekRange = currentWeek.weekStart && currentWeek.weekEnd
+    ? `${new Date(currentWeek.weekStart).toLocaleDateString("en-US", { month: "short", day: "numeric" })} – ${new Date(currentWeek.weekEnd).toLocaleDateString("en-US", { month: "short", day: "numeric" })}`
+    : "This Week";
+
+  const metrics = [
+    { label: "Views", value: currentWeek.totalViews, trend: trends?.views, sparkData: viewsHistory, icon: "visibility" },
+    { label: "Readers", value: currentWeek.totalReaders, trend: trends?.readers, sparkData: readersHistory, icon: "group" },
+    { label: "Followers", value: currentWeek.newFollowers, trend: trends?.followers, sparkData: followersHistory, icon: "person_add" },
+    { label: "Chapters", value: currentWeek.chaptersPublished, trend: null, sparkData: chaptersHistory, icon: "article" },
+  ];
+
+  return (
+    <Reveal className="rounded-xl border border-primary/10 bg-primary/5 p-6">
+      <div className="mb-4 flex items-center justify-between">
+        <div>
+          <h3 className="text-lg font-bold">Weekly Performance</h3>
+          <p className="text-xs text-slate-400">{weekRange}</p>
+        </div>
+        <span className="material-symbols-outlined text-primary">insights</span>
+      </div>
+      <div className="grid grid-cols-2 gap-4">
+        {metrics.map((metric) => (
+          <div
+            className="flex flex-col gap-1 rounded-lg border border-primary/10 bg-background-dark/50 p-3"
+            key={metric.label}
+          >
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-medium uppercase tracking-wider text-slate-400">
+                {metric.label}
+              </span>
+              <span className="material-symbols-outlined text-sm text-primary/60">
+                {metric.icon}
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-xl font-bold">{formatCompactNumber(metric.value)}</span>
+              {metric.trend && <TrendArrow direction={metric.trend} />}
+            </div>
+            <ScorecardSparkline data={metric.sparkData} />
+          </div>
+        ))}
+      </div>
+    </Reveal>
   );
 }
 

@@ -1,5 +1,7 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import Reveal from "../components/Reveal";
+import RewardWheel from "../components/RewardWheel";
 import UserAvatar from "../components/UserAvatar";
 import { useAccount } from "../context/AccountContext";
 import { useAuth } from "../context/AuthContext";
@@ -111,7 +113,7 @@ function DesktopRewards({
                 >
                   {claimedMissionIds.includes("daily-check-in")
                     ? "Checked In"
-                    : "Check-in Now"}
+                    : "Spin the Wheel"}
                 </button>
               </div>
             </div>
@@ -408,7 +410,7 @@ function MobileRewards({
               >
                 {claimedMissionIds.includes("daily-check-in")
                   ? "Today's Reward Claimed"
-                  : "Claim Today's +50 Points"}
+                  : "Spin the Wheel"}
               </button>
             </div>
           </section>
@@ -574,14 +576,44 @@ export default function RewardsPage() {
   const {
     claimDailyCheckIn,
     claimedMissionIds,
+    lastWheelResult,
     missions,
     rewardCalendar,
     rewards,
+    setLastWheelResult,
     streakRewards,
   } = useAccount();
 
   const shieldMutation = usePurchaseStreakShieldMutation();
   const { showToast } = useToast();
+  const [showWheel, setShowWheel] = useState(false);
+  const [wheelResult, setWheelResult] = useState(null);
+  const [isSpinning, setIsSpinning] = useState(false);
+
+  const handleCheckIn = async () => {
+    try {
+      const result = await claimDailyCheckIn();
+
+      if (result && typeof result === "object" && result.wheelIndex !== undefined) {
+        setWheelResult(result);
+        setShowWheel(true);
+        setIsSpinning(true);
+      }
+    } catch {
+      showToast("Failed to check in.", { tone: "error" });
+    }
+  };
+
+  const handleWheelComplete = (result) => {
+    showToast(`You earned ${result.finalPoints} Arc Points!`, { tone: "success" });
+
+    setTimeout(() => {
+      setShowWheel(false);
+      setIsSpinning(false);
+      setWheelResult(null);
+      setLastWheelResult(null);
+    }, 500);
+  };
 
   const handlePurchaseShield = () => {
     shieldMutation.mutate(undefined, {
@@ -592,12 +624,19 @@ export default function RewardsPage() {
 
   return (
     <>
+      {showWheel && wheelResult && (
+        <RewardWheel
+          isSpinning={isSpinning}
+          onComplete={handleWheelComplete}
+          wheelResult={wheelResult}
+        />
+      )}
       <DesktopRewards
         claimedMissionIds={claimedMissionIds}
         isShieldPurchasing={shieldMutation.isPending}
         missionList={missions}
         nextMultiplierAt={rewards.nextMultiplierAt}
-        onCheckIn={claimDailyCheckIn}
+        onCheckIn={handleCheckIn}
         onPurchaseShield={handlePurchaseShield}
         points={rewards.points}
         rewardCalendar={rewardCalendar}
@@ -611,7 +650,7 @@ export default function RewardsPage() {
         isShieldPurchasing={shieldMutation.isPending}
         missionList={missions}
         nextMultiplierAt={rewards.nextMultiplierAt}
-        onCheckIn={claimDailyCheckIn}
+        onCheckIn={handleCheckIn}
         onPurchaseShield={handlePurchaseShield}
         points={rewards.points}
         rewardCalendar={rewardCalendar}
