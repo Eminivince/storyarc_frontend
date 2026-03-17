@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AppDesktopSidebar, AppMobileTabBar } from "../components/AppShellNav";
 import Reveal from "../components/Reveal";
@@ -672,7 +673,77 @@ function MobileLogoutSection({ isLoggingOut, onLogout }) {
   );
 }
 
+function DesktopBadgesTab({ badgesData, isBadgesLoading }) {
+  return (
+    <Reveal className="mb-6">
+      <div className="flex items-center justify-between">
+        <h3 className="text-lg font-bold">Badges</h3>
+      </div>
+      {badgesData ? (
+        <>
+          {badgesData.badges.length > 0 ? (
+            <div className="mt-4 grid grid-cols-3 gap-4 sm:grid-cols-4 lg:grid-cols-5">
+              {badgesData.badges.map((badge) => (
+                <div
+                  className={`flex flex-col items-center gap-2 rounded-xl border p-4 ${
+                    badge.earned
+                      ? "border-primary/20 bg-primary/5"
+                      : "border-slate-200 bg-slate-50 opacity-50 dark:border-white/10 dark:bg-white/5"
+                  }`}
+                  key={badge.id}
+                >
+                  <div className={`flex h-12 w-12 items-center justify-center rounded-full text-white text-lg font-bold ${
+                    badge.rarity === "LEGENDARY" ? "bg-amber-500" :
+                    badge.rarity === "EPIC" ? "bg-purple-500" :
+                    badge.rarity === "RARE" ? "bg-blue-500" :
+                    badge.rarity === "UNCOMMON" ? "bg-green-500" : "bg-gray-400"
+                  }`}>
+                    {badge.title?.[0] ?? "?"}
+                  </div>
+                  <p className="text-xs font-bold text-center">{badge.title}</p>
+                  <span className={`text-[10px] font-bold uppercase tracking-wider ${
+                    badge.rarity === "LEGENDARY" ? "text-amber-500" :
+                    badge.rarity === "EPIC" ? "text-purple-500" :
+                    badge.rarity === "RARE" ? "text-blue-500" :
+                    badge.rarity === "UNCOMMON" ? "text-green-500" : "text-gray-400"
+                  }`}>
+                    {badge.rarity}
+                  </span>
+                </div>
+              ))}
+            </div>
+          ) : null}
+          <p className="mt-3 text-sm text-slate-500 dark:text-slate-400">
+            {badgesData.badges.filter((b) => b.earned).length} of {badgesData.badges.length} badges earned
+          </p>
+        </>
+      ) : isBadgesLoading ? (
+        <div className="mt-4 flex gap-4">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <div className="h-24 w-24 animate-pulse rounded-xl bg-primary/10" key={i} />
+          ))}
+        </div>
+      ) : null}
+    </Reveal>
+  );
+}
+
+function MyStoriesTab() {
+  return (
+    <Reveal>
+      <SectionEmptyState
+        body="Have a story to tell? Start writing and share it with the TaleStead community."
+        ctaHref="/creator"
+        ctaLabel="Start Writing"
+        icon="edit_note"
+        title="Your stories will appear here"
+      />
+    </Reveal>
+  );
+}
+
 function DesktopProfile({
+  activeTab,
   badgesData,
   coinBalance,
   currentReading,
@@ -680,6 +751,7 @@ function DesktopProfile({
   isBadgesLoading,
   isCoinBalanceLoading,
   isOwnActivityLoading,
+  onTabChange,
   ownActivity,
   profile,
   profileStats,
@@ -751,14 +823,15 @@ function DesktopProfile({
 
             <div className="mb-5 overflow-x-auto border-b border-slate-200 dark:border-white/10">
               <div className="flex gap-6">
-                {profileTabs.map((tab, index) => (
+                {profileTabs.map((tab) => (
                   <button
                     className={`whitespace-nowrap border-b-2 pb-3 text-xs font-bold ${
-                      index === 0
+                      activeTab === tab
                         ? "border-primary text-primary"
                         : "border-transparent text-slate-500 transition-colors hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
                     }`}
                     key={tab}
+                    onClick={() => onTabChange(tab)}
                     type="button"
                   >
                     {tab}
@@ -767,65 +840,36 @@ function DesktopProfile({
               </div>
             </div>
 
-            <Reveal className="mb-6">
-              <div className="flex items-center justify-between">
-                <h3 className="text-lg font-bold">Badges</h3>
-                <Link className="text-xs font-bold uppercase tracking-widest text-primary hover:underline" to="/account/badges">
-                  View all
-                </Link>
-              </div>
-              {badgesData ? (
-                <>
-                  {badgesData.featuredBadgeIds?.length > 0 && (
-                    <div className="mt-4 flex gap-4">
-                      {badgesData.badges
-                        .filter((b) => badgesData.featuredBadgeIds.includes(b.id))
-                        .map((badge) => (
-                          <div className="flex flex-col items-center gap-2 rounded-xl border border-primary/20 bg-primary/5 p-4" key={badge.id}>
-                            <div className={`flex h-12 w-12 items-center justify-center rounded-full text-white text-lg font-bold ${
-                              badge.rarity === "LEGENDARY" ? "bg-amber-500" :
-                              badge.rarity === "EPIC" ? "bg-purple-500" :
-                              badge.rarity === "RARE" ? "bg-blue-500" :
-                              badge.rarity === "UNCOMMON" ? "bg-green-500" : "bg-gray-400"
-                            }`}>
-                              {badge.title?.[0] ?? "?"}
-                            </div>
-                            <p className="text-xs font-bold">{badge.title}</p>
-                          </div>
-                        ))}
-                    </div>
-                  )}
-                  <p className="mt-3 text-sm text-slate-500 dark:text-slate-400">
-                    {badgesData.badges.filter((b) => b.earned).length} of {badgesData.badges.length} badges earned
-                  </p>
-                </>
-              ) : isBadgesLoading ? (
-                <div className="mt-4 flex gap-4">
-                  {Array.from({ length: 3 }).map((_, i) => (
-                    <div className="h-24 w-24 animate-pulse rounded-xl bg-primary/10" key={i} />
-                  ))}
+            {activeTab === "Library" && (
+              <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+                <div className="space-y-6 lg:col-span-2">
+                  <DesktopCurrentReading
+                    currentReading={currentReading}
+                    isLoading={isAccountLoading}
+                  />
+                  <DesktopReadingList
+                    isLoading={isAccountLoading}
+                    readingList={readingList}
+                  />
                 </div>
-              ) : null}
-            </Reveal>
 
-            <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-              <div className="space-y-6 lg:col-span-2">
-                <DesktopCurrentReading
-                  currentReading={currentReading}
-                  isLoading={isAccountLoading}
-                />
-                <DesktopReadingList
-                  isLoading={isAccountLoading}
-                  readingList={readingList}
-                />
+                <div className="space-y-5">
+                  <WalletSection
+                    coinBalance={coinBalance}
+                    isLoading={isCoinBalanceLoading}
+                  />
+                </div>
               </div>
+            )}
 
-              <div className="space-y-5">
-                <WalletSection
-                  coinBalance={coinBalance}
-                  isLoading={isCoinBalanceLoading}
-                />
+            {activeTab === "My Stories" && <MyStoriesTab />}
 
+            {activeTab === "Badges" && (
+              <DesktopBadgesTab badgesData={badgesData} isBadgesLoading={isBadgesLoading} />
+            )}
+
+            <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
+              <div className="lg:col-span-2">
                 <Reveal>
                   <h3 className="mb-4 text-lg font-bold">Account Center</h3>
                   <div className="grid gap-2">
@@ -848,7 +892,9 @@ function DesktopProfile({
                     ))}
                   </div>
                 </Reveal>
+              </div>
 
+              <div className="space-y-5">
                 <Reveal>
                   <h3 className="mb-4 text-lg font-bold">Recent Activity</h3>
                   <RecentActivityList
@@ -873,7 +919,56 @@ function DesktopProfile({
   );
 }
 
+function MobileBadgesTab({ badgesData, isBadgesLoading }) {
+  return (
+    <div className="px-4 py-4">
+      <h3 className="flex items-center gap-2 text-lg font-bold">
+        <span className="material-symbols-outlined text-primary">military_tech</span>
+        Badges
+      </h3>
+      {badgesData ? (
+        <>
+          {badgesData.badges.length > 0 ? (
+            <div className="mt-3 grid grid-cols-3 gap-3">
+              {badgesData.badges.map((badge) => (
+                <div
+                  className={`flex flex-col items-center gap-1.5 rounded-xl border p-3 ${
+                    badge.earned
+                      ? "border-primary/10 bg-primary/5"
+                      : "border-slate-200 bg-slate-50 opacity-50 dark:border-white/10 dark:bg-white/5"
+                  }`}
+                  key={badge.id}
+                >
+                  <div className={`flex h-10 w-10 items-center justify-center rounded-full text-white text-sm font-bold ${
+                    badge.rarity === "LEGENDARY" ? "bg-amber-500" :
+                    badge.rarity === "EPIC" ? "bg-purple-500" :
+                    badge.rarity === "RARE" ? "bg-blue-500" :
+                    badge.rarity === "UNCOMMON" ? "bg-green-500" : "bg-gray-400"
+                  }`}>
+                    {badge.title?.[0] ?? "?"}
+                  </div>
+                  <p className="text-[10px] font-bold text-center">{badge.title}</p>
+                </div>
+              ))}
+            </div>
+          ) : null}
+          <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
+            {badgesData.badges.filter((b) => b.earned).length} of {badgesData.badges.length} earned
+          </p>
+        </>
+      ) : isBadgesLoading ? (
+        <div className="mt-3 flex gap-3">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <div className="h-20 w-20 animate-pulse rounded-xl bg-primary/10" key={i} />
+          ))}
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
 function MobileProfile({
+  activeTab,
   badgesData,
   coinBalance,
   currentReading,
@@ -883,6 +978,7 @@ function MobileProfile({
   isLoggingOut,
   isOwnActivityLoading,
   onLogout,
+  onTabChange,
   ownActivity,
   profile,
   profileStats,
@@ -951,14 +1047,15 @@ function MobileProfile({
 
           <div className="mt-2 pb-3">
             <div className="flex justify-between border-b border-slate-200 px-4 dark:border-primary/10">
-              {profileTabs.map((tab, index) => (
+              {profileTabs.map((tab) => (
                 <button
                   className={`flex flex-1 flex-col items-center justify-center border-b-[3px] pb-[13px] pt-4 ${
-                    index === 0
+                    activeTab === tab
                       ? "border-b-primary text-primary"
                       : "border-b-transparent text-slate-500 dark:text-slate-400"
                   }`}
                   key={tab}
+                  onClick={() => onTabChange(tab)}
                   type="button"
                 >
                   <p className="text-sm font-bold">{tab}</p>
@@ -967,64 +1064,39 @@ function MobileProfile({
             </div>
           </div>
 
-          <div className="px-4 py-4">
-            <div className="flex items-center justify-between">
-              <h3 className="flex items-center gap-2 text-lg font-bold">
-                <span className="material-symbols-outlined text-primary">military_tech</span>
-                Badges
-              </h3>
-              <Link className="text-[11px] font-bold uppercase tracking-widest text-primary" to="/account/badges">
-                View All
-              </Link>
-            </div>
-            {badgesData ? (
-              <>
-                {badgesData.featuredBadgeIds?.length > 0 && (
-                  <div className="mt-3 flex gap-3">
-                    {badgesData.badges
-                      .filter((b) => badgesData.featuredBadgeIds.includes(b.id))
-                      .map((badge) => (
-                        <div className="flex flex-col items-center gap-1.5 rounded-xl border border-primary/10 bg-primary/5 p-3" key={badge.id}>
-                          <div className={`flex h-10 w-10 items-center justify-center rounded-full text-white text-sm font-bold ${
-                            badge.rarity === "LEGENDARY" ? "bg-amber-500" :
-                            badge.rarity === "EPIC" ? "bg-purple-500" :
-                            badge.rarity === "RARE" ? "bg-blue-500" :
-                            badge.rarity === "UNCOMMON" ? "bg-green-500" : "bg-gray-400"
-                          }`}>
-                            {badge.title?.[0] ?? "?"}
-                          </div>
-                          <p className="text-[10px] font-bold">{badge.title}</p>
-                        </div>
-                      ))}
-                  </div>
-                )}
-                <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
-                  {badgesData.badges.filter((b) => b.earned).length} of {badgesData.badges.length} earned
-                </p>
-              </>
-            ) : isBadgesLoading ? (
-              <div className="mt-3 flex gap-3">
-                {Array.from({ length: 3 }).map((_, i) => (
-                  <div className="h-20 w-20 animate-pulse rounded-xl bg-primary/10" key={i} />
-                ))}
-              </div>
-            ) : null}
-          </div>
+          {activeTab === "Library" && (
+            <>
+              <MobileCurrentReading
+                currentReading={currentReading}
+                isLoading={isAccountLoading}
+              />
+              <MobileReadingList
+                isLoading={isAccountLoading}
+                readingList={readingList}
+              />
+            </>
+          )}
 
-          <MobileCurrentReading
-            currentReading={currentReading}
-            isLoading={isAccountLoading}
-          />
+          {activeTab === "My Stories" && (
+            <div className="px-4 py-4">
+              <SectionEmptyState
+                body="Have a story to tell? Start writing and share it with the TaleStead community."
+                ctaHref="/creator"
+                ctaLabel="Start Writing"
+                icon="edit_note"
+                title="Your stories will appear here"
+              />
+            </div>
+          )}
+
+          {activeTab === "Badges" && (
+            <MobileBadgesTab badgesData={badgesData} isBadgesLoading={isBadgesLoading} />
+          )}
 
           <WalletSection
             coinBalance={coinBalance}
             isLoading={isCoinBalanceLoading}
             mobile
-          />
-
-          <MobileReadingList
-            isLoading={isAccountLoading}
-            readingList={readingList}
           />
 
           <div className="px-4 py-4">
@@ -1065,16 +1137,6 @@ function MobileProfile({
             />
           </div>
 
-          <div className="px-4 py-4">
-            <ActivityFeedSection
-              data={ownActivity}
-              icon="history"
-              isLoading={isOwnActivityLoading}
-              own
-              title="Reading Activity"
-            />
-          </div>
-
           <MobileLogoutSection
             isLoggingOut={isLoggingOut}
             onLogout={onLogout}
@@ -1103,6 +1165,7 @@ export default function ProfilePage() {
   const badgesQuery = useBadgesQuery();
   const badgesData = badgesQuery.data ?? null;
   const ownActivityQuery = useOwnActivityQuery();
+  const [activeTab, setActiveTab] = useState("Library");
 
   async function handleLogout() {
     await logout();
@@ -1113,6 +1176,7 @@ export default function ProfilePage() {
   return (
     <>
       <DesktopProfile
+        activeTab={activeTab}
         badgesData={badgesData}
         coinBalance={coinBalance}
         currentReading={currentReading}
@@ -1120,6 +1184,7 @@ export default function ProfilePage() {
         isBadgesLoading={badgesQuery.isLoading}
         isCoinBalanceLoading={isStatusLoading}
         isOwnActivityLoading={ownActivityQuery.isLoading}
+        onTabChange={setActiveTab}
         ownActivity={ownActivityQuery.data}
         profile={profile}
         profileStats={profileStats}
@@ -1127,6 +1192,7 @@ export default function ProfilePage() {
         recentActivity={recentActivity}
       />
       <MobileProfile
+        activeTab={activeTab}
         badgesData={badgesData}
         coinBalance={coinBalance}
         currentReading={currentReading}
@@ -1136,6 +1202,7 @@ export default function ProfilePage() {
         isLoggingOut={isLoggingOut}
         isOwnActivityLoading={ownActivityQuery.isLoading}
         onLogout={handleLogout}
+        onTabChange={setActiveTab}
         ownActivity={ownActivityQuery.data}
         profile={profile}
         profileStats={profileStats}

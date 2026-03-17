@@ -7,6 +7,7 @@ import {
   fetchChapterReactions,
   fetchChurnMetrics,
   fetchReactionHeatmap,
+  fetchReferralDashboard,
   fetchReturningUserCheck,
   purchaseStreakShield,
   recordInterventionClick,
@@ -14,6 +15,7 @@ import {
   recordReadingTime,
   removeParagraphReaction,
   removeChapterReaction,
+  requestReferralWithdrawal,
   toggleBadgeFeatured,
   fetchActivityFeed,
   fetchMyShopItems,
@@ -249,5 +251,26 @@ export function useChurnMetricsQuery() {
     queryKey: ["churn-metrics"],
     queryFn: fetchChurnMetrics,
     staleTime: STALE_5_MIN,
+  });
+}
+
+// ── Referral Affiliate ────────────────────────────────────────────
+
+export function useReferralDashboardQuery() {
+  return useQuery({
+    queryKey: ["referral-dashboard"],
+    queryFn: fetchReferralDashboard,
+    staleTime: STALE_5_MIN,
+  });
+}
+
+export function useReferralWithdrawalMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: requestReferralWithdrawal,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["referral-dashboard"] });
+    },
   });
 }

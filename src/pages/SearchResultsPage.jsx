@@ -10,6 +10,14 @@ import { buildSearchHref, buildStoryHref } from "../data/readerFlow";
 import { useCreator } from "../context/CreatorContext";
 import { useReaderSearchQuery } from "../reader/readerHooks";
 
+function StoryCoverImage({ alt, className }) {
+  return (
+    <div className={`flex items-center justify-center bg-gradient-to-br from-primary/20 to-primary/5 ${className}`}>
+      <span className="material-symbols-outlined text-3xl text-primary/40">auto_stories</span>
+    </div>
+  );
+}
+
 function LoadingState() {
   return <RouteLoadingScreen />;
 }
@@ -158,11 +166,15 @@ function DesktopSearchResults({
                       viewport={{ amount: 0.15, once: true }}
                     >
                       <div className="relative mb-3 aspect-[3/4] overflow-hidden rounded-2xl border border-primary/10">
-                        <img
-                          alt={story.title}
-                          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                          src={story.coverImage}
-                        />
+                        {story.coverImage ? (
+                          <img
+                            alt={story.title}
+                            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                            src={story.coverImage}
+                          />
+                        ) : (
+                          <StoryCoverImage alt={story.title} className="h-full w-full" />
+                        )}
                         <div className="absolute right-3 top-3 rounded-full bg-black/50 px-2 py-1 text-[10px] font-bold text-white backdrop-blur-sm">
                           {story.averageRating.toFixed(1)}
                         </div>
@@ -276,11 +288,15 @@ function MobileSearchResults({
               {data.stories.map((story) => (
                 <PrefetchableStoryLink key={story.slug} storySlug={story.slug} to={buildStoryHref(story.slug)}>
                   <article className="flex gap-3 rounded-3xl border border-primary/10 bg-white p-3 dark:bg-primary/5">
-                    <img
-                      alt={story.title}
-                      className="h-28 w-24 rounded-2xl object-cover"
-                      src={story.coverImage}
-                    />
+                    {story.coverImage ? (
+                      <img
+                        alt={story.title}
+                        className="h-28 w-24 rounded-2xl object-cover"
+                        src={story.coverImage}
+                      />
+                    ) : (
+                      <StoryCoverImage alt={story.title} className="h-28 w-24 rounded-2xl" />
+                    )}
                     <div className="min-w-0 flex-1">
                       <h4 className="line-clamp-2 text-base font-bold">{story.title}</h4>
                       <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">

@@ -19,7 +19,7 @@ export const mfaSuccessHref = "/account/security/mfa/success";
 export const accountAvatar =
   "https://lh3.googleusercontent.com/aida-public/AB6AXuBrufI0Of3xcMR30t_ex69yPWVBNZhxZ8w8Hsjn5AoRt6jj9UZ5qKiWKVsB1NOMFEjv_WH10e8VvR-TDveyOzK_DJ0w_ic77CgUOPakDoA-7S-hstqsfMAZCpudD2MrNqJOxDmAL6-xJ5rsWrfKvpqHJv5J13EkyfnMo6Txy9MD8luaFTiagopZ7BDg7RpqtxPyQpZT63Q3vJ5JQm-VgEk2Hu5zTvR-3UG7ssu-9TFEvhWCt1yOm1B2Fc7-fwDKj9JU_OW36I3jcIY";
 
-export const profileTabs = ["Library", "My Stories", "Badges", "Social"];
+export const profileTabs = ["Library", "My Stories", "Badges"];
 
 export const initialNotifications = {
   emailNewComments: true,

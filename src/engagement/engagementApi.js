@@ -264,3 +264,23 @@ export function fetchChurnMetrics() {
     headers: getAuthHeaders(),
   });
 }
+
+// ── Referral Affiliate ────────────────────────────────────────────
+
+export function fetchReferralDashboard() {
+  return getJson("/engagement/referrals/dashboard", {
+    headers: getAuthHeaders(),
+  });
+}
+
+export function requestReferralWithdrawal(amountCents) {
+  return postJson("/engagement/referrals/withdraw", { amountCents }, {
+    headers: getAuthHeaders(),
+  });
+}
+
+export function fetchReferralEarnings() {
+  return getJson("/engagement/referrals/earnings", {
+    headers: getAuthHeaders(),
+  });
+}

@@ -1,7 +1,13 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import Reveal from "../components/Reveal";
 import UserAvatar from "../components/UserAvatar";
 import { useAccount } from "../context/AccountContext";
+import { useToast } from "../context/ToastContext";
+import {
+  useReferralDashboardQuery,
+  useReferralWithdrawalMutation,
+} from "../engagement/engagementHooks";
 import {
   notificationsHref,
   profileHref,
@@ -10,25 +16,6 @@ import {
   rewardsHref,
 } from "../data/accountFlow";
 
-const desktopTrustSignals = [
-  {
-    title: "Trustworthy Rewards",
-    description:
-      "Points are credited within 24 hours after a friend starts their premium journey.",
-    icon: "verified",
-  },
-  {
-    title: "Unlimited Invites",
-    description: "There is no cap on how many readers you can bring into TaleStead.",
-    icon: "group_add",
-  },
-  {
-    title: "Redeem Points",
-    description: "Use Arc Points for premium chapters, avatar drops, and bonus reads.",
-    icon: "redeem",
-  },
-];
-
 const shareAccentClasses = {
   WhatsApp: "bg-green-500/20 text-green-500 hover:bg-green-500 hover:text-white",
   "Twitter X": "bg-sky-500/20 text-sky-500 hover:bg-sky-500 hover:text-white",
@@ -36,12 +23,208 @@ const shareAccentClasses = {
   Others: "bg-slate-500/20 text-slate-500 hover:bg-slate-500 hover:text-white",
 };
 
+function formatCents(cents) {
+  return `$${(cents / 100).toFixed(2)}`;
+}
+
+function EarningsDashboard({ dashboard, isLoading }) {
+  if (isLoading || !dashboard) {
+    return (
+      <div className="grid gap-4 sm:grid-cols-3">
+        {Array.from({ length: 3 }).map((_, i) => (
+          <div className="animate-pulse rounded-2xl border border-primary/10 bg-primary/5 p-5" key={i}>
+            <div className="h-4 w-20 rounded bg-primary/10" />
+            <div className="mt-3 h-8 w-24 rounded bg-primary/10" />
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  return (
+    <div className="grid gap-4 sm:grid-cols-3">
+      <div className="rounded-2xl border border-primary/10 bg-primary/5 p-5">
+        <p className="text-[11px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">
+          Total Earned
+        </p>
+        <p className="mt-2 text-2xl font-black text-primary">
+          {formatCents(dashboard.totalEarningsCents)}
+        </p>
+      </div>
+      <div className="rounded-2xl border border-primary/10 bg-primary/5 p-5">
+        <p className="text-[11px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">
+          Available Balance
+        </p>
+        <p className="mt-2 text-2xl font-black">
+          {formatCents(dashboard.availableBalanceCents)}
+        </p>
+      </div>
+      <div className="rounded-2xl border border-primary/10 bg-primary/5 p-5">
+        <p className="text-[11px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">
+          Commission Rate
+        </p>
+        <p className="mt-2 text-2xl font-black text-primary">
+          {Math.round((dashboard.commissionRate ?? 0.1) * 100)}%
+        </p>
+      </div>
+    </div>
+  );
+}
+
+function WithdrawalModal({ availableBalanceCents, onClose, onWithdraw }) {
+  const [amount, setAmount] = useState("");
+  const amountCents = Math.round(parseFloat(amount || "0") * 100);
+  const isValid = amountCents >= 500 && amountCents <= availableBalanceCents;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+      <div className="mx-4 w-full max-w-md rounded-2xl border border-primary/20 bg-background-light p-6 dark:bg-background-dark">
+        <div className="flex items-center justify-between">
+          <h3 className="text-lg font-bold">Withdraw Earnings</h3>
+          <button onClick={onClose} type="button">
+            <span className="material-symbols-outlined text-slate-400">close</span>
+          </button>
+        </div>
+
+        <p className="mt-3 text-sm text-slate-500 dark:text-slate-400">
+          Available: {formatCents(availableBalanceCents)} (min. $5.00)
+        </p>
+
+        <div className="mt-4">
+          <label className="text-xs font-bold uppercase tracking-widest text-slate-500" htmlFor="withdrawal-amount">
+            Amount (USD)
+          </label>
+          <div className="mt-2 flex items-center gap-2 rounded-xl border border-primary/20 bg-white p-1 dark:bg-background-dark">
+            <span className="pl-3 text-lg font-bold text-primary">$</span>
+            <input
+              className="flex-1 bg-transparent px-2 py-3 text-lg font-bold outline-none"
+              id="withdrawal-amount"
+              onChange={(e) => setAmount(e.target.value)}
+              placeholder="0.00"
+              type="number"
+              min="5"
+              step="0.01"
+              value={amount}
+            />
+          </div>
+        </div>
+
+        <div className="mt-6 flex gap-3">
+          <button
+            className="flex-1 rounded-xl border border-primary/20 py-3 text-sm font-bold text-primary"
+            onClick={onClose}
+            type="button"
+          >
+            Cancel
+          </button>
+          <button
+            className="flex-1 rounded-xl bg-primary py-3 text-sm font-bold text-background-dark disabled:opacity-50"
+            disabled={!isValid}
+            onClick={() => onWithdraw(amountCents)}
+            type="button"
+          >
+            Withdraw
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ReferredUsersList({ users }) {
+  if (!users || !users.length) {
+    return (
+      <p className="py-6 text-center text-sm text-slate-500 dark:text-slate-400">
+        No referred users yet. Share your code to start earning!
+      </p>
+    );
+  }
+
+  return (
+    <div className="space-y-3">
+      {users.map((user) => {
+        const statusClasses =
+          user.status === "completed"
+            ? "bg-green-500/10 text-green-500"
+            : user.status === "signed_up"
+              ? "bg-blue-500/10 text-blue-500"
+              : "bg-primary/10 text-primary";
+
+        return (
+          <Reveal
+            className="flex items-center justify-between rounded-2xl border border-primary/10 bg-background-light p-4 dark:bg-primary/5"
+            key={user.id}
+          >
+            <div className="flex items-center gap-4">
+              <UserAvatar
+                className="size-10 rounded-full border border-primary/30"
+                fallbackClassName="text-sm"
+                name={user.name}
+              />
+              <div>
+                <h4 className="font-bold">{user.name}</h4>
+                <p className="text-xs text-slate-500 dark:text-slate-400">
+                  {new Date(user.joinedAt).toLocaleDateString()}
+                </p>
+              </div>
+            </div>
+            <span className={`rounded-md px-2 py-1 text-[10px] font-bold uppercase tracking-wider ${statusClasses}`}>
+              {user.status === "signed_up" ? "signed up" : user.status}
+            </span>
+          </Reveal>
+        );
+      })}
+    </div>
+  );
+}
+
+function WithdrawalHistory({ history }) {
+  if (!history || !history.length) {
+    return null;
+  }
+
+  return (
+    <section className="space-y-4">
+      <h3 className="flex items-center gap-2 text-lg font-bold">
+        <span className="material-symbols-outlined text-primary">receipt_long</span>
+        Withdrawal History
+      </h3>
+      <div className="space-y-2">
+        {history.map((entry) => (
+          <div
+            className="flex items-center justify-between rounded-xl border border-primary/10 bg-primary/[0.02] p-3"
+            key={entry.id}
+          >
+            <div>
+              <p className="text-sm font-bold">{formatCents(entry.amountCents)}</p>
+              <p className="text-[10px] text-slate-500">{new Date(entry.createdAt).toLocaleDateString()}</p>
+            </div>
+            <span className={`rounded-md px-2 py-1 text-[10px] font-bold uppercase tracking-wider ${
+              entry.status === "released"
+                ? "bg-green-500/10 text-green-500"
+                : entry.status === "rejected"
+                  ? "bg-red-500/10 text-red-500"
+                  : "bg-primary/10 text-primary"
+            }`}>
+              {entry.status}
+            </span>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 function DesktopReferrals({
+  dashboard,
+  isDashboardLoading,
   onCopyCode,
   onShare,
+  onWithdraw,
   points,
-  referralHistory,
   referrals,
+  showWithdrawalModal,
+  setShowWithdrawalModal,
 }) {
   return (
     <div className="hidden min-h-screen bg-background-light font-display text-slate-900 dark:bg-background-dark dark:text-slate-100 md:block">
@@ -57,69 +240,57 @@ function DesktopReferrals({
           </div>
           <div className="flex items-center gap-6">
             <nav className="hidden items-center gap-8 md:flex">
-              <Link
-                className="text-sm font-medium text-slate-600 transition-colors hover:text-primary dark:text-slate-300"
-                to="/dashboard"
-              >
-                Home
-              </Link>
-              <Link
-                className="text-sm font-medium text-slate-600 transition-colors hover:text-primary dark:text-slate-300"
-                to={profileHref}
-              >
-                My Library
-              </Link>
-              <Link className="border-b-2 border-primary pb-1 text-sm font-bold text-primary" to={referralsHref}>
-                Referrals
-              </Link>
+              <Link className="text-sm font-medium text-slate-600 transition-colors hover:text-primary dark:text-slate-300" to="/dashboard">Home</Link>
+              <Link className="text-sm font-medium text-slate-600 transition-colors hover:text-primary dark:text-slate-300" to={profileHref}>My Library</Link>
+              <Link className="border-b-2 border-primary pb-1 text-sm font-bold text-primary" to={referralsHref}>Referrals</Link>
             </nav>
-            <Link
-              className="flex h-10 w-10 items-center justify-center rounded-lg border border-primary/20 bg-primary/10 text-primary transition-colors hover:bg-primary/20"
-              to={notificationsHref}
-            >
+            <Link className="flex h-10 w-10 items-center justify-center rounded-lg border border-primary/20 bg-primary/10 text-primary transition-colors hover:bg-primary/20" to={notificationsHref}>
               <span className="material-symbols-outlined">settings</span>
             </Link>
           </div>
         </header>
 
-        <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-8">
-          <Reveal className="mb-8 overflow-hidden rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/30 to-background-dark p-8">
+        <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-8 space-y-8">
+          <Reveal className="overflow-hidden rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/30 to-background-dark p-8">
             <div className="relative">
               <div className="pointer-events-none absolute right-0 top-0 opacity-20">
-                <span className="material-symbols-outlined text-[120px] text-primary">
-                  auto_awesome
-                </span>
+                <span className="material-symbols-outlined text-[120px] text-primary">auto_awesome</span>
               </div>
               <span className="mb-4 inline-flex rounded-full bg-primary px-3 py-1 text-xs font-black uppercase tracking-widest text-background-dark">
-                Limited Time Offer
+                Affiliate Program
               </span>
               <h2 className="max-w-2xl text-3xl font-black tracking-tight lg:text-4xl">
-                Invite Your Inner Circle
+                Earn 10% on Every Coin Purchase
               </h2>
               <p className="mt-3 max-w-2xl text-lg text-slate-700 dark:text-slate-300">
-                Share the magic of TaleStead. Give a week of Premium access to your
-                friends and earn <span className="font-bold text-primary">{referrals.rewardLabel}</span> for every
-                successful journey they begin.
+                Refer readers to TaleStead and earn <span className="font-bold text-primary">10% commission</span> on every coin purchase they make. Withdraw your earnings as real money.
               </p>
-              <div className="mt-6 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-white/40 px-4 py-2 text-sm font-semibold dark:bg-background-dark/40">
-                <span className="material-symbols-outlined text-primary">toll</span>
-                Referral balance: {points} Arc Points
-              </div>
+              {dashboard?.availableBalanceCents > 0 && (
+                <button
+                  className="mt-6 rounded-xl bg-primary px-6 py-3 font-bold text-background-dark transition-transform hover:brightness-105 active:scale-95"
+                  onClick={() => setShowWithdrawalModal(true)}
+                  type="button"
+                >
+                  Withdraw {formatCents(dashboard.availableBalanceCents)}
+                </button>
+              )}
             </div>
           </Reveal>
 
-          <div className="mb-12 grid gap-6 md:grid-cols-2">
+          <EarningsDashboard dashboard={dashboard} isLoading={isDashboardLoading} />
+
+          <div className="grid gap-6 md:grid-cols-2">
             <Reveal className="flex flex-col gap-4 rounded-2xl border border-primary/10 bg-background-light p-6 dark:bg-primary/5">
               <h3 className="flex items-center gap-2 text-lg font-bold">
                 <span className="material-symbols-outlined text-primary">qr_code_2</span>
-                Your Unique Referral Code
+                Your Referral Code
               </h3>
               <div className="flex items-center gap-2 rounded-xl border border-primary/20 bg-white p-1 dark:bg-background-dark">
                 <input
                   className="flex-1 bg-transparent px-4 py-3 font-mono text-xl font-bold uppercase tracking-[0.2em] text-primary outline-none"
                   readOnly
                   type="text"
-                  value={referrals.code}
+                  value={dashboard?.referralCode || referrals.code}
                 />
                 <button
                   className="flex items-center gap-2 rounded-lg bg-primary px-6 py-3 font-bold text-background-dark transition-colors hover:brightness-105"
@@ -130,9 +301,6 @@ function DesktopReferrals({
                   Copy
                 </button>
               </div>
-              <p className="text-sm italic text-slate-500 dark:text-slate-400">
-                Share this code directly or send it through the channels below.
-              </p>
             </Reveal>
 
             <Reveal className="flex flex-col gap-4 rounded-2xl border border-primary/10 bg-background-light p-6 dark:bg-primary/5">
@@ -148,9 +316,7 @@ function DesktopReferrals({
                     onClick={() => onShare(channel.label)}
                     type="button"
                   >
-                    <div
-                      className={`flex size-12 items-center justify-center rounded-full transition-all ${shareAccentClasses[channel.label]}`}
-                    >
+                    <div className={`flex size-12 items-center justify-center rounded-full transition-all ${shareAccentClasses[channel.label]}`}>
                       <span className="material-symbols-outlined">{channel.icon}</span>
                     </div>
                     <span className="text-xs font-medium">{channel.label}</span>
@@ -163,94 +329,43 @@ function DesktopReferrals({
           <section className="space-y-6">
             <div className="flex items-center justify-between border-b border-primary/20 pb-4">
               <h3 className="flex items-center gap-2 text-2xl font-bold">
-                <span className="material-symbols-outlined text-primary">history</span>
-                Referral History
+                <span className="material-symbols-outlined text-primary">group</span>
+                Referred Users
               </h3>
-              <div className="flex items-center gap-3 text-sm">
-                <span className="text-slate-500 dark:text-slate-400">Total Earned:</span>
-                <span className="flex items-center gap-1 text-lg font-bold text-primary">
-                  <span className="material-symbols-outlined text-sm">toll</span>
-                  {referrals.totalEarned}
-                </span>
-              </div>
             </div>
-
-            <div className="space-y-3">
-              {referralHistory.map((entry) => {
-                const completed = entry.status === "completed";
-
-                return (
-                  <Reveal
-                    className={`flex items-center justify-between rounded-2xl border border-primary/10 bg-background-light p-4 transition-all hover:border-primary/30 dark:bg-primary/5 ${
-                      completed ? "" : "opacity-80"
-                    }`}
-                    key={entry.name}
-                  >
-                    <div className="flex items-center gap-4">
-                      <UserAvatar
-                        className="size-10 rounded-full border border-primary/30"
-                        fallbackClassName="text-sm"
-                        name={entry.name}
-                        src={entry.image}
-                      />
-                      <div>
-                        <h4 className="font-bold">{entry.name}</h4>
-                        <p className="text-xs text-slate-500 dark:text-slate-400">{entry.joined}</p>
-                      </div>
-                    </div>
-                    <div className="flex flex-col items-end gap-1">
-                      <span
-                        className={`rounded-md px-2 py-1 text-[10px] font-bold uppercase tracking-wider ${
-                          completed
-                            ? "bg-green-500/10 text-green-500"
-                            : "bg-primary/10 text-primary"
-                        }`}
-                      >
-                        {entry.status}
-                      </span>
-                      <span className={`text-sm font-bold ${completed ? "text-primary" : "text-slate-500"}`}>
-                        {entry.reward}
-                      </span>
-                    </div>
-                  </Reveal>
-                );
-              })}
-            </div>
+            <ReferredUsersList users={dashboard?.referredUsers} />
           </section>
-        </main>
 
-        <footer className="border-t border-primary/10 bg-background-light px-6 py-10 dark:bg-background-dark/50">
-          <div className="mx-auto grid max-w-5xl gap-8 text-center md:grid-cols-3 md:text-left">
-            {desktopTrustSignals.map((item) => (
-              <div className="flex flex-col items-center gap-3 md:items-start" key={item.title}>
-                <div className="flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                  <span className="material-symbols-outlined">{item.icon}</span>
-                </div>
-                <h4 className="font-bold">{item.title}</h4>
-                <p className="text-sm text-slate-500 dark:text-slate-400">{item.description}</p>
-              </div>
-            ))}
-          </div>
-        </footer>
+          <WithdrawalHistory history={dashboard?.withdrawalHistory} />
+        </main>
       </div>
+
+      {showWithdrawalModal && dashboard && (
+        <WithdrawalModal
+          availableBalanceCents={dashboard.availableBalanceCents}
+          onClose={() => setShowWithdrawalModal(false)}
+          onWithdraw={onWithdraw}
+        />
+      )}
     </div>
   );
 }
 
 function MobileReferrals({
+  dashboard,
+  isDashboardLoading,
   onCopyCode,
   onShare,
-  referralHistory,
+  onWithdraw,
   referrals,
+  showWithdrawalModal,
+  setShowWithdrawalModal,
 }) {
   return (
     <div className="min-h-screen bg-background-light font-display text-slate-900 dark:bg-background-dark dark:text-slate-100 md:hidden">
       <div className="mx-auto flex min-h-screen w-full max-w-md flex-col overflow-x-hidden border-primary/10">
         <header className="sticky top-0 z-30 flex items-center border-b border-primary/10 bg-background-light p-4 dark:bg-background-dark">
-          <Link
-            className="flex size-10 items-center justify-center rounded-full transition-colors hover:bg-primary/10"
-            to={rewardsHref}
-          >
+          <Link className="flex size-10 items-center justify-center rounded-full transition-colors hover:bg-primary/10" to={rewardsHref}>
             <span className="material-symbols-outlined">arrow_back</span>
           </Link>
           <h1 className="flex-1 pr-10 text-center text-lg font-bold uppercase tracking-wide">
@@ -258,34 +373,41 @@ function MobileReferrals({
           </h1>
         </header>
 
-        <main className="flex-1 pb-24">
-          <section className="px-4 pb-2 pt-4">
-            <Reveal className="relative aspect-[16/9] overflow-hidden rounded-2xl bg-gradient-to-t from-background-dark to-transparent p-6">
-              <img
-                alt="Referral rewards"
-                className="absolute inset-0 h-full w-full object-cover opacity-60"
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuBLbpapalQkpBGpkNy6whtq5Qk9xQPSFNppQaTlsOnfGHVI1z0CTrn6jWB48UIzTEXiahbC8Bf2fE058PtzVpezkGw5cEPGqdzS5Q0tcN9lZTiZX8kr5kfmB-knw2dsTBwOG_oETdhAHyFSqoJZtkluhfhTEHp2UowfthOHkOjaP1ROBCQaQpQ-8AAFn4FCX6DMvAhRUnk2wkPXgyEpPIildjhlyLN0A3u8CvYV67Qa1fGB_FLaH06Rq-u5BRFbiQAiRjRjTijdOAY"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-background-dark via-background-dark/60 to-transparent" />
-              <div className="relative z-10 space-y-1">
-                <span className="inline-flex rounded bg-primary px-2 py-0.5 text-[10px] font-bold uppercase tracking-widest text-background-dark">
-                  Limited Offer
-                </span>
-                <h2 className="text-3xl font-bold leading-tight text-white">Give $20, Get $20</h2>
-                <p className="text-sm text-slate-300">
-                  Invite friends to join the premium TaleStead circle.
-                </p>
-              </div>
+        <main className="flex-1 pb-24 space-y-6">
+          <section className="px-4 pt-4">
+            <Reveal className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary/30 to-background-dark p-6">
+              <span className="inline-flex rounded bg-primary px-2 py-0.5 text-[10px] font-bold uppercase tracking-widest text-background-dark">
+                Affiliate Program
+              </span>
+              <h2 className="mt-2 text-2xl font-bold leading-tight text-white">
+                Earn 10% Commission
+              </h2>
+              <p className="mt-1 text-sm text-slate-300">
+                On every coin purchase your referrals make.
+              </p>
+              {dashboard?.availableBalanceCents > 0 && (
+                <button
+                  className="mt-4 rounded-lg bg-primary px-5 py-2.5 text-sm font-bold text-background-dark active:scale-95"
+                  onClick={() => setShowWithdrawalModal(true)}
+                  type="button"
+                >
+                  Withdraw {formatCents(dashboard.availableBalanceCents)}
+                </button>
+              )}
             </Reveal>
           </section>
 
-          <section className="space-y-4 px-4 py-6 text-center">
+          <section className="px-4">
+            <EarningsDashboard dashboard={dashboard} isLoading={isDashboardLoading} />
+          </section>
+
+          <section className="space-y-4 px-4 text-center">
             <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary/70">
-              Your Unique Referral Code
+              Your Referral Code
             </p>
             <div className="flex items-center justify-between rounded-2xl border border-primary/20 bg-primary/5 p-4">
               <span className="pl-4 text-2xl font-bold tracking-widest text-primary">
-                {referrals.mobileCode}
+                {dashboard?.referralCode || referrals.mobileCode}
               </span>
               <button
                 className="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 font-bold text-background-dark transition-transform active:scale-95"
@@ -298,18 +420,11 @@ function MobileReferrals({
             </div>
           </section>
 
-          <section className="border-b border-primary/10 px-4 pb-8">
-            <p className="mb-4 text-center text-xs text-slate-500 dark:text-slate-400">
-              Share via
-            </p>
+          <section className="border-b border-primary/10 px-4 pb-6">
+            <p className="mb-4 text-center text-xs text-slate-500 dark:text-slate-400">Share via</p>
             <div className="flex justify-center gap-6">
               {referralShareChannels.map((channel) => (
-                <button
-                  className="flex flex-col items-center gap-2"
-                  key={channel.label}
-                  onClick={() => onShare(channel.label)}
-                  type="button"
-                >
+                <button className="flex flex-col items-center gap-2" key={channel.label} onClick={() => onShare(channel.label)} type="button">
                   <div className="flex size-12 items-center justify-center rounded-full bg-slate-100 text-primary transition-colors hover:bg-primary/20 dark:bg-primary/10">
                     <span className="material-symbols-outlined">{channel.icon}</span>
                   </div>
@@ -319,57 +434,13 @@ function MobileReferrals({
             </div>
           </section>
 
-          <section className="flex-1 px-4 py-6">
-            <div className="mb-4 flex items-center justify-between">
-              <h3 className="text-lg font-bold">Referral History</h3>
-              <span className="rounded bg-primary/10 px-2 py-1 text-xs font-medium text-primary">
-                Total Earned: $120
-              </span>
-            </div>
-            <div className="space-y-3">
-              {referralHistory.map((entry) => {
-                const completed = entry.status === "completed";
+          <section className="px-4">
+            <h3 className="mb-4 text-lg font-bold">Referred Users</h3>
+            <ReferredUsersList users={dashboard?.referredUsers} />
+          </section>
 
-                return (
-                  <Reveal
-                    className={`flex items-center justify-between rounded-xl border border-primary/5 bg-primary/[0.02] p-3 ${
-                      completed ? "" : "opacity-70"
-                    }`}
-                    key={entry.name}
-                  >
-                    <div className="flex items-center gap-3">
-                      <UserAvatar
-                        className="size-10 rounded-full"
-                        fallbackClassName="text-sm"
-                        name={entry.name}
-                        src={entry.image}
-                      />
-                      <div>
-                        <p className="text-sm font-bold">{entry.name}</p>
-                        <p className="text-[10px] text-slate-500 dark:text-slate-400">
-                          {entry.joined}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <p className={`text-sm font-bold ${completed ? "text-primary" : "text-slate-400"}`}>
-                        {completed ? "+$20.00" : "$20.00"}
-                      </p>
-                      <p
-                        className={`text-[10px] font-medium ${
-                          completed ? "text-green-500" : "italic text-primary/60"
-                        }`}
-                      >
-                        {completed ? "Completed" : "Pending"}
-                      </p>
-                    </div>
-                  </Reveal>
-                );
-              })}
-            </div>
-            <button className="mt-6 w-full rounded-lg border border-primary/30 py-3 text-xs font-bold text-primary transition-colors hover:bg-primary/5" type="button">
-              VIEW ALL HISTORY
-            </button>
+          <section className="px-4">
+            <WithdrawalHistory history={dashboard?.withdrawalHistory} />
           </section>
         </main>
 
@@ -394,6 +465,14 @@ function MobileReferrals({
           </div>
         </nav>
       </div>
+
+      {showWithdrawalModal && dashboard && (
+        <WithdrawalModal
+          availableBalanceCents={dashboard.availableBalanceCents}
+          onClose={() => setShowWithdrawalModal(false)}
+          onWithdraw={onWithdraw}
+        />
+      )}
     </div>
   );
 }
@@ -406,21 +485,43 @@ export default function ReferralsPage() {
     rewards,
     shareReferral,
   } = useAccount();
+  const { showToast } = useToast();
+  const dashboardQuery = useReferralDashboardQuery();
+  const withdrawalMutation = useReferralWithdrawalMutation();
+  const [showWithdrawalModal, setShowWithdrawalModal] = useState(false);
+
+  async function handleWithdraw(amountCents) {
+    try {
+      const result = await withdrawalMutation.mutateAsync(amountCents);
+      showToast(result.message || "Withdrawal requested.");
+      setShowWithdrawalModal(false);
+    } catch (error) {
+      showToast(error?.message || "Withdrawal failed.");
+    }
+  }
 
   return (
     <>
       <DesktopReferrals
-        onCopyCode={() => copyValue("Referral code", referrals.code)}
+        dashboard={dashboardQuery.data}
+        isDashboardLoading={dashboardQuery.isLoading}
+        onCopyCode={() => copyValue("Referral code", dashboardQuery.data?.referralCode || referrals.code)}
         onShare={shareReferral}
+        onWithdraw={handleWithdraw}
         points={rewards.points}
-        referralHistory={referralHistory}
         referrals={referrals}
+        showWithdrawalModal={showWithdrawalModal}
+        setShowWithdrawalModal={setShowWithdrawalModal}
       />
       <MobileReferrals
-        onCopyCode={() => copyValue("Referral code", referrals.mobileCode)}
+        dashboard={dashboardQuery.data}
+        isDashboardLoading={dashboardQuery.isLoading}
+        onCopyCode={() => copyValue("Referral code", dashboardQuery.data?.referralCode || referrals.mobileCode)}
         onShare={shareReferral}
-        referralHistory={referralHistory}
+        onWithdraw={handleWithdraw}
         referrals={referrals}
+        showWithdrawalModal={showWithdrawalModal}
+        setShowWithdrawalModal={setShowWithdrawalModal}
       />
     </>
   );
