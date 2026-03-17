@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { PrefetchableChapterLink, PrefetchableStoryLink } from "../components/PrefetchableLink";
 import { AppDesktopSidebar, AppMobileTabBar } from "../components/AppShellNav";
+import OfflineLibrarySection from "../components/OfflineLibrarySection";
 import Reveal from "../components/Reveal";
 import SkeletonBlock from "../components/SkeletonBlock";
 import { useAccount } from "../context/AccountContext";
@@ -215,6 +216,10 @@ function DesktopLibrary({ currentReading, isLoading, profile, readingList }) {
               )}
             </Reveal>
 
+            <Reveal as="section">
+              <OfflineLibrarySection />
+            </Reveal>
+
             <Reveal as="section" className="space-y-5 pb-8">
               <div className="flex items-center justify-between gap-4">
                 <h2 className="text-2xl font-bold">Saved stories</h2>
@@ -318,6 +323,10 @@ function MobileLibrary({ currentReading, isLoading, profile, readingList }) {
             ) : (
               <ContinueReadingCard currentReading={currentReading} mobile />
             )}
+          </Reveal>
+
+          <Reveal as="section" className="space-y-2">
+            <OfflineLibrarySection mobile />
           </Reveal>
 
           <Reveal as="section" className="space-y-2">

@@ -1,5 +1,6 @@
 import { getJson, postJson, requestJson } from "../lib/apiClient";
 import { getAccessToken } from "../auth/authStorage";
+import { getOfflineChapter, saveChapterOffline } from "../lib/offlineStorage";
 
 function getAuthHeaders(headers = {}) {
   const accessToken = getAccessToken();
@@ -159,10 +160,33 @@ export function updateStoryRating(storySlug, input) {
   });
 }
 
-export function fetchChapter(storySlug, chapterSlug) {
-  return getJson(`/reader/stories/${storySlug}/chapters/${chapterSlug}`, {
-    headers: getAuthHeaders(),
-  });
+export async function fetchChapter(storySlug, chapterSlug) {
+  try {
+    const data = await getJson(`/reader/stories/${storySlug}/chapters/${chapterSlug}`, {
+      headers: getAuthHeaders(),
+    });
+
+    // Silently update IndexedDB copy when online fetch succeeds
+    if (data?.chapter) {
+      saveChapterOffline(storySlug, chapterSlug, data.chapter, {
+        title: data.story?.title,
+        coverUrl: data.story?.coverImage,
+        authorName: data.chapter?.authorName,
+      }).catch(() => {});
+    }
+
+    return data;
+  } catch (error) {
+    if (!navigator.onLine || error?.message?.includes("network")) {
+      const offlineData = await getOfflineChapter(storySlug, chapterSlug);
+
+      if (offlineData) {
+        return { chapter: offlineData, story: offlineData._storyMeta || {}, _offline: true };
+      }
+    }
+
+    throw error;
+  }
 }
 
 export function fetchChapterComments(storySlug, chapterSlug, { sort } = {}) {

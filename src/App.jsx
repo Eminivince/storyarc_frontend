@@ -2,9 +2,11 @@ import { motion } from "framer-motion";
 import { Suspense, useEffect } from "react";
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { getRouteAccess, isUnauthenticatedRoute } from "./auth/authRouting";
+import OfflineBanner from "./components/OfflineBanner";
 import ProtectedRoute from "./components/ProtectedRoute";
 import PageLoadingSpinner from "./components/PageLoadingSpinner";
 import RouteLoadingScreen from "./components/RouteLoadingScreen";
+import SwUpdatePrompt from "./components/SwUpdatePrompt";
 import { appRoutes } from "./config/appRoutes";
 import { useAuth } from "./context/AuthContext";
 import { useCreator } from "./context/CreatorContext";
@@ -89,6 +91,8 @@ export default function App() {
 
   return (
     <>
+      <OfflineBanner />
+      <SwUpdatePrompt />
       <ScrollToTop />
       <AppModeCoordinator />
       <Suspense

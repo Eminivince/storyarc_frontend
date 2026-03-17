@@ -45,10 +45,15 @@ async function parseResponseBody(response) {
 }
 
 export class ApiError extends Error {
-  constructor(message, { payload = null, status = 500, url = "" } = {}) {
+  constructor(
+    message,
+    { payload = null, retryAfterSeconds = null, status = 500, url = "" } = {},
+  ) {
     super(message);
     this.name = "ApiError";
     this.payload = payload;
+    this.retryAfterSeconds =
+      typeof retryAfterSeconds === "number" ? retryAfterSeconds : null;
     this.status = status;
     this.url = url;
   }
@@ -121,6 +126,42 @@ function isAuthEndpoint(path) {
   return url.includes("/auth/refresh") || url.includes("/auth/login");
 }
 
+function parseRetryAfterSeconds(value) {
+  if (!value) {
+    return null;
+  }
+
+  const numeric = Number(value);
+
+  if (Number.isFinite(numeric) && numeric >= 0) {
+    return Math.ceil(numeric);
+  }
+
+  const parsedDate = new Date(value);
+
+  if (Number.isNaN(parsedDate.getTime())) {
+    return null;
+  }
+
+  const diffSeconds = Math.ceil((parsedDate.getTime() - Date.now()) / 1000);
+
+  return Math.max(diffSeconds, 0);
+}
+
+const QUEUEABLE_PATTERNS = [
+  { method: "PUT", pattern: "/reader/progress" },
+  { method: "POST", pattern: "/engagement/reading-time" },
+  { method: "POST", pattern: "/engagement/check-in" },
+  { method: "POST", pattern: "/reader/bookmarks" },
+  { method: "DELETE", pattern: "/reader/bookmarks/" },
+];
+
+function isQueueableOfflineMutation(url, method) {
+  return QUEUEABLE_PATTERNS.some(
+    (entry) => entry.method === method && url.includes(entry.pattern),
+  );
+}
+
 export async function requestJson(path, init = {}, isRetry = false) {
   const {
     body,
@@ -165,6 +206,21 @@ export async function requestJson(path, init = {}, isRetry = false) {
       signal: controller.signal,
     });
     const payload = await parseResponseBody(response);
+    const retryAfterSeconds = parseRetryAfterSeconds(
+      response.headers.get("retry-after"),
+    );
+
+    if (response.status === 429) {
+      const message = retryAfterSeconds
+        ? `Too many attempts. Please wait ${retryAfterSeconds} seconds.`
+        : "Too many attempts. Please wait a moment.";
+      throw new ApiError(message, {
+        payload,
+        retryAfterSeconds,
+        status: response.status,
+        url,
+      });
+    }
 
     if (response.status === 401 && !isRetry && !isAuthEndpoint(path)) {
       const hadAuth = requestHeaders.has("Authorization");
@@ -204,6 +260,18 @@ export async function requestJson(path, init = {}, isRetry = false) {
         status: 408,
         url,
       });
+    }
+
+    const method = (rest.method || "GET").toUpperCase();
+
+    if (method !== "GET" && isQueueableOfflineMutation(url, method)) {
+      try {
+        const { enqueueMutation } = await import("./offlineQueue");
+        await enqueueMutation({ url, method, body: requestBody });
+        return { queued: true, _offline: true };
+      } catch {
+        // Fall through to original error if queueing fails
+      }
     }
 
     throw new ApiError(error.message || "Unexpected network error.", {

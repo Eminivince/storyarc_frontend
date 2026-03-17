@@ -8,6 +8,7 @@ import ReaderStateScreen from "../components/ReaderStateScreen";
 import RouteLoadingScreen from "../components/RouteLoadingScreen";
 import SeoMetadata, { createSeoDescription } from "../components/SeoMetadata";
 import { useOnboarding } from "../context/OnboardingContext";
+import { useOnlineStatus } from "../hooks/useOnlineStatus";
 import {
   buildChapterHref,
   buildLockedChapterHref,
@@ -25,6 +26,7 @@ import {
 import { useRecordReadingTimeMutation } from "../engagement/engagementHooks";
 import { recordReadingTime } from "../engagement/engagementApi";
 import { getStoredReadingTheme, persistReadingTheme } from "../lib/readingTheme";
+import { isChapterAvailableOffline } from "../lib/offlineStorage";
 
 const readerThemes = {
   dark: {
@@ -178,6 +180,7 @@ function DesktopReader({
   chapter,
   fontFamily,
   fontSize,
+  isOfflineReading,
   nextHref,
   nextLabel,
   onBookmarkToggle,
@@ -204,6 +207,12 @@ function DesktopReader({
           <LogoBrand to={readerLibraryHref} />
 
           <div className="flex items-center gap-2 md:gap-6">
+            {isOfflineReading && (
+              <span className="flex items-center gap-1 rounded-lg bg-amber-500/10 px-2 py-1 text-xs font-semibold text-amber-400">
+                <span className="material-symbols-outlined text-sm">cloud_off</span>
+                Reading offline
+              </span>
+            )}
             <nav className="hidden items-center gap-6 md:flex">
               <Link className="text-sm font-medium transition-colors hover:text-primary" to={buildStoryHref(story.slug)}>
                 Story
@@ -411,7 +420,7 @@ function DesktopReader({
         </AnimatePresence>
 
         <div className="flex justify-end gap-3">
-          {chapter.accessState === "READABLE" && !chapter.isLocked && (
+          {chapter.accessState === "READABLE" && !chapter.isLocked && !isOfflineReading && (
             <button
               className={`flex h-12 w-12 items-center justify-center rounded-full border shadow-lg transition-colors ${
                 commentsOpen ? "bg-primary/20 text-primary border-primary/30" : theme.panelSecondary
@@ -480,6 +489,7 @@ function MobileReader({
   chapter,
   fontFamily,
   fontSize,
+  isOfflineReading,
   nextHref,
   nextLabel,
   onBookmarkToggle,
@@ -506,7 +516,14 @@ function MobileReader({
           <Link className="flex size-8 items-center justify-center rounded-lg transition-colors hover:bg-primary/10" to={buildStoryHref(story.slug)}>
             <span className="material-symbols-outlined text-lg text-primary">arrow_back</span>
           </Link>
-          <h1 className={`truncate px-2 text-xs font-semibold uppercase tracking-wide ${theme.muted}`}>{story.title}</h1>
+          <h1 className={`truncate px-2 text-xs font-semibold uppercase tracking-wide ${theme.muted}`}>
+            {isOfflineReading && (
+              <span className="mr-1 inline-flex align-middle">
+                <span className="material-symbols-outlined text-xs text-amber-400">cloud_off</span>
+              </span>
+            )}
+            {story.title}
+          </h1>
           <Link className="flex size-8 items-center justify-center rounded-lg transition-colors hover:bg-primary/10" to={buildReportChapterHref(story.slug, chapter.chapterSlug)}>
             <span className="material-symbols-outlined text-lg text-primary">flag</span>
           </Link>
@@ -579,7 +596,7 @@ function MobileReader({
             <span className="material-symbols-outlined text-xl">format_size</span>
             <span className="text-[9px] font-bold uppercase tracking-tighter">Text</span>
           </button>
-          {chapter.accessState === "READABLE" && !chapter.isLocked && (
+          {chapter.accessState === "READABLE" && !chapter.isLocked && !isOfflineReading && (
             <button
               className={`flex flex-col items-center gap-0.5 transition-colors ${commentsOpen ? "text-primary" : theme.muted}`}
               onClick={onToggleComments}
@@ -734,7 +751,9 @@ export default function ReadingPage() {
   const { storySlug, chapterSlug } = useParams();
   const { readingTheme } = useOnboarding();
   const { showToast } = useToast();
+  const { isOnline } = useOnlineStatus();
   const { data, error, isError, isLoading } = useChapterQuery(storySlug, chapterSlug);
+  const isOfflineReading = data?._offline === true;
   const saveProgressMutation = useSaveReadingProgressMutation();
   const createBookmarkMutation = useCreateBookmarkMutation();
   const removeBookmarkMutation = useRemoveBookmarkMutation();
@@ -1078,6 +1097,7 @@ export default function ReadingPage() {
         chapter={chapter}
         fontFamily={fontFamily}
         fontSize={fontSize}
+        isOfflineReading={isOfflineReading}
         nextHref={nextHref}
         nextLabel={nextLabel}
         onBookmarkToggle={handleBookmarkToggle}
@@ -1104,6 +1124,7 @@ export default function ReadingPage() {
         chapter={chapter}
         fontFamily={fontFamily}
         fontSize={fontSize}
+        isOfflineReading={isOfflineReading}
         nextHref={nextHref}
         nextLabel={nextLabel}
         onBookmarkToggle={handleBookmarkToggle}
