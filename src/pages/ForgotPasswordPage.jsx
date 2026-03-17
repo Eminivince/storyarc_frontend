@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { requestPasswordReset } from "../auth/authApi";
+import { LogoBrand } from "../components/LogoBrand";
 import { sanitizeEmail } from "../lib/formSanitize";
 import { persistPendingVerification } from "../auth/authFlowStorage";
 import { useToast } from "../context/ToastContext";
@@ -10,19 +11,22 @@ import { useToast } from "../context/ToastContext";
 const verifyCodeHref = "/auth/verify-code";
 
 function getErrorMessage(error) {
+  if (error?.status === 429) {
+    const retryAfterSeconds =
+      typeof error.retryAfterSeconds === "number" ? error.retryAfterSeconds : null;
+    return retryAfterSeconds
+      ? `Too many attempts. Please wait ${retryAfterSeconds} seconds.`
+      : "Too many attempts. Please wait a moment.";
+  }
+
   return error?.message || "Could not send a reset code. Please try again.";
 }
 
-function DesktopForgotPassword({ email, onChange, onSubmit, pending }) {
+function DesktopForgotPassword({ email, error, onChange, onSubmit, pending }) {
   return (
     <div className="hidden min-h-screen flex-col bg-background-light font-display text-slate-900 dark:bg-background-dark dark:text-slate-100 md:flex">
       <header className="flex items-center justify-between border-b border-primary/10 px-6 py-4 lg:px-20">
-        <div className="flex items-center gap-3">
-          <div className="text-primary">
-            <span className="material-symbols-outlined text-3xl">auto_stories</span>
-          </div>
-          <h2 className="text-xl font-bold tracking-tight">TaleStead</h2>
-        </div>
+        <LogoBrand />
         <div className="flex items-center gap-6">
           <Link className="text-sm font-medium transition-colors hover:text-primary" to="/auth">
             Sign In
@@ -60,6 +64,12 @@ function DesktopForgotPassword({ email, onChange, onSubmit, pending }) {
           </div>
 
           <form className="space-y-6" onSubmit={onSubmit}>
+            {error && (
+              <div className="flex items-start gap-3 rounded-lg border border-red-200 bg-red-50 p-4 text-red-800 dark:border-red-900/50 dark:bg-red-950/30 dark:text-red-200">
+                <span className="material-symbols-outlined shrink-0 text-xl">error</span>
+                <p className="text-base font-medium">{error}</p>
+              </div>
+            )}
             <div className="space-y-2">
               <label
                 className="ml-1 text-base font-medium text-slate-700 dark:text-slate-300"
@@ -138,7 +148,7 @@ function DesktopForgotPassword({ email, onChange, onSubmit, pending }) {
   );
 }
 
-function MobileForgotPassword({ email, onChange, onSubmit, pending }) {
+function MobileForgotPassword({ email, error, onChange, onSubmit, pending }) {
   return (
     <div className="flex min-h-screen justify-center bg-background-light font-display text-slate-900 dark:bg-background-dark dark:text-slate-100 md:hidden">
       <div className="relative flex min-h-screen w-full max-w-[480px] flex-col overflow-x-hidden border-x border-primary/10 bg-background-light shadow-2xl dark:bg-background-dark">
@@ -180,6 +190,12 @@ function MobileForgotPassword({ email, onChange, onSubmit, pending }) {
         </div>
 
         <form className="flex flex-col gap-6 px-6 py-8" onSubmit={onSubmit}>
+          {error && (
+            <div className="flex items-start gap-3 rounded-lg border border-red-200 bg-red-50 p-4 text-red-800 dark:border-red-900/50 dark:bg-red-950/30 dark:text-red-200">
+              <span className="material-symbols-outlined shrink-0 text-xl">error</span>
+              <p className="text-base font-medium">{error}</p>
+            </div>
+          )}
           <div className="flex flex-col gap-2">
             <label
               className="text-base font-semibold uppercase tracking-wider"
@@ -236,6 +252,7 @@ export default function ForgotPasswordPage() {
   const navigate = useNavigate();
   const { showToast } = useToast();
   const [email, setEmail] = useState("");
+  const [error, setError] = useState(null);
   const forgotPasswordMutation = useMutation({
     mutationFn: requestPasswordReset,
   });
@@ -243,6 +260,7 @@ export default function ForgotPasswordPage() {
   async function handleSubmit(event) {
     event.preventDefault();
     const trimmedEmail = sanitizeEmail(email);
+    setError(null);
 
     try {
       const response = await forgotPasswordMutation.mutateAsync({ email: trimmedEmail });
@@ -262,7 +280,9 @@ export default function ForgotPasswordPage() {
         },
       });
     } catch (error) {
-      showToast(getErrorMessage(error), {
+      const message = getErrorMessage(error);
+      setError(message);
+      showToast(message, {
         tone: "error",
         title: "Could not continue",
       });
@@ -273,12 +293,14 @@ export default function ForgotPasswordPage() {
     <>
       <DesktopForgotPassword
         email={email}
+        error={error}
         onChange={setEmail}
         onSubmit={handleSubmit}
         pending={forgotPasswordMutation.isPending}
       />
       <MobileForgotPassword
         email={email}
+        error={error}
         onChange={setEmail}
         onSubmit={handleSubmit}
         pending={forgotPasswordMutation.isPending}

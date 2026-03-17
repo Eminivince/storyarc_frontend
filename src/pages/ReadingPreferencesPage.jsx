@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
+import { LogoBrand } from "../components/LogoBrand";
 import Reveal from "../components/Reveal";
 import UserAvatar from "../components/UserAvatar";
 import { useAuth } from "../context/AuthContext";
@@ -184,14 +185,7 @@ function DesktopReadingPreferences() {
     <div className="hidden min-h-screen bg-background-light font-display text-slate-900 dark:bg-background-dark dark:text-slate-100 md:block">
       <div className="mx-auto flex min-h-screen w-full max-w-[960px] flex-col px-4 py-5 md:px-10">
         <header className="flex items-center justify-between whitespace-nowrap border-b border-slate-200 px-4 py-3 dark:border-primary/20">
-          <div className="flex items-center gap-3">
-            <div className="text-primary">
-              <span className="material-symbols-outlined text-3xl">
-                auto_stories
-              </span>
-            </div>
-            <h2 className="text-lg font-bold tracking-tight">TaleStead</h2>
-          </div>
+          <LogoBrand size="sm" />
           <Link
             className="flex h-10 w-10 items-center justify-center rounded-lg bg-slate-200 text-slate-700 transition-colors hover:bg-primary hover:text-white dark:bg-primary/10 dark:text-primary"
             to="/onboarding/genres"
@@ -359,7 +353,7 @@ function MobileReadingPreferences() {
   return (
     <div className="min-h-screen bg-background-light font-display text-slate-900 dark:bg-background-dark dark:text-slate-100 md:hidden">
       <div className="relative flex min-h-screen w-full flex-col overflow-x-hidden">
-        <header className="flex shrink-0 items-center justify-between border-b border-primary/10 px-4 py-3">
+        <header className="flex shrink-0 items-center justify-between border-b border-primary/10 px-3 py-2.5">
           <Link
             className="flex size-9 items-center justify-center rounded-lg transition-colors hover:bg-slate-200 dark:hover:bg-primary/20"
             to="/onboarding/genres"
@@ -368,19 +362,19 @@ function MobileReadingPreferences() {
               arrow_back
             </span>
           </Link>
-          <h2 className="flex-1 pr-9 text-center text-base font-bold tracking-[-0.015em]">
+          <h2 className="flex-1 pr-9 text-center text-sm font-bold tracking-[-0.02em]">
             Reading Preferences
           </h2>
         </header>
 
-        <div className="flex flex-col gap-2 px-4 py-3">
+        <div className="flex flex-col gap-1.5 px-3 py-2.5">
           <div className="flex items-end justify-between gap-4">
             <p className="text-xs font-medium">Setup Progress</p>
             <p className="text-[10px] font-bold uppercase tracking-wider text-primary">
               Step 4 of 4
             </p>
           </div>
-          <div className="h-1.5 overflow-hidden rounded-full bg-slate-200 dark:bg-primary/20">
+          <div className="h-1 overflow-hidden rounded-full bg-slate-200 dark:bg-primary/20">
             <div className="h-full w-[80%] rounded-full bg-primary" />
           </div>
         </div>
@@ -394,8 +388,8 @@ function MobileReadingPreferences() {
             user={user}
           />
 
-          <section className="px-4 pt-4">
-            <h2 className="pb-3 text-base font-bold tracking-[-0.015em]">
+          <section className="px-3 pt-3">
+            <h2 className="pb-2 text-sm font-bold tracking-[-0.02em]">
               Reading Style
             </h2>
             <div className="flex flex-col gap-2">
@@ -404,7 +398,7 @@ function MobileReadingPreferences() {
 
                 return (
                   <motion.button
-                    className="flex items-center gap-3 rounded-xl border border-slate-200 p-3 text-left transition-all dark:border-primary/20"
+                    className="flex items-center gap-2.5 rounded-lg border border-slate-200 p-2.5 text-left transition-all dark:border-primary/20"
                     key={style.name}
                     onClick={() => setReadingStyle(style.name)}
                     type="button"
@@ -431,17 +425,17 @@ function MobileReadingPreferences() {
             </div>
           </section>
 
-          <section className="px-4 pt-5">
-            <h2 className="pb-3 text-base font-bold tracking-[-0.015em]">
+          <section className="px-3 pt-4">
+            <h2 className="pb-2 text-sm font-bold tracking-[-0.02em]">
               Reading Theme
             </h2>
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-3 gap-1.5">
               {themes.map((theme) => {
                 const selected = readingTheme === theme.name;
 
                 return (
                   <motion.button
-                    className={`flex flex-col items-center gap-1.5 rounded-lg border p-2.5 transition-all ${
+                    className={`flex flex-col items-center gap-1.5 rounded-lg border p-2 transition-all ${
                       selected
                         ? "border-2 border-primary ring-2 ring-primary/20"
                         : "border-slate-200 dark:border-primary/10"

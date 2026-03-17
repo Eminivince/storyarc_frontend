@@ -2,6 +2,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useMemo, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import FollowButton from "../components/FollowButton";
+import { LogoBrand } from "../components/LogoBrand";
 import {
   PrefetchableChapterLink,
   PrefetchableStoryLink,
@@ -494,12 +495,7 @@ function DesktopStoryDetails({
     <div className="hidden min-h-screen flex-col bg-background-light font-display text-slate-900 dark:bg-background-dark dark:text-slate-100 md:flex">
       <header className="sticky top-0 z-50 flex items-center justify-between border-b border-primary/10 bg-background-light/90 px-6 py-3 backdrop-blur-md dark:bg-background-dark/90 lg:px-10">
         <div className="flex items-center gap-8">
-          <Link className="flex items-center gap-3 text-primary" to="/dashboard">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-background-dark">
-              <span className="material-symbols-outlined">auto_stories</span>
-            </div>
-            <h2 className="text-xl font-bold tracking-tight">TaleStead</h2>
-          </Link>
+          <LogoBrand to="/dashboard" />
 
           <form className="hidden min-w-56 md:block" onSubmit={onSearchSubmit}>
             <div className="flex h-11 items-center rounded-xl bg-slate-100 dark:bg-primary/10">

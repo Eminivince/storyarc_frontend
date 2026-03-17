@@ -1,7 +1,10 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { PrefetchableChapterLink, PrefetchableStoryLink } from "../components/PrefetchableLink";
+import {
+  PrefetchableChapterLink,
+  PrefetchableStoryLink,
+} from "../components/PrefetchableLink";
 import { AppDesktopSidebar, AppMobileTabBar } from "../components/AppShellNav";
 import ReaderStateScreen from "../components/ReaderStateScreen";
 import Reveal from "../components/Reveal";
@@ -24,10 +27,9 @@ function LoadingState() {
 function EmptyState() {
   return (
     <div className="rounded-xl border border-primary/10 bg-primary/5 p-4 text-center md:rounded-3xl md:p-8">
-      <h2 className="text-lg font-bold md:text-2xl">Your library is ready for real stories</h2>
-      <p className="mt-2 text-xs text-slate-600 dark:text-slate-400 md:mt-3 md:text-sm">
-        Seed the reader catalog in the backend, then your dashboard rows will appear here.
-      </p>
+      <h2 className="text-lg font-bold md:text-2xl">
+        Your library is ready for real stories
+      </h2>
     </div>
   );
 }
@@ -56,15 +58,17 @@ function StoryRow({ row }) {
 
       <div className="grid grid-cols-2 gap-4 xl:grid-cols-3 2xl:grid-cols-6">
         {row.stories.map((story, index) => (
-          <PrefetchableStoryLink key={story.slug} storySlug={story.slug} to={buildStoryHref(story.slug)}>
+          <PrefetchableStoryLink
+            key={story.slug}
+            storySlug={story.slug}
+            to={buildStoryHref(story.slug)}>
             <motion.article
               className="group flex h-full flex-col gap-3"
               initial={{ opacity: 0, y: 20 }}
               transition={{ delay: index * 0.04, duration: 0.28 }}
               whileHover={{ y: -4 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ amount: 0.15, once: true }}
-            >
+              viewport={{ amount: 0.15, once: true }}>
               <div className="relative aspect-[3/4] overflow-hidden rounded-2xl border border-primary/10 bg-slate-200 dark:bg-primary/5">
                 <img
                   alt={story.title}
@@ -137,22 +141,19 @@ function DesktopDashboard({
             <div className="ml-4 flex items-center gap-4">
               <Link
                 className="hidden rounded-xl px-4 py-2 text-sm font-semibold transition-colors hover:bg-primary/10 lg:inline-flex"
-                to={followingHref}
-              >
+                to={followingHref}>
                 Following
               </Link>
               <Link
                 className="relative flex size-10 items-center justify-center rounded-full text-slate-600 hover:bg-primary/10 dark:text-slate-300"
-                to={notificationsHref}
-              >
+                to={notificationsHref}>
                 <span className="material-symbols-outlined">notifications</span>
                 <span className="absolute right-2 top-2 size-2 rounded-full bg-primary" />
               </Link>
               <button
                 className="hidden rounded-xl bg-primary px-4 py-2.5 text-sm font-bold text-background-dark sm:block"
                 onClick={onWriteStory}
-                type="button"
-              >
+                type="button">
                 Write Story
               </button>
             </div>
@@ -182,31 +183,34 @@ function DesktopDashboard({
                       {data.featured.genres.map((genre) => (
                         <span
                           className="rounded-full border border-white/20 bg-white/10 px-4 py-2 text-xs font-bold uppercase tracking-wide text-white backdrop-blur-sm"
-                          key={genre}
-                        >
+                          key={genre}>
                           {genre}
                         </span>
                       ))}
                     </div>
                     <div className="mt-8 flex flex-wrap gap-4">
                       <PrefetchableChapterLink
-                        chapterSlug={data.featured.firstChapterSlug || "chapter-1"}
+                        chapterSlug={
+                          data.featured.firstChapterSlug || "chapter-1"
+                        }
                         className="flex items-center gap-2 rounded-xl bg-primary px-6 py-3 font-bold text-background-dark"
                         storySlug={data.featured.slug}
                         to={buildChapterHref(
                           data.featured.slug,
                           data.featured.firstChapterSlug || "chapter-1",
-                        )}
-                      >
-                        <span className="material-symbols-outlined">play_arrow</span>
+                        )}>
+                        <span className="material-symbols-outlined">
+                          play_arrow
+                        </span>
                         Start Reading
                       </PrefetchableChapterLink>
                       <PrefetchableStoryLink
                         className="flex items-center gap-2 rounded-xl border border-white/20 bg-white/10 px-6 py-3 font-bold text-white backdrop-blur-sm"
                         storySlug={data.featured.slug}
-                        to={buildStoryHref(data.featured.slug)}
-                      >
-                        <span className="material-symbols-outlined">auto_stories</span>
+                        to={buildStoryHref(data.featured.slug)}>
+                        <span className="material-symbols-outlined">
+                          auto_stories
+                        </span>
                         View Story
                       </PrefetchableStoryLink>
                     </div>
@@ -230,16 +234,14 @@ function DesktopDashboard({
                       chapterSlug={entry.chapterSlug}
                       key={`${entry.storySlug}-${entry.chapterSlug}`}
                       storySlug={entry.storySlug}
-                      to={buildChapterHref(entry.storySlug, entry.chapterSlug)}
-                    >
+                      to={buildChapterHref(entry.storySlug, entry.chapterSlug)}>
                       <motion.article
                         className="flex h-full gap-4 rounded-3xl border border-primary/10 bg-white p-4 shadow-sm transition-colors hover:bg-primary/5 dark:bg-primary/5"
                         initial={{ opacity: 0, y: 20 }}
                         transition={{ delay: index * 0.05, duration: 0.3 }}
                         whileHover={{ y: -4 }}
                         whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ amount: 0.2, once: true }}
-                      >
+                        viewport={{ amount: 0.2, once: true }}>
                         <img
                           alt={entry.storyTitle}
                           className="h-28 w-20 rounded-2xl object-cover"
@@ -278,9 +280,11 @@ function DesktopDashboard({
               </Reveal>
             ) : null}
 
-            {data?.rows?.length
-              ? data.rows.map((row) => <StoryRow key={row.id} row={row} />)
-              : <EmptyState />}
+            {data?.rows?.length ? (
+              data.rows.map((row) => <StoryRow key={row.id} row={row} />)
+            ) : (
+              <EmptyState />
+            )}
           </div>
         </main>
       </div>
@@ -313,13 +317,14 @@ function MobileDashboard({
 
         <Link
           className="flex items-center justify-between rounded-2xl border border-primary/10 bg-white px-4 py-3 dark:bg-primary/5"
-          to={followingHref}
-        >
+          to={followingHref}>
           <div>
             <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-primary">
               Following
             </p>
-            <p className="text-sm font-semibold">Open your tracked release feed</p>
+            <p className="text-sm font-semibold">
+              Open your tracked release feed
+            </p>
           </div>
           <span className="material-symbols-outlined text-slate-400">
             chevron_right
@@ -328,7 +333,10 @@ function MobileDashboard({
 
         {data?.featured ? (
           <Reveal>
-            <PrefetchableStoryLink className="block" storySlug={data.featured.slug} to={buildStoryHref(data.featured.slug)}>
+            <PrefetchableStoryLink
+              className="block"
+              storySlug={data.featured.slug}
+              to={buildStoryHref(data.featured.slug)}>
               <article className="overflow-hidden rounded-xl border border-primary/10">
                 <div className="relative min-h-[200px]">
                   <img
@@ -363,8 +371,7 @@ function MobileDashboard({
                   chapterSlug={entry.chapterSlug}
                   key={`${entry.storySlug}-${entry.chapterSlug}`}
                   storySlug={entry.storySlug}
-                  to={buildChapterHref(entry.storySlug, entry.chapterSlug)}
-                >
+                  to={buildChapterHref(entry.storySlug, entry.chapterSlug)}>
                   <article className="flex gap-2.5 rounded-xl border border-primary/10 bg-white p-2.5 dark:bg-primary/5">
                     <img
                       alt={entry.storyTitle}
@@ -410,8 +417,7 @@ function MobileDashboard({
                     className="block w-32 shrink-0"
                     key={story.slug}
                     storySlug={story.slug}
-                    to={buildStoryHref(story.slug)}
-                  >
+                    to={buildStoryHref(story.slug)}>
                     <article className="space-y-2">
                       <img
                         alt={story.title}
@@ -419,7 +425,9 @@ function MobileDashboard({
                         src={story.coverImage}
                       />
                       <div>
-                        <h3 className="line-clamp-1 text-xs font-bold">{story.title}</h3>
+                        <h3 className="line-clamp-1 text-xs font-bold">
+                          {story.title}
+                        </h3>
                         <p className="line-clamp-1 text-[10px] text-slate-500 dark:text-slate-400">
                           {story.authorName}
                         </p>
@@ -432,7 +440,9 @@ function MobileDashboard({
           ) : null,
         )}
 
-        {!data?.rows?.some((row) => row.stories?.length) ? <EmptyState /> : null}
+        {!data?.rows?.some((row) => row.stories?.length) ? (
+          <EmptyState />
+        ) : null}
       </main>
 
       <AppMobileTabBar topGenre={topGenre} />

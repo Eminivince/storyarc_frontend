@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { LogoBrand } from "./LogoBrand";
 
 /**
  * Shared footer used across the app. Based on the Reading Lists / dashboard footer.
@@ -13,14 +14,7 @@ export default function AppFooter({ className = "", variant = "default" }) {
         <div className="mx-auto max-w-7xl">
           <div className="mb-20 grid grid-cols-2 gap-12 md:grid-cols-4 lg:grid-cols-5">
             <div className="col-span-2 lg:col-span-2">
-              <Link className="mb-6 flex items-center gap-2 text-primary" to="/">
-                <span className="material-symbols-outlined text-3xl font-bold">
-                  auto_stories
-                </span>
-                <span className="text-2xl font-black tracking-tight text-white">
-                  TaleStead
-                </span>
-              </Link>
+              <LogoBrand className="mb-6" size="lg" textClassName="text-white" to="/" />
               <p className="mb-8 max-w-sm text-slate-400">
                 Empowering the next generation of storytellers. Discover, read,
                 and write original fiction across every genre imaginable.
@@ -37,43 +31,7 @@ export default function AppFooter({ className = "", variant = "default" }) {
                 ))}
               </div>
             </div>
-            <div>
-              <h4 className="mb-6 font-bold text-white">Platform</h4>
-              <ul className="space-y-4 text-slate-400">
-                <li>
-                  <Link
-                    className="transition-colors hover:text-primary"
-                    to="/browse"
-                  >
-                    Browse Library
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    className="transition-colors hover:text-primary"
-                    to="/pricing"
-                  >
-                    Premium Reading
-                  </Link>
-                </li>
-                <li>
-                  <a
-                    className="transition-colors hover:text-primary"
-                    href="#"
-                  >
-                    Mobile App
-                  </a>
-                </li>
-                <li>
-                  <a
-                    className="transition-colors hover:text-primary"
-                    href="#"
-                  >
-                    Gift Cards
-                  </a>
-                </li>
-              </ul>
-            </div>
+            
             <div>
               <h4 className="mb-6 font-bold text-white">Creators</h4>
               <ul className="space-y-4 text-slate-400">
@@ -153,7 +111,7 @@ export default function AppFooter({ className = "", variant = "default" }) {
             <p className="text-sm text-slate-500">
               © {new Date().getFullYear()} TaleStead Inc. All rights reserved.
             </p>
-            <div className="flex items-center gap-6">
+            {/* <div className="flex items-center gap-6">
               <img
                 alt="Download on App Store"
                 className="h-10"
@@ -164,7 +122,7 @@ export default function AppFooter({ className = "", variant = "default" }) {
                 className="h-10"
                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuCauHA_BS6MTA_xucMMgcff3nYWKtOZrbOXoa3M8woBKk6gtuii2IeyyT9xudU9twxHW1YErMBCU9bxGL1E825skwQle-xpSsQ26ZFN_4vMH_T5keu4Ekdf3Q064DZdjuxvbggQVxMxehzPr_ICVF2kHhkOG6KRsDs4WfCrm3BXHxiPrspy15w2na_SXteoHDBWraqPPJs75YoSrAECy8GHGJI6sb98-SMa2A0mRByqLvdP2d2xs6XjwBGyH_gf-F8GSBOMwo6GYEw"
               />
-            </div>
+            </div> */}
           </div>
         </div>
       </footer>

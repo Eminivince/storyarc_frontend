@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
+import { LogoBrand } from "../components/LogoBrand";
 import Reveal from "../components/Reveal";
 import { useOnboarding } from "../context/OnboardingContext";
 import { useToast } from "../context/ToastContext";
@@ -101,14 +102,7 @@ function DesktopGenreSelection() {
     <div className="hidden min-h-screen bg-background-light font-display text-slate-900 dark:bg-background-dark dark:text-slate-100 md:block">
       <div className="mx-auto flex min-h-screen w-full max-w-[960px] flex-col px-4 py-5 md:px-10">
         <header className="flex items-center justify-between whitespace-nowrap border-b border-slate-200 px-4 py-3 dark:border-primary/20">
-          <div className="flex items-center gap-4">
-            <div className="flex items-center justify-center text-primary">
-              <span className="material-symbols-outlined text-3xl">
-                auto_stories
-              </span>
-            </div>
-            <h2 className="text-lg font-bold tracking-[-0.015em]">TaleStead</h2>
-          </div>
+          <LogoBrand size="sm" textClassName="tracking-[-0.015em]" />
           <Link
             className="flex h-10 w-10 items-center justify-center rounded-lg bg-slate-200 text-slate-900 dark:bg-primary/10 dark:text-primary"
             to="/auth"

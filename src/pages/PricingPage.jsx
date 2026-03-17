@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { useMemo, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
+import { LogoBrand } from "../components/LogoBrand";
 import Reveal from "../components/Reveal";
 import ReaderStateScreen from "../components/ReaderStateScreen";
 import RouteLoadingScreen from "../components/RouteLoadingScreen";
@@ -46,12 +47,7 @@ function DesktopPricing({
     <div className="hidden min-h-screen bg-background-dark font-display text-slate-100 md:block">
       <div className="relative flex min-h-screen flex-col overflow-x-hidden">
         <header className="sticky top-0 z-50 flex items-center justify-between border-b border-primary/20 bg-background-dark/50 px-6 py-4 backdrop-blur-md md:px-20">
-          <Link className="flex items-center gap-3" to="/dashboard">
-            <span className="material-symbols-outlined text-3xl text-primary">
-              auto_stories
-            </span>
-            <h2 className="text-xl font-bold tracking-tight">TaleStead</h2>
-          </Link>
+          <LogoBrand to="/dashboard" />
 
           <div className="hidden flex-1 items-center justify-end gap-10 md:flex">
             <nav className="flex items-center gap-8">

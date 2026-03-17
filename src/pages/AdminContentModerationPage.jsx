@@ -133,6 +133,7 @@ export default function AdminContentModerationPage() {
     queryKey: creatorApplicationsQueryKey,
     queryFn: () => listAdminCreatorApplications(),
     retry: false,
+    staleTime: 30_000,
   });
   const adminCommentsQuery = useQuery({
     queryKey: adminCommentsQueryKey,
@@ -142,6 +143,7 @@ export default function AdminContentModerationPage() {
         offset: 0,
       }),
     retry: false,
+    staleTime: 15_000,
   });
   const adminReviewsQuery = useQuery({
     queryKey: adminReviewsQueryKey,
@@ -151,6 +153,7 @@ export default function AdminContentModerationPage() {
         offset: 0,
       }),
     retry: false,
+    staleTime: 15_000,
   });
   const approveApplicationMutation = useMutation({
     mutationFn: (applicationId) => approveCreatorApplication(applicationId),

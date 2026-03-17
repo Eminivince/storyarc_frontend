@@ -90,3 +90,25 @@ export function revokeSession(sessionId) {
     method: "DELETE",
   });
 }
+
+export function setup2FA() {
+  return postJson("/auth/2fa/setup", undefined, { headers: getAuthHeaders() });
+}
+
+export function verifySetup2FA(input) {
+  return postJson("/auth/2fa/verify-setup", input, { headers: getAuthHeaders() });
+}
+
+export function challenge2FA(input) {
+  return postJson("/auth/2fa/challenge", input);
+}
+
+export function disable2FA(input) {
+  return postJson("/auth/2fa/disable", input, { headers: getAuthHeaders() });
+}
+
+export function deleteAccount(input) {
+  return postJson("/auth/account/delete", input, {
+    headers: getAuthHeaders(),
+  });
+}

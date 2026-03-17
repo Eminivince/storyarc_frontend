@@ -1,8 +1,11 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
 import AccountSettingsNav from "../components/AccountSettingsNav";
 import { AppDesktopSidebar, AppMobileTabBar } from "../components/AppShellNav";
 import Reveal from "../components/Reveal";
 import { useAccount } from "../context/AccountContext";
+import { useAuth } from "../context/AuthContext";
+import { deleteAccount } from "../auth/authApi";
 import {
   displayLanguages,
   editProfileHref,
@@ -31,10 +34,96 @@ function PreferenceToggle({ checked, compact, disabled = false, onClick }) {
   );
 }
 
+function DeleteAccountModal({
+  error,
+  isDeleting,
+  isOpen,
+  onClose,
+  onConfirm,
+  password,
+  setPassword,
+}) {
+  if (!isOpen) {
+    return null;
+  }
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-background-dark/80 p-4 backdrop-blur-sm"
+      onClick={isDeleting ? undefined : onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="delete-account-title"
+    >
+      <div
+        className="w-full max-w-lg rounded-2xl border border-red-500/20 bg-white p-6 shadow-2xl dark:bg-[#241c1c]"
+        onClick={(event) => event.stopPropagation()}
+      >
+        <div className="mb-5 flex items-center gap-3">
+          <span className="material-symbols-outlined text-2xl text-red-500">
+            delete_forever
+          </span>
+          <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100" id="delete-account-title">
+            Delete Account
+          </h2>
+        </div>
+        <p className="mb-4 text-sm text-slate-600 dark:text-slate-400">
+          This will permanently delete your account and all associated data. This cannot be undone.
+        </p>
+        <form
+          className="space-y-4"
+          onSubmit={(event) => {
+            event.preventDefault();
+            onConfirm();
+          }}
+        >
+          <div className="space-y-2">
+            <label className="text-sm font-semibold text-slate-700 dark:text-slate-300" htmlFor="delete-account-password">
+              Confirm your password
+            </label>
+            <input
+              className="w-full rounded-lg border border-red-200 bg-white px-4 py-2.5 text-sm text-slate-900 outline-none focus:border-red-400 focus:ring-2 focus:ring-red-200 dark:border-red-900/40 dark:bg-[#1c1515] dark:text-slate-100"
+              id="delete-account-password"
+              onChange={(event) => setPassword(event.target.value)}
+              placeholder="Enter your password"
+              required
+              type="password"
+              value={password}
+            />
+          </div>
+          {error && (
+            <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700 dark:border-red-900/40 dark:bg-red-950/30 dark:text-red-200">
+              {error}
+            </div>
+          )}
+          <div className="flex flex-wrap items-center justify-end gap-3 pt-2">
+            <button
+              className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600 transition-colors hover:bg-slate-100 dark:border-slate-600/40 dark:text-slate-300 dark:hover:bg-slate-700/30"
+              disabled={isDeleting}
+              onClick={onClose}
+              type="button"
+            >
+              Cancel
+            </button>
+            <button
+              className="rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-60"
+              disabled={isDeleting}
+              type="submit"
+            >
+              {isDeleting ? "Deleting..." : "Delete Account"}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
+
 function SettingsSections({
   compact = false,
   isProfileSaving,
   onConnectAccount,
+  onDeleteAccount,
   onToggleFiltering,
   onUpdateLanguage,
   onWarnDeactivate,
@@ -93,45 +182,7 @@ function SettingsSections({
           </div>
         </div>
 
-        <div className={`border-t border-primary/10 ${compact ? "mt-4 pt-4" : "mt-6 pt-6"}`}>
-          <h3 className={`font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 ${
-            compact ? "mb-2 text-[10px]" : "mb-4 text-sm"
-          }`}>
-            Linked Accounts
-          </h3>
-          <div className={`flex flex-wrap ${compact ? "gap-2" : "gap-3"}`}>
-            {linkedAccounts.map((account) => (
-              <button
-                className={`flex items-center text-left transition-colors hover:border-primary/30 hover:bg-primary/5 dark:border-primary/10 dark:bg-background-dark/50 ${
-                  compact
-                    ? "gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2"
-                    : "gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3"
-                }`}
-                key={account.id}
-                onClick={() => onConnectAccount(account)}
-                type="button"
-              >
-                <span className={`material-symbols-outlined ${account.accent ?? "text-primary"}`}>
-                  {account.icon}
-                </span>
-                <div>
-                  <p className={compact ? "text-xs font-semibold" : "text-sm font-semibold"}>
-                    {account.label}
-                  </p>
-                  <p
-                    className={`font-bold ${
-                      compact ? "text-[10px]" : "text-xs"
-                    } ${
-                      account.status === "Linked" ? "text-emerald-500" : "text-primary"
-                    }`}
-                  >
-                    {account.status}
-                  </p>
-                </div>
-              </button>
-            ))}
-          </div>
-        </div>
+        
       </section>
 
       <section
@@ -196,7 +247,7 @@ function SettingsSections({
           <span className="material-symbols-outlined text-lg">warning</span>
           <h2 className={compact ? "text-base font-bold" : "text-lg font-bold"}>Danger Zone</h2>
         </div>
-        <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+        <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between mb-4">
           <div>
             <p className={compact ? "text-sm font-semibold" : "font-semibold"}>Deactivate Account</p>
             <p className={compact ? "text-xs text-slate-500" : "text-sm text-slate-500 dark:text-slate-400"}>
@@ -210,7 +261,24 @@ function SettingsSections({
             onClick={onWarnDeactivate}
             type="button"
           >
-            Deactivate Account
+            Deactivate
+          </button>
+        </div>
+        <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+          <div>
+            <p className={compact ? "text-sm font-semibold" : "font-semibold"}>Delete Account</p>
+            <p className={compact ? "text-xs text-slate-500" : "text-sm text-slate-500 dark:text-slate-400"}>
+              Permanently remove your account and all associated data.
+            </p>
+          </div>
+          <button
+            className={`border border-red-500/40 bg-red-500/10 font-bold text-red-600 transition-colors hover:bg-red-500/20 dark:text-red-300 ${
+              compact ? "rounded-lg px-3 py-2 text-xs" : "rounded-2xl px-4 py-3 text-sm"
+            }`}
+            onClick={onDeleteAccount}
+            type="button"
+          >
+            Delete
           </button>
         </div>
       </section>
@@ -221,6 +289,7 @@ function SettingsSections({
 function DesktopAccountSettings({
   isProfileSaving,
   onConnectAccount,
+  onDeleteAccount,
   onToggleFiltering,
   onUpdateLanguage,
   onWarnDeactivate,
@@ -254,6 +323,7 @@ function DesktopAccountSettings({
                   <SettingsSections
                     isProfileSaving={isProfileSaving}
                     onConnectAccount={onConnectAccount}
+                    onDeleteAccount={onDeleteAccount}
                     onToggleFiltering={onToggleFiltering}
                     onUpdateLanguage={onUpdateLanguage}
                     onWarnDeactivate={onWarnDeactivate}
@@ -272,6 +342,7 @@ function DesktopAccountSettings({
 function MobileAccountSettings({
   isProfileSaving,
   onConnectAccount,
+  onDeleteAccount,
   onToggleFiltering,
   onUpdateLanguage,
   onWarnDeactivate,
@@ -302,6 +373,7 @@ function MobileAccountSettings({
               compact
               isProfileSaving={isProfileSaving}
               onConnectAccount={onConnectAccount}
+              onDeleteAccount={onDeleteAccount}
               onToggleFiltering={onToggleFiltering}
               onUpdateLanguage={onUpdateLanguage}
               onWarnDeactivate={onWarnDeactivate}
@@ -318,6 +390,12 @@ function MobileAccountSettings({
 
 export default function AccountSettingsPage() {
   const { isProfileSaving, profile, showNotice, updateProfile } = useAccount();
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const [deletePassword, setDeletePassword] = useState("");
+  const [deleteError, setDeleteError] = useState(null);
+  const [isDeletingAccount, setIsDeletingAccount] = useState(false);
 
   function handleConnectAccount(account) {
     showNotice(
@@ -354,11 +432,50 @@ export default function AccountSettingsPage() {
     showNotice("Account deactivation flow started. Support confirmation is required.", "info");
   }
 
+  function handleOpenDelete() {
+    setDeletePassword("");
+    setDeleteError(null);
+    setIsDeleteOpen(true);
+  }
+
+  function handleCloseDelete() {
+    if (isDeletingAccount) {
+      return;
+    }
+
+    setIsDeleteOpen(false);
+  }
+
+  async function handleConfirmDelete() {
+    const trimmedPassword = deletePassword.trim();
+
+    if (!trimmedPassword) {
+      setDeleteError("Please enter your password to confirm.");
+      return;
+    }
+
+    setIsDeletingAccount(true);
+    setDeleteError(null);
+
+    try {
+      await deleteAccount({ password: trimmedPassword });
+      await logout();
+      navigate("/", { replace: true });
+    } catch (error) {
+      const message = error?.message || "Could not delete your account.";
+      setDeleteError(message);
+      showNotice(message, "info");
+    } finally {
+      setIsDeletingAccount(false);
+    }
+  }
+
   return (
     <>
       <DesktopAccountSettings
         isProfileSaving={isProfileSaving}
         onConnectAccount={handleConnectAccount}
+        onDeleteAccount={handleOpenDelete}
         onToggleFiltering={handleToggleFiltering}
         onUpdateLanguage={handleLanguageChange}
         onWarnDeactivate={handleWarnDeactivate}
@@ -367,10 +484,20 @@ export default function AccountSettingsPage() {
       <MobileAccountSettings
         isProfileSaving={isProfileSaving}
         onConnectAccount={handleConnectAccount}
+        onDeleteAccount={handleOpenDelete}
         onToggleFiltering={handleToggleFiltering}
         onUpdateLanguage={handleLanguageChange}
         onWarnDeactivate={handleWarnDeactivate}
         profile={profile}
+      />
+      <DeleteAccountModal
+        error={deleteError}
+        isDeleting={isDeletingAccount}
+        isOpen={isDeleteOpen}
+        onClose={handleCloseDelete}
+        onConfirm={handleConfirmDelete}
+        password={deletePassword}
+        setPassword={setDeletePassword}
       />
     </>
   );

@@ -1,4 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
+import { LogoBrand } from "../components/LogoBrand";
 import Reveal from "../components/Reveal";
 import { useCreator } from "../context/CreatorContext";
 import {
@@ -27,14 +28,7 @@ function DesktopCreatorOnboarding({ onStart, status }) {
     <div className="hidden min-h-screen bg-background-light font-display text-slate-900 dark:bg-background-dark dark:text-slate-100 md:block">
       <div className="relative flex min-h-screen flex-col overflow-x-hidden">
         <header className="sticky top-0 z-40 flex items-center justify-between border-b border-primary/20 bg-background-light px-6 py-4 dark:bg-background-dark md:px-20">
-          <div className="flex items-center gap-4 text-primary">
-            <div className="flex size-6 items-center justify-center">
-              <span className="material-symbols-outlined text-3xl">auto_stories</span>
-            </div>
-            <h2 className="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
-              TaleStead
-            </h2>
-          </div>
+          <LogoBrand textClassName="text-slate-900 dark:text-slate-100" />
           <div className="flex flex-1 items-center justify-end gap-8">
             <nav className="hidden items-center gap-9 md:flex">
               <Link

@@ -14,7 +14,7 @@ export default {
         "neutral-border": "#393528",
       },
       fontFamily: {
-        display: ["Spline Sans", "sans-serif"],
+        display: ["Inter", "Bebas Neue", "sans-serif"],
         serif: ["Lora", "serif"],
       },
       borderRadius: {

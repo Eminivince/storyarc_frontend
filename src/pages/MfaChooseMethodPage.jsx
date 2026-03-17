@@ -1,18 +1,130 @@
 import { Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
 import { useAccount } from "../context/AccountContext";
+import { LogoBrand } from "../components/LogoBrand";
 import {
   helpHref,
   mfaChooseHref,
-  mfaMethods,
   mfaSetupHref,
   notificationsHref,
   profileHref,
 } from "../data/accountFlow";
+import { disable2FA } from "../auth/authApi";
+
+const mfaMethod = {
+  id: "app",
+  title: "Authenticator App (TOTP)",
+  description: "Use Google Authenticator, Authy, or Microsoft Authenticator to generate codes.",
+  icon: "shield_lock",
+  badge: "Recommended",
+};
+
+function DisableMfaModal({
+  isOpen,
+  isSubmitting,
+  onClose,
+  onConfirm,
+  password,
+  setPassword,
+  code,
+  setCode,
+  error,
+}) {
+  if (!isOpen) {
+    return null;
+  }
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-background-dark/80 p-4 backdrop-blur-sm"
+      onClick={isSubmitting ? undefined : onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="disable-mfa-title"
+    >
+      <div
+        className="w-full max-w-lg rounded-2xl border border-primary/10 bg-white p-6 shadow-2xl dark:bg-[#221c10]"
+        onClick={(event) => event.stopPropagation()}
+      >
+        <div className="mb-5 flex items-center gap-3">
+          <span className="material-symbols-outlined text-2xl text-primary">
+            shield_lock
+          </span>
+          <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100" id="disable-mfa-title">
+            Disable Two-Factor Authentication
+          </h2>
+        </div>
+        <p className="mb-4 text-sm text-slate-600 dark:text-slate-400">
+          Enter your password and a current 6-digit code to disable 2FA.
+        </p>
+        <form
+          className="space-y-4"
+          onSubmit={(event) => {
+            event.preventDefault();
+            onConfirm();
+          }}
+        >
+          <div className="space-y-2">
+            <label className="text-sm font-semibold text-slate-700 dark:text-slate-300" htmlFor="disable-mfa-password">
+              Password
+            </label>
+            <input
+              className="w-full rounded-lg border border-primary/20 bg-white px-4 py-2.5 text-sm text-slate-900 outline-none focus:border-primary focus:ring-2 focus:ring-primary/30 dark:border-primary/20 dark:bg-[#1c170d] dark:text-slate-100"
+              id="disable-mfa-password"
+              onChange={(event) => setPassword(event.target.value)}
+              placeholder="Enter your password"
+              required
+              type="password"
+              value={password}
+            />
+          </div>
+          <div className="space-y-2">
+            <label className="text-sm font-semibold text-slate-700 dark:text-slate-300" htmlFor="disable-mfa-code">
+              6-digit code
+            </label>
+            <input
+              className="w-full rounded-lg border border-primary/20 bg-white px-4 py-2.5 text-sm text-slate-900 outline-none focus:border-primary focus:ring-2 focus:ring-primary/30 dark:border-primary/20 dark:bg-[#1c170d] dark:text-slate-100"
+              id="disable-mfa-code"
+              inputMode="numeric"
+              onChange={(event) => setCode(event.target.value.replace(/\D/g, "").slice(0, 6))}
+              placeholder="123456"
+              required
+              type="text"
+              value={code}
+            />
+          </div>
+          {error ? (
+            <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700 dark:border-red-900/40 dark:bg-red-950/30 dark:text-red-200">
+              {error}
+            </div>
+          ) : null}
+          <div className="flex flex-wrap items-center justify-end gap-3 pt-2">
+            <button
+              className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600 transition-colors hover:bg-slate-100 dark:border-slate-600/40 dark:text-slate-300 dark:hover:bg-slate-700/30"
+              disabled={isSubmitting}
+              onClick={onClose}
+              type="button"
+            >
+              Cancel
+            </button>
+            <button
+              className="rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-60"
+              disabled={isSubmitting}
+              type="submit"
+            >
+              {isSubmitting ? "Disabling..." : "Disable 2FA"}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
 
 function DesktopChooseMethod({
+  isEnabled,
+  onDisable,
   onContinue,
-  onMethodChange,
-  selectedMethod,
 }) {
   return (
     <div className="hidden min-h-screen bg-background-light font-display text-slate-900 dark:bg-background-dark dark:text-slate-100 md:block">
@@ -20,15 +132,10 @@ function DesktopChooseMethod({
         <aside className="flex w-72 flex-col justify-between border-r border-primary/10 bg-background-light p-6 dark:bg-background-dark">
           <div className="flex flex-col gap-8">
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-background-dark">
-                <span className="material-symbols-outlined font-bold">auto_stories</span>
-              </div>
-              <div>
-                <h1 className="text-base font-bold leading-tight">TaleStead Premium</h1>
-                <p className="text-xs font-medium uppercase tracking-wider text-primary">
-                  Golden Member
-                </p>
-              </div>
+              <LogoBrand suffix=" Premium" size="sm" textClassName="text-slate-900 dark:text-slate-100" />
+              <p className="text-xs font-medium uppercase tracking-wider text-primary">
+                Golden Member
+              </p>
             </div>
 
             <nav className="flex flex-col gap-2">
@@ -93,54 +200,53 @@ function DesktopChooseMethod({
             </div>
 
             <div className="mb-10 space-y-4">
-              {mfaMethods.map((method) => {
-                const selected = method.id === selectedMethod;
-
-                return (
-                  <label
-                    className={`group relative flex cursor-pointer items-start gap-4 rounded-xl border-2 p-5 transition-all ${
-                      selected
-                        ? "border-primary/40 bg-primary/5"
-                        : "border-slate-200 hover:border-primary/40 dark:border-primary/10"
-                    }`}
-                    key={method.id}
-                  >
-                    <div className="mt-1">
-                      <input
-                        checked={selected}
-                        className="h-5 w-5 border-2 border-primary/30 bg-transparent text-primary focus:ring-primary"
-                        name="mfa-method"
-                        onChange={() => onMethodChange(method.id)}
-                        type="radio"
-                      />
-                    </div>
-                    <div className="flex-1">
-                      <div className="mb-1 flex items-center justify-between">
-                        <span className="font-bold">{method.title}</span>
-                        {method.badge ? (
-                          <span className="rounded bg-primary px-2 py-0.5 text-[10px] font-black uppercase text-background-dark">
-                            {method.badge}
-                          </span>
-                        ) : null}
-                      </div>
-                      <p className="text-sm text-slate-600 dark:text-slate-400">{method.description}</p>
-                    </div>
-                    <div className={`${selected ? "text-primary" : "text-primary/40"} transition-colors`}>
-                      <span className="material-symbols-outlined">{method.icon}</span>
-                    </div>
-                  </label>
-                );
-              })}
+              <label
+                className="group relative flex cursor-pointer items-start gap-4 rounded-xl border-2 border-primary/40 bg-primary/5 p-5 transition-all"
+              >
+                <div className="mt-1">
+                  <input
+                    checked
+                    className="h-5 w-5 border-2 border-primary/30 bg-transparent text-primary focus:ring-primary"
+                    name="mfa-method"
+                    onChange={() => null}
+                    type="radio"
+                  />
+                </div>
+                <div className="flex-1">
+                  <div className="mb-1 flex items-center justify-between">
+                    <span className="font-bold">{mfaMethod.title}</span>
+                    <span className="rounded bg-primary px-2 py-0.5 text-[10px] font-black uppercase text-background-dark">
+                      {mfaMethod.badge}
+                    </span>
+                  </div>
+                  <p className="text-sm text-slate-600 dark:text-slate-400">
+                    {mfaMethod.description}
+                  </p>
+                </div>
+                <div className="text-primary transition-colors">
+                  <span className="material-symbols-outlined">{mfaMethod.icon}</span>
+                </div>
+              </label>
             </div>
 
             <div className="flex flex-col gap-4">
               <button
                 className="w-full rounded-xl bg-primary py-4 text-lg font-bold text-background-dark shadow-lg shadow-primary/10 transition-transform active:scale-[0.98]"
+                disabled={isEnabled}
                 onClick={onContinue}
                 type="button"
               >
-                Continue Setup
+                {isEnabled ? "2FA Enabled" : "Continue Setup"}
               </button>
+              {isEnabled ? (
+                <button
+                  className="w-full rounded-xl border border-red-500/30 bg-red-500/10 py-4 text-sm font-bold text-red-600 transition-colors hover:bg-red-500/20 dark:text-red-300"
+                  onClick={onDisable}
+                  type="button"
+                >
+                  Disable 2FA
+                </button>
+              ) : null}
               <Link
                 className="w-full py-2 text-center text-sm font-medium text-slate-500 transition-colors hover:text-primary dark:text-slate-400"
                 to={profileHref}
@@ -173,86 +279,84 @@ function DesktopChooseMethod({
 }
 
 function MobileChooseMethod({
+  isEnabled,
+  onDisable,
   onContinue,
-  onMethodChange,
   selectedMethod,
 }) {
   return (
     <div className="min-h-screen bg-background-light font-display text-slate-900 dark:bg-background-dark dark:text-slate-100 md:hidden">
-      <header className="flex items-center justify-between p-4 pb-2">
-        <Link className="flex size-12 items-center justify-start text-slate-900 dark:text-slate-100" to={profileHref}>
-          <span className="material-symbols-outlined">arrow_back</span>
+      <header className="flex items-center justify-between px-3 py-2">
+        <Link className="flex size-10 items-center justify-start text-slate-900 dark:text-slate-100" to={profileHref}>
+          <span className="material-symbols-outlined text-xl">arrow_back</span>
         </Link>
-        <h2 className="flex-1 pr-12 text-center text-lg font-bold">Two-Factor Authentication</h2>
+        <h2 className="flex-1 pr-10 text-center text-base font-bold">Two-Factor Authentication</h2>
       </header>
 
-      <main className="flex min-h-[calc(100vh-72px)] flex-col">
-        <div className="px-6 pt-8 pb-4">
-          <div className="mb-6 inline-flex rounded-xl bg-primary/20 p-3 text-primary">
-            <span className="material-symbols-outlined text-3xl">shield_lock</span>
+      <main className="flex min-h-[calc(100vh-52px)] flex-col">
+        <div className="px-4 pt-4 pb-2">
+          <div className="mb-3 inline-flex rounded-lg bg-primary/20 p-2 text-primary">
+            <span className="material-symbols-outlined text-2xl">shield_lock</span>
           </div>
-          <h3 className="mb-3 text-2xl font-bold leading-tight">Protect your account</h3>
-          <p className="text-base leading-relaxed text-slate-600 dark:text-slate-400">
+          <h3 className="mb-1.5 text-xl font-bold leading-tight">Protect your account</h3>
+          <p className="text-sm leading-snug text-slate-600 dark:text-slate-400">
             Choose how you want to receive your security codes to keep TaleStead secure.
           </p>
         </div>
 
-        <div className="flex flex-1 flex-col gap-4 p-6">
-          {mfaMethods.map((method) => {
-            const selected = method.id === selectedMethod;
+        <div className="flex flex-1 flex-col gap-3 px-4">
+          <label className="flex cursor-pointer items-center gap-3 rounded-lg border-2 border-primary bg-primary/5 p-3 transition-all">
+            <div className="flex grow flex-col gap-0.5">
+              <div className="flex items-center gap-2">
+                <p className="text-sm font-bold">{mfaMethod.title}</p>
+                <span className="rounded-full bg-primary px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-background-dark">
+                  {mfaMethod.badge}
+                </span>
+              </div>
+              <p className="text-xs leading-snug text-slate-600 dark:text-slate-400">
+                {mfaMethod.description}
+              </p>
+            </div>
+            <input
+              checked={selectedMethod === mfaMethod.id}
+              className="h-5 w-5 shrink-0 appearance-none rounded-full border-2 border-slate-400 bg-transparent checked:border-primary checked:bg-primary"
+              name="mfa-method"
+              onChange={() => null}
+              type="radio"
+            />
+          </label>
 
-            return (
-              <label
-                className={`flex cursor-pointer items-center gap-4 rounded-xl p-5 transition-all ${
-                  selected
-                    ? "border-2 border-primary bg-primary/5"
-                    : "border border-slate-200 bg-white/5 hover:border-primary/50 dark:border-slate-800"
-                }`}
-                key={method.id}
-              >
-                <div className="flex grow flex-col">
-                  <div className="mb-1 flex items-center gap-2">
-                    <p className="text-base font-bold">{method.title}</p>
-                    {method.badge ? (
-                      <span className="rounded-full bg-primary px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-background-dark">
-                        {method.badge}
-                      </span>
-                    ) : null}
-                  </div>
-                  <p className="text-sm leading-snug text-slate-600 dark:text-slate-400">
-                    {method.description}
-                  </p>
-                </div>
-                <input
-                  checked={selected}
-                  className="h-6 w-6 appearance-none rounded-full border-2 border-slate-400 bg-transparent checked:border-primary checked:bg-primary"
-                  name="mfa-method"
-                  onChange={() => onMethodChange(method.id)}
-                  type="radio"
-                />
-              </label>
-            );
-          })}
-
-          <div className="mt-4 flex items-start gap-3 rounded-lg bg-slate-100 p-4 dark:bg-slate-800/50">
-            <span className="material-symbols-outlined text-xl text-primary">info</span>
-            <p className="text-xs leading-normal text-slate-500 dark:text-slate-400">
+          <div className="flex items-start gap-2 rounded-lg bg-slate-100 p-3 dark:bg-slate-800/50">
+            <span className="material-symbols-outlined text-lg text-primary">info</span>
+            <p className="text-[11px] leading-normal text-slate-500 dark:text-slate-400">
               Authenticator apps are more secure than SMS because they do not rely on
               cellular networks and help prevent SIM-swapping attacks.
             </p>
           </div>
         </div>
 
-        <div className="p-6 pb-10">
+        <div className="px-4 py-4 pb-6">
           <button
-            className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-4 font-bold text-background-dark shadow-lg shadow-primary/20 transition-transform active:scale-[0.98]"
+            className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-3 text-sm font-bold text-background-dark shadow-lg shadow-primary/20 transition-transform active:scale-[0.98]"
+            disabled={isEnabled}
             onClick={onContinue}
             type="button"
           >
-            <span>Continue</span>
-            <span className="material-symbols-outlined text-xl">arrow_forward</span>
+            <span>{isEnabled ? "2FA Enabled" : "Continue"}</span>
+            {isEnabled ? null : (
+              <span className="material-symbols-outlined text-lg">arrow_forward</span>
+            )}
           </button>
-          <p className="mt-6 text-center text-xs text-slate-500 dark:text-slate-500">
+          {isEnabled ? (
+            <button
+              className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl border border-red-500/30 bg-red-500/10 py-3 text-xs font-bold text-red-600 transition-colors hover:bg-red-500/20 dark:text-red-300"
+              onClick={onDisable}
+              type="button"
+            >
+              Disable 2FA
+            </button>
+          ) : null}
+          <p className="mt-3 text-center text-[11px] text-slate-500 dark:text-slate-500">
             Step 1 of 3: Security Configuration
           </p>
         </div>
@@ -263,19 +367,78 @@ function MobileChooseMethod({
 
 export default function MfaChooseMethodPage() {
   const navigate = useNavigate();
-  const { mfa, setMfaMethod } = useAccount();
+  const { mfa, setMfaEnabled, showNotice } = useAccount();
+  const selectedMethod = "app";
+  const [isDisableOpen, setIsDisableOpen] = useState(false);
+  const [disablePassword, setDisablePassword] = useState("");
+  const [disableCode, setDisableCode] = useState("");
+  const [disableError, setDisableError] = useState(null);
+  const [isDisabling, setIsDisabling] = useState(false);
+  const isEnabled = Boolean(mfa?.enabled);
+
+  function handleOpenDisable() {
+    setDisablePassword("");
+    setDisableCode("");
+    setDisableError(null);
+    setIsDisableOpen(true);
+  }
+
+  function handleCloseDisable() {
+    if (isDisabling) {
+      return;
+    }
+
+    setIsDisableOpen(false);
+  }
+
+  async function handleDisableConfirm() {
+    if (!disablePassword.trim() || disableCode.trim().length < 6) {
+      setDisableError("Please enter your password and a valid 6-digit code.");
+      return;
+    }
+
+    setDisableError(null);
+    setIsDisabling(true);
+
+    try {
+      const response = await disable2FA({
+        password: disablePassword.trim(),
+        code: disableCode.trim(),
+      });
+      setMfaEnabled(false);
+      showNotice(response?.message || "Two-factor authentication disabled.");
+      setIsDisableOpen(false);
+    } catch (error) {
+      setDisableError(error?.message || "Could not disable 2FA.");
+      showNotice(error?.message || "Could not disable 2FA.", "info");
+    } finally {
+      setIsDisabling(false);
+    }
+  }
 
   return (
     <>
       <DesktopChooseMethod
+        isEnabled={isEnabled}
+        onDisable={handleOpenDisable}
         onContinue={() => navigate(mfaSetupHref)}
-        onMethodChange={setMfaMethod}
-        selectedMethod={mfa.method}
       />
       <MobileChooseMethod
+        isEnabled={isEnabled}
+        onDisable={handleOpenDisable}
         onContinue={() => navigate(mfaSetupHref)}
-        onMethodChange={setMfaMethod}
-        selectedMethod={mfa.method}
+        selectedMethod={selectedMethod}
+      />
+      <DisableMfaModal
+        code={disableCode}
+        error={disableError}
+        isOpen={isDisableOpen}
+        isSubmitting={isDisabling}
+        onClose={handleCloseDisable}
+        onConfirm={handleDisableConfirm}
+        password={disablePassword}
+        setCode={setDisableCode}
+        setPassword={setDisablePassword}
       />
     </>
   );

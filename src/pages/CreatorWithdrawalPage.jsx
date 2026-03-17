@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { AppDesktopSidebar, AppMobileTabBar } from "../components/AppShellNav";
+import { LogoBrand } from "../components/LogoBrand";
 import UserAvatar from "../components/UserAvatar";
 import {
   createCreatorWithdrawalRequest,
@@ -52,14 +53,7 @@ function CreatorDesktopHeader({ authorName }) {
   return (
     <header className="sticky top-0 z-50 flex items-center justify-between border-b border-primary/10 bg-background-light px-6 py-3 dark:bg-background-dark lg:px-10">
       <div className="flex items-center gap-8">
-        <Link className="flex items-center gap-3 text-primary" to={authorDashboardHref}>
-          <div className="flex size-8 items-center justify-center rounded-lg bg-primary/10">
-            <span className="material-symbols-outlined">auto_stories</span>
-          </div>
-          <h2 className="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
-            TaleStead
-          </h2>
-        </Link>
+        <LogoBrand to={authorDashboardHref} textClassName="text-slate-900 dark:text-slate-100" />
       </div>
       <div className="flex items-center gap-4">
         <Link

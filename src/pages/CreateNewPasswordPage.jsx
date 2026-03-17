@@ -9,6 +9,7 @@ import {
   getPendingPasswordReset,
   persistPendingPasswordReset,
 } from "../auth/authFlowStorage";
+import { LogoBrand } from "../components/LogoBrand";
 import { useToast } from "../context/ToastContext";
 
 const passwordResetSuccessHref = "/auth/password-reset-success";
@@ -55,14 +56,7 @@ function DesktopCreateNewPassword({ email, onSubmit, pending, resetToken }) {
     <div className="hidden min-h-screen flex-col bg-background-light font-display text-slate-900 dark:bg-background-dark dark:text-slate-100 md:flex">
       <header className="sticky top-0 z-50 w-full border-b border-slate-200 bg-background-light/80 backdrop-blur-md dark:border-primary/20 dark:bg-background-dark/50">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
-          <div className="flex items-center gap-2">
-            <div className="h-8 w-8 text-primary">
-              <svg fill="currentColor" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-                <path d="M44 11.2727C44 14.0109 39.8386 16.3957 33.69 17.6364C39.8386 18.877 44 21.2618 44 24C44 26.7382 39.8386 29.123 33.69 30.3636C39.8386 31.6043 44 33.9891 44 36.7273C44 40.7439 35.0457 44 24 44C12.9543 44 4 40.7439 4 36.7273C4 33.9891 8.16144 31.6043 14.31 30.3636C8.16144 29.123 4 26.7382 4 24C4 21.2618 8.16144 18.877 14.31 17.6364C8.16144 16.3957 4 14.0109 4 11.2727C4 7.25611 12.9543 4 24 4C35.0457 4 44 7.25611 44 11.2727Z" />
-              </svg>
-            </div>
-            <h1 className="text-xl font-bold tracking-tight text-slate-900 dark:text-white">TaleStead</h1>
-          </div>
+          <LogoBrand textClassName="text-slate-900 dark:text-white" />
           <div className="flex items-center gap-4">
             <span className="hidden text-sm text-slate-500 dark:text-slate-400 md:block">Need help?</span>
             <Link className="rounded-lg bg-primary px-6 py-2 text-sm font-bold text-background-dark transition-colors hover:bg-primary/90" to="/auth">

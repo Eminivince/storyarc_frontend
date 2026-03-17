@@ -1,6 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { createContext, useContext, useEffect, useState } from "react";
 import { useAuth } from "./AuthContext";
+import { getStoredReadingTheme, persistReadingTheme } from "../lib/readingTheme";
 import {
   saveOnboardingGenres,
   saveOnboardingPreferences,
@@ -25,7 +26,9 @@ export function OnboardingProvider({ children }) {
   const { updateCurrentUser, user } = useAuth();
   const [selectedGenres, setSelectedGenres] = useState([]);
   const [readingStyle, setReadingStyle] = useState(defaultReadingStyle);
-  const [readingTheme, setReadingTheme] = useState(defaultReadingTheme);
+  const [readingTheme, setReadingTheme] = useState(
+    getStoredReadingTheme() ? getStoredReadingTheme().charAt(0).toUpperCase() + getStoredReadingTheme().slice(1) : defaultReadingTheme,
+  );
   const saveGenresMutation = useMutation({
     mutationFn: saveOnboardingGenres,
   });
@@ -39,13 +42,20 @@ export function OnboardingProvider({ children }) {
   useEffect(() => {
     setSelectedGenres(user?.onboarding?.selectedGenres ?? []);
     setReadingStyle(user?.onboarding?.readingStyle ?? defaultReadingStyle);
-    setReadingTheme(user?.onboarding?.readingTheme ?? defaultReadingTheme);
+    const nextTheme = user?.onboarding?.readingTheme ?? defaultReadingTheme;
+    setReadingTheme(nextTheme);
+    persistReadingTheme(nextTheme);
   }, [
     user?.id,
     user?.onboarding?.readingStyle,
     user?.onboarding?.readingTheme,
     user?.onboarding?.selectedGenres,
   ]);
+
+  function updateReadingTheme(nextTheme) {
+    setReadingTheme(nextTheme);
+    persistReadingTheme(nextTheme);
+  }
 
   function toggleGenre(genre) {
     setSelectedGenres((current) => {
@@ -110,7 +120,7 @@ export function OnboardingProvider({ children }) {
         readingTheme,
         selectedGenres,
         setReadingStyle,
-        setReadingTheme,
+        setReadingTheme: updateReadingTheme,
         toggleGenre,
         uploadProfilePicture,
       }}

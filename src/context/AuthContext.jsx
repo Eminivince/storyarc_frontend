@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createContext, useContext, useEffect, useState } from "react";
 import {
+  challenge2FA,
   fetchCurrentUser,
   loginAccount,
   logoutAccount,
@@ -43,6 +44,8 @@ export function AuthProvider({ children }) {
   const { showToast } = useToast();
   const [user, setUser] = useState(null);
   const [hasStoredSession, setHasStoredSession] = useState(hasStoredRefreshToken());
+  const [requires2FA, setRequires2FA] = useState(false);
+  const [challengeToken, setChallengeToken] = useState(null);
   const bootstrapQuery = useQuery({
     queryKey: currentUserQueryKey,
     queryFn: hydrateCurrentUser,
@@ -79,6 +82,8 @@ export function AuthProvider({ children }) {
       clearAuthTokens();
       setUser(null);
       setHasStoredSession(false);
+      setRequires2FA(false);
+      setChallengeToken(null);
       queryClient.setQueryData(currentUserQueryKey, null);
       showToast("Your session has expired. Please sign in again.", {
         title: "Session expired",
@@ -139,9 +144,37 @@ export function AuthProvider({ children }) {
   async function login(input) {
     const response = await loginMutation.mutateAsync(input);
 
+    if (response?.requires2FA) {
+      setRequires2FA(true);
+      setChallengeToken(response.challengeToken ?? null);
+      return response;
+    }
+
     await syncAuthenticatedUser(response.user, response.tokens);
+    setRequires2FA(false);
+    setChallengeToken(null);
 
     return response;
+  }
+
+  async function verify2FAChallenge(token, code) {
+    const resolvedToken = token ?? challengeToken;
+
+    if (!resolvedToken) {
+      throw new Error("Missing 2FA challenge token.");
+    }
+
+    const response = await challenge2FA({ challengeToken: resolvedToken, code });
+    await syncAuthenticatedUser(response.user, response.tokens);
+    setRequires2FA(false);
+    setChallengeToken(null);
+
+    return response;
+  }
+
+  function reset2FAChallenge() {
+    setRequires2FA(false);
+    setChallengeToken(null);
   }
 
   async function logout() {
@@ -156,6 +189,8 @@ export function AuthProvider({ children }) {
       clearAuthTokens();
       setUser(null);
       setHasStoredSession(false);
+      setRequires2FA(false);
+      setChallengeToken(null);
       queryClient.setQueryData(currentUserQueryKey, null);
     }
   }
@@ -176,6 +211,7 @@ export function AuthProvider({ children }) {
     hasStoredSession,
     isAuthenticated: Boolean(user),
     isBootstrapping: bootstrapQuery.isPending,
+    challengeToken,
     completeOAuthSession,
     isLoggingIn: loginMutation.isPending,
     isLoggingOut: logoutMutation.isPending,
@@ -183,10 +219,13 @@ export function AuthProvider({ children }) {
     isVerifyingRegistration: verifyRegistrationMutation.isPending,
     login,
     logout,
+    requires2FA,
     refetchCurrentUser,
+    reset2FAChallenge,
     refreshSession,
     register,
     updateCurrentUser,
+    verify2FAChallenge,
     verifyRegistration,
     user,
   };

@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { Link, useNavigate, useParams } from "react-router-dom";
+import { LogoBrand } from "../components/LogoBrand";
 import ReaderStateScreen from "../components/ReaderStateScreen";
 import RouteLoadingScreen from "../components/RouteLoadingScreen";
 import Reveal from "../components/Reveal";
@@ -207,7 +208,6 @@ function DesktopLockedChapter({
   coinBalance,
   handleBatchUnlock,
   handlePrimaryAction,
-  handleWatchAd,
   isActionPending,
   isBatchOptionsLoading,
   lockedChapterCost,
@@ -221,12 +221,7 @@ function DesktopLockedChapter({
     <div className="hidden min-h-screen bg-background-dark font-display text-slate-100 md:block">
       <div className="relative flex min-h-screen flex-col overflow-x-hidden">
         <header className="sticky top-0 z-50 flex items-center justify-between border-b border-primary/20 bg-background-dark/80 px-6 py-3 backdrop-blur-md md:px-40">
-          <Link className="flex items-center gap-4 text-primary" to="/dashboard">
-            <span className="material-symbols-outlined text-3xl">auto_stories</span>
-            <h2 className="text-lg font-bold tracking-tight text-slate-100">
-              TaleStead
-            </h2>
-          </Link>
+          <LogoBrand to="/dashboard" textClassName="text-slate-100" />
 
           <div className="flex gap-3">
             <button
@@ -312,7 +307,7 @@ function DesktopLockedChapter({
                     <p className="mb-6 text-slate-400">
                       {chapterUnlocked
                         ? "Your access is active. Jump straight into Chapter 13 and keep reading."
-                        : "Use coins, unlock premium access, or watch an ad to open the rest of the chapter."}
+                        : "Use coins or unlock premium access to open the rest of the chapter."}
                     </p>
 
                     <div className="mb-6 grid grid-cols-2 gap-3 rounded-xl border border-primary/10 bg-background-dark/60 p-4 text-left">
@@ -372,17 +367,6 @@ function DesktopLockedChapter({
                         {premiumLabel}
                       </Link>
 
-                      <button
-                        className="flex w-full items-center justify-center gap-3 rounded-lg border border-primary/20 bg-primary/5 py-4 font-bold text-primary transition-all hover:bg-primary/10 disabled:cursor-not-allowed disabled:opacity-60"
-                        disabled={isActionPending}
-                        onClick={handleWatchAd}
-                        type="button"
-                      >
-                        <span className="material-symbols-outlined">
-                          play_circle
-                        </span>
-                        Watch Ad to Unlock
-                      </button>
                     </div>
 
                     <Link
@@ -437,7 +421,6 @@ function MobileLockedChapter({
   coinBalance,
   handleBatchUnlock,
   handlePrimaryAction,
-  handleWatchAd,
   isActionPending,
   isBatchOptionsLoading,
   lockedChapterCost,
@@ -574,14 +557,6 @@ function MobileLockedChapter({
                   </span>
                   {premiumLabel}
                 </Link>
-                <button
-                  className="mt-4 w-full text-xs font-semibold uppercase tracking-widest text-slate-400 transition-colors hover:text-primary disabled:cursor-not-allowed disabled:opacity-60 dark:text-primary/60"
-                  disabled={isActionPending}
-                  onClick={handleWatchAd}
-                  type="button"
-                >
-                  Watch ad to unlock
-                </button>
                 <Link
                   className="mt-3 inline-flex items-center gap-1 text-[11px] font-bold uppercase tracking-widest text-primary/70"
                   to={pricingHref}
@@ -654,11 +629,9 @@ export default function LockedChapterPage() {
     hasPremium,
     isChapterUnlocked,
     isUnlockingBatchWithCoins,
-    isUnlockingWithAd,
     isUnlockingWithCoins,
     spendCoinsForChapterBatch,
     spendCoinsForChapter,
-    unlockWithAd,
   } = useMonetization();
   const chapter = data?.chapter;
   const story = data?.story;
@@ -695,7 +668,7 @@ export default function LockedChapterPage() {
     batchOptions.map((option) => [option.mode, option]),
   );
   const isActionPending =
-    isUnlockingBatchWithCoins || isUnlockingWithAd || isUnlockingWithCoins;
+    isUnlockingBatchWithCoins || isUnlockingWithCoins;
   const primaryLabel = chapterUnlocked
     ? "Continue Reading"
     : canSpendNow
@@ -805,25 +778,6 @@ export default function LockedChapterPage() {
     }
   }
 
-  async function handleWatchAd() {
-    if (isActionPending) {
-      return;
-    }
-
-    try {
-      await unlockWithAd({
-        chapterSlug,
-        storySlug,
-      });
-      navigate(chapterHref);
-    } catch (unlockError) {
-      showToast(unlockError?.message || "Could not apply ad unlock.", {
-        title: "Ad unlock failed",
-        tone: "error",
-      });
-    }
-  }
-
   return (
     <>
       <SeoMetadata
@@ -845,7 +799,6 @@ export default function LockedChapterPage() {
         coinBalance={coinBalance}
         handleBatchUnlock={handleBatchUnlock}
         handlePrimaryAction={handlePrimaryAction}
-        handleWatchAd={handleWatchAd}
         isActionPending={isActionPending}
         isBatchOptionsLoading={batchOptionsQuery.isLoading}
         lockedChapterCost={lockedChapterCost}
@@ -865,7 +818,6 @@ export default function LockedChapterPage() {
         coinBalance={coinBalance}
         handleBatchUnlock={handleBatchUnlock}
         handlePrimaryAction={handlePrimaryAction}
-        handleWatchAd={handleWatchAd}
         isActionPending={isActionPending}
         isBatchOptionsLoading={batchOptionsQuery.isLoading}
         lockedChapterCost={lockedChapterCost}

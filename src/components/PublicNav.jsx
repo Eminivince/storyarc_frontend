@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { LogoBrand } from "./LogoBrand";
 
 const NAV_ITEMS = [
   { label: "Home", href: "/" },
@@ -37,14 +38,7 @@ export default function PublicNav({
       className={`fixed top-0 z-50 w-full border-b backdrop-blur-md md:px-6 lg:px-10 ${compact ? "px-3 py-1.5 md:px-6 md:py-3" : "px-4 py-3"} ${headerClasses}`}
     >
       <div className={`mx-auto flex max-w-7xl items-center justify-between ${compact ? "gap-2 md:gap-4" : "gap-4"}`}>
-        <Link className={`flex items-center text-primary ${compact ? "gap-1.5" : "gap-2"}`} to="/">
-          <span className={`material-symbols-outlined font-bold ${compact ? "text-2xl md:text-3xl" : "text-3xl"}`}>
-            auto_stories
-          </span>
-          <span className={`font-extrabold tracking-tight ${compact ? "text-base md:text-xl" : "text-xl"}`}>
-            TaleStead
-          </span>
-        </Link>
+        <LogoBrand compact={compact} to="/" />
 
         {/* Desktop nav */}
         <nav className="hidden items-center gap-8 md:flex">
@@ -64,18 +58,6 @@ export default function PublicNav({
         </nav>
 
         <div className="flex flex-1 items-center justify-end gap-4">
-          {showSearch && (
-            <label className="relative hidden w-full max-w-xs items-center lg:flex">
-              <span className="material-symbols-outlined absolute left-3 text-lg text-slate-500">
-                search
-              </span>
-              <input
-                className="w-full rounded-lg border-none bg-slate-200/50 py-2 pl-10 pr-4 text-base outline-none placeholder:text-slate-500 focus:ring-2 focus:ring-primary/50 dark:bg-primary/10"
-                placeholder="Search stories, authors..."
-                type="text"
-              />
-            </label>
-          )}
           {showCta && (
             <Link
               className="hidden rounded-lg bg-primary px-5 py-2.5 text-sm font-bold text-background-dark transition-colors hover:bg-primary/90 sm:inline-flex"

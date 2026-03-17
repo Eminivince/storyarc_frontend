@@ -15,6 +15,7 @@ import {
   requestPasswordReset,
   verifyPasswordResetCode,
 } from "../auth/authApi";
+import { LogoBrand } from "../components/LogoBrand";
 import { useAuth } from "../context/AuthContext";
 import { useToast } from "../context/ToastContext";
 
@@ -90,10 +91,7 @@ function DesktopVerifyCode({
   return (
     <div className="hidden min-h-screen flex-col bg-background-light font-display text-slate-900 dark:bg-background-dark dark:text-slate-100 md:flex">
       <header className="flex items-center justify-between border-b border-primary/10 bg-background-light px-6 py-4 dark:bg-background-dark lg:px-20">
-        <div className="flex items-center gap-2 text-primary">
-          <span className="material-symbols-outlined text-3xl">layers</span>
-          <h2 className="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100">TaleStead</h2>
-        </div>
+        <LogoBrand textClassName="text-slate-900 dark:text-slate-100" />
         <div className="flex items-center gap-4">
           <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border-2 border-primary/30 bg-primary/10">
             <img

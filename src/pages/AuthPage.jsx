@@ -8,11 +8,28 @@ import { resolvePostLoginPath } from "../auth/authRouting";
 import { useAuth } from "../context/AuthContext";
 import { useToast } from "../context/ToastContext";
 import AppFooter from "../components/AppFooter";
+import { Logo } from "../components/Logo";
 import PublicNav from "../components/PublicNav";
 import Reveal from "../components/Reveal";
 import { useRef } from "react";
 
+const CURRENT_YEAR = new Date().getFullYear();
+const MIN_BIRTH_YEAR = CURRENT_YEAR - 100;
+const MAX_BIRTH_YEAR = CURRENT_YEAR - 13;
+const BIRTH_YEAR_OPTIONS = Array.from(
+  { length: MAX_BIRTH_YEAR - MIN_BIRTH_YEAR + 1 },
+  (_, index) => String(MAX_BIRTH_YEAR - index),
+);
+
 function getErrorMessage(error) {
+  if (error?.status === 429) {
+    const retryAfterSeconds =
+      typeof error.retryAfterSeconds === "number" ? error.retryAfterSeconds : null;
+    return retryAfterSeconds
+      ? `Too many attempts. Please wait ${retryAfterSeconds} seconds.`
+      : "Too many attempts. Please wait a moment.";
+  }
+
   return error?.message || "Something went wrong. Please try again.";
 }
 
@@ -48,21 +65,40 @@ function getRequestedPath(requestedLocation) {
 function useAuthFormModel() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { login, register, isLoggingIn, isRegistering } = useAuth();
+  const {
+    challengeToken,
+    login,
+    register,
+    requires2FA,
+    reset2FAChallenge,
+    verify2FAChallenge,
+    isLoggingIn,
+    isRegistering,
+  } = useAuth();
   const { showToast } = useToast();
   const [mode, setMode] = useState("signin");
   const [displayName, setDisplayName] = useState("");
   const [email, setEmail] = useState("");
+  const [birthYear, setBirthYear] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [twoFactorCode, setTwoFactorCode] = useState("");
   const [error, setError] = useState(null);
   const [isGoogleRedirecting, setIsGoogleRedirecting] = useState(false);
+  const [isVerifying2FA, setIsVerifying2FA] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [agreedToTerms, setAgreedToTerms] = useState(false);
 
   const isSignIn = mode === "signin";
-  const isPending = isSignIn ? isLoggingIn : isRegistering;
+  const isTwoFactorStep = isSignIn && requires2FA;
+  const isPending = isSignIn
+    ? isTwoFactorStep
+      ? isVerifying2FA
+      : isLoggingIn
+    : isRegistering;
+  const sanitizedTwoFactor = twoFactorCode.replace(/\D/g, "").slice(0, 6);
+  const isTwoFactorReady = sanitizedTwoFactor.length === 6;
 
   useEffect(() => {
     if (location.state?.mode === "signup" || location.state?.mode === "signin") {
@@ -74,9 +110,53 @@ function useAuthFormModel() {
     }
   }, [location.state]);
 
+  useEffect(() => {
+    if (!requires2FA) {
+      setTwoFactorCode("");
+      setIsVerifying2FA(false);
+    }
+  }, [requires2FA]);
+
   async function handleSubmit(event) {
     event.preventDefault();
     setError(null);
+
+    if (isTwoFactorStep) {
+      if (!isTwoFactorReady) {
+        const msg = "Enter the 6-digit code from your authenticator app.";
+        setError(msg);
+        showToast(msg, {
+          tone: "error",
+          title: "Code required",
+        });
+        return;
+      }
+
+      setIsVerifying2FA(true);
+
+      try {
+        const response = await verify2FAChallenge(
+          challengeToken,
+          sanitizedTwoFactor,
+        );
+        showToast(`Welcome back, ${response.user.displayName}.`, {
+          title: "Signed in",
+        });
+        navigate(resolvePostLoginPath(response.user, location.state?.from), {
+          replace: true,
+        });
+      } catch {
+        const msg = "Invalid code.";
+        setError(msg);
+        showToast(msg, {
+          tone: "error",
+          title: "Verification failed",
+        });
+      } finally {
+        setIsVerifying2FA(false);
+      }
+      return;
+    }
 
     if (!isSignIn && !agreedToTerms) {
       const msg = "You must agree to the Terms of Service and Privacy Policy to create an account.";
@@ -92,6 +172,43 @@ function useAuthFormModel() {
     const trimmedDisplayName = sanitizeDisplayName(displayName);
     const cleanPassword = sanitizePassword(password);
     const cleanConfirmPassword = sanitizePassword(confirmPassword);
+    const birthYearNumber = Number(birthYear);
+
+    if (!isSignIn) {
+      if (!birthYear) {
+        const msg = "Please select your birth year.";
+        setError(msg);
+        showToast(msg, {
+          tone: "error",
+          title: "Birth year required",
+        });
+        return;
+      }
+
+      if (
+        !Number.isInteger(birthYearNumber) ||
+        birthYearNumber < MIN_BIRTH_YEAR ||
+        birthYearNumber > MAX_BIRTH_YEAR
+      ) {
+        const msg = "Please select a valid birth year.";
+        setError(msg);
+        showToast(msg, {
+          tone: "error",
+          title: "Invalid birth year",
+        });
+        return;
+      }
+
+      if (CURRENT_YEAR - birthYearNumber < 13) {
+        const msg = "You must be at least 13 years old to create an account.";
+        setError(msg);
+        showToast(msg, {
+          tone: "error",
+          title: "Age requirement",
+        });
+        return;
+      }
+    }
 
     if (!isPasswordValid(password)) {
       const msg = "Password cannot contain spaces.";
@@ -120,6 +237,14 @@ function useAuthFormModel() {
           password: cleanPassword,
         });
 
+        if (response?.requires2FA) {
+          setTwoFactorCode("");
+          showToast("Enter the 6-digit code from your authenticator app.", {
+            title: "Two-factor required",
+          });
+          return;
+        }
+
         showToast(`Welcome back, ${response.user.displayName}.`, {
           title: "Signed in",
         });
@@ -130,9 +255,11 @@ function useAuthFormModel() {
       }
 
       await register({
+        birthYear: birthYearNumber,
         displayName: trimmedDisplayName,
         email: trimmedEmail,
         password: cleanPassword,
+        tosAccepted: agreedToTerms,
       });
 
       persistPendingVerification({
@@ -164,6 +291,9 @@ function useAuthFormModel() {
     setMode(nextMode);
     setError(null);
     setAgreedToTerms(false);
+    setBirthYear("");
+    setTwoFactorCode("");
+    reset2FAChallenge();
   }
 
   function continueWithGoogle() {
@@ -184,6 +314,8 @@ function useAuthFormModel() {
 
   return {
     agreedToTerms,
+    birthYear,
+    birthYearOptions: BIRTH_YEAR_OPTIONS,
     confirmPassword,
     continueWithGoogle,
     displayName,
@@ -193,24 +325,31 @@ function useAuthFormModel() {
     isGoogleRedirecting,
     isPending,
     isSignIn,
+    isTwoFactorReady,
+    isTwoFactorStep,
     mode,
     password,
     setAgreedToTerms,
+    setBirthYear,
     setConfirmPassword,
     setDisplayName,
     setEmail,
     setPassword,
     setShowConfirmPassword,
     setShowPassword,
+    setTwoFactorCode,
     showConfirmPassword,
     showPassword,
     switchMode,
+    twoFactorCode,
   };
 }
 
 function DesktopAuth() {
   const {
     agreedToTerms,
+    birthYear,
+    birthYearOptions,
     confirmPassword,
     displayName,
     email,
@@ -220,17 +359,22 @@ function DesktopAuth() {
     isGoogleRedirecting,
     isPending,
     isSignIn,
+    isTwoFactorReady,
+    isTwoFactorStep,
     password,
     setAgreedToTerms,
+    setBirthYear,
     setConfirmPassword,
     setDisplayName,
     setEmail,
     setPassword,
     setShowConfirmPassword,
     setShowPassword,
+    setTwoFactorCode,
     showConfirmPassword,
     showPassword,
     switchMode,
+    twoFactorCode,
   } = useAuthFormModel();
 
   return (
@@ -254,7 +398,7 @@ function DesktopAuth() {
           <div className="hidden w-1/2 flex-col justify-center border-r border-primary/10 bg-primary/5 p-12 md:flex">
             <div className="mb-8">
               <span className="mb-4 inline-block rounded-lg bg-primary/20 p-3 text-primary">
-                <span className="material-symbols-outlined text-4xl">auto_stories</span>
+                <Logo className="h-12 w-12" alt="" aria-hidden />
               </span>
               <h2 className="mb-4 text-3xl font-bold">Your next adventure begins here.</h2>
               <p className="leading-relaxed text-slate-600 dark:text-slate-400">
@@ -325,6 +469,30 @@ function DesktopAuth() {
                       <p className="text-base font-medium">{error}</p>
                     </div>
                   )}
+                  {isTwoFactorStep ? (
+                    <div className="space-y-3 rounded-xl border border-primary/20 bg-primary/5 p-4">
+                      <p className="text-sm text-slate-600 dark:text-slate-400">
+                        Enter the 6-digit code from your authenticator app to finish signing in.
+                      </p>
+                      <div className="relative">
+                        <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-xl text-slate-400">
+                          pin
+                        </span>
+                        <input
+                          className="w-full rounded-lg border border-slate-200 bg-slate-100 py-3.5 pl-12 pr-4 text-base text-slate-900 outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary dark:border-primary/20 dark:bg-primary/5 dark:text-white"
+                          inputMode="numeric"
+                          onChange={(event) =>
+                            setTwoFactorCode(event.target.value.replace(/\D/g, "").slice(0, 6))
+                          }
+                          placeholder="123456"
+                          required
+                          type="text"
+                          value={twoFactorCode}
+                        />
+                      </div>
+                    </div>
+                  ) : (
+                    <>
                   {!isSignIn && (
                     <div className="space-y-2">
                       <label className="block text-base font-medium">Display Name</label>
@@ -360,6 +528,36 @@ function DesktopAuth() {
                       />
                     </div>
                   </div>
+
+                  {!isSignIn && (
+                    <div className="space-y-2">
+                      <label className="block text-base font-medium">Birth Year</label>
+                      <div className="relative">
+                        <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-xl text-slate-400">
+                          calendar_month
+                        </span>
+                        <select
+                          className="w-full appearance-none rounded-lg border border-slate-200 bg-slate-100 py-3.5 pl-12 pr-10 text-base text-slate-900 outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary dark:border-primary/20 dark:bg-primary/5 dark:text-white"
+                          onChange={(event) => setBirthYear(event.target.value)}
+                          required
+                          value={birthYear}
+                        >
+                          <option value="">Select year</option>
+                          {birthYearOptions.map((year) => (
+                            <option key={year} value={year}>
+                              {year}
+                            </option>
+                          ))}
+                        </select>
+                        <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-xl text-slate-400">
+                          expand_more
+                        </span>
+                      </div>
+                      <p className="text-xs text-slate-500 dark:text-slate-400">
+                        You must be at least 13 years old.
+                      </p>
+                    </div>
+                  )}
 
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
@@ -448,10 +646,16 @@ function DesktopAuth() {
                       </span>
                     </label>
                   )}
+                    </>
+                  )}
 
                   <motion.button
                     className="w-full rounded-lg bg-primary py-4 text-base font-bold text-background-dark shadow-lg shadow-primary/20 disabled:cursor-not-allowed disabled:opacity-60"
-                    disabled={isPending || (!isSignIn && !agreedToTerms)}
+                    disabled={
+                      isPending ||
+                      (!isSignIn && !agreedToTerms) ||
+                      (isTwoFactorStep && !isTwoFactorReady)
+                    }
                     type="submit"
                     whileHover={isPending || (!isSignIn && !agreedToTerms) ? undefined : { scale: 1.01 }}
                     whileTap={isPending || (!isSignIn && !agreedToTerms) ? undefined : { scale: 0.98 }}
@@ -460,54 +664,60 @@ function DesktopAuth() {
                       ? isSignIn
                         ? "Signing In..."
                         : "Creating Account..."
-                      : isSignIn
-                        ? "Sign In to TaleStead"
-                        : "Create TaleStead Account"}
+                      : isTwoFactorStep
+                        ? "Verify Code"
+                        : isSignIn
+                          ? "Sign In to TaleStead"
+                          : "Create TaleStead Account"}
                   </motion.button>
                 </form>
 
-                <div className="relative my-8">
-                  <div className="absolute inset-0 flex items-center">
-                    <div className="w-full border-t border-slate-200 dark:border-primary/20" />
-                  </div>
-                  <div className="relative flex justify-center text-xs uppercase">
-                    <span className="bg-background-light px-4 font-medium tracking-widest text-slate-500 dark:bg-background-dark">
-                      Or continue with
-                    </span>
-                  </div>
-                </div>
+                {!isTwoFactorStep && (
+                  <>
+                    <div className="relative my-8">
+                      <div className="absolute inset-0 flex items-center">
+                        <div className="w-full border-t border-slate-200 dark:border-primary/20" />
+                      </div>
+                      <div className="relative flex justify-center text-xs uppercase">
+                        <span className="bg-background-light px-4 font-medium tracking-widest text-slate-500 dark:bg-background-dark">
+                          Or continue with
+                        </span>
+                      </div>
+                    </div>
 
-                <button
-                  className="flex w-full items-center justify-center gap-3 rounded-lg border border-slate-200 px-4 py-3 transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60 dark:border-primary/20 dark:hover:bg-primary/5"
-                  disabled={isGoogleRedirecting || (!isSignIn && !agreedToTerms)}
-                  onClick={continueWithGoogle}
-                  type="button"
-                >
-                  <svg className="h-5 w-5 shrink-0" viewBox="0 0 24 24">
-                    <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
-                    <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
-                    <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
-                    <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
-                  </svg>
-                  <span className="text-sm font-semibold">
-                    {isGoogleRedirecting
-                      ? "Redirecting to Google..."
-                      : "Continue with Google"}
-                  </span>
-                </button>
+                    <button
+                      className="flex w-full items-center justify-center gap-3 rounded-lg border border-slate-200 px-4 py-3 transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60 dark:border-primary/20 dark:hover:bg-primary/5"
+                      disabled={isGoogleRedirecting}
+                      onClick={continueWithGoogle}
+                      type="button"
+                    >
+                      <svg className="h-5 w-5 shrink-0" viewBox="0 0 24 24">
+                        <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
+                        <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
+                        <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
+                        <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
+                      </svg>
+                      <span className="text-sm font-semibold">
+                        {isGoogleRedirecting
+                          ? "Redirecting to Google..."
+                          : "Continue with Google"}
+                      </span>
+                    </button>
 
-                {isSignIn && (
-                  <p className="mt-8 text-center text-xs leading-relaxed text-slate-500">
-                    By continuing, you agree to TaleStead&apos;s{" "}
-                    <Link className="text-primary hover:underline" to="/terms">
-                      Terms of Service
-                    </Link>{" "}
-                    and{" "}
-                    <Link className="text-primary hover:underline" to="/privacy">
-                      Privacy Policy
-                    </Link>
-                    .
-                  </p>
+                    {isSignIn && (
+                      <p className="mt-8 text-center text-xs leading-relaxed text-slate-500">
+                        By continuing, you agree to TaleStead&apos;s{" "}
+                        <Link className="text-primary hover:underline" to="/terms">
+                          Terms of Service
+                        </Link>{" "}
+                        and{" "}
+                        <Link className="text-primary hover:underline" to="/privacy">
+                          Privacy Policy
+                        </Link>
+                        .
+                      </p>
+                    )}
+                  </>
                 )}
               </motion.div>
             </div>
@@ -523,6 +733,8 @@ function DesktopAuth() {
 function MobileAuth() {
   const {
     agreedToTerms,
+    birthYear,
+    birthYearOptions,
     confirmPassword,
     displayName,
     email,
@@ -532,17 +744,22 @@ function MobileAuth() {
     isGoogleRedirecting,
     isPending,
     isSignIn,
+    isTwoFactorReady,
+    isTwoFactorStep,
     password,
     setAgreedToTerms,
+    setBirthYear,
     setConfirmPassword,
     setDisplayName,
     setEmail,
     setPassword,
     setShowConfirmPassword,
     setShowPassword,
+    setTwoFactorCode,
     showConfirmPassword,
     showPassword,
     switchMode,
+    twoFactorCode,
   } = useAuthFormModel();
 
   return (
@@ -591,150 +808,210 @@ function MobileAuth() {
                   <p className="text-base font-medium">{error}</p>
                 </div>
               )}
-              {!isSignIn && (
-                <label className="flex flex-col gap-1">
-                  <span className="text-base font-medium text-slate-600 dark:text-slate-400">Display Name</span>
+              {isTwoFactorStep ? (
+                <div className="rounded-lg border border-primary/20 bg-primary/5 p-3">
+                  <p className="mb-3 text-xs text-slate-600 dark:text-slate-400">
+                    Enter the 6-digit code from your authenticator app.
+                  </p>
                   <input
-                    className="h-10 w-full rounded-lg border border-slate-200 bg-white px-3 text-base text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-primary/30 dark:border-primary/20 dark:bg-primary/5 dark:text-slate-100"
-                    onChange={(e) => setDisplayName(sanitizeDisplayName(e.target.value))}
-                    placeholder="John Doe"
+                    className="h-12 w-full rounded-lg border border-slate-200 bg-white px-3 text-base text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-primary/30 dark:border-primary/20 dark:bg-primary/5 dark:text-slate-100"
+                    inputMode="numeric"
+                    onChange={(e) =>
+                      setTwoFactorCode(e.target.value.replace(/\D/g, "").slice(0, 6))
+                    }
+                    placeholder="123456"
                     required
                     type="text"
-                    value={displayName}
+                    value={twoFactorCode}
                   />
-                </label>
-              )}
-              <label className="flex flex-col gap-1">
-                <span className="text-base font-medium text-slate-600 dark:text-slate-400">Email</span>
-                <input
-                  className="h-10 w-full rounded-lg border border-slate-200 bg-white px-3 text-base text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-primary/30 dark:border-primary/20 dark:bg-primary/5 dark:text-slate-100"
-                  onChange={(e) => setEmail(sanitizeEmail(e.target.value))}
-                  placeholder="john.doe@example.com"
-                  required
-                  type="email"
-                  value={email}
-                />
-              </label>
-              <label className="flex flex-col gap-1">
-                <span className="text-base font-medium text-slate-600 dark:text-slate-400">Password</span>
-                <div className="relative">
-                  <input
-                    className="h-10 w-full rounded-lg border border-slate-200 bg-white px-3 pr-10 text-base text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-primary/30 dark:border-primary/20 dark:bg-primary/5 dark:text-slate-100"
-                    onChange={(e) => setPassword(sanitizePassword(e.target.value))}
-                    placeholder="••••••••"
-                    required
-                    type={showPassword ? "text" : "password"}
-                    value={password}
-                  />
-                  <button
-                    className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 text-slate-400 hover:text-primary"
-                    onClick={() => setShowPassword(!showPassword)}
-                    type="button"
-                    aria-label={showPassword ? "Hide password" : "Show password"}
-                  >
-                    <span className="material-symbols-outlined text-lg">
-                      {showPassword ? "visibility_off" : "visibility"}
-                    </span>
-                  </button>
                 </div>
-              </label>
-              {!isSignIn && (
-                <label className="flex flex-col gap-1">
-                  <span className="text-base font-medium text-slate-600 dark:text-slate-400">Confirm Password</span>
-                  <div className="relative">
+              ) : (
+                <>
+                  {!isSignIn && (
+                    <label className="flex flex-col gap-1">
+                      <span className="text-base font-medium text-slate-600 dark:text-slate-400">Display Name</span>
+                      <input
+                        className="h-10 w-full rounded-lg border border-slate-200 bg-white px-3 text-base text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-primary/30 dark:border-primary/20 dark:bg-primary/5 dark:text-slate-100"
+                        onChange={(e) => setDisplayName(sanitizeDisplayName(e.target.value))}
+                        placeholder="John Doe"
+                        required
+                        type="text"
+                        value={displayName}
+                      />
+                    </label>
+                  )}
+                  <label className="flex flex-col gap-1">
+                    <span className="text-base font-medium text-slate-600 dark:text-slate-400">Email</span>
                     <input
-                      className="h-10 w-full rounded-lg border border-slate-200 bg-white px-3 pr-10 text-base text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-primary/30 dark:border-primary/20 dark:bg-primary/5 dark:text-slate-100"
-                      onChange={(e) => setConfirmPassword(sanitizePassword(e.target.value))}
-                      placeholder="••••••••"
+                      className="h-10 w-full rounded-lg border border-slate-200 bg-white px-3 text-base text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-primary/30 dark:border-primary/20 dark:bg-primary/5 dark:text-slate-100"
+                      onChange={(e) => setEmail(sanitizeEmail(e.target.value))}
+                      placeholder="john.doe@example.com"
                       required
-                      type={showConfirmPassword ? "text" : "password"}
-                      value={confirmPassword}
+                      type="email"
+                      value={email}
                     />
-                    <button
-                      className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 text-slate-400 hover:text-primary"
-                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                      type="button"
-                      aria-label={showConfirmPassword ? "Hide password" : "Show password"}
-                    >
-                      <span className="material-symbols-outlined text-lg">
-                        {showConfirmPassword ? "visibility_off" : "visibility"}
+                  </label>
+                  {!isSignIn && (
+                    <label className="flex flex-col gap-1">
+                      <span className="text-base font-medium text-slate-600 dark:text-slate-400">Birth Year</span>
+                      <div className="relative">
+                        <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+                          calendar_month
+                        </span>
+                        <select
+                          className="h-10 w-full appearance-none rounded-lg border border-slate-200 bg-white pl-10 pr-8 text-base text-slate-900 focus:ring-2 focus:ring-primary/30 dark:border-primary/20 dark:bg-primary/5 dark:text-slate-100"
+                          onChange={(e) => setBirthYear(e.target.value)}
+                          required
+                          value={birthYear}
+                        >
+                          <option value="">Select year</option>
+                          {birthYearOptions.map((year) => (
+                            <option key={year} value={year}>
+                              {year}
+                            </option>
+                          ))}
+                        </select>
+                        <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-400">
+                          expand_more
+                        </span>
+                      </div>
+                      <span className="text-xs text-slate-500 dark:text-slate-400">
+                        You must be at least 13 years old.
                       </span>
-                    </button>
-                  </div>
-                </label>
-              )}
-              {isSignIn && (
-                <div className="flex justify-end">
-                  <Link className="text-base font-medium text-primary hover:underline" to="/auth/forgot-password">
-                    Forgot password?
-                  </Link>
-                </div>
-              )}
-              {!isSignIn && (
-                <label className="flex cursor-pointer items-start gap-2.5 rounded-lg border border-slate-200 p-3 dark:border-primary/20">
-                  <input
-                    checked={agreedToTerms}
-                    className="mt-0.5 h-4 w-4 shrink-0 rounded border-slate-300 text-primary focus:ring-primary"
-                    onChange={(e) => setAgreedToTerms(e.target.checked)}
-                    type="checkbox"
-                  />
-                  <span className="text-xs leading-relaxed text-slate-600 dark:text-slate-400">
-                    By continuing, you agree to TaleStead&apos;s{" "}
-                    <Link className="font-medium text-primary hover:underline" to="/terms">
-                      Terms
-                    </Link>{" "}
-                    and{" "}
-                    <Link className="font-medium text-primary hover:underline" to="/privacy">
-                      Privacy Policy
-                    </Link>
-                    .
-                  </span>
-                </label>
+                    </label>
+                  )}
+                  <label className="flex flex-col gap-1">
+                    <span className="text-base font-medium text-slate-600 dark:text-slate-400">Password</span>
+                    <div className="relative">
+                      <input
+                        className="h-10 w-full rounded-lg border border-slate-200 bg-white px-3 pr-10 text-base text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-primary/30 dark:border-primary/20 dark:bg-primary/5 dark:text-slate-100"
+                        onChange={(e) => setPassword(sanitizePassword(e.target.value))}
+                        placeholder="••••••••"
+                        required
+                        type={showPassword ? "text" : "password"}
+                        value={password}
+                      />
+                      <button
+                        className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 text-slate-400 hover:text-primary"
+                        onClick={() => setShowPassword(!showPassword)}
+                        type="button"
+                        aria-label={showPassword ? "Hide password" : "Show password"}
+                      >
+                        <span className="material-symbols-outlined text-lg">
+                          {showPassword ? "visibility_off" : "visibility"}
+                        </span>
+                      </button>
+                    </div>
+                  </label>
+                  {!isSignIn && (
+                    <label className="flex flex-col gap-1">
+                      <span className="text-base font-medium text-slate-600 dark:text-slate-400">Confirm Password</span>
+                      <div className="relative">
+                        <input
+                          className="h-10 w-full rounded-lg border border-slate-200 bg-white px-3 pr-10 text-base text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-primary/30 dark:border-primary/20 dark:bg-primary/5 dark:text-slate-100"
+                          onChange={(e) => setConfirmPassword(sanitizePassword(e.target.value))}
+                          placeholder="••••••••"
+                          required
+                          type={showConfirmPassword ? "text" : "password"}
+                          value={confirmPassword}
+                        />
+                        <button
+                          className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 text-slate-400 hover:text-primary"
+                          onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                          type="button"
+                          aria-label={showConfirmPassword ? "Hide password" : "Show password"}
+                        >
+                          <span className="material-symbols-outlined text-lg">
+                            {showConfirmPassword ? "visibility_off" : "visibility"}
+                          </span>
+                        </button>
+                      </div>
+                    </label>
+                  )}
+                  {isSignIn && (
+                    <div className="flex justify-end">
+                      <Link className="text-base font-medium text-primary hover:underline" to="/auth/forgot-password">
+                        Forgot password?
+                      </Link>
+                    </div>
+                  )}
+                  {!isSignIn && (
+                    <label className="flex cursor-pointer items-start gap-2.5 rounded-lg border border-slate-200 p-3 dark:border-primary/20">
+                      <input
+                        checked={agreedToTerms}
+                        className="mt-0.5 h-4 w-4 shrink-0 rounded border-slate-300 text-primary focus:ring-primary"
+                        onChange={(e) => setAgreedToTerms(e.target.checked)}
+                        type="checkbox"
+                      />
+                      <span className="text-xs leading-relaxed text-slate-600 dark:text-slate-400">
+                        By continuing, you agree to TaleStead&apos;s{" "}
+                        <Link className="font-medium text-primary hover:underline" to="/terms">
+                          Terms
+                        </Link>{" "}
+                        and{" "}
+                        <Link className="font-medium text-primary hover:underline" to="/privacy">
+                          Privacy Policy
+                        </Link>
+                        .
+                      </span>
+                    </label>
+                  )}
+                </>
               )}
               <motion.button
                 className="mt-1 h-10 rounded-lg bg-primary text-base font-semibold text-background-dark transition-all disabled:cursor-not-allowed disabled:opacity-60"
-                disabled={isPending || (!isSignIn && !agreedToTerms)}
+                disabled={
+                  isPending ||
+                  (!isSignIn && !agreedToTerms) ||
+                  (isTwoFactorStep && !isTwoFactorReady)
+                }
                 type="submit"
                 whileHover={isPending || (!isSignIn && !agreedToTerms) ? undefined : { scale: 1.01 }}
                 whileTap={isPending || (!isSignIn && !agreedToTerms) ? undefined : { scale: 0.98 }}
               >
                 {isPending
                   ? isSignIn ? "Signing In..." : "Creating Account..."
-                  : isSignIn ? "Sign In" : "Create Account"}
+                  : isTwoFactorStep
+                    ? "Verify Code"
+                    : isSignIn ? "Sign In" : "Create Account"}
               </motion.button>
             </form>
           </div>
 
-          <div className="relative py-4">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-slate-200 dark:border-primary/20" />
-            </div>
-            <span className="relative flex justify-center">
-              <span className="bg-background-light px-3 text-[11px] font-medium uppercase tracking-wider text-slate-500 dark:bg-background-dark">
-                or
-              </span>
-            </span>
-          </div>
+          {!isTwoFactorStep && (
+            <>
+              <div className="relative py-4">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-slate-200 dark:border-primary/20" />
+                </div>
+                <span className="relative flex justify-center">
+                  <span className="bg-background-light px-3 text-[11px] font-medium uppercase tracking-wider text-slate-500 dark:bg-background-dark">
+                    or
+                  </span>
+                </span>
+              </div>
 
-          <button
-            className="flex w-full items-center justify-center gap-2.5 rounded-lg border border-slate-200 bg-white py-2.5 text-base font-medium text-slate-900 shadow-sm disabled:cursor-not-allowed disabled:opacity-60 dark:border-primary/20 dark:bg-white/5 dark:text-slate-100"
-            disabled={isGoogleRedirecting || (!isSignIn && !agreedToTerms)}
-            onClick={continueWithGoogle}
-            type="button"
-          >
-            <svg className="h-4 w-4 shrink-0" viewBox="0 0 24 24">
-              <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
-              <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
-              <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
-              <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
-            </svg>
-            <span>
-              {isGoogleRedirecting ? "Redirecting..." : "Continue with Google"}
-            </span>
-          </button>
+              <button
+                className="flex w-full items-center justify-center gap-2.5 rounded-lg border border-slate-200 bg-white py-2.5 text-base font-medium text-slate-900 shadow-sm disabled:cursor-not-allowed disabled:opacity-60 dark:border-primary/20 dark:bg-white/5 dark:text-slate-100"
+                disabled={isGoogleRedirecting}
+                onClick={continueWithGoogle}
+                type="button"
+              >
+                <svg className="h-4 w-4 shrink-0" viewBox="0 0 24 24">
+                  <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
+                  <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
+                  <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
+                  <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
+                </svg>
+                <span>
+                  {isGoogleRedirecting ? "Redirecting..." : "Continue with Google"}
+                </span>
+              </button>
+            </>
+          )}
         </motion.div>
 
-        {isSignIn && (
+        {isSignIn && !isTwoFactorStep && (
           <div className="mt-auto shrink-0 px-4 py-5 text-center">
             <p className="text-xs text-slate-500">
               By continuing, you agree to TaleStead&apos;s{" "}

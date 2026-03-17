@@ -2,6 +2,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useScrollHide } from "../hooks/useScrollHide";
 import { useAuth } from "../context/AuthContext";
+import { LogoBrand } from "./LogoBrand";
 import { useToast } from "../context/ToastContext";
 import {
   accountSettingsHref,
@@ -476,7 +477,7 @@ function DesktopNavLink({ active, href, icon, label, onClick }) {
 function MobileNavLink({ active, dot, href, icon, label, onClick }) {
   return (
     <Link
-      className="group flex flex-col items-center gap-1"
+      className="group flex flex-col items-center gap-0.5"
       onClick={onClick}
       onFocus={() => preloadRoute(href)}
       onMouseEnter={() => preloadRoute(href)}
@@ -499,7 +500,7 @@ function MobileNavLink({ active, dot, href, icon, label, onClick }) {
       <span
         className={`text-[10px] ${
           active
-            ? "font-bold text-primary"
+            ? "font-semibold text-primary"
             : "font-medium text-slate-400 dark:text-slate-500"
         }`}
       >
@@ -566,14 +567,7 @@ export function AppDesktopSidebar({
   return (
     <aside className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col border-r border-primary/10 bg-background-light dark:bg-background-dark lg:flex">
       <div className="shrink-0 px-4 pt-4 pb-2">
-        <Link className="flex items-center gap-3 text-primary" to={logoHref}>
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary text-background-dark">
-            <span className="material-symbols-outlined text-xl">auto_stories</span>
-          </div>
-          <span className="text-lg font-bold tracking-tight text-slate-900 dark:text-slate-100">
-            TaleStead
-          </span>
-        </Link>
+        <LogoBrand className="text-slate-900 dark:text-slate-100" size="sm" to={logoHref} />
       </div>
       <nav className="mt-2 flex-1 space-y-2 px-4">
         {config.primary.map((item) => (
@@ -666,7 +660,7 @@ export function AppMobileTabBar({
 
   return (
     <nav
-      className={`fixed bottom-0 left-0 right-0 z-50 border-t border-primary/10 bg-background-light px-2 pb-2 pt-2 transition-transform duration-300 ease-out dark:bg-background-dark lg:hidden ${className}`.trim()}
+      className={`fixed bottom-0 left-0 right-0 z-50 border-t border-primary/10 bg-background-light px-2 pb-1.5 pt-1.5 transition-transform duration-300 ease-out dark:bg-background-dark lg:hidden ${className}`.trim()}
       style={{ transform: navVisible ? "translateY(0)" : "translateY(100%)" }}
     >
       <div className={`mx-auto flex w-full max-w-full items-center ${maxWidthClass}`.trim()}>

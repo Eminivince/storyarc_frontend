@@ -406,6 +406,7 @@ export default function LeaderboardPage() {
   const leaderboardQuery = useQuery({
     queryKey: ["engagement", "leaderboard", activePeriod],
     queryFn: () => fetchLeaderboard(activePeriod),
+    staleTime: 5 * 60 * 1000,
   });
   const leaderboardData = leaderboardQuery.data ?? {
     ...fallbackLeaderboard,

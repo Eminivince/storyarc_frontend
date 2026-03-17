@@ -14,7 +14,6 @@ import {
   fetchMonetizationStatus,
   unlockChapterBatchWithCoinsApi,
   sendGiftApi,
-  unlockChapterWithAdApi,
   unlockChapterWithCoinsApi,
 } from "../monetization/monetizationApi";
 
@@ -175,22 +174,6 @@ export function MonetizationProvider({ children }) {
     },
   });
 
-  const unlockWithAdMutation = useMutation({
-    mutationFn: unlockChapterWithAdApi,
-    onSuccess: async (response, variables) => {
-      applyStatusSnapshot(response?.status);
-      await Promise.all([
-        invalidateMonetizationState(),
-        queryClient.invalidateQueries({
-          queryKey: ["reader", "chapter", variables.storySlug, variables.chapterSlug],
-        }),
-      ]);
-      showToast(response?.message || "Ad unlock recorded.", {
-        title: "Access updated",
-      });
-    },
-  });
-
   const sendGiftMutation = useMutation({
     mutationFn: sendGiftApi,
     onSuccess: async (response) => {
@@ -275,17 +258,6 @@ export function MonetizationProvider({ children }) {
     });
   }
 
-  async function unlockWithAd(input) {
-    return unlockWithAdMutation.mutateAsync({
-      ...input,
-      idempotencyKey: createIdempotencyKey("chapter-unlock", [
-        input.storySlug,
-        input.chapterSlug,
-        "ad",
-      ]),
-    });
-  }
-
   async function sendGift(input) {
     return sendGiftMutation.mutateAsync({
       ...input,
@@ -322,7 +294,6 @@ export function MonetizationProvider({ children }) {
     isSendingGift: sendGiftMutation.isPending,
     isStatusLoading: statusQuery.isLoading,
     isUnlockingBatchWithCoins: unlockBatchWithCoinsMutation.isPending,
-    isUnlockingWithAd: unlockWithAdMutation.isPending,
     isUnlockingWithCoins: unlockWithCoinsMutation.isPending,
     plans: displayPlans,
     refreshStatus: statusQuery.refetch,
@@ -331,7 +302,6 @@ export function MonetizationProvider({ children }) {
     spendCoinsForChapterBatch,
     statusError: statusQuery.error,
     subscription: statusQuery.data?.subscription ?? null,
-    unlockWithAd,
   };
 
   return (

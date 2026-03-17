@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
+import { LogoBrand } from "../components/LogoBrand";
 import Reveal from "../components/Reveal";
 import ReaderStateScreen from "../components/ReaderStateScreen";
 import RouteLoadingScreen from "../components/RouteLoadingScreen";
@@ -42,12 +43,7 @@ function DesktopSubscription({
     <div className="hidden min-h-screen bg-background-light font-display text-slate-900 dark:bg-background-dark dark:text-slate-100 md:block">
       <div className="relative flex min-h-screen flex-col overflow-x-hidden">
         <header className="flex items-center justify-between border-b border-primary/10 px-6 py-4 lg:px-20">
-          <Link className="flex items-center gap-4" to="/dashboard">
-            <span className="material-symbols-outlined text-3xl text-primary">
-              auto_stories
-            </span>
-            <h2 className="text-xl font-bold tracking-tight">TaleStead</h2>
-          </Link>
+          <LogoBrand to="/dashboard" />
           <nav className="hidden items-center gap-8 md:flex">
             <Link className="text-sm font-medium transition-colors hover:text-primary" to="/dashboard">
               Explore

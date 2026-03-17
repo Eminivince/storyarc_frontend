@@ -77,16 +77,6 @@ export function unlockChapterBatchWithCoinsApi({
   );
 }
 
-export function unlockChapterWithAdApi({ chapterSlug, storySlug, ...body }) {
-  return postJson(
-    `/monetization/chapters/${storySlug}/${chapterSlug}/unlock-with-ad`,
-    body,
-    {
-      headers: getAuthHeaders(),
-    },
-  );
-}
-
 export function sendGiftApi(input) {
   return postJson("/monetization/gifts", input, {
     headers: getAuthHeaders(),

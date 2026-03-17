@@ -523,10 +523,12 @@ export default function HelpSupportPage() {
   const supportTicketsQuery = useQuery({
     queryKey: ["support", "tickets"],
     queryFn: fetchSupportTickets,
+    staleTime: 30_000,
   });
   const helpCenterQuery = useQuery({
     queryKey: ["support", "help-center"],
     queryFn: fetchSupportHelpCenter,
+    staleTime: 5 * 60 * 1000,
   });
   const createTicketMutation = useMutation({
     mutationFn: createSupportTicket,
