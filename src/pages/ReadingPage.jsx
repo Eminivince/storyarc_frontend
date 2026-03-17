@@ -23,8 +23,16 @@ import {
   useRemoveBookmarkMutation,
   useSaveReadingProgressMutation,
 } from "../reader/readerHooks";
-import { useRecordReadingTimeMutation } from "../engagement/engagementHooks";
+import {
+  useRecordReadingTimeMutation,
+  useChapterReactionsQuery,
+  useUpsertParagraphReactionMutation,
+  useRemoveParagraphReactionMutation,
+} from "../engagement/engagementHooks";
 import { recordReadingTime } from "../engagement/engagementApi";
+import ParagraphReactionOverlay, {
+  MobileParagraphReactionOverlay,
+} from "../components/ParagraphReactionOverlay";
 import { getStoredReadingTheme, persistReadingTheme } from "../lib/readingTheme";
 import { isChapterAvailableOffline } from "../lib/offlineStorage";
 
@@ -196,6 +204,9 @@ function DesktopReader({
   commentsOpen,
   settingsOpen,
   story,
+  reactionsData,
+  onParagraphReact,
+  onRemoveParagraphReaction,
 }) {
   const theme = readerThemes[readerTheme];
   const fontClass = fontFamily === "serif" ? "font-serif" : "font-display";
@@ -275,20 +286,28 @@ function DesktopReader({
           </header>
 
           <div
-            className={`space-y-8 leading-[1.85] ${fontClass} ${theme.article}`}
+            className={`space-y-8 pl-10 leading-[1.85] ${fontClass} ${theme.article}`}
             style={{ fontSize: `${fontSize + 4}px` }}
           >
             {chapter.paragraphs.map((paragraph, index) => (
-              <motion.p
-                data-reader-paragraph-index={index}
-                initial={{ opacity: 0, y: 18 }}
+              <ParagraphReactionOverlay
                 key={`${chapter.chapterSlug}-${index}`}
-                transition={{ delay: index * 0.03, duration: 0.25 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ amount: 0.2, once: true }}
+                paragraphIndex={index}
+                paragraphCounts={reactionsData?.paragraphCounts}
+                userReaction={reactionsData?.userParagraphReactions?.[index]}
+                onReact={onParagraphReact}
+                onRemoveReaction={onRemoveParagraphReaction}
               >
-                {paragraph}
-              </motion.p>
+                <motion.p
+                  data-reader-paragraph-index={index}
+                  initial={{ opacity: 0, y: 18 }}
+                  transition={{ delay: index * 0.03, duration: 0.25 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ amount: 0.2, once: true }}
+                >
+                  {paragraph}
+                </motion.p>
+              </ParagraphReactionOverlay>
             ))}
           </div>
 
@@ -504,6 +523,9 @@ function MobileReader({
   commentsOpen,
   settingsOpen,
   story,
+  reactionsData,
+  onParagraphReact,
+  onRemoveParagraphReaction,
 }) {
   const theme = readerThemes[readerTheme];
   const fontClass = fontFamily === "serif" ? "font-serif" : "font-display";
@@ -546,17 +568,25 @@ function MobileReader({
           style={{ fontSize: `${fontSize}px` }}
         >
           {chapter.paragraphs.map((paragraph, index) => (
-            <motion.p
-              className="mb-4"
-              data-reader-paragraph-index={index}
-              initial={{ opacity: 0, y: 16 }}
+            <MobileParagraphReactionOverlay
               key={`${chapter.chapterSlug}-${index}`}
-              transition={{ delay: index * 0.03, duration: 0.25 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ amount: 0.2, once: true }}
+              paragraphIndex={index}
+              paragraphCounts={reactionsData?.paragraphCounts}
+              userReaction={reactionsData?.userParagraphReactions?.[index]}
+              onReact={onParagraphReact}
+              onRemoveReaction={onRemoveParagraphReaction}
             >
-              {paragraph}
-            </motion.p>
+              <motion.p
+                className="mb-4"
+                data-reader-paragraph-index={index}
+                initial={{ opacity: 0, y: 16 }}
+                transition={{ delay: index * 0.03, duration: 0.25 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ amount: 0.2, once: true }}
+              >
+                {paragraph}
+              </motion.p>
+            </MobileParagraphReactionOverlay>
           ))}
         </article>
 
@@ -758,6 +788,9 @@ export default function ReadingPage() {
   const createBookmarkMutation = useCreateBookmarkMutation();
   const removeBookmarkMutation = useRemoveBookmarkMutation();
   const recordReadingTimeMutation = useRecordReadingTimeMutation();
+  const reactionsQuery = useChapterReactionsQuery(storySlug, chapterSlug);
+  const upsertParagraphReaction = useUpsertParagraphReactionMutation();
+  const removeParagraphReaction = useRemoveParagraphReactionMutation();
   const readingStartRef = useRef(Date.now());
   const lastHeartbeatRef = useRef(Date.now());
   const [fontFamily, setFontFamily] = useState("serif");
@@ -1119,6 +1152,13 @@ export default function ReadingPage() {
         commentsOpen={commentsOpen}
         settingsOpen={settingsOpen}
         story={story}
+        reactionsData={reactionsQuery.data}
+        onParagraphReact={(index, reactionType) =>
+          upsertParagraphReaction.mutate({ storySlug, chapterSlug, index, reactionType })
+        }
+        onRemoveParagraphReaction={(index) =>
+          removeParagraphReaction.mutate({ storySlug, chapterSlug, index })
+        }
       />
       <MobileReader
         chapter={chapter}
@@ -1145,6 +1185,13 @@ export default function ReadingPage() {
         commentsOpen={commentsOpen}
         settingsOpen={settingsOpen}
         story={story}
+        reactionsData={reactionsQuery.data}
+        onParagraphReact={(index, reactionType) =>
+          upsertParagraphReaction.mutate({ storySlug, chapterSlug, index, reactionType })
+        }
+        onRemoveParagraphReaction={(index) =>
+          removeParagraphReaction.mutate({ storySlug, chapterSlug, index })
+        }
       />
     </>
   );

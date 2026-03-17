@@ -17,6 +17,12 @@ import {
   useStoryDetailsQuery,
   useUpdateStoryRatingMutation,
 } from "../reader/readerHooks";
+import {
+  useChapterReactionsQuery,
+  useUpsertChapterReactionMutation,
+  useRemoveChapterReactionMutation,
+} from "../engagement/engagementHooks";
+import ChapterReactionBar from "../components/ChapterReactionBar";
 
 const desktopReactionOptions = [
   { label: "Loved it", icon: "favorite", color: "text-red-500" },
@@ -133,6 +139,9 @@ function DesktopChapterComplete({
   selectedReaction,
   setSelectedReaction,
   story,
+  reactionsData,
+  onChapterReact,
+  onRemoveChapterReaction,
 }) {
   return (
     <div className="hidden min-h-screen bg-background-light font-display text-slate-900 dark:bg-background-dark dark:text-slate-100 md:block">
@@ -224,6 +233,16 @@ function DesktopChapterComplete({
                   ))}
                 </div>
               </div>
+            </Reveal>
+
+            <Reveal className="mx-auto mb-12 max-w-xl">
+              <ChapterReactionBar
+                chapterCounts={reactionsData?.chapterCounts}
+                totalReactions={reactionsData?.totalChapterReactions ?? 0}
+                userReaction={reactionsData?.userChapterReaction}
+                onReact={onChapterReact}
+                onRemoveReaction={onRemoveChapterReaction}
+              />
             </Reveal>
 
             <Reveal className="mb-16 flex justify-center">
@@ -419,6 +438,9 @@ function MobileChapterComplete({
   selectedReaction,
   setSelectedReaction,
   story,
+  reactionsData,
+  onChapterReact,
+  onRemoveChapterReaction,
 }) {
   return (
     <div className="relative mx-auto flex min-h-screen w-full max-w-md flex-col overflow-x-hidden bg-background-light font-display text-slate-900 dark:bg-background-dark dark:text-slate-100 md:hidden">
@@ -503,6 +525,16 @@ function MobileChapterComplete({
               </p>
             </div>
           </div>
+        </Reveal>
+
+        <Reveal className="px-4 py-2">
+          <ChapterReactionBar
+            chapterCounts={reactionsData?.chapterCounts}
+            totalReactions={reactionsData?.totalChapterReactions ?? 0}
+            userReaction={reactionsData?.userChapterReaction}
+            onReact={onChapterReact}
+            onRemoveReaction={onRemoveChapterReaction}
+          />
         </Reveal>
 
         {completionStats && (
@@ -688,6 +720,9 @@ export default function ChapterCompletePage() {
   const [desktopReaction, setDesktopReaction] = useState("Loved it");
   const [mobileReaction, setMobileReaction] = useState("Love");
   const recommendations = storyQuery.data?.recommendations ?? [];
+  const reactionsQuery = useChapterReactionsQuery(storySlug, chapterSlug);
+  const upsertChapterReaction = useUpsertChapterReactionMutation();
+  const removeChapterReaction = useRemoveChapterReactionMutation();
 
   if (chapterQuery.isLoading || storyQuery.isLoading) {
     return <LoadingState />;
@@ -769,6 +804,13 @@ export default function ChapterCompletePage() {
         selectedReaction={desktopReaction}
         setSelectedReaction={setDesktopReaction}
         story={story}
+        reactionsData={reactionsQuery.data}
+        onChapterReact={(reactionType) =>
+          upsertChapterReaction.mutate({ storySlug, chapterSlug, reactionType })
+        }
+        onRemoveChapterReaction={() =>
+          removeChapterReaction.mutate({ storySlug, chapterSlug })
+        }
       />
       <MobileChapterComplete
         chapter={chapter}
@@ -784,6 +826,13 @@ export default function ChapterCompletePage() {
         selectedReaction={mobileReaction}
         setSelectedReaction={setMobileReaction}
         story={story}
+        reactionsData={reactionsQuery.data}
+        onChapterReact={(reactionType) =>
+          upsertChapterReaction.mutate({ storySlug, chapterSlug, reactionType })
+        }
+        onRemoveChapterReaction={() =>
+          removeChapterReaction.mutate({ storySlug, chapterSlug })
+        }
       />
     </>
   );

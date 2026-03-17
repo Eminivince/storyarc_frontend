@@ -132,3 +132,47 @@ export function toggleBadgeFeatured(badgeId) {
     headers: getAuthHeaders(),
   });
 }
+
+// ── Paragraph & Chapter Reactions ──────────────────────────────────
+
+export function upsertParagraphReaction({ storySlug, chapterSlug, index, reactionType }) {
+  return requestJson(
+    `/engagement/stories/${storySlug}/chapters/${chapterSlug}/paragraphs/${index}/reaction`,
+    { method: "PUT", body: { reactionType }, headers: getAuthHeaders() },
+  );
+}
+
+export function removeParagraphReaction({ storySlug, chapterSlug, index }) {
+  return requestJson(
+    `/engagement/stories/${storySlug}/chapters/${chapterSlug}/paragraphs/${index}/reaction`,
+    { method: "DELETE", headers: getAuthHeaders() },
+  );
+}
+
+export function upsertChapterReaction({ storySlug, chapterSlug, reactionType }) {
+  return requestJson(
+    `/engagement/stories/${storySlug}/chapters/${chapterSlug}/reaction`,
+    { method: "PUT", body: { reactionType }, headers: getAuthHeaders() },
+  );
+}
+
+export function removeChapterReaction({ storySlug, chapterSlug }) {
+  return requestJson(
+    `/engagement/stories/${storySlug}/chapters/${chapterSlug}/reaction`,
+    { method: "DELETE", headers: getAuthHeaders() },
+  );
+}
+
+export function fetchChapterReactions({ storySlug, chapterSlug }) {
+  return getJson(
+    `/engagement/stories/${storySlug}/chapters/${chapterSlug}/reactions`,
+    { headers: getAuthHeaders() },
+  );
+}
+
+export function fetchReactionHeatmap({ storySlug, chapterSlug }) {
+  return getJson(
+    `/engagement/stories/${storySlug}/chapters/${chapterSlug}/reaction-heatmap`,
+    { headers: getAuthHeaders() },
+  );
+}

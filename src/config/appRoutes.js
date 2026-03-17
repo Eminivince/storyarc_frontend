@@ -93,6 +93,7 @@ const PrivacyPage = lazy(() => import("../pages/PrivacyPage"));
 const PricingPage = lazy(() => import("../pages/PricingPage"));
 const ProfilePage = lazy(() => import("../pages/ProfilePage"));
 const PublishedChaptersPage = lazy(() => import("../pages/PublishedChaptersPage"));
+const ReactionHeatmapPage = lazy(() => import("../pages/ReactionHeatmapPage"));
 const ReadingPage = lazy(() => import("../pages/ReadingPage"));
 const ReaderLibraryPage = lazy(() => import("../pages/ReaderLibraryPage"));
 const ReadingListsPage = lazy(() => import("../pages/ReadingListsPage"));
@@ -452,6 +453,11 @@ export const appRouteGroups = [
         path: "/creator/stories/:storySlug/published",
         component: PublishedChaptersPage,
         page: "PublishedChaptersPage",
+      },
+      {
+        path: "/creator/stories/:storySlug/reaction-heatmap",
+        component: ReactionHeatmapPage,
+        page: "ReactionHeatmapPage",
       },
     ],
   },
