@@ -93,6 +93,7 @@ const PollsAnnouncementsPage = lazy(() =>
 const PrivacyPage = lazy(() => import("../pages/PrivacyPage"));
 const PricingPage = lazy(() => import("../pages/PricingPage"));
 const ProfilePage = lazy(() => import("../pages/ProfilePage"));
+const PointShopPage = lazy(() => import("../pages/PointShopPage"));
 const PublishedChaptersPage = lazy(() => import("../pages/PublishedChaptersPage"));
 const ReactionHeatmapPage = lazy(() => import("../pages/ReactionHeatmapPage"));
 const ReadingPage = lazy(() => import("../pages/ReadingPage"));
@@ -337,6 +338,7 @@ export const appRouteGroups = [
       },
       { path: "/account/badges", component: BadgesPage, page: "BadgesPage" },
       { path: "/account/challenges", component: ChallengesPage, page: "ChallengesPage" },
+      { path: "/account/shop", component: PointShopPage, page: "PointShopPage" },
       {
         path: "/account/security/mfa",
         component: MfaChooseMethodPage,

@@ -196,3 +196,23 @@ export function fetchChallengeLeaderboard(challengeId) {
     headers: getAuthHeaders(),
   });
 }
+
+// ── Point Shop ─────────────────────────────────────────────────────
+
+export function fetchShopCatalog() {
+  return getJson("/engagement/shop", {
+    headers: getAuthHeaders(),
+  });
+}
+
+export function purchaseShopItem(itemId) {
+  return postJson(`/engagement/shop/${itemId}/purchase`, undefined, {
+    headers: getAuthHeaders(),
+  });
+}
+
+export function fetchMyShopItems() {
+  return getJson("/engagement/shop/my-items", {
+    headers: getAuthHeaders(),
+  });
+}

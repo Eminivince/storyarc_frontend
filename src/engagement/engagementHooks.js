@@ -11,6 +11,9 @@ import {
   removeParagraphReaction,
   removeChapterReaction,
   toggleBadgeFeatured,
+  fetchMyShopItems,
+  fetchShopCatalog,
+  purchaseShopItem,
   upsertChapterReaction,
   upsertParagraphReaction,
 } from "./engagementApi";
@@ -155,5 +158,37 @@ export function useChallengeLeaderboardQuery(challengeId) {
     queryFn: () => fetchChallengeLeaderboard(challengeId),
     staleTime: STALE_5_MIN,
     enabled: Boolean(challengeId),
+  });
+}
+
+// ── Point Shop ─────────────────────────────────────────────────────
+
+export function useShopCatalogQuery() {
+  return useQuery({
+    queryKey: ["shop-catalog"],
+    queryFn: fetchShopCatalog,
+    staleTime: STALE_5_MIN,
+  });
+}
+
+export function usePurchaseShopItemMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: purchaseShopItem,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["shop-catalog"] });
+      queryClient.invalidateQueries({ queryKey: ["my-shop-items"] });
+      queryClient.invalidateQueries({ queryKey: ["engagement-overview"] });
+      queryClient.invalidateQueries({ queryKey: ["engagement"] });
+    },
+  });
+}
+
+export function useMyShopItemsQuery() {
+  return useQuery({
+    queryKey: ["my-shop-items"],
+    queryFn: fetchMyShopItems,
+    staleTime: STALE_5_MIN,
   });
 }
