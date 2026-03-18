@@ -1,7 +1,10 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import BadgeUnlockAnimation from "../components/badges/BadgeUnlockAnimation";
+import BadgeVisual from "../components/badges/BadgeVisual";
 import Reveal from "../components/Reveal";
+import { useSocketEvent } from "../context/SocketContext";
 import { useToast } from "../context/ToastContext";
 import {
   useBadgesQuery,
@@ -78,13 +81,9 @@ function BadgeCard({ badge, isFeatured, onToggleFeatured, featuredCount, showToa
         )}
 
         <div className="flex flex-col items-center text-center">
-          {/* Icon circle */}
-          <div
-            className={`mb-3 flex h-14 w-14 items-center justify-center rounded-full text-xl font-bold text-white ${
-              badge.earned ? RARITY_BG[badge.rarity] : "bg-gray-400 grayscale"
-            }`}
-          >
-            {badge.title.charAt(0)}
+          {/* Badge visual */}
+          <div className="mb-3">
+            <BadgeVisual rarity={badge.rarity} title={badge.title} earned={badge.earned} />
           </div>
 
           <h3
@@ -386,9 +385,21 @@ function MobileBadges({ badges, readerTitle, featuredBadgeIds, activeTab, setAct
 
 export default function BadgesPage() {
   const [activeTab, setActiveTab] = useState("All");
+  const [unlockBadge, setUnlockBadge] = useState(null);
   const { showToast } = useToast();
   const { data, isLoading, isError, refetch } = useBadgesQuery();
   const { mutate: toggleFeatured } = useToggleBadgeFeaturedMutation();
+
+  useSocketEvent(
+    "badge:earned",
+    useCallback(
+      (payload) => {
+        setUnlockBadge(payload);
+        refetch();
+      },
+      [refetch],
+    ),
+  );
 
   const allBadges = data?.badges ?? [];
   const readerTitle = data?.readerTitle ?? "";
@@ -418,6 +429,10 @@ export default function BadgesPage() {
     <>
       <DesktopBadges {...sharedProps} />
       <MobileBadges {...sharedProps} />
+      <BadgeUnlockAnimation
+        badge={unlockBadge}
+        onDismiss={() => setUnlockBadge(null)}
+      />
     </>
   );
 }
