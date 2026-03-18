@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createContext, useContext, useEffect, useState } from "react";
+import { useSocket, useSocketEvent } from "./SocketContext";
 import { updateCurrentUserProfile as updateCurrentUserProfileRequest } from "../auth/authApi";
 import {
   claimDailyCheckIn as claimDailyCheckInRequest,
@@ -115,6 +116,7 @@ export function AccountProvider({ children }) {
   const [mfa, setMfa] = useState(initialMfa);
   const [lastWheelResult, setLastWheelResult] = useState(null);
   const { showToast } = useToast();
+  const { isConnected: socketConnected } = useSocket();
   const engagementQueryKey = ["engagement", "overview", user?.id ?? "guest"];
   const notificationsQueryKey = ["engagement", "notifications", user?.id ?? "guest"];
   const engagementQuery = useQuery({
@@ -127,9 +129,13 @@ export function AccountProvider({ children }) {
     queryKey: notificationsQueryKey,
     queryFn: fetchEngagementNotifications,
     enabled: Boolean(user),
-    refetchInterval: user ? 10_000 : false,
+    refetchInterval: user && !socketConnected ? 10_000 : false,
     refetchIntervalInBackground: false,
-    staleTime: 10_000,
+    staleTime: socketConnected ? 60_000 : 10_000,
+  });
+
+  useSocketEvent("notification:new", () => {
+    queryClient.invalidateQueries({ queryKey: notificationsQueryKey });
   });
 
   useEffect(() => {

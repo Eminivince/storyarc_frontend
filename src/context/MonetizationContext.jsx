@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createContext, useContext, useMemo } from "react";
 import { useAuth } from "./AuthContext";
+import { useSocketEvent } from "./SocketContext";
 import { useToast } from "./ToastContext";
 import {
   buildDisplayCoinPackage,
@@ -13,6 +14,7 @@ import {
   fetchMonetizationCatalog,
   fetchMonetizationStatus,
   unlockChapterBatchWithCoinsApi,
+  cancelSubscriptionApi,
   sendGiftApi,
   unlockChapterWithCoinsApi,
 } from "../monetization/monetizationApi";
@@ -64,6 +66,10 @@ export function MonetizationProvider({ children }) {
     queryFn: fetchMonetizationStatus,
   });
 
+  useSocketEvent("wallet:updated", () => {
+    queryClient.invalidateQueries({ queryKey: monetizationStatusQueryKey });
+  });
+
   const displayPlans = useMemo(
     () => mergePlanCatalog(catalogQuery.data?.plans),
     [catalogQuery.data?.plans],
@@ -91,6 +97,7 @@ export function MonetizationProvider({ children }) {
     "paystack";
   const coinBalance = statusQuery.data?.coinBalance ?? 0;
   const hasPremium = Boolean(statusQuery.data?.hasPremium);
+  const accountTier = statusQuery.data?.subscription?.planName ?? "Free";
   const isCatalogReady = !catalogQuery.isLoading && !catalogQuery.error;
 
   function applyStatusSnapshot(status) {
@@ -185,6 +192,17 @@ export function MonetizationProvider({ children }) {
     },
   });
 
+  const cancelSubscriptionMutation = useMutation({
+    mutationFn: cancelSubscriptionApi,
+    onSuccess: async (response) => {
+      applyStatusSnapshot(response?.status);
+      await invalidateMonetizationState();
+      showToast(response?.message || "Subscription cancellation scheduled.", {
+        title: "Subscription updated",
+      });
+    },
+  });
+
   function isChapterUnlocked(chapterKey) {
     return hasPremium || unlockedChapterKeys.has(chapterKey);
   }
@@ -268,9 +286,15 @@ export function MonetizationProvider({ children }) {
     });
   }
 
+  async function cancelSubscription() {
+    return cancelSubscriptionMutation.mutateAsync();
+  }
+
   const value = {
+    accountTier,
     activePlanId,
     billingCycle,
+    cancelSubscription,
     canUnlockWithCoins,
     catalogError: catalogQuery.error,
     chapterEntitlements,
@@ -289,6 +313,7 @@ export function MonetizationProvider({ children }) {
     isCatalogReady,
     isCatalogLoading: catalogQuery.isLoading,
     isChapterUnlocked,
+    isCancellingSubscription: cancelSubscriptionMutation.isPending,
     isConfirmingCheckout: confirmCheckoutSessionMutation.isPending,
     isCreatingCheckoutSession: createCheckoutSessionMutation.isPending,
     isSendingGift: sendGiftMutation.isPending,
