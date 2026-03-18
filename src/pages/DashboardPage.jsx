@@ -333,10 +333,10 @@ function DesktopDashboard({
 
             <ActiveChallengesWidget challenges={activeChallenges} />
 
-            <ActivityFeedSection
+            {/* <ActivityFeedSection
               data={activityFeed}
               isLoading={isActivityLoading}
-            />
+            /> */}
 
             {data?.rows?.length ? (
               data.rows.map((row) => <StoryRow key={row.id} row={row} />)
@@ -427,7 +427,7 @@ function MobileDashboard({
           <Reveal as="section" className="space-y-3">
             <h2 className="text-base font-bold">Continue reading</h2>
             <div className="flex flex-col gap-2">
-              {data.continueReading.map((entry) => (
+              {data.continueReading.slice(0, 1).map((entry) => (
                 <PrefetchableChapterLink
                   chapterSlug={entry.chapterSlug}
                   key={`${entry.storySlug}-${entry.chapterSlug}`}
@@ -465,10 +465,10 @@ function MobileDashboard({
 
         <ActiveChallengesWidget challenges={activeChallenges} />
 
-        <ActivityFeedSection
+        {/* <ActivityFeedSection
           data={activityFeed}
           isLoading={isActivityLoading}
-        />
+        /> */}
 
         {data?.rows?.map((row) =>
           row.stories?.length ? (

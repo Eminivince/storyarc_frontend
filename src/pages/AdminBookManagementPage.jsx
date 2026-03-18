@@ -234,6 +234,10 @@ export default function AdminBookManagementPage() {
   const [activeTab, setActiveTab] = useState(adminBookInventoryTabs[0]);
   const [activeStatus, setActiveStatus] = useState(adminBookStatusFilters[0]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [pagination, setPagination] = useState({
+    limit: 15,
+    offset: 0,
+  });
   const [policyDraft, setPolicyDraft] = useState({
     defaultCoinCap: 50,
     defaultPremiumWindowHours: -1,
@@ -252,8 +256,8 @@ export default function AdminBookManagementPage() {
   }
 
   const booksQuery = useQuery({
-    queryKey: ["admin", "books"],
-    queryFn: fetchAdminBooks,
+    queryKey: ["admin", "books", pagination.limit, pagination.offset],
+    queryFn: () => fetchAdminBooks(pagination),
     staleTime: 15_000,
   });
 
@@ -308,6 +312,7 @@ export default function AdminBookManagementPage() {
 
   const inventory = booksQuery.data?.inventory ?? [];
   const stats = booksQuery.data?.inventoryStats ?? [];
+  const pageInfo = booksQuery.data?.pageInfo;
 
   const filteredInventory = useMemo(() => {
     const query = deferredSearch.trim().toLowerCase();
@@ -761,10 +766,37 @@ export default function AdminBookManagementPage() {
           <p className="text-slate-500">
             Showing {filteredInventory.length} of {inventory.length} books
           </p>
-          <div className="hidden items-center gap-2 md:flex">
-            <button className="rounded bg-primary px-3 py-1.5 font-bold text-background-dark">
-              1
-            </button>
+          <div className="flex items-center gap-3">
+            {pageInfo?.offset ? (
+              <button
+                className="rounded-full border border-slate-200 px-3 py-1.5 text-xs font-semibold text-slate-600 transition-colors hover:border-primary/40 hover:text-primary dark:border-slate-700 dark:text-slate-300"
+                disabled={booksQuery.isFetching}
+                onClick={() =>
+                  setPagination((current) => ({
+                    ...current,
+                    offset: Math.max(0, (pageInfo.nextOffset ?? 0) - current.limit * 2),
+                  }))
+                }
+                type="button"
+              >
+                Previous
+              </button>
+            ) : null}
+            {pageInfo?.hasMore ? (
+              <button
+                className="rounded-full bg-primary px-4 py-1.5 text-xs font-bold text-background-dark transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+                disabled={booksQuery.isFetching}
+                onClick={() =>
+                  setPagination((current) => ({
+                    ...current,
+                    offset: pageInfo.nextOffset ?? current.offset + current.limit,
+                  }))
+                }
+                type="button"
+              >
+                {booksQuery.isFetching ? "Loading…" : "Load More"}
+              </button>
+            ) : null}
           </div>
         </div>
       </section>

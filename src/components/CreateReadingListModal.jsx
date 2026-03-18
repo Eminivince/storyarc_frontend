@@ -149,7 +149,7 @@ function MobileCreateReadingListModal({
         <div className="flex items-center justify-between border-b border-slate-200 px-4 py-3 dark:border-primary/10">
           <div className="flex items-center gap-2">
             <span className="material-symbols-outlined text-lg text-primary">add_circle</span>
-            <h1 id="create-list-title-mobile" className="text-base font-bold tracking-tight">
+            <h1 id="create-list-title-mobile" className="text-base text-primary font-bold tracking-tight">
               {heading}
             </h1>
           </div>

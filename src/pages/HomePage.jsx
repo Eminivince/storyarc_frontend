@@ -6,6 +6,7 @@ import PublicNav from "../components/PublicNav";
 import Reveal from "../components/Reveal";
 import LoadingSpinner from "../components/LoadingSpinner";
 import PageLoadingSpinner from "../components/PageLoadingSpinner";
+import { Icon } from "../components/Icon";
 import { buildSearchHref, buildStoryHref } from "../data/readerFlow";
 import { useReaderHomeQuery } from "../reader/readerHooks";
 
@@ -127,9 +128,7 @@ function DesktopHome({
                       <Link
                         className="flex h-14 min-w-[180px] items-center justify-center gap-2 rounded-xl bg-primary px-8 text-lg font-bold text-background-dark"
                         to="/auth">
-                        <span className="material-symbols-outlined">
-                          auto_stories
-                        </span>
+                        <Icon name="auto_stories" className="h-5 w-5" />
                         Start Reading
                       </Link>
                     </motion.div>
@@ -144,9 +143,7 @@ function DesktopHome({
                       <Link
                         className="flex h-14 min-w-[180px] items-center justify-center gap-2 rounded-xl border border-white/20 bg-white/10 px-8 text-lg font-bold text-white backdrop-blur-sm"
                         to="/writer-benefits">
-                        <span className="material-symbols-outlined">
-                          edit_note
-                        </span>
+                        <Icon name="edit_note" className="h-5 w-5" />
                         Start Writing
                       </Link>
                     </motion.div>
@@ -161,9 +158,7 @@ function DesktopHome({
               <div className="mb-8 flex items-end justify-between">
                 <div>
                   <h2 className="flex items-center gap-3 text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
-                    <span className="material-symbols-outlined text-primary">
-                      trending_up
-                    </span>
+                    <Icon name="trending_up" className="h-7 w-7 text-primary" />
                     Trending Stories
                   </h2>
                   <p className="mt-2 text-slate-500 dark:text-slate-400">
@@ -174,9 +169,7 @@ function DesktopHome({
                   className="flex items-center gap-1 font-bold text-primary hover:underline"
                   to={trendingHref}>
                   See all{" "}
-                  <span className="material-symbols-outlined text-sm">
-                    arrow_forward
-                  </span>
+                  <Icon name="chevron_right" className="h-4 w-4" />
                 </Link>
               </div>
               {isHomeLoading ? (
@@ -580,7 +573,7 @@ function MobileHome({
             </h3>
             <div className="grid grid-cols-2 gap-3">
               <div className="flex flex-col">
-                <span className="text-xl font-bold text-background-dark">85%</span>
+                <span className="text-xl font-bold text-background-dark">80%</span>
                 <span className="text-[10px] font-medium uppercase text-background-dark/70">
                   Rev Share
                 </span>

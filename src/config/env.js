@@ -24,7 +24,7 @@ function parseTimeout(value, fallback) {
 
 export const appEnv = Object.freeze({
   apiBaseUrl: normalizeRelativeBaseUrl(import.meta.env.VITE_API_BASE_URL ?? "/api"),
-  apiTimeoutMs: parseTimeout(import.meta.env.VITE_API_TIMEOUT_MS, 15000),
+  apiTimeoutMs: parseTimeout(import.meta.env.VITE_API_TIMEOUT_MS, 40000),
   backendOrigin: (import.meta.env.VITE_BACKEND_ORIGIN ?? "http://localhost:4000")
     .trim()
     .replace(/\/+$/, ""),

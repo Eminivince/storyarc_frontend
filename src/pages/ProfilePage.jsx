@@ -6,8 +6,7 @@ import Reveal from "../components/Reveal";
 import SkeletonBlock from "../components/SkeletonBlock";
 import UserAvatar from "../components/UserAvatar";
 import { useAccount } from "../context/AccountContext";
-import { useBadgesQuery, useOwnActivityQuery } from "../engagement/engagementHooks";
-import ActivityFeedSection from "../components/ActivityFeedSection";
+import { useBadgesQuery } from "../engagement/engagementHooks";
 import { useAuth } from "../context/AuthContext";
 import { useMonetization } from "../context/MonetizationContext";
 import { useToast } from "../context/ToastContext";
@@ -750,13 +749,10 @@ function DesktopProfile({
   isAccountLoading,
   isBadgesLoading,
   isCoinBalanceLoading,
-  isOwnActivityLoading,
   onTabChange,
-  ownActivity,
   profile,
   profileStats,
   readingList,
-  recentActivity,
 }) {
   return (
     <div className="hidden h-screen bg-background-light font-display text-slate-900 dark:bg-background-dark dark:text-slate-100 md:block">
@@ -892,24 +888,6 @@ function DesktopProfile({
                     ))}
                   </div>
                 </Reveal>
-              </div>
-
-              <div className="space-y-5">
-                <Reveal>
-                  <h3 className="mb-4 text-lg font-bold">Recent Activity</h3>
-                  <RecentActivityList
-                    isLoading={isAccountLoading}
-                    items={recentActivity}
-                  />
-                </Reveal>
-
-                <ActivityFeedSection
-                  data={ownActivity}
-                  icon="history"
-                  isLoading={isOwnActivityLoading}
-                  own
-                  title="Reading Activity"
-                />
               </div>
             </div>
           </div>
@@ -1164,7 +1142,6 @@ export default function ProfilePage() {
   const { showToast } = useToast();
   const badgesQuery = useBadgesQuery();
   const badgesData = badgesQuery.data ?? null;
-  const ownActivityQuery = useOwnActivityQuery();
   const [activeTab, setActiveTab] = useState("Library");
 
   async function handleLogout() {
@@ -1183,13 +1160,10 @@ export default function ProfilePage() {
         isAccountLoading={isAccountLoading}
         isBadgesLoading={badgesQuery.isLoading}
         isCoinBalanceLoading={isStatusLoading}
-        isOwnActivityLoading={ownActivityQuery.isLoading}
         onTabChange={setActiveTab}
-        ownActivity={ownActivityQuery.data}
         profile={profile}
         profileStats={profileStats}
         readingList={readingList}
-        recentActivity={recentActivity}
       />
       <MobileProfile
         activeTab={activeTab}
@@ -1200,10 +1174,8 @@ export default function ProfilePage() {
         isBadgesLoading={badgesQuery.isLoading}
         isCoinBalanceLoading={isStatusLoading}
         isLoggingOut={isLoggingOut}
-        isOwnActivityLoading={ownActivityQuery.isLoading}
         onLogout={handleLogout}
         onTabChange={setActiveTab}
-        ownActivity={ownActivityQuery.data}
         profile={profile}
         profileStats={profileStats}
         readingList={readingList}

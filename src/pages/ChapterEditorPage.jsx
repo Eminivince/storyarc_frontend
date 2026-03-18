@@ -6,6 +6,7 @@ import {
   useSearchParams,
 } from "react-router-dom";
 import { AppDesktopSidebar, AppMobileTabBar } from "../components/AppShellNav";
+import PageLoadingSpinner from "../components/PageLoadingSpinner";
 import ReaderStateScreen from "../components/ReaderStateScreen";
 import RouteLoadingScreen from "../components/RouteLoadingScreen";
 import { useCreator } from "../context/CreatorContext";
@@ -568,7 +569,7 @@ function MobileChapterEditor({
 
         <div className="flex-1 px-4">
           <textarea
-            className="h-full outline-none w-full resize-none border-none bg-transparent p-0 pb-32 text-base leading-relaxed placeholder:text-slate-400 focus:ring-0 dark:placeholder:text-slate-600"
+            className="h-screen outline-none w-full resize-none border-none bg-transparent p-0 pb-32 text-base leading-relaxed placeholder:text-slate-400 focus:ring-0 dark:placeholder:text-slate-600"
             name="body"
             onChange={(event) => onBodyChange(event.target.value)}
             placeholder="Start writing your story here..."
@@ -685,38 +686,7 @@ function MobileChapterEditor({
               </div>
             </div>
 
-            <div className="rounded-lg border border-slate-200 p-3 dark:border-primary/10">
-              <div className="mb-2 flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <span className="material-symbols-outlined text-base text-primary">
-                    local_atm
-                  </span>
-                  <span className="text-sm font-medium">Chapter Access</span>
-                </div>
-                <span className="text-xs font-bold text-primary">
-                  {draft.premiumEnabled ? "Premium" : "Free"}
-                </span>
-              </div>
-              <div className="space-y-2">
-                <label className="flex items-center gap-2 text-xs">
-                  <input
-                    checked={draft.premiumEnabled}
-                    className="size-3.5"
-                    onChange={onPremiumToggle}
-                    type="checkbox"
-                  />
-                  Make this chapter premium
-                </label>
-                <input
-                  className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm focus:border-primary focus:ring-primary disabled:cursor-not-allowed disabled:opacity-50 dark:border-primary/10 dark:bg-background-dark/70"
-                  disabled={!draft.premiumEnabled}
-                  min="0"
-                  onChange={onCoinPriceChange}
-                  type="number"
-                  value={draft.coinUnlockPrice}
-                />
-              </div>
-            </div>
+            
 
             <details
               className="group rounded-lg border border-slate-200 bg-slate-50 dark:border-primary/10 dark:bg-primary/5"
@@ -1095,7 +1065,7 @@ export default function ChapterEditorPage() {
   }
 
   if (isPublishing) {
-    return <RouteLoadingScreen message="Uploading chapter..." />;
+    return <PageLoadingSpinner />;
   }
 
   return (

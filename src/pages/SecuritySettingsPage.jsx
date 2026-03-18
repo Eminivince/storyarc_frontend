@@ -169,7 +169,7 @@ function SessionsSection({ compact = false, onRevoke }) {
         </p>
       </div>
 
-      <div className={compact ? "space-y-2" : "space-y-3"}>
+      {/* <div className={compact ? "space-y-2" : "space-y-3"}>
         {securitySessions.map((session) => (
           <div
             className={`flex items-center justify-between gap-3 border border-slate-200 bg-slate-50 dark:border-primary/10 dark:bg-background-dark/50 ${
@@ -218,7 +218,7 @@ function SessionsSection({ compact = false, onRevoke }) {
             </button>
           </div>
         ))}
-      </div>
+      </div> */}
     </section>
   );
 }

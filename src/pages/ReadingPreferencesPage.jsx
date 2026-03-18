@@ -300,16 +300,7 @@ function DesktopReadingPreferences() {
           </div>
         </Reveal>
 
-        <div className="relative h-24 w-full overflow-hidden rounded-xl px-4">
-          <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-primary/5 to-transparent opacity-50" />
-          <div className="flex h-full items-center justify-between px-6 opacity-30 grayscale">
-            {["book_2", "history_edu", "forum", "bookmarks"].map((icon) => (
-              <span className="material-symbols-outlined text-6xl" key={icon}>
-                {icon}
-              </span>
-            ))}
-          </div>
-        </div>
+        
       </div>
     </div>
   );

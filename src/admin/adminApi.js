@@ -39,8 +39,12 @@ export function fetchAdminOverview() {
   });
 }
 
-export function fetchAdminBooks() {
-  return getJson("/admin/books", {
+export function fetchAdminBooks(pagination) {
+  // Temporary debug logging for admin books failures
+  // eslint-disable-next-line no-console
+  console.log("[admin/books] fetchAdminBooks", pagination);
+
+  return getJson(withQueryParams("/admin/books", pagination), {
     headers: getAuthHeaders(),
   });
 }

@@ -57,7 +57,7 @@ export default function OfflineLibrarySection({ mobile = false }) {
         </div>
         <div className="space-y-1.5">
           {stories.map((story) => (
-            <Link key={story.storySlug} to={buildStoryHref(story.storySlug)}>
+            <Link key={story.storySlug} to={buildStoryHref(story.storySlug)} className="flex flex-col">
               <motion.article
                 className="flex items-center gap-2 rounded-lg border border-green-500/10 bg-green-500/5 p-2"
                 whileHover={{ y: -2 }}

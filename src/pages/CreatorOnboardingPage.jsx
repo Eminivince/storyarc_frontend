@@ -269,7 +269,7 @@ function MobileCreatorOnboarding({ onStart, status }) {
           </div>
         </section>
 
-        <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-t from-background-light via-background-light to-transparent p-4 pt-8 dark:from-background-dark dark:via-background-dark">
+        <div className="fixed bottom-0 z-50 left-0 right-0 bg-gradient-to-t from-background-light via-background-light to-transparent p-4 pt-8 dark:from-background-dark dark:via-background-dark">
           <button
             className="w-full rounded-xl bg-primary py-3 text-sm font-bold text-background-dark shadow-lg shadow-primary/20 transition-all active:scale-[0.98]"
             onClick={onStart}
