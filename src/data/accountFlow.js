@@ -351,9 +351,12 @@ export const missions = [
 
 export const initialClaimedMissionIds = ["profile-complete"];
 
+export function buildReferralLink(code) {
+  if (!code) return "";
+  return `${window.location.origin}?ref=${code}`;
+}
+
 export const referrals = {
-  code: "ARC-WEAVER-77",
-  mobileCode: "GOLD-VIP-99",
   rewardLabel: "500 Arc Points",
   totalEarned: 1500,
 };

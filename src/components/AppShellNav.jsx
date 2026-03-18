@@ -14,6 +14,7 @@ import {
   adminBooksHref,
   adminContractsHref,
   adminDashboardHref,
+  adminHelpCenterHref,
   adminMessagesHref,
   adminModerationHref,
   adminMonetizationHref,
@@ -30,6 +31,7 @@ import {
 } from "../data/creatorFlow";
 import { preloadRoute } from "../lib/routePreload";
 import { useCreator } from "../context/CreatorContext";
+import { useMonetization } from "../context/MonetizationContext";
 import {
   buildBrowseHref,
   followingHref,
@@ -279,6 +281,12 @@ function getAdminConfig() {
         href: adminActivityHref,
       },
       {
+        id: "help-center",
+        icon: "help",
+        label: "Help Center",
+        href: adminHelpCenterHref,
+      },
+      {
         id: "reader-mode",
         icon: "switch_account",
         label: "Reader Mode",
@@ -522,6 +530,7 @@ export function AppDesktopSidebar({
   const navigate = useNavigate();
   const { logout, isLoggingOut, user } = useAuth();
   const { activeStorySlug, enterReaderMode, stories } = useCreator();
+  const { accountTier } = useMonetization();
   const { showToast } = useToast();
   let config = getReaderConfig(topGenre);
   const resolvedCreatorStorySlug = resolveCreatorStorySlug(
@@ -552,7 +561,9 @@ export function AppDesktopSidebar({
             ? "Pro Creator"
             : mode === "admin"
               ? "Admin"
-              : "Reader");
+              : accountTier !== "Free"
+                ? `${accountTier} Member`
+                : "Reader");
   const settingsHref = mode === "admin" ? adminSettingsHref : accountSettingsHref;
   const resolvedAvatar = avatar ?? user?.avatarUrl ?? null;
 

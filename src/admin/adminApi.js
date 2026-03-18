@@ -55,6 +55,31 @@ export function fetchAdminContracts() {
   });
 }
 
+export function fetchAdminHelpCenter() {
+  return getJson("/admin/help-center", {
+    headers: getAuthHeaders(),
+  });
+}
+
+export function createAdminHelpCenterCategory(input) {
+  return postJson("/admin/help-center/categories", input, {
+    headers: getAuthHeaders(),
+  });
+}
+
+export function createAdminHelpCenterArticle(input) {
+  return postJson("/admin/help-center/articles", input, {
+    headers: getAuthHeaders(),
+  });
+}
+
+export function deleteAdminHelpCenterArticle(articleId) {
+  return requestJson(`/admin/help-center/articles/${articleId}`, {
+    headers: getAuthHeaders(),
+    method: "DELETE",
+  });
+}
+
 export function fetchAdminContract(contractId) {
   return getJson(`/admin/contracts/${contractId}`, {
     headers: getAuthHeaders(),

@@ -22,6 +22,7 @@ import {
   useUpsertChapterReactionMutation,
   useRemoveChapterReactionMutation,
 } from "../engagement/engagementHooks";
+import { useMonetization } from "../context/MonetizationContext";
 import ChapterReactionBar from "../components/ChapterReactionBar";
 
 const desktopReactionOptions = [
@@ -708,6 +709,7 @@ function MobileChapterComplete({
 
 export default function ChapterCompletePage() {
   const { storySlug, chapterSlug } = useParams();
+  const { hasPremium } = useMonetization();
   const { showToast } = useToast();
   const chapterQuery = useChapterQuery(storySlug, chapterSlug);
   const storyQuery = useStoryDetailsQuery(storySlug);
@@ -746,7 +748,7 @@ export default function ChapterCompletePage() {
 
   const chapterHref = buildChapterHref(story.slug, chapter.chapterSlug);
 
-  if (chapter.isLocked || chapter.accessState !== "READABLE") {
+  if ((chapter.isLocked || chapter.accessState !== "READABLE") && !hasPremium) {
     return (
       <ReaderStateScreen
         ctaLabel="Open Chapter"

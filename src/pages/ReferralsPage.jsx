@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import Reveal from "../components/Reveal";
 import UserAvatar from "../components/UserAvatar";
+import { LogoBrand } from "../components/LogoBrand";
 import { useAccount } from "../context/AccountContext";
 import { useToast } from "../context/ToastContext";
 import {
@@ -9,6 +10,7 @@ import {
   useReferralWithdrawalMutation,
 } from "../engagement/engagementHooks";
 import {
+  buildReferralLink,
   notificationsHref,
   profileHref,
   referralShareChannels,
@@ -230,14 +232,7 @@ function DesktopReferrals({
     <div className="hidden min-h-screen bg-background-light font-display text-slate-900 dark:bg-background-dark dark:text-slate-100 md:block">
       <div className="flex min-h-screen flex-col">
         <header className="sticky top-0 z-40 flex items-center justify-between border-b border-primary/20 bg-background-light px-6 py-4 dark:bg-background-dark lg:px-10">
-          <div className="flex items-center gap-4">
-            <div className="size-8 text-primary">
-              <svg fill="currentColor" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-                <path d="M44 11.2727C44 14.0109 39.8386 16.3957 33.69 17.6364C39.8386 18.877 44 21.2618 44 24C44 26.7382 39.8386 29.123 33.69 30.3636C39.8386 31.6043 44 33.9891 44 36.7273C44 40.7439 35.0457 44 24 44C12.9543 44 4 40.7439 4 36.7273C4 33.9891 8.16144 31.6043 14.31 30.3636C8.16144 29.123 4 26.7382 4 24C4 21.2618 8.16144 18.877 14.31 17.6364C8.16144 16.3957 4 14.0109 4 11.2727C4 7.25611 12.9543 4 24 4C35.0457 4 44 7.25611 44 11.2727Z" />
-              </svg>
-            </div>
-            <h1 className="text-xl font-bold tracking-tight">TaleStead</h1>
-          </div>
+          <LogoBrand to="/dashboard" size="md" />
           <div className="flex items-center gap-6">
             <nav className="hidden items-center gap-8 md:flex">
               <Link className="text-sm font-medium text-slate-600 transition-colors hover:text-primary dark:text-slate-300" to="/dashboard">Home</Link>
@@ -287,10 +282,10 @@ function DesktopReferrals({
               </h3>
               <div className="flex items-center gap-2 rounded-xl border border-primary/20 bg-white p-1 dark:bg-background-dark">
                 <input
-                  className="flex-1 bg-transparent px-4 py-3 font-mono text-xl font-bold uppercase tracking-[0.2em] text-primary outline-none"
+                  className="flex-1 bg-transparent px-4 py-3 font-mono text-sm font-bold text-primary outline-none"
                   readOnly
                   type="text"
-                  value={dashboard?.referralCode || referrals.code}
+                  value={dashboard?.referralCode ? buildReferralLink(dashboard.referralCode) : ""}
                 />
                 <button
                   className="flex items-center gap-2 rounded-lg bg-primary px-6 py-3 font-bold text-background-dark transition-colors hover:brightness-105"
@@ -406,8 +401,8 @@ function MobileReferrals({
               Your Referral Code
             </p>
             <div className="flex items-center justify-between rounded-2xl border border-primary/20 bg-primary/5 p-4">
-              <span className="pl-4 text-2xl font-bold tracking-widest text-primary">
-                {dashboard?.referralCode || referrals.mobileCode}
+              <span className="min-w-0 flex-1 truncate pl-2 text-sm font-bold text-primary">
+                {dashboard?.referralCode ? buildReferralLink(dashboard.referralCode) : ""}
               </span>
               <button
                 className="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 font-bold text-background-dark transition-transform active:scale-95"
@@ -490,6 +485,28 @@ export default function ReferralsPage() {
   const withdrawalMutation = useReferralWithdrawalMutation();
   const [showWithdrawalModal, setShowWithdrawalModal] = useState(false);
 
+  function handleShare(channel, referralCode) {
+    if (!referralCode) {
+      shareReferral(channel);
+      return;
+    }
+
+    const link = buildReferralLink(referralCode);
+    const text = `Join TaleStead and start reading amazing stories! ${link}`;
+
+    if (channel === "WhatsApp") {
+      window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank");
+    } else if (channel === "Twitter X") {
+      window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`, "_blank");
+    } else if (channel === "Email") {
+      window.open(`mailto:?subject=${encodeURIComponent("Join TaleStead!")}&body=${encodeURIComponent(text)}`, "_blank");
+    } else if (navigator.share) {
+      navigator.share({ title: "Join TaleStead!", text, url: link }).catch(() => {});
+    } else {
+      copyValue("Referral link", link);
+    }
+  }
+
   async function handleWithdraw(amountCents) {
     try {
       const result = await withdrawalMutation.mutateAsync(amountCents);
@@ -505,8 +522,8 @@ export default function ReferralsPage() {
       <DesktopReferrals
         dashboard={dashboardQuery.data}
         isDashboardLoading={dashboardQuery.isLoading}
-        onCopyCode={() => copyValue("Referral code", dashboardQuery.data?.referralCode || referrals.code)}
-        onShare={shareReferral}
+        onCopyCode={() => copyValue("Referral link", dashboardQuery.data?.referralCode ? buildReferralLink(dashboardQuery.data.referralCode) : "")}
+        onShare={(channel) => handleShare(channel, dashboardQuery.data?.referralCode)}
         onWithdraw={handleWithdraw}
         points={rewards.points}
         referrals={referrals}
@@ -516,8 +533,8 @@ export default function ReferralsPage() {
       <MobileReferrals
         dashboard={dashboardQuery.data}
         isDashboardLoading={dashboardQuery.isLoading}
-        onCopyCode={() => copyValue("Referral code", dashboardQuery.data?.referralCode || referrals.mobileCode)}
-        onShare={shareReferral}
+        onCopyCode={() => copyValue("Referral link", dashboardQuery.data?.referralCode ? buildReferralLink(dashboardQuery.data.referralCode) : "")}
+        onShare={(channel) => handleShare(channel, dashboardQuery.data?.referralCode)}
         onWithdraw={handleWithdraw}
         referrals={referrals}
         showWithdrawalModal={showWithdrawalModal}

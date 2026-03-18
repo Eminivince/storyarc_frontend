@@ -24,6 +24,7 @@ const AdminCreateContractTemplatePage = lazy(() =>
   import("../pages/AdminCreateContractTemplatePage"),
 );
 const AdminDashboardPage = lazy(() => import("../pages/AdminDashboardPage"));
+const AdminHelpCenterPage = lazy(() => import("../pages/AdminHelpCenterPage"));
 const AdminMessagingPage = lazy(() => import("../pages/AdminMessagingPage"));
 const AdminMonetizationPage = lazy(() => import("../pages/AdminMonetizationPage"));
 const AdminSystemSettingsPage = lazy(() =>
@@ -541,6 +542,11 @@ export const appRouteGroups = [
         path: "/admin/messages",
         component: AdminMessagingPage,
         page: "AdminMessagingPage",
+      },
+      {
+        path: "/admin/help-center",
+        component: AdminHelpCenterPage,
+        page: "AdminHelpCenterPage",
       },
       {
         path: "/admin/settings",

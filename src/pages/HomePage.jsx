@@ -66,9 +66,7 @@ function LiveCatalogNotice({ compact, message }) {
   return (
     <div className={`border border-primary/10 bg-primary/5 text-center ${compact ? "rounded-xl p-3" : "rounded-2xl p-6"}`}>
       <h4 className={compact ? "text-sm font-bold" : "text-lg font-bold"}>Live catalog unavailable</h4>
-      <p className={`text-slate-500 dark:text-slate-400 ${compact ? "mt-1 text-xs" : "mt-2 text-sm"}`}>
-        {message}
-      </p>
+      
     </div>
   );
 }

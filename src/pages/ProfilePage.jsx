@@ -743,9 +743,11 @@ function MyStoriesTab() {
 
 function DesktopProfile({
   activeTab,
+  accountTier,
   badgesData,
   coinBalance,
   currentReading,
+  hasPremium,
   isAccountLoading,
   isBadgesLoading,
   isCoinBalanceLoading,
@@ -759,7 +761,7 @@ function DesktopProfile({
       <div className="flex h-full min-h-0">
         <AppDesktopSidebar
           avatar={profile.avatar}
-          memberLabel="Gold Member"
+          memberLabel="Basic Member"
           memberName={profile.displayName}
         />
 
@@ -783,9 +785,11 @@ function DesktopProfile({
               <div className="min-w-0 flex-1 text-center md:text-left">
                 <div className="mb-1 flex flex-wrap items-center justify-center gap-2 md:justify-start">
                   <h2 className="text-xl font-bold md:text-2xl">{profile.displayName}</h2>
-                  <span className="rounded bg-primary px-1.5 py-0.5 text-[10px] font-black uppercase tracking-tighter text-background-dark">
-                    Pro
-                  </span>
+                  {hasPremium && (
+                    <span className="rounded bg-primary px-1.5 py-0.5 text-[10px] font-black uppercase tracking-tighter text-background-dark">
+                      {accountTier}
+                    </span>
+                  )}
                 </div>
                 {badgesData?.readerTitle && (
                   <p className="text-xs font-bold uppercase tracking-widest text-primary/70">
@@ -947,9 +951,11 @@ function MobileBadgesTab({ badgesData, isBadgesLoading }) {
 
 function MobileProfile({
   activeTab,
+  accountTier,
   badgesData,
   coinBalance,
   currentReading,
+  hasPremium,
   isAccountLoading,
   isBadgesLoading,
   isCoinBalanceLoading,
@@ -989,9 +995,11 @@ function MobileProfile({
                 name={profile.displayName}
                 src={profile.avatar}
               />
-              <div className="absolute bottom-0 right-0 rounded-full bg-primary px-2 py-0.5 text-[10px] font-black uppercase tracking-tighter text-background-dark">
-                Pro
-              </div>
+              {hasPremium && (
+                <div className="absolute bottom-0 right-0 rounded-full bg-primary px-2 py-0.5 text-[10px] font-black uppercase tracking-tighter text-background-dark">
+                  {accountTier}
+                </div>
+              )}
             </div>
             <div className="flex flex-col items-center justify-center">
               <p className="text-center text-[24px] font-bold leading-tight">
@@ -1130,7 +1138,7 @@ function MobileProfile({
 export default function ProfilePage() {
   const navigate = useNavigate();
   const { logout, isLoggingOut } = useAuth();
-  const { coinBalance, isStatusLoading } = useMonetization();
+  const { accountTier, coinBalance, hasPremium, isStatusLoading } = useMonetization();
   const {
     currentReading,
     isAccountLoading,
@@ -1154,9 +1162,11 @@ export default function ProfilePage() {
     <>
       <DesktopProfile
         activeTab={activeTab}
+        accountTier={accountTier}
         badgesData={badgesData}
         coinBalance={coinBalance}
         currentReading={currentReading}
+        hasPremium={hasPremium}
         isAccountLoading={isAccountLoading}
         isBadgesLoading={badgesQuery.isLoading}
         isCoinBalanceLoading={isStatusLoading}
@@ -1167,9 +1177,11 @@ export default function ProfilePage() {
       />
       <MobileProfile
         activeTab={activeTab}
+        accountTier={accountTier}
         badgesData={badgesData}
         coinBalance={coinBalance}
         currentReading={currentReading}
+        hasPremium={hasPremium}
         isAccountLoading={isAccountLoading}
         isBadgesLoading={badgesQuery.isLoading}
         isCoinBalanceLoading={isStatusLoading}

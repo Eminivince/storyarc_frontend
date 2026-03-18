@@ -12,6 +12,7 @@ import Reveal from "../components/Reveal";
 import RouteLoadingScreen from "../components/RouteLoadingScreen";
 import SeoMetadata, { createSeoDescription } from "../components/SeoMetadata";
 import StoryReviewCard from "../components/StoryReviewCard";
+import { useMonetization } from "../context/MonetizationContext";
 import { useToast } from "../context/ToastContext";
 import { buildGiftSendingHref } from "../data/communityFlow";
 import {
@@ -472,6 +473,7 @@ function getSequenceBlockedLabel(chapter) {
 }
 
 function DesktopStoryDetails({
+  hasPremium,
   isAuthorFollowPending,
   isReadingListsLoading,
   isSubmittingRating,
@@ -490,6 +492,30 @@ function DesktopStoryDetails({
 }) {
   const primaryChapterSlug =
     storyData.continueReading?.chapterSlug || story.firstChapterSlug;
+  const hasVolumes = story.volumes?.length > 0 && storyData.chapters.some((ch) => ch.volumeId);
+  const volumeGroups = useMemo(() => {
+    if (!hasVolumes) return null;
+    const groups = [];
+    const volumeMap = new Map();
+    for (const vol of story.volumes) {
+      const group = { volume: vol, chapters: [] };
+      volumeMap.set(vol.id, group);
+      groups.push(group);
+    }
+    const ungrouped = [];
+    for (const ch of storyData.chapters) {
+      const group = ch.volumeId ? volumeMap.get(ch.volumeId) : null;
+      if (group) {
+        group.chapters.push(ch);
+      } else {
+        ungrouped.push(ch);
+      }
+    }
+    if (ungrouped.length) {
+      groups.push({ volume: null, chapters: ungrouped });
+    }
+    return groups.filter((g) => g.chapters.length > 0);
+  }, [hasVolumes, story.volumes, storyData.chapters]);
 
   return (
     <div className="hidden min-h-screen flex-col bg-background-light font-display text-slate-900 dark:bg-background-dark dark:text-slate-100 md:flex">
@@ -641,8 +667,86 @@ function DesktopStoryDetails({
               </div>
 
               <div className="space-y-3 flex flex-col gap-1">
-                {storyData.chapters.map((chapter, index) => {
-                  const isSequenceBlocked = chapter.accessState === "SEQUENCE_BLOCKED";
+                {hasVolumes && volumeGroups ? (
+                  volumeGroups.map((group) => (
+                    <div key={group.volume?.id ?? "ungrouped"} className="space-y-3">
+                      {group.volume && (
+                        <div className="flex items-center gap-3 pt-4 first:pt-0">
+                          <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary text-xs font-bold text-background-dark">
+                            {group.volume.number}
+                          </span>
+                          <h3 className="text-lg font-bold">{group.volume.title}</h3>
+                        </div>
+                      )}
+                      {group.chapters.map((chapter, index) => {
+                        const isSequenceBlocked = chapter.accessState === "SEQUENCE_BLOCKED" && !hasPremium;
+                        const chapterCard = (
+                          <motion.article
+                            className={`flex items-center justify-between gap-4 rounded-3xl border border-primary/10 bg-white p-4 dark:bg-primary/5 ${
+                              isSequenceBlocked ? "cursor-not-allowed opacity-70" : ""
+                            }`}
+                            initial={{ opacity: 0, x: -18 }}
+                            transition={{ delay: index * 0.03, duration: 0.24 }}
+                            whileInView={{ opacity: 1, x: 0 }}
+                            whileHover={isSequenceBlocked ? undefined : { y: -3 }}
+                            viewport={{ amount: 0.15, once: true }}
+                          >
+                            <div className="min-w-0">
+                              <div className="flex flex-wrap items-center gap-3">
+                                <span className="text-sm font-black text-primary">
+                                  {String(chapter.chapterNumber).padStart(2, "0")}
+                                </span>
+                                <h3 className="line-clamp-1 text-lg font-bold">{chapter.title}</h3>
+                                {chapter.premium ? (
+                                  <span className="rounded-full bg-primary px-2 py-1 text-[10px] font-black uppercase tracking-wide text-background-dark">
+                                    Premium
+                                  </span>
+                                ) : null}
+                              </div>
+                              <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
+                                {chapter.publishedAtLabel}
+                              </p>
+                              {isSequenceBlocked ? (
+                                <p className="mt-2 text-xs font-bold uppercase tracking-[0.18em] text-amber-600 dark:text-amber-300">
+                                  {getSequenceBlockedLabel(chapter)}
+                                </p>
+                              ) : null}
+                            </div>
+                            <div className="flex items-center gap-3">
+                              {chapter.isCurrent ? (
+                                <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-bold text-primary">
+                                  Continue here
+                                </span>
+                              ) : null}
+                              <span className="material-symbols-outlined text-slate-400">
+                                {isSequenceBlocked ? "lock" : "chevron_right"}
+                              </span>
+                            </div>
+                          </motion.article>
+                        );
+                        if (isSequenceBlocked) {
+                          return (
+                            <div aria-disabled="true" className="block" key={chapter.chapterSlug}>
+                              {chapterCard}
+                            </div>
+                          );
+                        }
+                        return (
+                          <PrefetchableChapterLink
+                            chapterSlug={chapter.chapterSlug}
+                            key={chapter.chapterSlug}
+                            storySlug={story.slug}
+                            to={buildChapterHref(story.slug, chapter.chapterSlug)}
+                          >
+                            {chapterCard}
+                          </PrefetchableChapterLink>
+                        );
+                      })}
+                    </div>
+                  ))
+                ) : null}
+                {!hasVolumes && storyData.chapters.map((chapter, index) => {
+                  const isSequenceBlocked = chapter.accessState === "SEQUENCE_BLOCKED" && !hasPremium;
                   const chapterCard = (
                     <motion.article
                       className={`flex items-center justify-between gap-4 rounded-3xl border border-primary/10 bg-white p-4 dark:bg-primary/5 ${
@@ -747,6 +851,7 @@ function DesktopStoryDetails({
 }
 
 function MobileStoryDetails({
+  hasPremium,
   isAuthorFollowPending,
   isReadingListsLoading,
   isSubmittingRating,
@@ -762,6 +867,7 @@ function MobileStoryDetails({
 }) {
   const primaryChapterSlug =
     storyData.continueReading?.chapterSlug || story.firstChapterSlug;
+  const hasVolumes = story.volumes?.length > 0 && storyData.chapters.some((ch) => ch.volumeId);
   const [isChapterListExpanded, setIsChapterListExpanded] = useState(false);
   const chapterListId = `mobile-story-chapters-${story.slug}`;
 
@@ -909,7 +1015,7 @@ function MobileStoryDetails({
               >
                 <div className="flex flex-col gap-1.5 pt-1.5">
               {storyData.chapters.map((chapter) => {
-                const isSequenceBlocked = chapter.accessState === "SEQUENCE_BLOCKED";
+                const isSequenceBlocked = chapter.accessState === "SEQUENCE_BLOCKED" && !hasPremium;
                 const chapterCard = (
                   <article
                     className={`rounded-lg border border-primary/10 bg-white p-2.5 dark:bg-primary/5 ${
@@ -993,6 +1099,7 @@ function MobileStoryDetails({
 export default function StoryDetailsPage() {
   const navigate = useNavigate();
   const { storySlug } = useParams();
+  const { hasPremium } = useMonetization();
   const { showToast } = useToast();
   const [isReadingListModalOpen, setIsReadingListModalOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -1171,6 +1278,7 @@ export default function StoryDetailsPage() {
         url={buildStoryHref(story.slug)}
       />
       <DesktopStoryDetails
+        hasPremium={hasPremium}
         isAuthorFollowPending={
           followAuthorMutation.isPending || unfollowAuthorMutation.isPending
         }
@@ -1192,6 +1300,7 @@ export default function StoryDetailsPage() {
         storyData={data}
       />
       <MobileStoryDetails
+        hasPremium={hasPremium}
         isAuthorFollowPending={
           followAuthorMutation.isPending || unfollowAuthorMutation.isPending
         }

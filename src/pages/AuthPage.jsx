@@ -90,6 +90,14 @@ function useAuthFormModel() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [agreedToTerms, setAgreedToTerms] = useState(false);
 
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const refCode = params.get("ref");
+    if (refCode) {
+      sessionStorage.setItem("referralCode", refCode);
+    }
+  }, []);
+
   const isSignIn = mode === "signin";
   const isTwoFactorStep = isSignIn && requires2FA;
   const isPending = isSignIn
@@ -254,13 +262,18 @@ function useAuthFormModel() {
         return;
       }
 
+      const storedReferralCode = sessionStorage.getItem("referralCode");
+
       await register({
         birthYear: birthYearNumber,
         displayName: trimmedDisplayName,
         email: trimmedEmail,
         password: cleanPassword,
         tosAccepted: agreedToTerms,
+        ...(storedReferralCode ? { referralCode: storedReferralCode } : {}),
       });
+
+      sessionStorage.removeItem("referralCode");
 
       persistPendingVerification({
         email: trimmedEmail,

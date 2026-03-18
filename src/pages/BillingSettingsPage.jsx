@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import AccountSettingsNav from "../components/AccountSettingsNav";
 import { AppDesktopSidebar, AppMobileTabBar } from "../components/AppShellNav";
@@ -9,7 +10,6 @@ import { useAccount } from "../context/AccountContext";
 import { useMonetization } from "../context/MonetizationContext";
 import {
   billingSettingsHref,
-  paymentMethods,
   profileHref,
 } from "../data/accountFlow";
 import {
@@ -93,14 +93,32 @@ function BillingHistorySkeleton({ compact = false }) {
   );
 }
 
-function getNextBillingLabel(hasPremium) {
+function getNextBillingLabel(hasPremium, subscription) {
   if (!hasPremium) {
     return "Upgrade to activate recurring billing";
   }
 
+  if (subscription?.cancelAtPeriodEnd) {
+    const cancelDate = subscription.currentPeriodEnd
+      ? new Date(subscription.currentPeriodEnd).toLocaleDateString("en-US", {
+          month: "long",
+          day: "numeric",
+          year: "numeric",
+        })
+      : "end of current period";
+    return `Cancels on ${cancelDate}`;
+  }
+
+  if (subscription?.currentPeriodEnd) {
+    return new Date(subscription.currentPeriodEnd).toLocaleDateString("en-US", {
+      month: "long",
+      day: "numeric",
+      year: "numeric",
+    });
+  }
+
   const nextDate = new Date();
   nextDate.setMonth(nextDate.getMonth() + 1);
-
   return nextDate.toLocaleDateString("en-US", {
     month: "long",
     day: "numeric",
@@ -116,6 +134,7 @@ function PlanCard({
   currency,
   getDisplayPlan,
   hasPremium,
+  subscription,
 }) {
   const currentPlan = getDisplayPlan(activePlanId) ?? freePlanTier;
   const planLabel = hasPremium ? currentPlan.name : "Free Reader";
@@ -151,7 +170,7 @@ function PlanCard({
             className={`text-slate-600 dark:text-slate-300 ${
               compact ? "mt-1 text-xs" : "mt-2 text-sm"
             }`}>
-            Next billing date: {getNextBillingLabel(hasPremium)}
+            Next billing date: {getNextBillingLabel(hasPremium, subscription)}
           </p>
         </div>
 
@@ -254,84 +273,98 @@ function PlanCard({
 }
 
 function BillingSections({
+  cancelSubscription,
+  checkoutProvider,
   compact = false,
-  onManagePayment,
+  hasPremium,
+  isCancellingSubscription,
+  onCancelConfirm,
   purchaseHistoryError,
   purchases,
   purchasesLoading,
+  showCancelConfirm,
+  subscription,
 }) {
   return (
     <>
-      <section
-        className={`rounded-xl border border-primary/10 bg-white/80 dark:bg-primary/5 ${
-          compact ? "mb-4 p-4" : "mb-6 rounded-3xl p-6"
-        }`}>
-        <div
-          className={`flex items-center justify-between gap-4 ${compact ? "mb-4" : "mb-5"}`}>
+      {hasPremium && (
+        <section
+          className={`rounded-xl border border-primary/10 bg-white/80 dark:bg-primary/5 ${
+            compact ? "mb-4 p-4" : "mb-6 rounded-3xl p-6"
+          }`}>
           <h2 className={compact ? "text-base font-bold" : "text-xl font-bold"}>
-            Payment Methods
+            Payment Provider
           </h2>
-          <button
-            className={`font-bold text-primary transition-opacity hover:opacity-80 ${
-              compact ? "text-xs" : "text-sm"
-            }`}
-            onClick={() => onManagePayment("Adding a new payment method")}
-            type="button">
-            Add Method
-          </button>
-        </div>
-
-        <div className={compact ? "space-y-2" : "space-y-3"}>
-          {paymentMethods.map((method) => (
-            <button
-              className={`flex w-full items-center justify-between text-left transition-colors hover:border-primary/30 hover:bg-primary/5 dark:border-primary/10 dark:bg-background-dark/50 ${
-                compact
-                  ? "rounded-lg border border-slate-200 bg-slate-50 px-3 py-3"
-                  : "rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4"
-              }`}
-              key={method.id}
-              onClick={() => onManagePayment(`Managing ${method.label}`)}
-              type="button">
-              <div
-                className={`flex items-center ${compact ? "gap-3" : "gap-4"}`}>
-                <div
-                  className={`rounded-xl bg-primary/10 text-primary ${
-                    compact ? "p-2" : "rounded-2xl p-3"
-                  }`}>
-                  <span
-                    className={`material-symbols-outlined ${compact ? "text-lg" : ""}`}>
-                    {method.icon}
-                  </span>
-                </div>
-                <div>
-                  <div className="flex flex-wrap items-center gap-1.5">
-                    <p className={compact ? "text-sm font-bold" : "font-bold"}>
-                      {method.label}
-                    </p>
-                    {method.primary ? (
-                      <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[9px] font-bold uppercase text-primary">
-                        Primary
-                      </span>
-                    ) : null}
-                  </div>
-                  <p
-                    className={
-                      compact
-                        ? "text-xs text-slate-500"
-                        : "text-sm text-slate-500 dark:text-slate-400"
-                    }>
-                    {method.detail}
-                  </p>
-                </div>
-              </div>
-              <span
-                className={`material-symbols-outlined text-slate-400 ${compact ? "text-lg" : ""}`}>
-                chevron_right
+          <div className={`flex items-center gap-3 ${compact ? "mt-3" : "mt-4"}`}>
+            <div className={`rounded-xl bg-primary/10 text-primary ${compact ? "p-2" : "rounded-2xl p-3"}`}>
+              <span className={`material-symbols-outlined ${compact ? "text-lg" : ""}`}>
+                payments
               </span>
-            </button>
-          ))}
-        </div>
-      </section>
+            </div>
+            <div>
+              <p className={compact ? "text-sm font-bold" : "font-bold"}>
+                {checkoutProvider === "paystack" ? "Paystack" : checkoutProvider === "stripe" ? "Stripe" : "Payment Provider"}
+              </p>
+              <p className={compact ? "text-xs text-slate-500" : "text-sm text-slate-500 dark:text-slate-400"}>
+                Managed by {checkoutProvider === "paystack" ? "Paystack" : checkoutProvider === "stripe" ? "Stripe" : "provider"}
+              </p>
+            </div>
+          </div>
+
+          {!subscription?.cancelAtPeriodEnd && (
+            <div className={compact ? "mt-4" : "mt-6"}>
+              {showCancelConfirm ? (
+                <div className={`rounded-xl border border-rose-200 bg-rose-50 dark:border-rose-500/30 dark:bg-rose-500/10 ${compact ? "p-3" : "p-4"}`}>
+                  <p className={`font-bold text-rose-700 dark:text-rose-200 ${compact ? "text-sm" : ""}`}>
+                    Are you sure you want to cancel?
+                  </p>
+                  <p className={`text-rose-600 dark:text-rose-300 ${compact ? "mt-1 text-xs" : "mt-2 text-sm"}`}>
+                    You'll retain access until the end of your current billing period.
+                  </p>
+                  <div className={`flex gap-3 ${compact ? "mt-3" : "mt-4"}`}>
+                    <button
+                      className={`rounded-lg bg-rose-600 font-bold text-white disabled:opacity-50 ${compact ? "px-3 py-2 text-xs" : "px-4 py-2.5 text-sm"}`}
+                      disabled={isCancellingSubscription}
+                      onClick={cancelSubscription}
+                      type="button"
+                    >
+                      {isCancellingSubscription ? "Cancelling..." : "Confirm Cancel"}
+                    </button>
+                    <button
+                      className={`rounded-lg border border-slate-200 font-bold dark:border-primary/20 ${compact ? "px-3 py-2 text-xs" : "px-4 py-2.5 text-sm"}`}
+                      onClick={() => onCancelConfirm(false)}
+                      type="button"
+                    >
+                      Keep Plan
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <button
+                  className={`font-bold text-rose-500 transition-opacity hover:opacity-80 ${compact ? "text-xs" : "text-sm"}`}
+                  onClick={() => onCancelConfirm(true)}
+                  type="button"
+                >
+                  Cancel Subscription
+                </button>
+              )}
+            </div>
+          )}
+
+          {subscription?.cancelAtPeriodEnd && (
+            <div className={`rounded-xl border border-amber-200 bg-amber-50 dark:border-amber-500/30 dark:bg-amber-500/10 ${compact ? "mt-4 p-3" : "mt-6 p-4"}`}>
+              <p className={`font-bold text-amber-700 dark:text-amber-200 ${compact ? "text-sm" : ""}`}>
+                Subscription cancellation scheduled
+              </p>
+              <p className={`text-amber-600 dark:text-amber-300 ${compact ? "mt-1 text-xs" : "mt-2 text-sm"}`}>
+                Your plan remains active until {subscription.currentPeriodEnd
+                  ? new Date(subscription.currentPeriodEnd).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })
+                  : "the end of the current period"}.
+              </p>
+            </div>
+          )}
+        </section>
+      )}
 
       <section
         className={`rounded-xl border border-primary/10 bg-white/80 dark:bg-primary/5 ${
@@ -399,7 +432,10 @@ function BillingSections({
 }
 
 function DesktopBillingSettings({
-  onManagePayment,
+  cancelSubscription,
+  checkoutProvider,
+  isCancellingSubscription,
+  onCancelConfirm,
   purchaseHistoryError,
   purchases,
   purchasesLoading,
@@ -410,6 +446,8 @@ function DesktopBillingSettings({
   activePlanId,
   getDisplayPlan,
   hasPremium,
+  showCancelConfirm,
+  subscription,
 }) {
   return (
     <div className="hidden min-h-screen bg-background-light font-display text-slate-900 dark:bg-background-dark dark:text-slate-100 md:block">
@@ -448,14 +486,21 @@ function DesktopBillingSettings({
                     currency={currency}
                     getDisplayPlan={getDisplayPlan}
                     hasPremium={hasPremium}
+                    subscription={subscription}
                   />
                 </Reveal>
                 <Reveal>
                   <BillingSections
-                    onManagePayment={onManagePayment}
+                    cancelSubscription={cancelSubscription}
+                    checkoutProvider={checkoutProvider}
+                    hasPremium={hasPremium}
+                    isCancellingSubscription={isCancellingSubscription}
+                    onCancelConfirm={onCancelConfirm}
                     purchaseHistoryError={purchaseHistoryError}
                     purchases={purchases}
                     purchasesLoading={purchasesLoading}
+                    showCancelConfirm={showCancelConfirm}
+                    subscription={subscription}
                   />
                 </Reveal>
               </div>
@@ -468,7 +513,10 @@ function DesktopBillingSettings({
 }
 
 function MobileBillingSettings({
-  onManagePayment,
+  cancelSubscription,
+  checkoutProvider,
+  isCancellingSubscription,
+  onCancelConfirm,
   purchaseHistoryError,
   purchases,
   purchasesLoading,
@@ -478,6 +526,8 @@ function MobileBillingSettings({
   activePlanId,
   getDisplayPlan,
   hasPremium,
+  showCancelConfirm,
+  subscription,
 }) {
   return (
     <div className="min-h-screen bg-background-light font-display text-slate-900 dark:bg-background-dark dark:text-slate-100 md:hidden">
@@ -509,13 +559,20 @@ function MobileBillingSettings({
               currency={currency}
               getDisplayPlan={getDisplayPlan}
               hasPremium={hasPremium}
+              subscription={subscription}
             />
             <BillingSections
+              cancelSubscription={cancelSubscription}
+              checkoutProvider={checkoutProvider}
               compact
-              onManagePayment={onManagePayment}
+              hasPremium={hasPremium}
+              isCancellingSubscription={isCancellingSubscription}
+              onCancelConfirm={onCancelConfirm}
               purchaseHistoryError={purchaseHistoryError}
               purchases={purchases}
               purchasesLoading={purchasesLoading}
+              showCancelConfirm={showCancelConfirm}
+              subscription={subscription}
             />
           </div>
         </main>
@@ -528,14 +585,18 @@ function MobileBillingSettings({
 
 export default function BillingSettingsPage() {
   const { isAuthenticated } = useAuth();
-  const { profile, showNotice } = useAccount();
+  const { profile } = useAccount();
   const {
     activePlanId,
     billingCycle,
+    cancelSubscription,
+    checkoutProvider,
     coinBalance,
     currency,
     getDisplayPlan,
     hasPremium,
+    isCancellingSubscription,
+    subscription,
   } = useMonetization();
   const purchaseHistoryQuery = useQuery({
     enabled: isAuthenticated,
@@ -543,37 +604,44 @@ export default function BillingSettingsPage() {
     queryKey: ["monetization", "purchases"],
   });
   const purchases = purchaseHistoryQuery.data?.purchases ?? [];
-
-  function handleManagePayment(message) {
-    showNotice(`${message} is available in the next secure billing step.`);
-  }
+  const [showCancelConfirm, setShowCancelConfirm] = useState(false);
 
   return (
     <>
       <DesktopBillingSettings
         activePlanId={activePlanId}
         billingCycle={billingCycle}
+        cancelSubscription={cancelSubscription}
+        checkoutProvider={checkoutProvider}
         coinBalance={coinBalance}
         currency={currency}
         getDisplayPlan={getDisplayPlan}
         hasPremium={hasPremium}
-        onManagePayment={handleManagePayment}
+        isCancellingSubscription={isCancellingSubscription}
+        onCancelConfirm={setShowCancelConfirm}
         purchaseHistoryError={purchaseHistoryQuery.error}
         purchases={purchases}
         purchasesLoading={purchaseHistoryQuery.isLoading}
         profile={profile}
+        showCancelConfirm={showCancelConfirm}
+        subscription={subscription}
       />
       <MobileBillingSettings
         activePlanId={activePlanId}
         billingCycle={billingCycle}
+        cancelSubscription={cancelSubscription}
+        checkoutProvider={checkoutProvider}
         coinBalance={coinBalance}
         currency={currency}
         getDisplayPlan={getDisplayPlan}
         hasPremium={hasPremium}
-        onManagePayment={handleManagePayment}
+        isCancellingSubscription={isCancellingSubscription}
+        onCancelConfirm={setShowCancelConfirm}
         purchaseHistoryError={purchaseHistoryQuery.error}
         purchases={purchases}
         purchasesLoading={purchaseHistoryQuery.isLoading}
+        showCancelConfirm={showCancelConfirm}
+        subscription={subscription}
       />
     </>
   );

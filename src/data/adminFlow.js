@@ -8,6 +8,7 @@ export const adminUsersHref = "/admin/users";
 export const adminModerationHref = "/admin/moderation";
 export const adminMonetizationHref = "/admin/monetization";
 export const adminMessagesHref = "/admin/messages";
+export const adminHelpCenterHref = "/admin/help-center";
 export const adminSettingsHref = "/admin/settings";
 export const adminActivityHref = "/admin/activity";
 
@@ -67,6 +68,12 @@ export const adminQuickLinks = [
     detail: "Answer creator and support conversations",
     href: adminMessagesHref,
     icon: "chat_bubble",
+  },
+  {
+    title: "Help Center",
+    detail: "Publish and retire support articles shown on the account help page",
+    href: adminHelpCenterHref,
+    icon: "help",
   },
 ];
 

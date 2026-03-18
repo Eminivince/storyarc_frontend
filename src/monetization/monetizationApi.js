@@ -82,3 +82,9 @@ export function sendGiftApi(input) {
     headers: getAuthHeaders(),
   });
 }
+
+export function cancelSubscriptionApi() {
+  return postJson("/monetization/subscription/cancel", undefined, {
+    headers: getAuthHeaders(),
+  });
+}

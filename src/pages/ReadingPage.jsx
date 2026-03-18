@@ -33,6 +33,7 @@ import { recordReadingTime } from "../engagement/engagementApi";
 import ParagraphReactionOverlay, {
   MobileParagraphReactionOverlay,
 } from "../components/ParagraphReactionOverlay";
+import { useMonetization } from "../context/MonetizationContext";
 import { getStoredReadingTheme, persistReadingTheme } from "../lib/readingTheme";
 import { isChapterAvailableOffline } from "../lib/offlineStorage";
 
@@ -779,6 +780,7 @@ function MobileReader({
 
 export default function ReadingPage() {
   const { storySlug, chapterSlug } = useParams();
+  const { hasPremium } = useMonetization();
   const { readingTheme } = useOnboarding();
   const { showToast } = useToast();
   const { isOnline } = useOnlineStatus();
@@ -1037,7 +1039,7 @@ export default function ReadingPage() {
     );
   }
 
-  if (chapter.isLocked) {
+  if (chapter.isLocked && !hasPremium) {
     return (
       <Navigate
         replace

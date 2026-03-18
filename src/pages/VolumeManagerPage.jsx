@@ -16,10 +16,11 @@ import {
 } from "../data/creatorFlow";
 
 function getStructureStats(story) {
-  const totalVolumes = story.volumes.length;
-  const totalArcs = story.volumes.reduce((count, volume) => count + volume.arcCount, 0);
-  const totalChapters = story.volumes.reduce((count, volume) => count + volume.chapterCount, 0);
-  const completion = story.stats.completion || `${story.progress}%`;
+  const volumes = story.volumes ?? [];
+  const totalVolumes = volumes.length;
+  const totalArcs = volumes.reduce((count, volume) => count + (volume.arcCount ?? 0), 0);
+  const totalChapters = volumes.reduce((count, volume) => count + (volume.chapterCount ?? 0), 0);
+  const completion = story.stats?.completion || `${story.progress ?? 0}%`;
 
   return {
     totalVolumes,
@@ -107,7 +108,24 @@ function DesktopVolumeManager({
             </div>
 
             <div className="space-y-10">
-              {story.volumes.map((volume, index) => (
+              {!story.volumes?.length ? (
+                <div className="flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-primary/20 bg-[#221e10] p-12 text-center">
+                  <span className="material-symbols-outlined mb-4 text-5xl text-primary/40">format_list_numbered</span>
+                  <h3 className="text-lg font-bold text-slate-300">Flat Chapter Ordering</h3>
+                  <p className="mt-2 max-w-md text-sm text-slate-500">
+                    This story uses flat chapter ordering. Create a volume to start organizing chapters into structured volumes and arcs.
+                  </p>
+                  <button
+                    className="mt-6 flex items-center gap-2 rounded-lg bg-primary px-6 py-3 text-sm font-bold text-background-dark transition-transform hover:scale-[1.02]"
+                    onClick={onAddVolume}
+                    type="button"
+                  >
+                    <span className="material-symbols-outlined text-sm">add_circle</span>
+                    Organize into Volumes
+                  </button>
+                </div>
+              ) : null}
+              {(story.volumes ?? []).map((volume, index) => (
                 <section className={`relative ${index > 0 && volume.status === "Outline Only" ? "opacity-60 transition-opacity hover:opacity-100" : ""}`} key={volume.id}>
                   <div className="mb-4 flex items-center justify-between px-2">
                     <div className="flex items-center gap-4">
@@ -232,7 +250,22 @@ function MobileVolumeManager({ onAddVolume, story }) {
         </div>
 
         <div className="space-y-4">
-          {story.volumes.map((volume) => (
+          {!story.volumes?.length ? (
+            <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-primary/20 bg-primary/5 p-8 text-center">
+              <span className="material-symbols-outlined mb-3 text-4xl text-primary/40">format_list_numbered</span>
+              <h3 className="font-bold">Flat Chapter Ordering</h3>
+              <p className="mt-1 text-sm text-slate-500">Chapters are listed in order without volume grouping.</p>
+              <button
+                className="mt-4 flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-bold text-background-dark active:scale-95"
+                onClick={onAddVolume}
+                type="button"
+              >
+                <span className="material-symbols-outlined text-sm">add_circle</span>
+                Organize into Volumes
+              </button>
+            </div>
+          ) : null}
+          {(story.volumes ?? []).map((volume) => (
             <Reveal className="overflow-hidden rounded-xl border border-slate-200 bg-slate-100 dark:border-primary/10 dark:bg-primary/5" key={volume.id}>
               <div className="flex items-center gap-3 p-4">
                 <span className="material-symbols-outlined text-slate-400 dark:text-primary/40">drag_indicator</span>

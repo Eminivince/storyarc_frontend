@@ -17,6 +17,7 @@ import {
   followingHref,
 } from "../data/readerFlow";
 import { useCreator } from "../context/CreatorContext";
+import { useMonetization } from "../context/MonetizationContext";
 import { useOnboarding } from "../context/OnboardingContext";
 import { useReaderDashboardQuery } from "../reader/readerHooks";
 import {
@@ -157,9 +158,11 @@ function ActiveChallengesWidget({ challenges }) {
 }
 
 function DesktopDashboard({
+  accountTier,
   activeChallenges,
   activityFeed,
   data,
+  hasPremium,
   isActivityLoading,
   onSearchSubmit,
   searchTerm,
@@ -195,6 +198,11 @@ function DesktopDashboard({
                 to={followingHref}>
                 Following
               </Link>
+              {hasPremium && (
+                <span className="hidden rounded-full bg-primary/10 px-3 py-1.5 text-xs font-bold text-primary lg:inline-flex">
+                  {accountTier}
+                </span>
+              )}
               <Link
                 className="relative flex size-10 items-center justify-center rounded-full text-slate-600 hover:bg-primary/10 dark:text-slate-300"
                 to={notificationsHref}>
@@ -521,6 +529,7 @@ function MobileDashboard({
 export default function DashboardPage() {
   const navigate = useNavigate();
   const { enterWriterMode, getCreatorEntryHref } = useCreator();
+  const { accountTier, hasPremium } = useMonetization();
   const { selectedGenres } = useOnboarding();
   const { data, error, isError, isLoading } = useReaderDashboardQuery();
   const challengesQuery = useActiveChallengesQuery();
@@ -595,9 +604,11 @@ export default function DashboardPage() {
         open={showWelcomeBack}
       />
       <DesktopDashboard
+        accountTier={accountTier}
         activeChallenges={challengesQuery.data}
         activityFeed={activityFeedQuery.data}
         data={data}
+        hasPremium={hasPremium}
         isActivityLoading={activityFeedQuery.isLoading}
         onSearchSubmit={handleSearchSubmit}
         onWriteStory={handleWriteStory}
