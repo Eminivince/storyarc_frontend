@@ -6,6 +6,7 @@ import RareBadge from "./RareBadge";
 const EpicBadge = lazy(() => import("./EpicBadge"));
 const LegendaryBadge = lazy(() => import("./LegendaryBadge"));
 
+console.log("BadgeVisual");
 
 function FallbackIcon({ title, color }) {
   return (
