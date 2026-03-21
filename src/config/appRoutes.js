@@ -63,6 +63,7 @@ const CreatorOnboardingPage = lazy(() =>
 );
 const CreateStoryPage = lazy(() => import("../pages/CreateStoryPage"));
 const DashboardPage = lazy(() => import("../pages/DashboardPage"));
+const DashboardShelfPage = lazy(() => import("../pages/DashboardShelfPage"));
 const EditProfilePage = lazy(() => import("../pages/EditProfilePage"));
 const FollowingPage = lazy(() => import("../pages/FollowingPage"));
 const ForgotPasswordPage = lazy(() => import("../pages/ForgotPasswordPage"));
@@ -256,6 +257,11 @@ export const appRouteGroups = [
     flow: "Dashboard to search, detail, reading, report, completion, and locked access.",
     routes: [
       { path: "/dashboard", component: DashboardPage, page: "DashboardPage" },
+      {
+        path: "/dashboard/shelf/:shelfId",
+        component: DashboardShelfPage,
+        page: "DashboardShelfPage",
+      },
       { path: "/browse", component: BrowsePage, page: "BrowsePage" },
       { path: "/following", component: FollowingPage, page: "FollowingPage" },
       { path: "/library", component: ReaderLibraryPage, page: "ReaderLibraryPage" },

@@ -12,6 +12,7 @@ import RouteLoadingScreen from "../components/RouteLoadingScreen";
 import { notificationsHref } from "../data/accountFlow";
 import {
   buildChapterHref,
+  buildDashboardShelfHref,
   buildSearchHref,
   buildStoryHref,
   followingHref,
@@ -61,9 +62,11 @@ function StoryRow({ row }) {
     <Reveal as="section" className="space-y-5">
       <div className="flex items-center justify-between gap-4">
         <h2 className="text-2xl font-bold">{row.title}</h2>
-        <span className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">
-          {row.stories.length} stories
-        </span>
+        <Link
+          className="shrink-0 text-xs font-semibold uppercase tracking-[0.22em] text-primary transition-colors hover:underline"
+          to={buildDashboardShelfHref(row.id)}>
+          See all
+        </Link>
       </div>
 
       <div className="grid grid-cols-2 gap-4 xl:grid-cols-3 2xl:grid-cols-6">
@@ -483,9 +486,11 @@ function MobileDashboard({
             <Reveal as="section" className="space-y-3" key={row.id}>
               <div className="flex items-center justify-between gap-2">
                 <h2 className="text-base font-bold">{row.title}</h2>
-                <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-400">
-                  {row.stories.length}
-                </span>
+                <Link
+                  className="shrink-0 text-[10px] font-semibold uppercase tracking-[0.18em] text-primary hover:underline"
+                  to={buildDashboardShelfHref(row.id)}>
+                  See all
+                </Link>
               </div>
               <div className="flex gap-3 overflow-x-auto pb-1 no-scrollbar">
                 {row.stories.map((story) => (

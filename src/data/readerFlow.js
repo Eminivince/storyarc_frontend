@@ -6,6 +6,12 @@ export function buildReadingListDetailsHref(listId) {
 export const followingHref = "/following";
 export const rankingsHref = "/rankings";
 
+export const DASHBOARD_SHELF_IDS = ["for-you", "trending", "fresh"];
+
+export function buildDashboardShelfHref(shelfId) {
+  return shelfId ? `/dashboard/shelf/${encodeURIComponent(shelfId)}` : "/dashboard";
+}
+
 export function buildSharedReadingListHref(shareSlug) {
   return shareSlug ? `/reading-lists/shared/${shareSlug}` : readingListsHref;
 }

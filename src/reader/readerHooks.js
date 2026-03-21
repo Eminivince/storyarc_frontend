@@ -1,4 +1,5 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { DASHBOARD_SHELF_IDS } from "../data/readerFlow";
 import {
   addStoryToReadingList,
   createReadingList,
@@ -17,6 +18,7 @@ import {
   fetchBookmarks,
   fetchChapter,
   fetchReaderDashboard,
+  fetchReaderDashboardShelf,
   fetchReaderHome,
   fetchReaderStories,
   fetchSharedReadingList,
@@ -91,6 +93,25 @@ export function useReaderDashboardQuery() {
     queryKey: ["reader", "dashboard"],
     queryFn: fetchReaderDashboard,
     staleTime: STALE_2_MIN,
+  });
+}
+
+export function useReaderDashboardShelfInfiniteQuery(shelfId) {
+  const validShelf =
+    typeof shelfId === "string" && DASHBOARD_SHELF_IDS.includes(shelfId);
+
+  return useInfiniteQuery({
+    queryKey: ["reader", "dashboard-shelf", shelfId],
+    queryFn: ({ pageParam }) =>
+      fetchReaderDashboardShelf({
+        shelfId,
+        limit: 10,
+        offset: pageParam,
+      }),
+    initialPageParam: 0,
+    getNextPageParam: (lastPage) => lastPage.pageInfo?.nextOffset ?? undefined,
+    staleTime: STALE_2_MIN,
+    enabled: validShelf,
   });
 }
 

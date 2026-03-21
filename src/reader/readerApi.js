@@ -21,6 +21,16 @@ export function fetchReaderDashboard() {
   });
 }
 
+export function fetchReaderDashboardShelf({ shelfId, limit = 10, offset = 0 } = {}) {
+  const params = new URLSearchParams();
+  params.set("limit", String(limit));
+  params.set("offset", String(offset));
+
+  return getJson(`/reader/dashboard/shelf/${encodeURIComponent(shelfId)}?${params.toString()}`, {
+    headers: getAuthHeaders(),
+  });
+}
+
 export function fetchReaderFollowing() {
   return getJson("/reader/following", {
     headers: getAuthHeaders(),
