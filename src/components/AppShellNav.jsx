@@ -26,6 +26,7 @@ import {
   creatorCommunityHref,
   creatorEarningsHref,
   creatorStoriesHref,
+  getCreatorChapterBinHref,
   getCreatorScheduledChaptersHref,
   getCreatorVolumeManagerHref,
 } from "../data/creatorFlow";
@@ -111,6 +112,17 @@ function getReaderConfig(topGenre, creatorEntryHref = "/creator") {
 }
 
 function getCreatorConfig(storySlug) {
+  const chapterBinSecondary = storySlug
+    ? [
+        {
+          id: "chapter-bin",
+          icon: "delete_sweep",
+          label: "Bin",
+          href: getCreatorChapterBinHref(storySlug),
+        },
+      ]
+    : [];
+
   return {
     homeHref: authorDashboardHref,
     primary: [
@@ -141,6 +153,7 @@ function getCreatorConfig(storySlug) {
     ],
     secondaryTitle: "Studio",
     secondary: [
+      ...chapterBinSecondary,
       {
         id: "earnings",
         icon: "payments",
@@ -404,6 +417,10 @@ function getActiveKey(mode, pathname) {
 
     if (pathname.includes("/structure")) {
       return "structure";
+    }
+
+    if (pathname.includes("/chapter-bin")) {
+      return "chapter-bin";
     }
 
     if (pathname.startsWith("/creator/stories")) {

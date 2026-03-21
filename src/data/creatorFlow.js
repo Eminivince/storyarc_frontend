@@ -28,6 +28,10 @@ export function getCreatorVolumeManagerHref(storySlug) {
   return buildCreatorStoryHref(storySlug, "/structure");
 }
 
+export function getCreatorChapterBinHref(storySlug) {
+  return storySlug ? buildCreatorStoryHref(storySlug, "/chapter-bin") : creatorStoriesHref;
+}
+
 export function getCreatorScheduledChaptersHref(storySlug) {
   return buildCreatorStoryHref(storySlug, "/schedule");
 }

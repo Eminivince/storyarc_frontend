@@ -82,6 +82,20 @@ export function publishStudioChapter(chapterId, input) {
   });
 }
 
+export function moveStudioChapterToBin(storySlug, chapterId) {
+  return requestJson(`/studio/stories/${storySlug}/chapters/${chapterId}/bin`, {
+    headers: getAuthHeaders(),
+    method: "POST",
+  });
+}
+
+export function restoreStudioChapterFromBin(storySlug, chapterId) {
+  return requestJson(`/studio/stories/${storySlug}/chapters/${chapterId}/restore`, {
+    headers: getAuthHeaders(),
+    method: "POST",
+  });
+}
+
 export function saveStudioStructure(storySlug, input) {
   return requestJson(`/studio/stories/${storySlug}/structure`, {
     body: input,

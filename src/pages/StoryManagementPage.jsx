@@ -10,6 +10,7 @@ import { useCreator } from "../context/CreatorContext";
 import {
   creatorStoriesHref,
   creatorStoryCreateHref,
+  getCreatorChapterBinHref,
   getCreatorChapterEditorHref,
   getCreatorPublishedChaptersHref,
   getCreatorScheduledChaptersHref,
@@ -51,6 +52,13 @@ function getQuickManagementCards(storySlug) {
       description: "See upcoming chapter drops and keep cadence steady.",
       icon: "schedule",
       href: getCreatorScheduledChaptersHref(storySlug),
+      tone: "subtle",
+    },
+    {
+      title: "Chapter bin",
+      description: "Park drafts you are not working on; restore them anytime.",
+      icon: "delete_sweep",
+      href: getCreatorChapterBinHref(storySlug),
       tone: "subtle",
     },
   ];
@@ -206,6 +214,14 @@ function DesktopStoryManagement({ onPreview, story }) {
                   <span className="rounded border border-primary/20 bg-primary/10 px-2 py-0.5 text-xs font-bold text-primary">
                     {story.recentChapters.length} VISIBLE
                   </span>
+                  {Number(story.stats?.binnedChapters ?? 0) > 0 ? (
+                    <Link
+                      className="rounded border border-amber-500/30 bg-amber-500/10 px-2 py-0.5 text-xs font-bold text-amber-800 dark:text-amber-200"
+                      to={getCreatorChapterBinHref(story.slug)}
+                    >
+                      {story.stats.binnedChapters} in bin
+                    </Link>
+                  ) : null}
                 </div>
                 <Link className="flex items-center gap-1 text-sm font-bold text-primary hover:underline" to={getCreatorPublishedChaptersHref(story.slug)}>
                   See All Chapters
@@ -328,6 +344,13 @@ function MobileStoryManagement({ onPreview, story }) {
               Release Queue
             </Link>
           </div>
+          <Link
+            className="w-full max-w-md rounded-lg border border-primary/20 bg-slate-200 px-3 py-2 text-center text-[10px] font-bold text-slate-700 transition-colors hover:bg-primary/15 dark:bg-primary/10 dark:text-primary"
+            to={getCreatorChapterBinHref(story.slug)}
+          >
+            Chapter bin
+            {Number(story.stats?.binnedChapters ?? 0) > 0 ? ` (${story.stats.binnedChapters})` : ""}
+          </Link>
           <button
             className="rounded-lg border border-primary/20 bg-primary/10 px-4 py-1.5 text-xs font-bold text-primary"
             onClick={onPreview}

@@ -13,6 +13,7 @@ import { useCreator } from "../context/CreatorContext";
 import {
   authorDashboardHref,
   creatorStoryCreateHref,
+  getCreatorChapterBinHref,
   getCreatorPublishedChaptersHref,
   getCreatorScheduledChaptersHref,
   getCreatorStoryManagementHref,
@@ -41,6 +42,7 @@ function getDraftSignature(draft) {
     authorsNote: draft.authorsNote,
     body: draft.body,
     coinUnlockPrice: draft.coinUnlockPrice,
+    isBinned: draft.isBinned ?? false,
     number: draft.number,
     publishType: draft.publishType,
     premiumEnabled: draft.premiumEnabled,
@@ -72,15 +74,18 @@ function getArcOptions(story, volumeId) {
 
 function DesktopChapterEditor({
   arcOptions,
+  chapterBinned,
   draft,
+  isBinActionPending,
   onBack,
   onBodyChange,
   onCoinPriceChange,
-  onFieldChange,
+  onMoveToBin,
   onPremiumToggle,
   onPreview,
   onPublish,
   onPublishTypeChange,
+  onRestoreFromBin,
   onSaveDraft,
   onToggleSettings,
   onWarningToggle,
@@ -135,9 +140,20 @@ function DesktopChapterEditor({
                 type="button">
                 Save Draft
               </button>
+              {draft.chapterId && !chapterBinned ? (
+                <button
+                  className="h-10 rounded-lg border border-amber-500/40 px-3 text-sm font-bold text-amber-100 transition-colors hover:border-amber-400/60 hover:bg-amber-500/10 disabled:opacity-50"
+                  disabled={isBinActionPending}
+                  onClick={onMoveToBin}
+                  type="button">
+                  Move to bin
+                </button>
+              ) : null}
               <button
-                className="h-10 rounded-lg bg-primary px-6 text-sm font-bold text-background-dark transition-colors hover:bg-primary/90"
+                className="h-10 rounded-lg bg-primary px-6 text-sm font-bold text-background-dark transition-colors hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-40"
+                disabled={chapterBinned || isBinActionPending}
                 onClick={onPublish}
+                title={chapterBinned ? "Restore from bin to publish or schedule" : undefined}
                 type="button">
                 {draft.publishType === "scheduled" ? "Schedule" : "Publish"}
               </button>
@@ -148,6 +164,26 @@ function DesktopChapterEditor({
               </button>
             </div>
           </header>
+
+          {chapterBinned ? (
+            <div className="flex shrink-0 flex-wrap items-center justify-between gap-3 border-b border-amber-500/25 bg-amber-500/10 px-8 py-3 text-sm text-amber-950 dark:text-amber-50">
+              <p className="flex min-w-0 flex-1 items-center gap-2">
+                <span className="material-symbols-outlined shrink-0 text-amber-600 dark:text-amber-300">
+                  inventory_2
+                </span>
+                <span>
+                  This chapter is in your studio bin. Restore it to publish or show it in your main chapter lists again.
+                </span>
+              </p>
+              <button
+                className="shrink-0 rounded-lg bg-amber-600 px-4 py-1.5 text-xs font-bold text-white transition-opacity hover:opacity-90 disabled:opacity-50"
+                disabled={isBinActionPending}
+                onClick={onRestoreFromBin}
+                type="button">
+                {isBinActionPending ? "Restoring…" : "Restore from bin"}
+              </button>
+            </div>
+          ) : null}
 
           <div className="relative flex flex-1 overflow-hidden">
             <button
@@ -257,7 +293,8 @@ function DesktopChapterEditor({
                       <label className="flex items-center gap-3">
                         <input
                           checked={draft.publishType === "now"}
-                          className="border-[#393528] bg-[#27241b] text-primary focus:ring-primary"
+                          className="border-[#393528] bg-[#27241b] text-primary focus:ring-primary disabled:opacity-40"
+                          disabled={chapterBinned}
                           name="publish_type"
                           onChange={() => onPublishTypeChange("now")}
                           type="radio"
@@ -270,7 +307,8 @@ function DesktopChapterEditor({
                         <label className="flex items-center gap-3">
                           <input
                             checked={draft.publishType === "scheduled"}
-                            className="border-[#393528] bg-[#27241b] text-primary focus:ring-primary"
+                            className="border-[#393528] bg-[#27241b] text-primary focus:ring-primary disabled:opacity-40"
+                            disabled={chapterBinned}
                             name="publish_type"
                             onChange={() => onPublishTypeChange("scheduled")}
                             type="radio"
@@ -280,7 +318,8 @@ function DesktopChapterEditor({
                           </span>
                         </label>
                         <input
-                          className="w-full rounded-lg border border-[#393528] bg-[#27241b] p-2.5 text-sm text-slate-300 focus:border-primary focus:ring-0"
+                          className="w-full rounded-lg border border-[#393528] bg-[#27241b] p-2.5 text-sm text-slate-300 focus:border-primary focus:ring-0 disabled:opacity-40"
+                          disabled={chapterBinned}
                           name="scheduledFor"
                           onChange={onFieldChange}
                           type="datetime-local"
@@ -491,14 +530,18 @@ function DesktopChapterEditor({
 
 function MobileChapterEditor({
   arcOptions,
+  chapterBinned,
   draft,
+  isBinActionPending,
   onBack,
   onBodyChange,
   onCoinPriceChange,
   onFieldChange,
+  onMoveToBin,
   onPublish,
   onPremiumToggle,
   onPublishTypeChange,
+  onRestoreFromBin,
   onToggleSettings,
   onWarningToggle,
   showSettings,
@@ -536,13 +579,32 @@ function MobileChapterEditor({
             <span className="material-symbols-outlined text-xl">more_vert</span>
           </button>
           <button
-            className="rounded-lg bg-primary px-4 py-1.5 text-xs font-bold text-background-dark transition-transform active:scale-95"
+            className="rounded-lg bg-primary px-4 py-1.5 text-xs font-bold text-background-dark transition-transform active:scale-95 disabled:opacity-40"
+            disabled={chapterBinned || isBinActionPending}
             onClick={onPublish}
             type="button">
             {draft.publishType === "scheduled" ? "Schedule" : "Publish"}
           </button>
         </div>
       </header>
+
+      {chapterBinned ? (
+        <div className="space-y-2 border-b border-amber-500/25 bg-amber-500/10 px-4 py-3 text-xs text-amber-950 dark:text-amber-50">
+          <p className="flex items-start gap-2">
+            <span className="material-symbols-outlined shrink-0 text-base text-amber-600 dark:text-amber-300">
+              inventory_2
+            </span>
+            <span>In bin — restore to publish or show in main lists.</span>
+          </p>
+          <button
+            className="w-full rounded-lg bg-amber-600 py-2 text-xs font-bold text-white disabled:opacity-50"
+            disabled={isBinActionPending}
+            onClick={onRestoreFromBin}
+            type="button">
+            {isBinActionPending ? "Restoring…" : "Restore from bin"}
+          </button>
+        </div>
+      ) : null}
 
       <main className="flex flex-1 flex-col overflow-y-auto pb-24">
         <div className="px-4 pt-4 pb-2">
@@ -733,6 +795,7 @@ function MobileChapterEditor({
                   <input
                     checked={draft.publishType === "now"}
                     className="size-3.5"
+                    disabled={chapterBinned}
                     onChange={() => onPublishTypeChange("now")}
                     type="radio"
                   />
@@ -742,13 +805,15 @@ function MobileChapterEditor({
                   <input
                     checked={draft.publishType === "scheduled"}
                     className="size-3.5"
+                    disabled={chapterBinned}
                     onChange={() => onPublishTypeChange("scheduled")}
                     type="radio"
                   />
                   Schedule for later
                 </label>
                 <input
-                  className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm focus:border-primary focus:ring-primary dark:border-primary/10 dark:bg-background-dark/70"
+                  className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm focus:border-primary focus:ring-primary dark:border-primary/10 dark:bg-background-dark/70 disabled:opacity-40"
+                  disabled={chapterBinned}
                   name="scheduledFor"
                   onChange={onFieldChange}
                   type="datetime-local"
@@ -756,6 +821,17 @@ function MobileChapterEditor({
                 />
               </div>
             </div>
+
+            {draft.chapterId && !chapterBinned ? (
+              <button
+                className="w-full rounded-lg border border-amber-500/40 py-2.5 text-xs font-bold text-amber-800 transition-colors hover:bg-amber-500/10 dark:text-amber-200"
+                disabled={isBinActionPending}
+                onClick={onMoveToBin}
+                type="button"
+              >
+                Move chapter to bin
+              </button>
+            ) : null}
 
             <div className="rounded-lg border border-slate-200 p-3 dark:border-primary/10">
               <div className="mb-2 flex items-center gap-2">
@@ -800,7 +876,9 @@ export default function ChapterEditorPage() {
     isLoadingChapterDraft,
     isStudioLoading,
     loadChapterDraft,
+    moveChapterToStudioBin,
     publishChapter,
+    restoreChapterFromStudioBin,
     saveChapterDraft,
     scheduleChapter,
     setActiveStory,
@@ -809,6 +887,7 @@ export default function ChapterEditorPage() {
   } = useCreator();
   const chapterId = searchParams.get("chapterId");
   const [isPublishing, setIsPublishing] = useState(false);
+  const [isBinActionPending, setIsBinActionPending] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const autosaveStateRef = useRef({
     initialized: false,
@@ -818,6 +897,7 @@ export default function ChapterEditorPage() {
 
   const story = getStory(storySlug);
   const draft = getChapterDraft(storySlug, chapterId);
+  const chapterBinned = Boolean(draft.isBinned);
   const wordCount = getWordCount(draft.body);
   const readTime = Math.max(1, Math.ceil(wordCount / 225));
   const volumeOptions = story ? getVolumeOptions(story) : [];
@@ -1021,6 +1101,11 @@ export default function ChapterEditorPage() {
   }
 
   async function handlePublish() {
+    if (chapterBinned) {
+      showCreatorNotice("Restore this chapter from the bin before publishing or scheduling.", "info");
+      return;
+    }
+
     setIsPublishing(true);
     try {
       if (draft.publishType === "scheduled") {
@@ -1035,6 +1120,45 @@ export default function ChapterEditorPage() {
       // Errors are surfaced through the creator notice system.
     } finally {
       setIsPublishing(false);
+    }
+  }
+
+  async function handleMoveToBin() {
+    if (!draft.chapterId) {
+      return;
+    }
+
+    const ok = globalThis.confirm(
+      "Move this chapter to the bin? It will disappear from your main chapter lists and structure until you restore it. Scheduled releases for this chapter will be cleared.",
+    );
+
+    if (!ok) {
+      return;
+    }
+
+    setIsBinActionPending(true);
+    try {
+      await moveChapterToStudioBin(story.slug, draft.chapterId);
+      navigate(getCreatorChapterBinHref(story.slug));
+    } catch {
+      // Errors are surfaced through the creator notice system.
+    } finally {
+      setIsBinActionPending(false);
+    }
+  }
+
+  async function handleRestoreFromBin() {
+    if (!draft.chapterId) {
+      return;
+    }
+
+    setIsBinActionPending(true);
+    try {
+      await restoreChapterFromStudioBin(story.slug, draft.chapterId);
+    } catch {
+      // Errors are surfaced through the creator notice system.
+    } finally {
+      setIsBinActionPending(false);
     }
   }
 
@@ -1071,39 +1195,47 @@ export default function ChapterEditorPage() {
   return (
     <>
       <DesktopChapterEditor
+        arcOptions={arcOptions}
+        chapterBinned={chapterBinned}
         draft={draft}
+        isBinActionPending={isBinActionPending}
         onBack={handleBack}
         onBodyChange={handleBodyChange}
         onCoinPriceChange={handleCoinPriceChange}
         onFieldChange={handleFieldChange}
+        onMoveToBin={handleMoveToBin}
         onPremiumToggle={handlePremiumToggle}
         onPreview={handlePreview}
         onPublish={handlePublish}
         onPublishTypeChange={handlePublishTypeChange}
+        onRestoreFromBin={handleRestoreFromBin}
         onSaveDraft={handleSaveDraft}
         onToggleSettings={() => setShowSettings((s) => !s)}
         onWarningToggle={handleWarningToggle}
         readTime={readTime}
         showSettings={showSettings}
         story={story}
-        arcOptions={arcOptions}
         volumeOptions={volumeOptions}
         wordCount={wordCount}
       />
       <MobileChapterEditor
+        arcOptions={arcOptions}
+        chapterBinned={chapterBinned}
         draft={draft}
+        isBinActionPending={isBinActionPending}
         onBack={handleBack}
         onBodyChange={handleBodyChange}
         onCoinPriceChange={handleCoinPriceChange}
         onFieldChange={handleFieldChange}
+        onMoveToBin={handleMoveToBin}
         onPublish={handlePublish}
         onPremiumToggle={handlePremiumToggle}
         onPublishTypeChange={handlePublishTypeChange}
+        onRestoreFromBin={handleRestoreFromBin}
         onToggleSettings={() => setShowSettings((s) => !s)}
         onWarningToggle={handleWarningToggle}
         showSettings={showSettings}
         story={story}
-        arcOptions={arcOptions}
         volumeOptions={volumeOptions}
         wordCount={wordCount}
       />

@@ -42,6 +42,7 @@ const BrowsePage = lazy(() => import("../pages/BrowsePage"));
 const ChallengesPage = lazy(() => import("../pages/ChallengesPage"));
 const ChapterCompletePage = lazy(() => import("../pages/ChapterCompletePage"));
 const ChapterEditorPage = lazy(() => import("../pages/ChapterEditorPage"));
+const ChapterBinPage = lazy(() => import("../pages/ChapterBinPage"));
 const CheckoutPage = lazy(() => import("../pages/CheckoutPage"));
 const CheckoutStatusPage = lazy(() => import("../pages/CheckoutStatusPage"));
 const CoinStorePage = lazy(() => import("../pages/CoinStorePage"));
@@ -458,6 +459,11 @@ export const appRouteGroups = [
         path: "/creator/stories/:storySlug/published",
         component: PublishedChaptersPage,
         page: "PublishedChaptersPage",
+      },
+      {
+        path: "/creator/stories/:storySlug/chapter-bin",
+        component: ChapterBinPage,
+        page: "ChapterBinPage",
       },
       {
         path: "/creator/stories/:storySlug/reaction-heatmap",

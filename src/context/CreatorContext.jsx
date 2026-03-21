@@ -8,7 +8,9 @@ import {
   createStudioStory as createStudioStoryRequest,
   fetchStudioChapterDraft,
   fetchStudioStories,
+  moveStudioChapterToBin as moveStudioChapterToBinRequest,
   publishStudioChapter as publishStudioChapterRequest,
+  restoreStudioChapterFromBin as restoreStudioChapterFromBinRequest,
   saveStudioChapterDraft as saveStudioChapterDraftRequest,
   saveStudioStructure as saveStudioStructureRequest,
   updateStudioStory as updateStudioStoryRequest,
@@ -135,6 +137,7 @@ function createDraftForStory(story) {
     body: "",
     chapterId: null,
     coinUnlockPrice: 50,
+    isBinned: false,
     lastSavedAt: "Not saved yet",
     number: `Chapter ${nextChapterNumber}`,
     publishType: "now",
@@ -788,6 +791,72 @@ export function CreatorProvider({ children }) {
     }
   }
 
+  async function moveChapterToStudioBin(storySlug, chapterId) {
+    if (!chapterId) {
+      throw new Error("Save the chapter before moving it to the bin.");
+    }
+
+    try {
+      const response = await moveStudioChapterToBinRequest(storySlug, chapterId);
+
+      if (response.story) {
+        syncStory(response.story);
+      }
+
+      setChapterDrafts((current) => {
+        const key = getDraftKey(storySlug, chapterId);
+        const prev = current[key];
+
+        if (!prev) {
+          return current;
+        }
+
+        return {
+          ...current,
+          [key]: { ...prev, isBinned: true },
+        };
+      });
+
+      showCreatorNotice(response.message || "Chapter moved to bin.");
+
+      return response;
+    } catch (error) {
+      showCreatorNotice(error.message || "Could not move that chapter to the bin.", "info");
+      throw error;
+    }
+  }
+
+  async function restoreChapterFromStudioBin(storySlug, chapterId) {
+    try {
+      const response = await restoreStudioChapterFromBinRequest(storySlug, chapterId);
+
+      if (response.story) {
+        syncStory(response.story);
+      }
+
+      setChapterDrafts((current) => {
+        const key = getDraftKey(storySlug, chapterId);
+        const prev = current[key];
+
+        if (!prev) {
+          return current;
+        }
+
+        return {
+          ...current,
+          [key]: { ...prev, isBinned: false },
+        };
+      });
+
+      showCreatorNotice(response.message || "Chapter restored from bin.");
+
+      return response;
+    } catch (error) {
+      showCreatorNotice(error.message || "Could not restore that chapter from the bin.", "info");
+      throw error;
+    }
+  }
+
   function addStoryVolume(storySlug) {
     setStories((currentStories) =>
       currentStories.map((story) =>
@@ -934,8 +1003,10 @@ export function CreatorProvider({ children }) {
         isSubmittingCreatorApplication,
         isUploadingStoryCover,
         loadChapterDraft,
+        moveChapterToStudioBin,
         refreshCreatorState,
         refreshStudioStories,
+        restoreChapterFromStudioBin,
         saveChapterDraft,
         saveCreatorDraft,
         saveVolumeStructure,
