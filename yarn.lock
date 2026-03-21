@@ -964,6 +964,11 @@
   resolved "https://registry.npmjs.org/@floating-ui/utils/-/utils-0.2.11.tgz#a269e055e40e2f45873bae9d1a2fdccbd314ea3f"
   integrity sha512-RiB/yIh78pcIxl6lLMG0CgBXAZ2Y0eVHqMPYugu+9U0AeT6YBeiJpf7lbdJNIugFP5SIjwNRgo4DhR1Qxi26Gg==
 
+"@fontsource-variable/material-symbols-outlined@^5.2.38":
+  version "5.2.38"
+  resolved "https://registry.npmjs.org/@fontsource-variable/material-symbols-outlined/-/material-symbols-outlined-5.2.38.tgz"
+  integrity sha512-Lr3jb8KYexdMo9rkeM46HXCboObrMWAR+ojSbN8UEY9slsme6D6ZSWeyKtdcMnqrBNr923BmjEVnEO78L+te1g==
+
 "@img/sharp-darwin-arm64@0.33.5":
   version "0.33.5"
   resolved "https://registry.npmjs.org/@img/sharp-darwin-arm64/-/sharp-darwin-arm64-0.33.5.tgz#ef5b5a07862805f1e8145a377c8ba6e98813ca08"
