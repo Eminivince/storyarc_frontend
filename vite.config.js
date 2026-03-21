@@ -7,6 +7,10 @@ export default defineConfig(({ mode }) => {
   const backendOrigin = env.VITE_BACKEND_ORIGIN || "http://localhost:4000";
 
   return {
+    // Single React instance for the app + router + query (avoids "Invalid hook call" / useContext null).
+    resolve: {
+      dedupe: ["react", "react-dom"],
+    },
     plugins: [
       react(),
       VitePWA({
