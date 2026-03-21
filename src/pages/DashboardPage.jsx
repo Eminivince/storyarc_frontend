@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   PrefetchableChapterLink,
@@ -20,7 +20,10 @@ import {
 import { useCreator } from "../context/CreatorContext";
 import { useMonetization } from "../context/MonetizationContext";
 import { useOnboarding } from "../context/OnboardingContext";
-import { useReaderDashboardQuery } from "../reader/readerHooks";
+import {
+  useReaderDashboardPersonalizationQuery,
+  useReaderDashboardQuery,
+} from "../reader/readerHooks";
 import {
   useActiveChallengesQuery,
   useActivityFeedQuery,
@@ -53,9 +56,55 @@ function getDashboardErrorMessage(error) {
   return error?.message || "We could not load your dashboard right now.";
 }
 
-function StoryRow({ row }) {
-  if (!row?.stories?.length) {
+function mergeDashboardData(dashboard, personalization) {
+  if (!personalization) {
+    return dashboard;
+  }
+
+  return {
+    ...dashboard,
+    availableGenres: personalization.availableGenres,
+    personalizationPending: false,
+    rows: dashboard.rows.map((row) =>
+      row.id === "for-you" ? { ...personalization.forYouRow } : row,
+    ),
+  };
+}
+
+function StoryRow({ isForYouPersonalizationLoading, row }) {
+  const isForYou = row.id === "for-you";
+  const showForYouSkeleton =
+    isForYou &&
+    isForYouPersonalizationLoading &&
+    !(row.stories && row.stories.length > 0);
+
+  if (!showForYouSkeleton && !row?.stories?.length) {
     return null;
+  }
+
+  if (showForYouSkeleton) {
+    return (
+      <Reveal as="section" className="space-y-5">
+        <div className="flex items-center justify-between gap-4">
+          <h2 className="text-2xl font-bold">{row.title}</h2>
+          <Link
+            className="shrink-0 text-xs font-semibold uppercase tracking-[0.22em] text-primary transition-colors hover:underline"
+            to={buildDashboardShelfHref(row.id)}>
+            See all
+          </Link>
+        </div>
+
+        <div className="grid grid-cols-2 gap-4 xl:grid-cols-3 2xl:grid-cols-6">
+          {Array.from({ length: 6 }).map((_, index) => (
+            <div className="flex flex-col gap-3" key={`for-you-skel-${index}`}>
+              <div className="aspect-[3/4] animate-pulse rounded-2xl bg-slate-200 dark:bg-slate-800" />
+              <div className="h-4 w-3/4 animate-pulse rounded bg-slate-200 dark:bg-slate-800" />
+              <div className="h-3 w-1/2 animate-pulse rounded bg-slate-200 dark:bg-slate-800" />
+            </div>
+          ))}
+        </div>
+      </Reveal>
+    );
   }
 
   return (
@@ -167,6 +216,7 @@ function DesktopDashboard({
   data,
   hasPremium,
   isActivityLoading,
+  isForYouPersonalizationLoading,
   onSearchSubmit,
   searchTerm,
   setSearchTerm,
@@ -350,7 +400,13 @@ function DesktopDashboard({
             /> */}
 
             {data?.rows?.length ? (
-              data.rows.map((row) => <StoryRow key={row.id} row={row} />)
+              data.rows.map((row) => (
+                <StoryRow
+                  isForYouPersonalizationLoading={isForYouPersonalizationLoading}
+                  key={row.id}
+                  row={row}
+                />
+              ))
             ) : (
               <EmptyState />
             )}
@@ -361,11 +417,83 @@ function DesktopDashboard({
   );
 }
 
+function MobileShelfRow({ isForYouPersonalizationLoading, row }) {
+  const isForYou = row.id === "for-you";
+  const showForYouSkeleton =
+    isForYou &&
+    isForYouPersonalizationLoading &&
+    !(row.stories && row.stories.length > 0);
+
+  if (!showForYouSkeleton && !row.stories?.length) {
+    return null;
+  }
+
+  if (showForYouSkeleton) {
+    return (
+      <Reveal as="section" className="space-y-3">
+        <div className="flex items-center justify-between gap-2">
+          <h2 className="text-base font-bold">{row.title}</h2>
+          <Link
+            className="shrink-0 text-[10px] font-semibold uppercase tracking-[0.18em] text-primary hover:underline"
+            to={buildDashboardShelfHref(row.id)}>
+            See all
+          </Link>
+        </div>
+        <div className="flex gap-3 overflow-x-auto pb-1 no-scrollbar">
+          {Array.from({ length: 6 }).map((_, index) => (
+            <div className="block w-32 shrink-0 space-y-2" key={`m-for-you-skel-${index}`}>
+              <div className="aspect-[3/4] w-full animate-pulse rounded-xl bg-slate-200 dark:bg-slate-800" />
+              <div className="h-3 w-full animate-pulse rounded bg-slate-200 dark:bg-slate-800" />
+            </div>
+          ))}
+        </div>
+      </Reveal>
+    );
+  }
+
+  return (
+    <Reveal as="section" className="space-y-3">
+      <div className="flex items-center justify-between gap-2">
+        <h2 className="text-base font-bold">{row.title}</h2>
+        <Link
+          className="shrink-0 text-[10px] font-semibold uppercase tracking-[0.18em] text-primary hover:underline"
+          to={buildDashboardShelfHref(row.id)}>
+          See all
+        </Link>
+      </div>
+      <div className="flex gap-3 overflow-x-auto pb-1 no-scrollbar">
+        {row.stories.map((story) => (
+          <PrefetchableStoryLink
+            className="block w-32 shrink-0"
+            key={story.slug}
+            storySlug={story.slug}
+            to={buildStoryHref(story.slug)}>
+            <article className="space-y-2">
+              <img
+                alt={story.title}
+                className="aspect-[3/4] w-full rounded-xl object-cover"
+                src={story.coverImage}
+              />
+              <div>
+                <h3 className="line-clamp-1 text-xs font-bold">{story.title}</h3>
+                <p className="line-clamp-1 text-[10px] text-slate-500 dark:text-slate-400">
+                  {story.authorName}
+                </p>
+              </div>
+            </article>
+          </PrefetchableStoryLink>
+        ))}
+      </div>
+    </Reveal>
+  );
+}
+
 function MobileDashboard({
   activeChallenges,
   activityFeed,
   data,
   isActivityLoading,
+  isForYouPersonalizationLoading,
   onSearchSubmit,
   searchTerm,
   setSearchTerm,
@@ -481,47 +609,16 @@ function MobileDashboard({
           isLoading={isActivityLoading}
         /> */}
 
-        {data?.rows?.map((row) =>
-          row.stories?.length ? (
-            <Reveal as="section" className="space-y-3" key={row.id}>
-              <div className="flex items-center justify-between gap-2">
-                <h2 className="text-base font-bold">{row.title}</h2>
-                <Link
-                  className="shrink-0 text-[10px] font-semibold uppercase tracking-[0.18em] text-primary hover:underline"
-                  to={buildDashboardShelfHref(row.id)}>
-                  See all
-                </Link>
-              </div>
-              <div className="flex gap-3 overflow-x-auto pb-1 no-scrollbar">
-                {row.stories.map((story) => (
-                  <PrefetchableStoryLink
-                    className="block w-32 shrink-0"
-                    key={story.slug}
-                    storySlug={story.slug}
-                    to={buildStoryHref(story.slug)}>
-                    <article className="space-y-2">
-                      <img
-                        alt={story.title}
-                        className="aspect-[3/4] w-full rounded-xl object-cover"
-                        src={story.coverImage}
-                      />
-                      <div>
-                        <h3 className="line-clamp-1 text-xs font-bold">
-                          {story.title}
-                        </h3>
-                        <p className="line-clamp-1 text-[10px] text-slate-500 dark:text-slate-400">
-                          {story.authorName}
-                        </p>
-                      </div>
-                    </article>
-                  </PrefetchableStoryLink>
-                ))}
-              </div>
-            </Reveal>
-          ) : null,
-        )}
+        {data?.rows?.map((row) => (
+          <MobileShelfRow
+            isForYouPersonalizationLoading={isForYouPersonalizationLoading}
+            key={row.id}
+            row={row}
+          />
+        ))}
 
-        {!data?.rows?.some((row) => row.stories?.length) ? (
+        {!data?.rows?.some((row) => row.stories?.length) &&
+        !isForYouPersonalizationLoading ? (
           <EmptyState />
         ) : null}
       </main>
@@ -536,7 +633,29 @@ export default function DashboardPage() {
   const { enterWriterMode, getCreatorEntryHref } = useCreator();
   const { accountTier, hasPremium } = useMonetization();
   const { selectedGenres } = useOnboarding();
-  const { data, error, isError, isLoading } = useReaderDashboardQuery();
+  const dashboardQuery = useReaderDashboardQuery();
+  const personalizationQuery = useReaderDashboardPersonalizationQuery({
+    enabled: Boolean(
+      dashboardQuery.data && !dashboardQuery.isError && dashboardQuery.data.rows?.length > 0,
+    ),
+  });
+
+  const data = useMemo(() => {
+    if (!dashboardQuery.data) {
+      return undefined;
+    }
+
+    return mergeDashboardData(dashboardQuery.data, personalizationQuery.data);
+  }, [dashboardQuery.data, personalizationQuery.data]);
+
+  const isForYouPersonalizationLoading = Boolean(
+    dashboardQuery.data &&
+      !dashboardQuery.isError &&
+      dashboardQuery.data.rows?.length > 0 &&
+      personalizationQuery.isLoading,
+  );
+
+  const { error, isError, isLoading } = dashboardQuery;
   const challengesQuery = useActiveChallengesQuery();
   const activityFeedQuery = useActivityFeedQuery();
   const returningUserQuery = useReturningUserCheckQuery();
@@ -615,6 +734,7 @@ export default function DashboardPage() {
         data={data}
         hasPremium={hasPremium}
         isActivityLoading={activityFeedQuery.isLoading}
+        isForYouPersonalizationLoading={isForYouPersonalizationLoading}
         onSearchSubmit={handleSearchSubmit}
         onWriteStory={handleWriteStory}
         searchTerm={searchTerm}
@@ -626,6 +746,7 @@ export default function DashboardPage() {
         activityFeed={activityFeedQuery.data}
         data={data}
         isActivityLoading={activityFeedQuery.isLoading}
+        isForYouPersonalizationLoading={isForYouPersonalizationLoading}
         onSearchSubmit={handleSearchSubmit}
         searchTerm={searchTerm}
         setSearchTerm={setSearchTerm}

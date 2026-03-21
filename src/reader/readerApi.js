@@ -21,6 +21,12 @@ export function fetchReaderDashboard() {
   });
 }
 
+export function fetchReaderDashboardPersonalization() {
+  return getJson("/reader/dashboard/personalization", {
+    headers: getAuthHeaders(),
+  });
+}
+
 export function fetchReaderDashboardShelf({ shelfId, limit = 10, offset = 0 } = {}) {
   const params = new URLSearchParams();
   params.set("limit", String(limit));

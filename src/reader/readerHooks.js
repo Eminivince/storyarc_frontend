@@ -18,6 +18,7 @@ import {
   fetchBookmarks,
   fetchChapter,
   fetchReaderDashboard,
+  fetchReaderDashboardPersonalization,
   fetchReaderDashboardShelf,
   fetchReaderHome,
   fetchReaderStories,
@@ -45,6 +46,7 @@ const STALE_5_MIN = 5 * 60 * 1000;
 async function invalidateFollowQueries(queryClient) {
   await Promise.all([
     queryClient.invalidateQueries({ queryKey: ["reader", "dashboard"] }),
+    queryClient.invalidateQueries({ queryKey: ["reader", "dashboard-personalization"] }),
     queryClient.invalidateQueries({ queryKey: ["reader", "following"] }),
     queryClient.invalidateQueries({ queryKey: ["reader", "rankings"] }),
     queryClient.invalidateQueries({ queryKey: ["reader", "search"] }),
@@ -76,6 +78,7 @@ async function invalidateStoryReviewQueries(queryClient, storySlug) {
     queryClient.invalidateQueries({ queryKey: ["reader", "rankings"] }),
     queryClient.invalidateQueries({ queryKey: ["reader", "search"] }),
     queryClient.invalidateQueries({ queryKey: ["reader", "dashboard"] }),
+    queryClient.invalidateQueries({ queryKey: ["reader", "dashboard-personalization"] }),
     queryClient.invalidateQueries({ queryKey: ["reader", "home"] }),
   ]);
 }
@@ -93,6 +96,15 @@ export function useReaderDashboardQuery() {
     queryKey: ["reader", "dashboard"],
     queryFn: fetchReaderDashboard,
     staleTime: STALE_2_MIN,
+  });
+}
+
+export function useReaderDashboardPersonalizationQuery({ enabled = true } = {}) {
+  return useQuery({
+    queryKey: ["reader", "dashboard-personalization"],
+    queryFn: fetchReaderDashboardPersonalization,
+    staleTime: STALE_2_MIN,
+    enabled,
   });
 }
 
@@ -240,6 +252,7 @@ export function useSaveReadingProgressMutation() {
     mutationFn: saveReadingProgress,
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ["reader", "dashboard"] });
+      queryClient.invalidateQueries({ queryKey: ["reader", "dashboard-personalization"] });
       queryClient.invalidateQueries({ queryKey: ["reader", "rankings"] });
       queryClient.invalidateQueries({ queryKey: ["reader", "story", variables.storySlug] });
     },

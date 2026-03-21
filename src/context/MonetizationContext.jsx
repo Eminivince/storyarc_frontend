@@ -114,6 +114,7 @@ export function MonetizationProvider({ children }) {
     await Promise.all([
       queryClient.invalidateQueries({ queryKey: ["monetization"] }),
       queryClient.invalidateQueries({ queryKey: ["reader", "dashboard"] }),
+      queryClient.invalidateQueries({ queryKey: ["reader", "dashboard-personalization"] }),
       queryClient.invalidateQueries({ queryKey: ["reader", "story"] }),
       queryClient.invalidateQueries({ queryKey: ["reader", "chapter"] }),
     ]);
