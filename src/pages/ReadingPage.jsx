@@ -307,13 +307,9 @@ function DesktopReader({
                 onReact={onParagraphReact}
                 onRemoveReaction={onRemoveParagraphReaction}
               >
-                <motion.div
-                  className={`max-w-none [&_p]:my-0 ${chapterProseTailwindClassName}`}
+                <div
+                  className={`max-w-none text-inherit [&_p]:my-0 ${chapterProseTailwindClassName}`}
                   data-reader-paragraph-index={index}
-                  initial={{ opacity: 0, y: 18 }}
-                  transition={{ delay: index * 0.03, duration: 0.25 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ amount: 0.2, once: true }}
                   dangerouslySetInnerHTML={{
                     __html: sanitizeChapterParagraphHtml(paragraph) || "\u00a0",
                   }}
@@ -587,13 +583,9 @@ function MobileReader({
               onReact={onParagraphReact}
               onRemoveReaction={onRemoveParagraphReaction}
             >
-              <motion.div
-                className={`mb-4 max-w-none [&_p]:my-0 ${chapterProseTailwindClassName}`}
+              <div
+                className={`mb-4 max-w-none text-inherit [&_p]:my-0 ${chapterProseTailwindClassName}`}
                 data-reader-paragraph-index={index}
-                initial={{ opacity: 0, y: 16 }}
-                transition={{ delay: index * 0.03, duration: 0.25 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ amount: 0.2, once: true }}
                 dangerouslySetInnerHTML={{
                   __html: sanitizeChapterParagraphHtml(paragraph) || "\u00a0",
                 }}
