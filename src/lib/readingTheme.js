@@ -1,6 +1,11 @@
 export const READING_THEME_COOKIE_NAME = "talestead.reading-theme";
 const COOKIE_MAX_AGE_SECONDS = 60 * 60 * 24 * 30;
 
+/** Normalized cookie/API value; used when no stored or profile preference exists. */
+export const DEFAULT_READING_THEME = "dark";
+/** Matches backend {@link READING_THEMES} labels for onboarding state. */
+export const DEFAULT_READING_THEME_LABEL = "Dark";
+
 function canUseDocument() {
   return typeof document !== "undefined";
 }

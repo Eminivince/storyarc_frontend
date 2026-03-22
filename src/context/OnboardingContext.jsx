@@ -1,7 +1,11 @@
 import { useMutation } from "@tanstack/react-query";
 import { createContext, useContext, useEffect, useState } from "react";
 import { useAuth } from "./AuthContext";
-import { getStoredReadingTheme, persistReadingTheme } from "../lib/readingTheme";
+import {
+  DEFAULT_READING_THEME_LABEL,
+  getStoredReadingTheme,
+  persistReadingTheme,
+} from "../lib/readingTheme";
 import {
   saveOnboardingGenres,
   saveOnboardingPreferences,
@@ -9,7 +13,7 @@ import {
 } from "../onboarding/onboardingApi";
 
 const defaultReadingStyle = "Daily Reads";
-const defaultReadingTheme = "Dark";
+const defaultReadingTheme = DEFAULT_READING_THEME_LABEL;
 const OnboardingContext = createContext(null);
 
 function readFileAsDataUrl(file) {

@@ -380,10 +380,10 @@ function DesktopReader({
                 <div>
                   <p className={`mb-2 text-xs font-bold uppercase ${theme.muted}`}>Background</p>
                   <div className="grid grid-cols-3 gap-2">
-                    {[
-                      ["light", "bg-background-light border-slate-200"],
-                      ["sepia", "bg-[#f4ecd8] border-[#e8dfc5]"],
+                      {[
                       ["dark", "bg-background-dark border-primary/40"],
+                      ["sepia", "bg-[#f4ecd8] border-[#e8dfc5]"],
+                      ["light", "bg-background-light border-slate-200"],
                     ].map(([value, swatch]) => (
                       <button
                         className={`h-8 rounded border transition-all ${swatch} ${
@@ -703,10 +703,10 @@ function MobileReader({
                   Background
                 </span>
                 <div className="flex gap-2">
-                  {[
-                    ["light", "bg-[#f8f8f5] border-primary"],
-                    ["sepia", "bg-[#f4ecd8] border-slate-200"],
+                    {[
                     ["dark", "bg-[#221e10] border-primary/30"],
+                    ["sepia", "bg-[#f4ecd8] border-slate-200"],
+                    ["light", "bg-[#f8f8f5] border-primary"],
                   ].map(([value, swatch]) => (
                     <button
                       aria-label={`${value} theme`}
@@ -802,7 +802,10 @@ export default function ReadingPage() {
   const [fontSize, setFontSize] = useState(18);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [commentsOpen, setCommentsOpen] = useState(false);
-  const initialThemePreference = getStoredReadingTheme() ?? readingTheme;
+  const initialThemePreference =
+    getStoredReadingTheme() ??
+    normalizeReadingTheme(readingTheme) ??
+    DEFAULT_READING_THEME;
   const [readerTheme, setReaderTheme] = useState(mapPreferenceToTheme(initialThemePreference));
   const [bookmarkState, setBookmarkState] = useState({
     bookmarkId: null,

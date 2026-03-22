@@ -28,11 +28,11 @@ const readingStyles = [
 
 const themes = [
   {
-    name: "Light",
-    desktopLabelClass: "text-slate-900",
-    mobileLabelClass: "text-slate-800",
-    cardClass: "bg-white dark:bg-white",
-    previewClass: "border border-slate-200 bg-white",
+    name: "Dark",
+    desktopLabelClass: "text-primary",
+    mobileLabelClass: "text-white",
+    cardClass: "bg-background-dark",
+    previewClass: "border border-primary/40 bg-slate-800",
   },
   {
     name: "Sepia",
@@ -43,11 +43,11 @@ const themes = [
     previewInnerClass: "bg-[#e8dcc4]",
   },
   {
-    name: "Dark",
-    desktopLabelClass: "text-primary",
-    mobileLabelClass: "text-white",
-    cardClass: "bg-background-dark",
-    previewClass: "border border-primary/40 bg-slate-800",
+    name: "Light",
+    desktopLabelClass: "text-slate-900",
+    mobileLabelClass: "text-slate-800",
+    cardClass: "bg-white dark:bg-white",
+    previewClass: "border border-slate-200 bg-white",
   },
 ];
 
