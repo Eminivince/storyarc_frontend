@@ -1,11 +1,39 @@
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
 import { io } from "socket.io-client";
-import { useAuth } from "./AuthContext";
 import { getAccessToken } from "../auth/authStorage";
+import { appEnv } from "../config/env";
+import { useAuth } from "./AuthContext";
 
 const SocketContext = createContext(null);
 
-const SOCKET_URL = import.meta.env.VITE_API_BASE_URL?.replace("/api", "") || "http://localhost:4000";
+/**
+ * Socket.IO needs an absolute http(s) origin. Do not derive it with a naive
+ * `.replace("/api", "")` on VITE_API_BASE_URL — values like `https/api` become
+ * the hostname "https" and the client tries `wss://https/socket.io/`.
+ */
+function resolveSocketOrigin() {
+  const explicit = import.meta.env.VITE_SOCKET_URL?.trim();
+  if (explicit) {
+    try {
+      return new URL(explicit).origin;
+    } catch {
+      // fall through
+    }
+  }
+
+  const api = appEnv.apiBaseUrl;
+  if (/^https?:\/\//i.test(api)) {
+    try {
+      return new URL(api).origin;
+    } catch {
+      return appEnv.backendOrigin;
+    }
+  }
+
+  return appEnv.backendOrigin;
+}
+
+const SOCKET_URL = resolveSocketOrigin();
 
 export function SocketProvider({ children }) {
   const { isAuthenticated } = useAuth();

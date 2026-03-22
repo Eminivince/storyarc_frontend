@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Link,
   useNavigate,
@@ -36,23 +36,6 @@ function toggleWarning(warnings, warning) {
   return [...warnings, warning];
 }
 
-function getDraftSignature(draft) {
-  return JSON.stringify({
-    arcId: draft.arcId ?? null,
-    authorsNote: draft.authorsNote,
-    body: draft.body,
-    coinUnlockPrice: draft.coinUnlockPrice,
-    isBinned: draft.isBinned ?? false,
-    number: draft.number,
-    publishType: draft.publishType,
-    premiumEnabled: draft.premiumEnabled,
-    scheduledFor: draft.scheduledFor,
-    title: draft.title,
-    volumeId: draft.volumeId ?? null,
-    warnings: draft.warnings,
-  });
-}
-
 function getVolumeOptions(story) {
   return story.volumes.map((volume) => ({
     label: volume.title,
@@ -80,6 +63,7 @@ function DesktopChapterEditor({
   onBack,
   onBodyChange,
   onCoinPriceChange,
+  onFieldChange,
   onMoveToBin,
   onPremiumToggle,
   onPreview,
@@ -209,7 +193,7 @@ function DesktopChapterEditor({
                       Chapter Title
                     </label>
                     <input
-                      className="w-full border-none bg-transparent p-0 text-3xl font-black text-white placeholder:text-slate-600 focus:ring-0"
+                      className="w-full outline-none border-none bg-transparent p-0 text-3xl font-black text-white placeholder:text-slate-600 focus:ring-0"
                       name="title"
                       onChange={onFieldChange}
                       placeholder="Enter chapter title..."
@@ -222,7 +206,7 @@ function DesktopChapterEditor({
                       Number
                     </label>
                     <input
-                      className="w-full border-none bg-transparent p-0 text-right text-3xl font-black text-white placeholder:text-slate-600 focus:ring-0"
+                      className="w-full outline-none border-none bg-transparent p-0 text-right text-3xl font-black text-white placeholder:text-slate-600 focus:ring-0"
                       name="number"
                       onChange={onFieldChange}
                       placeholder="CH-12"
@@ -235,7 +219,7 @@ function DesktopChapterEditor({
                 <hr className="border-[#393528]" />
 
                 <textarea
-                  className="min-h-[500px] w-full resize-none border-none bg-transparent p-0 text-lg leading-relaxed text-slate-100/90 placeholder:text-slate-600 focus:ring-0"
+                  className="min-h-[500px] outline-none w-full resize-none border-none bg-transparent p-0 text-lg leading-relaxed text-slate-100/90 placeholder:text-slate-600 focus:ring-0"
                   name="body"
                   onChange={(event) => onBodyChange(event.target.value)}
                   placeholder="Start writing your masterpiece here..."
@@ -479,12 +463,12 @@ function DesktopChapterEditor({
                           ~{readTime} mins
                         </span>
                       </div>
-                      <div className="flex items-center justify-between">
+                      <div className="flex items-center justify-between gap-2">
                         <span className="text-xs font-medium text-slate-500">
-                          Auto-save
+                          Server copy
                         </span>
-                        <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-bold uppercase text-primary">
-                          Enabled
+                        <span className="text-right text-[10px] font-medium text-slate-400">
+                          Save draft or publish to persist
                         </span>
                       </div>
                     </div>
@@ -514,12 +498,8 @@ function DesktopChapterEditor({
               ))}
             </div>
             <div className="h-4 w-px bg-[#393528]" />
-            <div className="text-xs font-medium text-slate-500">
+            <div className="ml-auto text-xs font-medium text-slate-500">
               Last saved: {draft.lastSavedAt}
-            </div>
-            <div className="ml-auto flex items-center gap-2 text-xs font-bold text-primary">
-              <span className="size-2 rounded-full bg-primary" />
-              Syncing with Cloud
             </div>
           </footer>
         </main>
@@ -889,11 +869,6 @@ export default function ChapterEditorPage() {
   const [isPublishing, setIsPublishing] = useState(false);
   const [isBinActionPending, setIsBinActionPending] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
-  const autosaveStateRef = useRef({
-    initialized: false,
-    storySlug: "",
-    value: "",
-  });
 
   const story = getStory(storySlug);
   const draft = getChapterDraft(storySlug, chapterId);
@@ -913,84 +888,11 @@ export default function ChapterEditorPage() {
 
   useEffect(() => {
     if (!storySlug || !chapterId) {
-      autosaveStateRef.current = {
-        initialized: false,
-        storySlug: storySlug ?? "",
-        value: "",
-      };
       return;
     }
 
     loadChapterDraft(storySlug, chapterId).catch(() => {});
   }, [chapterId, storySlug]);
-
-  useEffect(() => {
-    if (!storySlug || !story) {
-      return;
-    }
-
-    const draftSignature = getDraftSignature(draft);
-    const autosaveState = autosaveStateRef.current;
-    const storyChanged =
-      autosaveState.storySlug !== storySlug ||
-      (chapterId ?? "") !== autosaveState.chapterId;
-
-    if (storyChanged) {
-      autosaveStateRef.current = {
-        chapterId: chapterId ?? "",
-        initialized: false,
-        storySlug,
-        value: draftSignature,
-      };
-      return;
-    }
-
-    if (!autosaveState.initialized) {
-      autosaveStateRef.current = {
-        chapterId: chapterId ?? "",
-        initialized: true,
-        storySlug,
-        value: draftSignature,
-      };
-      return;
-    }
-
-    if (draftSignature === autosaveState.value) {
-      return;
-    }
-
-    const timeoutId = globalThis.setTimeout(async () => {
-      try {
-        const response = await saveChapterDraft(story.slug, draft, {
-          silent: true,
-        });
-
-        autosaveStateRef.current = {
-          chapterId: response.chapterDraft.chapterId ?? chapterId ?? "",
-          initialized: true,
-          storySlug,
-          value: getDraftSignature(response.chapterDraft),
-        };
-
-        if (!chapterId && response.chapterDraft.chapterId) {
-          setSearchParams(
-            (currentParams) => {
-              const nextParams = new URLSearchParams(currentParams);
-              nextParams.set("chapterId", response.chapterDraft.chapterId);
-              return nextParams;
-            },
-            { replace: true },
-          );
-        }
-      } catch {
-        // Save errors are surfaced through the creator notice system.
-      }
-    }, 1200);
-
-    return () => {
-      globalThis.clearTimeout(timeoutId);
-    };
-  }, [chapterId, draft, setSearchParams, story, storySlug]);
 
   function handleFieldChange(event) {
     const { name, value } = event.target;
