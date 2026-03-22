@@ -36,6 +36,11 @@ import ParagraphReactionOverlay, {
 import { useMonetization } from "../context/MonetizationContext";
 import { getStoredReadingTheme, persistReadingTheme } from "../lib/readingTheme";
 import { isChapterAvailableOffline } from "../lib/offlineStorage";
+import { chapterProseTailwindClassName } from "../editor/chapterProseFormat";
+import {
+  chapterHtmlToPlainTextSnippet,
+  sanitizeChapterParagraphHtml,
+} from "../lib/sanitizeChapterHtml";
 
 const readerThemes = {
   dark: {
@@ -108,7 +113,10 @@ function getChapterSeoDescription(story, chapter) {
   }
 
   const introParagraph = chapter.paragraphs.find((paragraph) => paragraph?.trim());
-  const introExcerpt = createSeoDescription(introParagraph, 120);
+  const introExcerpt = createSeoDescription(
+    chapterHtmlToPlainTextSnippet(introParagraph ?? ""),
+    120,
+  );
   const baseDescription = `Read Chapter ${chapter.chapterNumber}: ${chapter.chapterTitle} from ${story.title} by ${chapter.authorName} on TaleStead.`;
 
   return createSeoDescription(
@@ -299,15 +307,17 @@ function DesktopReader({
                 onReact={onParagraphReact}
                 onRemoveReaction={onRemoveParagraphReaction}
               >
-                <motion.p
+                <motion.div
+                  className={`max-w-none [&_p]:my-0 ${chapterProseTailwindClassName}`}
                   data-reader-paragraph-index={index}
                   initial={{ opacity: 0, y: 18 }}
                   transition={{ delay: index * 0.03, duration: 0.25 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ amount: 0.2, once: true }}
-                >
-                  {paragraph}
-                </motion.p>
+                  dangerouslySetInnerHTML={{
+                    __html: sanitizeChapterParagraphHtml(paragraph) || "\u00a0",
+                  }}
+                />
               </ParagraphReactionOverlay>
             ))}
           </div>
@@ -577,16 +587,17 @@ function MobileReader({
               onReact={onParagraphReact}
               onRemoveReaction={onRemoveParagraphReaction}
             >
-              <motion.p
-                className="mb-4"
+              <motion.div
+                className={`mb-4 max-w-none [&_p]:my-0 ${chapterProseTailwindClassName}`}
                 data-reader-paragraph-index={index}
                 initial={{ opacity: 0, y: 16 }}
                 transition={{ delay: index * 0.03, duration: 0.25 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ amount: 0.2, once: true }}
-              >
-                {paragraph}
-              </motion.p>
+                dangerouslySetInnerHTML={{
+                  __html: sanitizeChapterParagraphHtml(paragraph) || "\u00a0",
+                }}
+              />
             </MobileParagraphReactionOverlay>
           ))}
         </article>

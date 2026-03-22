@@ -24,6 +24,8 @@ import {
 } from "../data/readerFlow";
 import { fetchChapterBatchUnlockOptionsApi } from "../monetization/monetizationApi";
 import { useChapterQuery } from "../reader/readerHooks";
+import { chapterProseTailwindClassName } from "../editor/chapterProseFormat";
+import { sanitizeChapterParagraphHtml } from "../lib/sanitizeChapterHtml";
 
 function getSequentialAccessDescription(chapter) {
   if (!chapter?.requiredPreviousChapter) {
@@ -266,23 +268,25 @@ function DesktopLockedChapter({
 
             <Reveal className="relative space-y-6">
               {desktopLockedPreview.paragraphs.map((paragraph, index) => (
-                <p
-                  className="font-serif text-lg leading-relaxed text-slate-300"
-                  key={`${index}-${paragraph.slice(0, 24)}`}
-                >
-                  {paragraph}
-                </p>
+                <div
+                  className={`font-serif text-lg leading-relaxed text-slate-300 max-w-none [&_p]:my-0 ${chapterProseTailwindClassName}`}
+                  key={`locked-clear-${index}`}
+                  dangerouslySetInnerHTML={{
+                    __html: sanitizeChapterParagraphHtml(paragraph) || "\u00a0",
+                  }}
+                />
               ))}
 
               <div className="relative mt-10">
                 <div className="space-y-6 select-none opacity-40 blur-[4px]">
                   {desktopLockedPreview.blurredParagraphs.map((paragraph, index) => (
-                    <p
-                      className="font-serif text-lg leading-relaxed text-slate-400"
-                      key={`${index}-${paragraph.slice(0, 24)}`}
-                    >
-                      {paragraph}
-                    </p>
+                    <div
+                      className={`font-serif text-lg leading-relaxed text-slate-400 max-w-none [&_p]:my-0 ${chapterProseTailwindClassName}`}
+                      key={`locked-blur-${index}`}
+                      dangerouslySetInnerHTML={{
+                        __html: sanitizeChapterParagraphHtml(paragraph) || "\u00a0",
+                      }}
+                    />
                   ))}
                 </div>
 
@@ -460,23 +464,25 @@ function MobileLockedChapter({
       <main className="relative flex-1 overflow-y-auto px-6 py-8">
         <article className="space-y-6">
           {mobileLockedPreview.paragraphs.map((paragraph, index) => (
-            <p
-              className="text-lg leading-relaxed text-slate-700 dark:text-slate-300"
-              key={`${index}-${paragraph.slice(0, 24)}`}
-            >
-              {paragraph}
-            </p>
+            <div
+              className={`text-lg leading-relaxed text-slate-700 dark:text-slate-300 max-w-none [&_p]:my-0 ${chapterProseTailwindClassName}`}
+              key={`m-locked-clear-${index}`}
+              dangerouslySetInnerHTML={{
+                __html: sanitizeChapterParagraphHtml(paragraph) || "\u00a0",
+              }}
+            />
           ))}
 
           <div className="relative">
             <div className="space-y-6 select-none opacity-50 blur-[4px]">
               {mobileLockedPreview.blurredParagraphs.map((paragraph, index) => (
-                <p
-                  className="text-lg leading-relaxed text-slate-700 dark:text-slate-300"
-                  key={`${index}-${paragraph.slice(0, 24)}`}
-                >
-                  {paragraph}
-                </p>
+                <div
+                  className={`text-lg leading-relaxed text-slate-700 dark:text-slate-300 max-w-none [&_p]:my-0 ${chapterProseTailwindClassName}`}
+                  key={`m-locked-blur-${index}`}
+                  dangerouslySetInnerHTML={{
+                    __html: sanitizeChapterParagraphHtml(paragraph) || "\u00a0",
+                  }}
+                />
               ))}
             </div>
 
