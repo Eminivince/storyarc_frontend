@@ -4,6 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "postinstall": "node scripts/sync-material-symbols-font.js",
+    "prebuild": "node scripts/sync-material-symbols-font.js",
     "dev": "vite",
     "build": "npm run generate-icons && vite build",
     "preview": "vite preview",
