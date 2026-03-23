@@ -16,6 +16,16 @@ import {
 } from "../data/monetization";
 
 function getCheckoutProviderMeta(checkoutProvider) {
+  if (checkoutProvider === "flutterwave") {
+    return {
+      description:
+        "You will finish payment on Flutterwave's secure hosted checkout page. TaleStead never collects your payment details directly.",
+      icon: "payments",
+      label: "Flutterwave",
+      note: "Card, bank transfer, and mobile money options are available on the provider page.",
+    };
+  }
+
   if (checkoutProvider === "cryptomus") {
     return {
       description:
@@ -28,9 +38,9 @@ function getCheckoutProviderMeta(checkoutProvider) {
 
   return {
     description:
-      "You will finish payment on Paystack's hosted checkout page. TaleStead never collects your payment details directly.",
+      "You will finish payment on the hosted checkout page. TaleStead never collects your payment details directly.",
     icon: "payments",
-    label: "Paystack",
+    label: "Payment Provider",
     note: "Payment details are handled on the provider page.",
   };
 }

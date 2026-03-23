@@ -94,7 +94,7 @@ export function MonetizationProvider({ children }) {
   const checkoutProvider =
     catalogQuery.data?.checkoutProvider ??
     statusQuery.data?.checkoutProvider ??
-    "paystack";
+    "flutterwave";
   const coinBalance = statusQuery.data?.coinBalance ?? 0;
   const hasPremium = Boolean(statusQuery.data?.hasPremium);
   const accountTier = statusQuery.data?.subscription?.planName ?? "Free";

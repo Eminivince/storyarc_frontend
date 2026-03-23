@@ -8,7 +8,7 @@ import { getResumeReadingLabel } from "../monetization/paymentStatus";
 export default function PaymentPendingPage() {
   const [searchParams] = useSearchParams();
   const { checkoutProvider, coinBalance } = useMonetization();
-  const providerLabel = checkoutProvider === "cryptomus" ? "Cryptomus" : "Paystack";
+  const providerLabel = checkoutProvider === "flutterwave" ? "Flutterwave" : checkoutProvider === "cryptomus" ? "Cryptomus" : "Payment Provider";
   const returnTo = searchParams.get("returnTo") || lockedChapterHref;
   const resumeTo = searchParams.get("resumeTo") || returnTo;
   const reason = searchParams.get("reason") || null;

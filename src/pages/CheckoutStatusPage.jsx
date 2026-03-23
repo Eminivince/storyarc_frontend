@@ -28,7 +28,7 @@ export default function CheckoutStatusPage() {
   const { checkoutProvider, confirmCheckoutSession, spendCoinsForChapter } =
     useMonetization();
   const { showToast } = useToast();
-  const providerLabel = checkoutProvider === "cryptomus" ? "Cryptomus" : "Paystack";
+  const providerLabel = checkoutProvider === "flutterwave" ? "Flutterwave" : checkoutProvider === "cryptomus" ? "Cryptomus" : "Payment Provider";
   const billing = searchParams.get("billing") === "annual" ? "annual" : "monthly";
   const kind = searchParams.get("kind") === "coins" ? "coins" : "plan";
   const productId = searchParams.get("productId") || "";
