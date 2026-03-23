@@ -33,7 +33,8 @@ export default function CheckoutStatusPage() {
   const kind = searchParams.get("kind") === "coins" ? "coins" : "plan";
   const productId = searchParams.get("productId") || "";
   const reference =
-    searchParams.get("reference") || searchParams.get("trxref") || "";
+    searchParams.get("reference") || searchParams.get("trxref") || searchParams.get("tx_ref") || "";
+  const transactionId = searchParams.get("transaction_id") || "";
   const returnTo = searchParams.get("returnTo") || lockedChapterHref;
 
   useEffect(() => {
@@ -61,7 +62,10 @@ export default function CheckoutStatusPage() {
       }
 
       try {
-        const response = await confirmCheckoutSession({ reference });
+        const response = await confirmCheckoutSession({
+          reference,
+          ...(transactionId ? { transactionId } : {}),
+        });
 
         if (cancelled) {
           return;
@@ -167,6 +171,7 @@ export default function CheckoutStatusPage() {
     returnTo,
     showToast,
     spendCoinsForChapter,
+    transactionId,
   ]);
 
   return (

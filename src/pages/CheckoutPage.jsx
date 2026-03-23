@@ -19,10 +19,10 @@ function getCheckoutProviderMeta(checkoutProvider) {
   if (checkoutProvider === "flutterwave") {
     return {
       description:
-        "You will finish payment on Flutterwave's secure hosted checkout page. TaleStead never collects your payment details directly.",
+        "A secure Flutterwave payment window will open for you to complete the transaction. TaleStead never collects your payment details directly.",
       icon: "payments",
       label: "Flutterwave",
-      note: "Card, bank transfer, and mobile money options are available on the provider page.",
+      note: "Card, bank transfer, and mobile money options are available in the payment window.",
     };
   }
 
@@ -247,7 +247,7 @@ function DesktopCheckout({
                       <div>
                         <p className="font-semibold">Provider-hosted flow</p>
                         <p className="text-sm text-slate-500 dark:text-slate-400">
-                          TaleStead redirects you to {providerMeta.label} to complete the charge securely.
+                          A secure {providerMeta.label} window opens for you to complete the charge.
                         </p>
                       </div>
                     </div>
@@ -282,7 +282,7 @@ function DesktopCheckout({
                   >
                     <span className="material-symbols-outlined">lock</span>
                     {isBusy
-                      ? `Redirecting to ${providerMeta.label}...`
+                      ? `Opening ${providerMeta.label}...`
                       : `Continue to ${providerMeta.label} • ${formatPrice(details.total, currency)}`}
                   </button>
 
@@ -405,7 +405,7 @@ function MobileCheckout({
                 verified_user
               </span>
               <p className="text-sm text-slate-600 dark:text-slate-300">
-                TaleStead will redirect you to {providerMeta.label} to complete the payment securely.
+                A secure {providerMeta.label} window opens to complete the payment.
               </p>
             </div>
             <div className="flex items-start gap-3">
@@ -434,7 +434,7 @@ function MobileCheckout({
             >
               <span>
                 {isBusy
-                  ? `Redirecting to ${providerMeta.label}...`
+                  ? `Opening ${providerMeta.label}...`
                   : `Continue to ${providerMeta.label} • ${formatPrice(details.total, currency)}`}
               </span>
               <span className="material-symbols-outlined">arrow_forward</span>
@@ -551,6 +551,13 @@ export default function CheckoutPage() {
         returnTo,
       });
 
+      // Flutterwave Inline: open payment modal instead of redirect
+      if (response?.inlineConfig && window.FlutterwaveCheckout) {
+        window.FlutterwaveCheckout(response.inlineConfig);
+        return;
+      }
+
+      // Fallback: direct redirect (Paystack, Cryptomus, etc.)
       if (!response?.checkoutUrl) {
         throw new Error(`${providerMeta.label} checkout URL was not returned.`);
       }
