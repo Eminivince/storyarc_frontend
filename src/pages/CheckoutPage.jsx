@@ -553,7 +553,26 @@ export default function CheckoutPage() {
 
       // Flutterwave Inline: open payment modal instead of redirect
       if (response?.inlineConfig && window.FlutterwaveCheckout) {
-        window.FlutterwaveCheckout(response.inlineConfig);
+        const inlineConfig = { ...response.inlineConfig };
+        delete inlineConfig.redirect_url;
+        window.FlutterwaveCheckout({
+          ...inlineConfig,
+          callback(payment) {
+            const txRef = payment?.tx_ref || response.reference;
+            const tid =
+              payment?.transaction_id != null ? String(payment.transaction_id) : "";
+            window.location.assign(
+              buildCheckoutStatusHref({
+                billing,
+                kind,
+                productId,
+                reference: txRef,
+                ...(tid ? { transaction_id: tid } : {}),
+                returnTo,
+              }),
+            );
+          },
+        });
         return;
       }
 

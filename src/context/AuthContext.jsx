@@ -210,7 +210,9 @@ export function AuthProvider({ children }) {
   const value = {
     hasStoredSession,
     isAuthenticated: Boolean(user),
-    isBootstrapping: bootstrapQuery.isPending,
+    isBootstrapping:
+      bootstrapQuery.isPending ||
+      (bootstrapQuery.isSuccess && Boolean(bootstrapQuery.data) && !user),
     challengeToken,
     completeOAuthSession,
     isLoggingIn: loginMutation.isPending,

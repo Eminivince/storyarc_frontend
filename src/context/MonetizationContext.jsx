@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { createContext, useContext, useMemo } from "react";
+import { createContext, useCallback, useContext, useMemo } from "react";
 import { useAuth } from "./AuthContext";
 import { useSocketEvent } from "./SocketContext";
 import { useToast } from "./ToastContext";
@@ -224,15 +224,15 @@ export function MonetizationProvider({ children }) {
     return displayCoinPackages.find((item) => item.id === packageId) ?? null;
   }
 
-  function hasCatalogProduct(kind, productId) {
+  const hasCatalogProduct = useCallback((kind, productId) => {
     if (kind === "coins") {
       return displayCoinPackages.some((item) => item.id === productId);
     }
 
     return displayPlans.some((plan) => plan.id === productId);
-  }
+  }, [displayCoinPackages, displayPlans]);
 
-  async function createCheckoutSession(input) {
+  const createCheckoutSession = useCallback(async (input) => {
     if (!hasCatalogProduct(input.kind, input.productId)) {
       throw new Error(
         input.kind === "coins"
@@ -249,13 +249,15 @@ export function MonetizationProvider({ children }) {
         input.billing,
       ]),
     });
-  }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [createCheckoutSessionMutation.mutateAsync, hasCatalogProduct]);
 
-  async function confirmCheckoutSession(input) {
+  const confirmCheckoutSession = useCallback(async (input) => {
     return confirmCheckoutSessionMutation.mutateAsync(input);
-  }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [confirmCheckoutSessionMutation.mutateAsync]);
 
-  async function spendCoinsForChapter(input) {
+  const spendCoinsForChapter = useCallback(async (input) => {
     return unlockWithCoinsMutation.mutateAsync({
       ...input,
       idempotencyKey: createIdempotencyKey("chapter-unlock", [
@@ -264,9 +266,10 @@ export function MonetizationProvider({ children }) {
         "coins",
       ]),
     });
-  }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [unlockWithCoinsMutation.mutateAsync]);
 
-  async function spendCoinsForChapterBatch(input) {
+  const spendCoinsForChapterBatch = useCallback(async (input) => {
     return unlockBatchWithCoinsMutation.mutateAsync({
       ...input,
       idempotencyKey: createIdempotencyKey("chapter-batch-unlock", [
@@ -275,9 +278,10 @@ export function MonetizationProvider({ children }) {
         input.mode,
       ]),
     });
-  }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [unlockBatchWithCoinsMutation.mutateAsync]);
 
-  async function sendGift(input) {
+  const sendGift = useCallback(async (input) => {
     return sendGiftMutation.mutateAsync({
       ...input,
       idempotencyKey: createIdempotencyKey("gift", [
@@ -285,11 +289,13 @@ export function MonetizationProvider({ children }) {
         input.giftCode,
       ]),
     });
-  }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sendGiftMutation.mutateAsync]);
 
-  async function cancelSubscription() {
+  const cancelSubscription = useCallback(async () => {
     return cancelSubscriptionMutation.mutateAsync();
-  }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cancelSubscriptionMutation.mutateAsync]);
 
   const value = {
     accountTier,
