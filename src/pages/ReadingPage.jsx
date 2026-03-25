@@ -221,7 +221,11 @@ function DesktopReader({
   const fontClass = fontFamily === "serif" ? "font-serif" : "font-display";
 
   return (
-    <div className={`hidden min-h-screen font-display antialiased selection:bg-primary/30 md:block ${theme.shell}`}>
+    <div
+      className={`hidden min-h-screen font-display antialiased selection:bg-primary/30 md:block ${theme.shell}`}
+      data-reading-theme={readerTheme}
+      data-testid="reading-shell"
+    >
       <header className={`sticky top-0 z-50 border-b backdrop-blur-md ${theme.chrome}`}>
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
           <LogoBrand to={readerLibraryHref} />
@@ -539,7 +543,11 @@ function MobileReader({
   const barVisible = useScrollHide();
 
   return (
-    <div className={`min-h-screen font-display antialiased md:hidden ${theme.shell}`}>
+    <div
+      className={`min-h-screen font-display antialiased md:hidden ${theme.shell}`}
+      data-reading-theme={readerTheme}
+      data-testid="reading-shell"
+    >
       <header className={`fixed left-0 right-0 top-0 z-50 flex flex-col border-b backdrop-blur-md ${theme.chrome}`}>
         <div className="flex items-center justify-between px-3 py-2.5">
           <Link className="flex size-8 items-center justify-center rounded-lg transition-colors hover:bg-primary/10" to={buildStoryHref(story.slug)}>

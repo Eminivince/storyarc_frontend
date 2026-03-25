@@ -20,6 +20,8 @@ import {
 } from "../data/monetization";
 import { fetchMonetizationPurchases } from "../monetization/monetizationApi";
 
+const BILLING_HISTORY_DISPLAY_LIMIT = 4;
+
 function formatPurchaseDate(value) {
   const date = new Date(value);
 
@@ -73,7 +75,7 @@ function getPurchaseStatusClassName(status) {
 function BillingHistorySkeleton({ compact = false }) {
   return (
     <div className={compact ? "mt-4 space-y-2" : "mt-5 space-y-3"}>
-      {Array.from({ length: 3 }).map((_, index) => (
+      {Array.from({ length: BILLING_HISTORY_DISPLAY_LIMIT }).map((_, index) => (
         <div
           className={`flex items-center justify-between border border-slate-200 bg-slate-50 dark:border-primary/10 dark:bg-background-dark/50 ${
             compact ? "rounded-lg px-3 py-3" : "rounded-2xl px-4 py-4"
@@ -392,7 +394,7 @@ function BillingSections({
         ) : null}
         {!purchasesLoading && !purchaseHistoryError && purchases.length ? (
           <div className={compact ? "mt-4 space-y-2" : "mt-5 space-y-3"}>
-            {purchases.map((purchase) => (
+            {purchases.slice(0, BILLING_HISTORY_DISPLAY_LIMIT).map((purchase) => (
               <div
                 className={`flex items-center justify-between border border-slate-200 bg-slate-50 dark:border-primary/10 dark:bg-background-dark/50 ${
                   compact ? "rounded-lg px-3 py-3" : "rounded-2xl px-4 py-4"

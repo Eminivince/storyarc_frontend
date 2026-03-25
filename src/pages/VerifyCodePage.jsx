@@ -37,6 +37,7 @@ function DesktopOtpInputs({ digits, onDigitChange, onKeyDown }) {
     <input
       autoFocus={index === 0}
       className="h-14 w-full rounded-lg border-b-2 border-slate-300 bg-slate-50 text-center text-2xl font-bold outline-none transition-colors focus:border-primary focus:ring-0 dark:border-primary/20 dark:bg-zinc-800"
+      data-testid={`otp-digit-${index}`}
       inputMode="numeric"
       key={index}
       maxLength={1}
@@ -60,6 +61,7 @@ function MobileOtpInputs({ digits, onDigitChange, onKeyDown }) {
     <input
       autoFocus={index === 0}
       className="h-10 w-9 border-0 border-b-2 border-slate-300 bg-transparent text-center text-base font-bold transition-colors [appearance:textfield] placeholder:text-slate-400 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary dark:border-slate-700 sm:w-10"
+      data-testid={`otp-digit-${index}`}
       inputMode="numeric"
       key={index}
       maxLength={1}
@@ -133,6 +135,7 @@ function DesktopVerifyCode({
             <div className="space-y-4">
               <button
                 className="flex h-14 w-full items-center justify-center gap-2 rounded-lg bg-primary text-lg font-bold text-background-dark shadow-lg shadow-primary/20 transition-all hover:bg-primary/90 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60"
+                data-testid="verify-submit"
                 disabled={pending}
                 type="submit"
               >
@@ -238,6 +241,7 @@ function MobileVerifyCode({
 
             <button
               className="h-10 w-full rounded-lg bg-primary text-base font-semibold text-background-dark transition-all hover:bg-primary/90 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60"
+              data-testid="verify-submit"
               disabled={pending}
               type="submit"
             >

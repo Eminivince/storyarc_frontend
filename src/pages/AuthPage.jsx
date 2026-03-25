@@ -2,7 +2,15 @@ import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { buildGoogleAuthStartUrl } from "../auth/authApi";
-import { sanitizeDisplayName, sanitizeEmail, sanitizePassword, isPasswordValid } from "../lib/formSanitize";
+import {
+  getPasswordPolicyErrorMessage,
+  isStrongPassword,
+} from "../auth/passwordPolicy";
+import {
+  sanitizeDisplayName,
+  sanitizeEmail,
+  sanitizePassword,
+} from "../lib/formSanitize";
 import { persistPendingVerification } from "../auth/authFlowStorage";
 import { resolvePostLoginPath } from "../auth/authRouting";
 import { useAuth } from "../context/AuthContext";
@@ -218,8 +226,8 @@ function useAuthFormModel() {
       }
     }
 
-    if (!isPasswordValid(password)) {
-      const msg = "Password cannot contain spaces.";
+    if (!isSignIn && !isStrongPassword(cleanPassword)) {
+      const msg = getPasswordPolicyErrorMessage(cleanPassword);
       setError(msg);
       showToast(msg, {
         tone: "error",
@@ -477,7 +485,10 @@ function DesktopAuth() {
 
                 <form className="space-y-5" onSubmit={handleSubmit}>
                   {error && (
-                    <div className="flex items-start gap-3 rounded-lg border border-red-200 bg-red-50 p-4 text-red-800 dark:border-red-900/50 dark:bg-red-950/30 dark:text-red-200">
+                    <div
+                      className="flex items-start gap-3 rounded-lg border border-red-200 bg-red-50 p-4 text-red-800 dark:border-red-900/50 dark:bg-red-950/30 dark:text-red-200"
+                      data-testid="auth-error"
+                    >
                       <span className="material-symbols-outlined shrink-0 text-xl">error</span>
                       <p className="text-base font-medium">{error}</p>
                     </div>
@@ -515,6 +526,7 @@ function DesktopAuth() {
                         </span>
                         <input
                           className="w-full rounded-lg border border-slate-200 bg-slate-100 py-3.5 pl-12 pr-4 text-base text-slate-900 outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary dark:border-primary/20 dark:bg-primary/5 dark:text-white"
+                          data-testid="auth-display-name"
                           onChange={(event) => setDisplayName(sanitizeDisplayName(event.target.value))}
                           placeholder="Alex Thorne"
                           required
@@ -531,11 +543,12 @@ function DesktopAuth() {
                       <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-xl text-slate-400">
                         mail
                       </span>
-                      <input
-                        className="w-full rounded-lg border border-slate-200 bg-slate-100 py-3.5 pl-12 pr-4 text-base text-slate-900 outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary dark:border-primary/20 dark:bg-primary/5 dark:text-white"
-                        onChange={(event) => setEmail(sanitizeEmail(event.target.value))}
-                        placeholder="name@example.com"
-                        required
+                        <input
+                          className="w-full rounded-lg border border-slate-200 bg-slate-100 py-3.5 pl-12 pr-4 text-base text-slate-900 outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary dark:border-primary/20 dark:bg-primary/5 dark:text-white"
+                          data-testid="auth-email"
+                          onChange={(event) => setEmail(sanitizeEmail(event.target.value))}
+                          placeholder="name@example.com"
+                          required
                         type="email"
                         value={email}
                       />
@@ -551,6 +564,7 @@ function DesktopAuth() {
                         </span>
                         <select
                           className="w-full appearance-none rounded-lg border border-slate-200 bg-slate-100 py-3.5 pl-12 pr-10 text-base text-slate-900 outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary dark:border-primary/20 dark:bg-primary/5 dark:text-white"
+                          data-testid="auth-birth-year"
                           onChange={(event) => setBirthYear(event.target.value)}
                           required
                           value={birthYear}
@@ -590,6 +604,7 @@ function DesktopAuth() {
                       </span>
                       <input
                         className="w-full rounded-lg border border-slate-200 bg-slate-100 py-3.5 pl-12 pr-12 text-base text-slate-900 outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary dark:border-primary/20 dark:bg-primary/5 dark:text-white"
+                        data-testid="auth-password"
                         onChange={(event) => setPassword(sanitizePassword(event.target.value))}
                         placeholder="••••••••"
                         required
@@ -618,6 +633,7 @@ function DesktopAuth() {
                         </span>
                         <input
                           className="w-full rounded-lg border border-slate-200 bg-slate-100 py-3.5 pl-12 pr-12 text-base text-slate-900 outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary dark:border-primary/20 dark:bg-primary/5 dark:text-white"
+                          data-testid="auth-confirm-password"
                           onChange={(event) => setConfirmPassword(sanitizePassword(event.target.value))}
                           placeholder="••••••••"
                           required
@@ -643,6 +659,7 @@ function DesktopAuth() {
                       <input
                         checked={agreedToTerms}
                         className="mt-1 h-4 w-4 shrink-0 rounded border-slate-300 text-primary focus:ring-primary"
+                        data-testid="auth-terms"
                         onChange={(e) => setAgreedToTerms(e.target.checked)}
                         type="checkbox"
                       />
@@ -664,6 +681,7 @@ function DesktopAuth() {
 
                   <motion.button
                     className="w-full rounded-lg bg-primary py-4 text-base font-bold text-background-dark shadow-lg shadow-primary/20 disabled:cursor-not-allowed disabled:opacity-60"
+                    data-testid="auth-submit"
                     disabled={
                       isPending ||
                       (!isSignIn && !agreedToTerms) ||
@@ -816,7 +834,10 @@ function MobileAuth() {
 
             <form className="mt-4 flex flex-col gap-3" onSubmit={handleSubmit}>
               {error && (
-                <div className="flex items-start gap-2 rounded-lg border border-red-200 bg-red-50 p-3 text-red-800 dark:border-red-900/50 dark:bg-red-950/30 dark:text-red-200">
+                <div
+                  className="flex items-start gap-2 rounded-lg border border-red-200 bg-red-50 p-3 text-red-800 dark:border-red-900/50 dark:bg-red-950/30 dark:text-red-200"
+                  data-testid="auth-error"
+                >
                   <span className="material-symbols-outlined shrink-0 text-lg">error</span>
                   <p className="text-base font-medium">{error}</p>
                 </div>
@@ -845,6 +866,7 @@ function MobileAuth() {
                       <span className="text-base font-medium text-slate-600 dark:text-slate-400">Display Name</span>
                       <input
                         className="h-10 w-full rounded-lg border border-slate-200 bg-white px-3 text-base text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-primary/30 dark:border-primary/20 dark:bg-primary/5 dark:text-slate-100"
+                        data-testid="auth-display-name"
                         onChange={(e) => setDisplayName(sanitizeDisplayName(e.target.value))}
                         placeholder="John Doe"
                         required
@@ -857,6 +879,7 @@ function MobileAuth() {
                     <span className="text-base font-medium text-slate-600 dark:text-slate-400">Email</span>
                     <input
                       className="h-10 w-full rounded-lg border border-slate-200 bg-white px-3 text-base text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-primary/30 dark:border-primary/20 dark:bg-primary/5 dark:text-slate-100"
+                      data-testid="auth-email"
                       onChange={(e) => setEmail(sanitizeEmail(e.target.value))}
                       placeholder="john.doe@example.com"
                       required
@@ -873,6 +896,7 @@ function MobileAuth() {
                         </span>
                         <select
                           className="h-10 w-full appearance-none rounded-lg border border-slate-200 bg-white pl-10 pr-8 text-base text-slate-900 focus:ring-2 focus:ring-primary/30 dark:border-primary/20 dark:bg-primary/5 dark:text-slate-100"
+                          data-testid="auth-birth-year"
                           onChange={(e) => setBirthYear(e.target.value)}
                           required
                           value={birthYear}
@@ -898,6 +922,7 @@ function MobileAuth() {
                     <div className="relative">
                       <input
                         className="h-10 w-full rounded-lg border border-slate-200 bg-white px-3 pr-10 text-base text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-primary/30 dark:border-primary/20 dark:bg-primary/5 dark:text-slate-100"
+                        data-testid="auth-password"
                         onChange={(e) => setPassword(sanitizePassword(e.target.value))}
                         placeholder="••••••••"
                         required
@@ -922,6 +947,7 @@ function MobileAuth() {
                       <div className="relative">
                         <input
                           className="h-10 w-full rounded-lg border border-slate-200 bg-white px-3 pr-10 text-base text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-primary/30 dark:border-primary/20 dark:bg-primary/5 dark:text-slate-100"
+                          data-testid="auth-confirm-password"
                           onChange={(e) => setConfirmPassword(sanitizePassword(e.target.value))}
                           placeholder="••••••••"
                           required
@@ -953,6 +979,7 @@ function MobileAuth() {
                       <input
                         checked={agreedToTerms}
                         className="mt-0.5 h-4 w-4 shrink-0 rounded border-slate-300 text-primary focus:ring-primary"
+                        data-testid="auth-terms"
                         onChange={(e) => setAgreedToTerms(e.target.checked)}
                         type="checkbox"
                       />
@@ -973,6 +1000,7 @@ function MobileAuth() {
               )}
               <motion.button
                 className="mt-1 h-10 rounded-lg bg-primary text-base font-semibold text-background-dark transition-all disabled:cursor-not-allowed disabled:opacity-60"
+                data-testid="auth-submit"
                 disabled={
                   isPending ||
                   (!isSignIn && !agreedToTerms) ||
