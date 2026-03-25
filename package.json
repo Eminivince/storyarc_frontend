@@ -4,15 +4,13 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "postinstall": "node scripts/sync-material-symbols-font.js",
-    "prebuild": "node scripts/sync-material-symbols-font.js",
     "dev": "vite",
     "build": "npm run generate-icons && vite build",
     "preview": "vite preview",
     "generate-icons": "node scripts/generate-icons.js"
   },
   "dependencies": {
-    "@fontsource-variable/material-symbols-outlined": "5.2.38",
+    "@ant-design/icons": "^6.1.0",
     "@react-three/drei": "^10.7.7",
     "@react-three/fiber": "^9.5.0",
     "@tanstack/react-query": "^5.68.0",
@@ -21,7 +19,6 @@
     "@tiptap/react": "^3.20.1",
     "@tiptap/starter-kit": "^3.20.1",
     "framer-motion": "^11.11.17",
-    "lucide-react": "^0.469.0",
     "qrcode.react": "^3.1.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",

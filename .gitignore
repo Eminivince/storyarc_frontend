@@ -5,5 +5,5 @@ dist
 
 node_modules
 
-# Copied from @fontsource-variable on yarn/npm install (see scripts/sync-material-symbols-font.js)
+# Optional local font copies (legacy)
 public/fonts/*.woff2
