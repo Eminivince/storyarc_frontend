@@ -303,10 +303,10 @@ function BillingSections({
             </div>
             <div>
               <p className={compact ? "text-sm font-bold" : "font-bold"}>
-                {checkoutProvider === "flutterwave" ? "Flutterwave" : checkoutProvider === "paystack" ? "Paystack" : "Payment Provider"}
+                {checkoutProvider === "flutterwave" ? "Flutterwave" : checkoutProvider === "paystack" ? "Paystack" : checkoutProvider === "polar" ? "Polar" : checkoutProvider === "cryptomus" ? "Cryptomus" : "Payment Provider"}
               </p>
               <p className={compact ? "text-xs text-slate-500" : "text-sm text-slate-500 dark:text-slate-400"}>
-                Managed by {checkoutProvider === "flutterwave" ? "Flutterwave" : checkoutProvider === "paystack" ? "Paystack" : "provider"}
+                Managed by {checkoutProvider === "flutterwave" ? "Flutterwave" : checkoutProvider === "paystack" ? "Paystack" : checkoutProvider === "polar" ? "Polar" : checkoutProvider === "cryptomus" ? "Cryptomus" : "provider"}
               </p>
             </div>
           </div>

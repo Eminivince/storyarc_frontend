@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { Link, Navigate, useLocation, useSearchParams } from "react-router-dom";
 import { LogoBrand } from "../components/LogoBrand";
 import ReaderStateScreen from "../components/ReaderStateScreen";
@@ -36,6 +37,26 @@ function getCheckoutProviderMeta(checkoutProvider) {
     };
   }
 
+  if (checkoutProvider === "paystack") {
+    return {
+      description:
+        "You will be redirected to Paystack to complete your payment securely. TaleStead never collects your payment details directly.",
+      icon: "payments",
+      label: "Paystack",
+      note: "Card and bank payment options are available on the Paystack checkout page.",
+    };
+  }
+
+  if (checkoutProvider === "polar") {
+    return {
+      description:
+        "Complete your payment securely through Polar. TaleStead never collects your payment details directly.",
+      icon: "payments",
+      label: "Polar",
+      note: "Card and payment details are handled on the Polar checkout page.",
+    };
+  }
+
   return {
     description:
       "You will finish payment on the hosted checkout page. TaleStead never collects your payment details directly.",
@@ -43,6 +64,59 @@ function getCheckoutProviderMeta(checkoutProvider) {
     label: "Payment Provider",
     note: "Payment details are handled on the provider page.",
   };
+}
+
+function ProviderSelector({ availableProviders, selectedProvider, onSelectProvider }) {
+  if (!availableProviders || availableProviders.length <= 1) {
+    return null;
+  }
+
+  return (
+    <div className="space-y-3">
+      <p className="text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">
+        Choose Payment Method
+      </p>
+      <div className="grid gap-2">
+        {availableProviders.map((provider) => {
+          const meta = getCheckoutProviderMeta(provider.id);
+          const isSelected = selectedProvider === provider.id;
+
+          return (
+            <button
+              key={provider.id}
+              className={`flex w-full items-center gap-3 rounded-xl border p-3 text-left transition-all ${
+                isSelected
+                  ? "border-primary bg-primary/5 dark:bg-primary/10"
+                  : "border-slate-200 hover:border-slate-300 dark:border-slate-700 dark:hover:border-slate-600"
+              }`}
+              onClick={() => onSelectProvider(provider.id)}
+              type="button"
+            >
+              <div
+                className={`flex h-9 w-9 items-center justify-center rounded-lg ${
+                  isSelected
+                    ? "bg-primary/15 text-primary"
+                    : "bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400"
+                }`}
+              >
+                <span className="material-symbols-outlined text-lg">
+                  {meta.icon}
+                </span>
+              </div>
+              <span className={`flex-1 text-sm font-semibold ${isSelected ? "text-primary" : ""}`}>
+                {meta.label}
+              </span>
+              {isSelected && (
+                <span className="material-symbols-outlined text-primary">
+                  check_circle
+                </span>
+              )}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
 }
 
 function getOrderDetails({
@@ -110,12 +184,15 @@ function getOrderDetails({
 }
 
 function DesktopCheckout({
+  availableProviders,
   currency,
   details,
   isBusy,
   onSubmit,
   providerMeta,
   returnTo,
+  selectedProvider,
+  onSelectProvider,
 }) {
   return (
     <div className="hidden min-h-screen bg-background-light font-display text-slate-900 dark:bg-background-dark dark:text-slate-100 md:block">
@@ -216,6 +293,14 @@ function DesktopCheckout({
             <div className="lg:col-span-7">
               <Reveal className="rounded-xl border border-slate-200 bg-white p-8 shadow-sm dark:border-slate-800 dark:bg-background-dark/50">
                 <h3 className="mb-6 text-xl font-bold">Payment Gateway</h3>
+
+                <div className="mb-6">
+                  <ProviderSelector
+                    availableProviders={availableProviders}
+                    selectedProvider={selectedProvider}
+                    onSelectProvider={onSelectProvider}
+                  />
+                </div>
 
                 <div className="mb-8 rounded-2xl border border-primary/20 bg-primary/5 p-5 dark:bg-primary/10">
                   <div className="flex items-start gap-4">
@@ -325,12 +410,15 @@ function DesktopCheckout({
 }
 
 function MobileCheckout({
+  availableProviders,
   currency,
   details,
   isBusy,
   onSubmit,
   providerMeta,
   returnTo,
+  selectedProvider,
+  onSelectProvider,
 }) {
   return (
     <div className="min-h-screen max-w-md bg-background-light font-display text-slate-900 antialiased dark:bg-background-dark dark:text-slate-100 md:hidden">
@@ -383,6 +471,13 @@ function MobileCheckout({
 
         <div className="px-4 py-2">
           <h3 className="mb-4 text-lg font-bold">Payment Gateway</h3>
+          <div className="mb-4">
+            <ProviderSelector
+              availableProviders={availableProviders}
+              selectedProvider={selectedProvider}
+              onSelectProvider={onSelectProvider}
+            />
+          </div>
           <div className="mb-6 rounded-xl border border-primary/20 bg-primary/5 p-4 dark:border-primary/30 dark:bg-primary/10">
             <div className="flex items-start gap-3">
               <span className="material-symbols-outlined text-primary">
@@ -451,6 +546,7 @@ export default function CheckoutPage() {
   const location = useLocation();
   const { showToast } = useToast();
   const {
+    availableProviders,
     catalogError,
     checkoutProvider,
     coinPackages,
@@ -488,7 +584,17 @@ export default function CheckoutPage() {
           returnTo,
         })
       : null;
-  const providerMeta = getCheckoutProviderMeta(checkoutProvider);
+
+  const [selectedProvider, setSelectedProvider] = useState(null);
+
+  useEffect(() => {
+    if (!selectedProvider && availableProviders.length > 0) {
+      setSelectedProvider(availableProviders[0].id);
+    }
+  }, [availableProviders, selectedProvider]);
+
+  const activeProvider = selectedProvider || checkoutProvider;
+  const providerMeta = getCheckoutProviderMeta(activeProvider);
   const unavailableReturnLink =
     kind === "coins" ? buildCoinStoreHref(returnTo) : pricingHref;
 
@@ -548,6 +654,7 @@ export default function CheckoutPage() {
         billing,
         kind,
         productId,
+        provider: activeProvider,
         returnTo,
       });
 
@@ -593,20 +700,26 @@ export default function CheckoutPage() {
   return (
     <>
       <DesktopCheckout
+        availableProviders={availableProviders}
         currency={currency}
         details={details}
         isBusy={isCheckoutBusy}
         onSubmit={handleSubmit}
         providerMeta={providerMeta}
         returnTo={returnTo}
+        selectedProvider={activeProvider}
+        onSelectProvider={setSelectedProvider}
       />
       <MobileCheckout
+        availableProviders={availableProviders}
         currency={currency}
         details={details}
         isBusy={isCheckoutBusy}
         onSubmit={handleSubmit}
         providerMeta={providerMeta}
         returnTo={returnTo}
+        selectedProvider={activeProvider}
+        onSelectProvider={setSelectedProvider}
       />
     </>
   );

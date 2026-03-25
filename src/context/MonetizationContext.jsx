@@ -91,10 +91,14 @@ export function MonetizationProvider({ children }) {
   const billingCycle = statusQuery.data?.billingCycle ?? "monthly";
   const currency =
     catalogQuery.data?.currency ?? statusQuery.data?.currency ?? "USD";
+  const availableProviders =
+    catalogQuery.data?.availableProviders ??
+    statusQuery.data?.availableProviders ??
+    [];
   const checkoutProvider =
     catalogQuery.data?.checkoutProvider ??
     statusQuery.data?.checkoutProvider ??
-    "flutterwave";
+    (availableProviders[0]?.id ?? "flutterwave");
   const coinBalance = statusQuery.data?.coinBalance ?? 0;
   const hasPremium = Boolean(statusQuery.data?.hasPremium);
   const accountTier = statusQuery.data?.subscription?.planName ?? "Free";
@@ -300,6 +304,7 @@ export function MonetizationProvider({ children }) {
   const value = {
     accountTier,
     activePlanId,
+    availableProviders,
     billingCycle,
     cancelSubscription,
     canUnlockWithCoins,
