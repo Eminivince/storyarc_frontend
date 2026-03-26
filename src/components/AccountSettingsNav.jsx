@@ -2,6 +2,7 @@ import { Link, useLocation } from "react-router-dom";
 import { useAccount } from "../context/AccountContext";
 import { accountSettingsTabs } from "../data/accountFlow";
 import UserAvatar from "./UserAvatar";
+import MaterialSymbol from "./MaterialSymbol";
 
 export default function AccountSettingsNav({ compact = false }) {
   const { pathname } = useLocation();
@@ -40,13 +41,10 @@ export default function AccountSettingsNav({ compact = false }) {
                   key={tab.id}
                   to={tab.href}
                 >
-                  <span
-                    className={`material-symbols-outlined ${
-                      active ? "" : "text-primary"
-                    }`}
-                  >
-                    {tab.icon}
-                  </span>
+                  <MaterialSymbol
+                    className={active ? "" : "text-primary"}
+                    name={tab.icon}
+                  />
                   <span>{tab.label}</span>
                 </Link>
               );

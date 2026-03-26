@@ -337,11 +337,17 @@ export function resolveSnakeCaseAntIcon(snakeName, filled) {
   if (!glyph) {
     return FALLBACK;
   }
-  if (typeof glyph === "function") {
-    return glyph;
+  // Ant icons are forwardRef objects (typeof "object"), not functions. Outline/filled
+  // pairs are plain objects { o, f? } — distinguished by own key "o".
+  if (
+    typeof glyph === "object" &&
+    glyph !== null &&
+    Object.prototype.hasOwnProperty.call(glyph, "o")
+  ) {
+    if (filled && glyph.f) {
+      return glyph.f;
+    }
+    return glyph.o ?? FALLBACK;
   }
-  if (filled && glyph.f) {
-    return glyph.f;
-  }
-  return glyph.o;
+  return glyph;
 }

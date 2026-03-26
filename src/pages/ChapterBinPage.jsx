@@ -5,6 +5,7 @@ import ReaderStateScreen from "../components/ReaderStateScreen";
 import Reveal from "../components/Reveal";
 import RouteLoadingScreen from "../components/RouteLoadingScreen";
 import { useCreator } from "../context/CreatorContext";
+import MaterialSymbol from "../components/MaterialSymbol";
 import {
   creatorStoriesHref,
   creatorStoryCreateHref,
@@ -37,7 +38,7 @@ function DesktopChapterBin({ onRestore, restoringId, story }) {
         <main className="flex min-w-0 flex-1 flex-col overflow-hidden">
           <header className="flex h-16 shrink-0 items-center justify-between border-b border-primary/10 bg-background-light px-8 dark:bg-background-dark/50">
             <div className="flex items-center gap-2">
-              <span className="material-symbols-outlined text-primary">delete_sweep</span>
+              <MaterialSymbol name="delete_sweep" className="text-primary" />
               <h2 className="text-lg font-bold tracking-tight">Chapter bin</h2>
             </div>
             <Link
@@ -58,7 +59,7 @@ function DesktopChapterBin({ onRestore, restoringId, story }) {
 
             {binned.length === 0 ? (
               <div className="rounded-2xl border border-dashed border-primary/20 bg-slate-50 p-12 text-center dark:bg-primary/5">
-                <span className="material-symbols-outlined mb-3 text-4xl text-primary/40">inventory_2</span>
+                <MaterialSymbol name="inventory_2" className="mb-3 text-4xl text-primary/40" />
                 <p className="text-sm font-medium text-slate-600 dark:text-slate-300">Your bin is empty.</p>
                 <p className="mt-1 text-xs text-slate-500">Move drafts here from the chapter editor to keep your workspace tidy.</p>
               </div>
@@ -128,7 +129,7 @@ function MobileChapterBin({ onRestore, restoringId, story }) {
         <div className="flex items-center justify-between gap-2">
           <div className="flex min-w-0 items-center gap-2">
             <Link className="flex size-9 shrink-0 items-center justify-center rounded-lg transition-colors hover:bg-slate-200 dark:hover:bg-primary/10" to={getCreatorStoryManagementHref(story.slug)}>
-              <span className="material-symbols-outlined text-xl">arrow_back</span>
+              <MaterialSymbol name="arrow_back" className="text-xl" />
             </Link>
             <h1 className="truncate text-base font-bold">Chapter bin</h1>
           </div>

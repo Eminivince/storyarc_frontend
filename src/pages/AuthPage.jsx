@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { buildGoogleAuthStartUrl } from "../auth/authApi";
+import MaterialSymbol from "../components/MaterialSymbol";
 import {
   getPasswordPolicyErrorMessage,
   isStrongPassword,
@@ -434,7 +435,7 @@ function DesktopAuth() {
                 "Early access to new chapters",
               ].map((item) => (
                 <div className="flex items-center gap-3" key={item}>
-                  <span className="material-symbols-outlined text-primary">check_circle</span>
+                  <MaterialSymbol name="check_circle" className="text-primary" />
                   <span className="text-sm">{item}</span>
                 </div>
               ))}
@@ -468,6 +469,8 @@ function DesktopAuth() {
                 </button>
               </div>
 
+              
+
               <motion.div
                 animate={{ opacity: 1, x: 0 }}
                 initial={{ opacity: 0, x: 12 }}
@@ -489,7 +492,7 @@ function DesktopAuth() {
                       className="flex items-start gap-3 rounded-lg border border-red-200 bg-red-50 p-4 text-red-800 dark:border-red-900/50 dark:bg-red-950/30 dark:text-red-200"
                       data-testid="auth-error"
                     >
-                      <span className="material-symbols-outlined shrink-0 text-xl">error</span>
+                      <MaterialSymbol name="error" className="shrink-0 text-xl" />
                       <p className="text-base font-medium">{error}</p>
                     </div>
                   )}
@@ -499,9 +502,7 @@ function DesktopAuth() {
                         Enter the 6-digit code from your authenticator app to finish signing in.
                       </p>
                       <div className="relative">
-                        <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-xl text-slate-400">
-                          pin
-                        </span>
+                        <MaterialSymbol name="pin" className="absolute left-4 top-1/2 -translate-y-1/2 text-xl text-slate-400" />
                         <input
                           className="w-full rounded-lg border border-slate-200 bg-slate-100 py-3.5 pl-12 pr-4 text-base text-slate-900 outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary dark:border-primary/20 dark:bg-primary/5 dark:text-white"
                           inputMode="numeric"
@@ -521,9 +522,7 @@ function DesktopAuth() {
                     <div className="space-y-2">
                       <label className="block text-base font-medium">Display Name</label>
                       <div className="relative">
-                        <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-xl text-slate-400">
-                          person
-                        </span>
+                        <MaterialSymbol name="person" className="absolute left-4 top-1/2 -translate-y-1/2 text-xl text-slate-400" />
                         <input
                           className="w-full rounded-lg border border-slate-200 bg-slate-100 py-3.5 pl-12 pr-4 text-base text-slate-900 outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary dark:border-primary/20 dark:bg-primary/5 dark:text-white"
                           data-testid="auth-display-name"
@@ -540,9 +539,7 @@ function DesktopAuth() {
                   <div className="space-y-2">
                     <label className="block text-base font-medium">Email Address</label>
                     <div className="relative">
-                      <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-xl text-slate-400">
-                        mail
-                      </span>
+                      <MaterialSymbol name="mail" className="absolute left-4 top-1/2 -translate-y-1/2 text-xl text-slate-400" />
                         <input
                           className="w-full rounded-lg border border-slate-200 bg-slate-100 py-3.5 pl-12 pr-4 text-base text-slate-900 outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary dark:border-primary/20 dark:bg-primary/5 dark:text-white"
                           data-testid="auth-email"
@@ -559,9 +556,7 @@ function DesktopAuth() {
                     <div className="space-y-2">
                       <label className="block text-base font-medium">Birth Year</label>
                       <div className="relative">
-                        <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-xl text-slate-400">
-                          calendar_month
-                        </span>
+                        <MaterialSymbol name="calendar_month" className="absolute left-4 top-1/2 -translate-y-1/2 text-xl text-slate-400" />
                         <select
                           className="w-full appearance-none rounded-lg border border-slate-200 bg-slate-100 py-3.5 pl-12 pr-10 text-base text-slate-900 outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary dark:border-primary/20 dark:bg-primary/5 dark:text-white"
                           data-testid="auth-birth-year"
@@ -599,9 +594,7 @@ function DesktopAuth() {
                       )}
                     </div>
                     <div className="relative">
-                      <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-xl text-slate-400">
-                        lock
-                      </span>
+                      <MaterialSymbol name="lock" className="absolute left-4 top-1/2 -translate-y-1/2 text-xl text-slate-400" />
                       <input
                         className="w-full rounded-lg border border-slate-200 bg-slate-100 py-3.5 pl-12 pr-12 text-base text-slate-900 outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary dark:border-primary/20 dark:bg-primary/5 dark:text-white"
                         data-testid="auth-password"
@@ -617,9 +610,7 @@ function DesktopAuth() {
                         type="button"
                         aria-label={showPassword ? "Hide password" : "Show password"}
                       >
-                        <span className="material-symbols-outlined text-xl">
-                          {showPassword ? "visibility_off" : "visibility"}
-                        </span>
+                        <MaterialSymbol name={showPassword ? "visibility_off" : "visibility"} className="text-xl" />
                       </button>
                     </div>
                   </div>
@@ -628,9 +619,7 @@ function DesktopAuth() {
                     <div className="space-y-2">
                       <label className="block text-base font-medium">Confirm Password</label>
                       <div className="relative">
-                        <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-xl text-slate-400">
-                          verified
-                        </span>
+                        <MaterialSymbol name="verified" className="absolute left-4 top-1/2 -translate-y-1/2 text-xl text-slate-400" />
                         <input
                           className="w-full rounded-lg border border-slate-200 bg-slate-100 py-3.5 pl-12 pr-12 text-base text-slate-900 outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary dark:border-primary/20 dark:bg-primary/5 dark:text-white"
                           data-testid="auth-confirm-password"
@@ -646,9 +635,7 @@ function DesktopAuth() {
                           type="button"
                           aria-label={showConfirmPassword ? "Hide password" : "Show password"}
                         >
-                          <span className="material-symbols-outlined text-xl">
-                            {showConfirmPassword ? "visibility_off" : "visibility"}
-                          </span>
+                          <MaterialSymbol name={showConfirmPassword ? "visibility_off" : "visibility"} className="text-xl" />
                         </button>
                       </div>
                     </div>
@@ -819,6 +806,7 @@ function MobileAuth() {
           </button>
         </div>
 
+
         <motion.div
           animate={{ opacity: 1, y: 0 }}
           className="flex-1 px-4 py-4"
@@ -838,7 +826,7 @@ function MobileAuth() {
                   className="flex items-start gap-2 rounded-lg border border-red-200 bg-red-50 p-3 text-red-800 dark:border-red-900/50 dark:bg-red-950/30 dark:text-red-200"
                   data-testid="auth-error"
                 >
-                  <span className="material-symbols-outlined shrink-0 text-lg">error</span>
+                  <MaterialSymbol name="error" className="shrink-0 text-lg" />
                   <p className="text-base font-medium">{error}</p>
                 </div>
               )}
@@ -891,9 +879,7 @@ function MobileAuth() {
                     <label className="flex flex-col gap-1">
                       <span className="text-base font-medium text-slate-600 dark:text-slate-400">Birth Year</span>
                       <div className="relative">
-                        <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
-                          calendar_month
-                        </span>
+                        <MaterialSymbol name="calendar_month" className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                         <select
                           className="h-10 w-full appearance-none rounded-lg border border-slate-200 bg-white pl-10 pr-8 text-base text-slate-900 focus:ring-2 focus:ring-primary/30 dark:border-primary/20 dark:bg-primary/5 dark:text-slate-100"
                           data-testid="auth-birth-year"
@@ -935,9 +921,7 @@ function MobileAuth() {
                         type="button"
                         aria-label={showPassword ? "Hide password" : "Show password"}
                       >
-                        <span className="material-symbols-outlined text-lg">
-                          {showPassword ? "visibility_off" : "visibility"}
-                        </span>
+                        <MaterialSymbol name={showPassword ? "visibility_off" : "visibility"} className="" />
                       </button>
                     </div>
                   </label>
@@ -960,9 +944,7 @@ function MobileAuth() {
                           type="button"
                           aria-label={showConfirmPassword ? "Hide password" : "Show password"}
                         >
-                          <span className="material-symbols-outlined text-lg">
-                            {showConfirmPassword ? "visibility_off" : "visibility"}
-                          </span>
+                          <MaterialSymbol name={showConfirmPassword ? "visibility_off" : "visibility"} className="text-lg" />
                         </button>
                       </div>
                     </label>

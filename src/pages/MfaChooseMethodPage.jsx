@@ -2,6 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useAccount } from "../context/AccountContext";
 import { LogoBrand } from "../components/LogoBrand";
+import MaterialSymbol from "../components/MaterialSymbol";
 import {
   helpHref,
   mfaChooseHref,
@@ -47,9 +48,7 @@ function DisableMfaModal({
         onClick={(event) => event.stopPropagation()}
       >
         <div className="mb-5 flex items-center gap-3">
-          <span className="material-symbols-outlined text-2xl text-primary">
-            shield_lock
-          </span>
+          <MaterialSymbol name="shield_lock" className="text-2xl text-primary" />
           <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100" id="disable-mfa-title">
             Disable Two-Factor Authentication
           </h2>
@@ -143,35 +142,35 @@ function DesktopChooseMethod({
                 className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition-colors hover:bg-primary/10 hover:text-primary dark:text-slate-400"
                 to="/dashboard"
               >
-                <span className="material-symbols-outlined">dashboard</span>
+                <MaterialSymbol name="dashboard" />
                 <span className="text-sm font-medium">Dashboard</span>
               </Link>
               <Link
                 className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition-colors hover:bg-primary/10 hover:text-primary dark:text-slate-400"
                 to={profileHref}
               >
-                <span className="material-symbols-outlined">book_5</span>
+                <MaterialSymbol name="book_5" />
                 <span className="text-sm font-medium">Stories</span>
               </Link>
               <Link
                 className="flex items-center gap-3 rounded-lg bg-primary/20 px-3 py-2.5 text-primary"
                 to={mfaChooseHref}
               >
-                <span className="material-symbols-outlined">shield_lock</span>
+                <MaterialSymbol name="shield_lock" />
                 <span className="text-sm font-medium">Security</span>
               </Link>
               <Link
                 className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition-colors hover:bg-primary/10 hover:text-primary dark:text-slate-400"
                 to={notificationsHref}
               >
-                <span className="material-symbols-outlined">settings</span>
+                <MaterialSymbol name="settings" />
                 <span className="text-sm font-medium">Settings</span>
               </Link>
               <Link
                 className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-slate-600 transition-colors hover:bg-primary/10 hover:text-primary dark:text-slate-400"
                 to={helpHref}
               >
-                <span className="material-symbols-outlined">help</span>
+                <MaterialSymbol name="help" />
                 <span className="text-sm font-medium">Help Center</span>
               </Link>
             </nav>
@@ -181,7 +180,7 @@ function DesktopChooseMethod({
             className="flex w-full items-center justify-center gap-2 rounded-lg bg-primary py-2.5 text-sm font-bold text-background-dark"
             to="/pricing/plan"
           >
-            <span className="material-symbols-outlined text-sm">workspace_premium</span>
+            <MaterialSymbol name="workspace_premium" className="text-sm" />
             Manage Subscription
           </Link>
         </aside>
@@ -190,7 +189,7 @@ function DesktopChooseMethod({
           <div className="w-full max-w-xl">
             <div className="mb-10 text-center">
               <div className="mb-6 inline-flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 text-primary">
-                <span className="material-symbols-outlined text-4xl">verified_user</span>
+                <MaterialSymbol name="verified_user" className="text-4xl" />
               </div>
               <h2 className="mb-4 text-3xl font-black">Secure Your Account</h2>
               <p className="leading-relaxed text-slate-600 dark:text-slate-400">
@@ -224,7 +223,7 @@ function DesktopChooseMethod({
                   </p>
                 </div>
                 <div className="text-primary transition-colors">
-                  <span className="material-symbols-outlined">{mfaMethod.icon}</span>
+                  <MaterialSymbol name={mfaMethod.icon} />
                 </div>
               </label>
             </div>
@@ -258,11 +257,9 @@ function DesktopChooseMethod({
             <div className="mt-12 border-t border-slate-200 pt-8 text-center dark:border-primary/10">
               <details className="group cursor-pointer">
                 <summary className="flex list-none items-center justify-center gap-2 text-sm font-semibold text-primary">
-                  <span className="material-symbols-outlined text-sm">info</span>
+                  <MaterialSymbol name="info" className="text-sm" />
                   Why is MFA important?
-                  <span className="material-symbols-outlined text-sm transition-transform group-open:rotate-180">
-                    expand_more
-                  </span>
+                  <MaterialSymbol name="expand_more" className="text-sm transition-transform group-open:rotate-180" />
                 </summary>
                 <div className="mt-4 px-6 text-left text-sm leading-relaxed text-slate-500 dark:text-slate-400">
                   MFA blocks the vast majority of account takeover attacks. Even if
@@ -288,7 +285,7 @@ function MobileChooseMethod({
     <div className="min-h-screen bg-background-light font-display text-slate-900 dark:bg-background-dark dark:text-slate-100 md:hidden">
       <header className="flex items-center justify-between px-3 py-2">
         <Link className="flex size-10 items-center justify-start text-slate-900 dark:text-slate-100" to={profileHref}>
-          <span className="material-symbols-outlined text-xl">arrow_back</span>
+          <MaterialSymbol name="arrow_back" className="text-xl" />
         </Link>
         <h2 className="flex-1 pr-10 text-center text-base font-bold">Two-Factor Authentication</h2>
       </header>
@@ -296,7 +293,7 @@ function MobileChooseMethod({
       <main className="flex min-h-[calc(100vh-52px)] flex-col">
         <div className="px-4 pt-4 pb-2">
           <div className="mb-3 inline-flex rounded-lg bg-primary/20 p-2 text-primary">
-            <span className="material-symbols-outlined text-2xl">shield_lock</span>
+            <MaterialSymbol name="shield_lock" className="text-2xl" />
           </div>
           <h3 className="mb-1.5 text-xl font-bold leading-tight">Protect your account</h3>
           <p className="text-sm leading-snug text-slate-600 dark:text-slate-400">
@@ -327,7 +324,7 @@ function MobileChooseMethod({
           </label>
 
           <div className="flex items-start gap-2 rounded-lg bg-slate-100 p-3 dark:bg-slate-800/50">
-            <span className="material-symbols-outlined text-lg text-primary">info</span>
+            <MaterialSymbol name="info" className="text-lg text-primary" />
             <p className="text-[11px] leading-normal text-slate-500 dark:text-slate-400">
               Authenticator apps are more secure than SMS because they do not rely on
               cellular networks and help prevent SIM-swapping attacks.
@@ -344,7 +341,7 @@ function MobileChooseMethod({
           >
             <span>{isEnabled ? "2FA Enabled" : "Continue"}</span>
             {isEnabled ? null : (
-              <span className="material-symbols-outlined text-lg">arrow_forward</span>
+              <MaterialSymbol name="arrow_forward" className="text-lg" />
             )}
           </button>
           {isEnabled ? (

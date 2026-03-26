@@ -6,6 +6,7 @@ import Reveal from "../components/Reveal";
 import { useAccount } from "../context/AccountContext";
 import { useAuth } from "../context/AuthContext";
 import { deleteAccount } from "../auth/authApi";
+import MaterialSymbol from "../components/MaterialSymbol";
 import {
   displayLanguages,
   editProfileHref,
@@ -60,9 +61,7 @@ function DeleteAccountModal({
         onClick={(event) => event.stopPropagation()}
       >
         <div className="mb-5 flex items-center gap-3">
-          <span className="material-symbols-outlined text-2xl text-red-500">
-            delete_forever
-          </span>
+          <MaterialSymbol name="delete_forever" className="text-2xl text-red-500" />
           <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100" id="delete-account-title">
             Delete Account
           </h2>
@@ -244,7 +243,7 @@ function SettingsSections({
         }`}
       >
         <div className={`flex items-center gap-2 text-red-500 ${compact ? "mb-3" : "mb-4"}`}>
-          <span className="material-symbols-outlined text-lg">warning</span>
+          <MaterialSymbol name="warning" className="text-lg" />
           <h2 className={compact ? "text-base font-bold" : "text-lg font-bold"}>Danger Zone</h2>
         </div>
         <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between mb-4">
@@ -356,7 +355,7 @@ function MobileAccountSettings({
             className="flex size-9 items-center justify-center rounded-lg transition-colors hover:bg-slate-200 dark:hover:bg-primary/20"
             to={profileHref}
           >
-            <span className="material-symbols-outlined text-xl">arrow_back</span>
+            <MaterialSymbol name="arrow_back" className="text-xl" />
           </Link>
           <div className="ml-2">
             <p className="text-[10px] font-bold uppercase tracking-wider text-primary">

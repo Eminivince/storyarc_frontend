@@ -6,6 +6,7 @@ import UserAvatar from "../components/UserAvatar";
 import { useAuth } from "../context/AuthContext";
 import { useOnboarding } from "../context/OnboardingContext";
 import { useToast } from "../context/ToastContext";
+import MaterialSymbol from "../components/MaterialSymbol";
 
 const readingStyles = [
   {
@@ -190,7 +191,7 @@ function DesktopReadingPreferences() {
             className="flex h-10 w-10 items-center justify-center rounded-lg bg-slate-200 text-slate-700 transition-colors hover:bg-primary hover:text-white dark:bg-primary/10 dark:text-primary"
             to="/onboarding/genres"
           >
-            <span className="material-symbols-outlined">close</span>
+            <MaterialSymbol name="close" />
           </Link>
         </header>
 
@@ -292,7 +293,7 @@ function DesktopReadingPreferences() {
               whileTap={{ scale: 0.98 }}
             >
               <span>{isSavingPreferences ? "Saving..." : "Complete Setup"}</span>
-              <span className="material-symbols-outlined">check_circle</span>
+              <MaterialSymbol name="check_circle" />
             </motion.button>
             <p className="mt-4 text-center text-xs text-slate-500 dark:text-primary/40">
               You can change these preferences at any time in settings.
@@ -349,9 +350,7 @@ function MobileReadingPreferences() {
             className="flex size-9 items-center justify-center rounded-lg transition-colors hover:bg-slate-200 dark:hover:bg-primary/20"
             to="/onboarding/genres"
           >
-            <span className="material-symbols-outlined text-xl text-slate-900 dark:text-slate-100">
-              arrow_back
-            </span>
+            <MaterialSymbol name="arrow_back" className="text-xl text-slate-900 dark:text-slate-100" />
           </Link>
           <h2 className="flex-1 pr-9 text-center text-sm font-bold tracking-[-0.02em]">
             Reading Preferences

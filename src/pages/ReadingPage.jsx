@@ -9,6 +9,7 @@ import RouteLoadingScreen from "../components/RouteLoadingScreen";
 import SeoMetadata, { createSeoDescription } from "../components/SeoMetadata";
 import { useOnboarding } from "../context/OnboardingContext";
 import { useOnlineStatus } from "../hooks/useOnlineStatus";
+import MaterialSymbol from "../components/MaterialSymbol";
 import {
   buildChapterHref,
   buildLockedChapterHref,
@@ -233,7 +234,7 @@ function DesktopReader({
           <div className="flex items-center gap-2 md:gap-6">
             {isOfflineReading && (
               <span className="flex items-center gap-1 rounded-lg bg-amber-500/10 px-2 py-1 text-xs font-semibold text-amber-400">
-                <span className="material-symbols-outlined text-sm">cloud_off</span>
+                <MaterialSymbol name="cloud_off" className="text-sm" />
                 Reading offline
               </span>
             )}
@@ -252,7 +253,7 @@ function DesktopReader({
                 onClick={onIncreaseFont}
                 type="button"
               >
-                <span className="material-symbols-outlined">format_size</span>
+                <MaterialSymbol name="format_size" />
               </button>
               <button
                 className={`rounded-lg p-2 transition-colors hover:bg-primary/10 ${
@@ -261,15 +262,13 @@ function DesktopReader({
                 onClick={onBookmarkToggle}
                 type="button"
               >
-                <span className="material-symbols-outlined">
-                  {chapter.isBookmarked ? "bookmark" : "bookmark_add"}
-                </span>
+                <MaterialSymbol name={chapter.isBookmarked ? "bookmark" : "bookmark_add"} />
               </button>
               <Link
                 className={`rounded-lg p-2 transition-colors hover:bg-primary/10 ${theme.muted}`}
                 to={buildReportChapterHref(story.slug, chapter.chapterSlug)}
               >
-                <span className="material-symbols-outlined">flag</span>
+                <MaterialSymbol name="flag" />
               </Link>
             </div>
           </div>
@@ -335,7 +334,7 @@ function DesktopReader({
                 Previous
               </span>
               <span className="flex items-center gap-2 text-lg font-bold transition-colors group-hover:text-primary">
-                <span className="material-symbols-outlined text-sm">arrow_back</span>
+                <MaterialSymbol name="arrow_back" className="text-sm" />
                 {(chapter.previousChapter?.title
                   ? chapter.previousChapter.title.slice(0, 8)
                   : "Back to")}
@@ -359,7 +358,7 @@ function DesktopReader({
               </span>
               <span className="flex items-center gap-2 text-lg font-bold transition-colors group-hover:text-primary">
                 {nextLabel}
-                <span className="material-symbols-outlined text-sm">arrow_forward</span>
+                <MaterialSymbol name="arrow_forward" className="text-sm" />
               </span>
             </Link>
           </nav>
@@ -376,7 +375,7 @@ function DesktopReader({
               initial={{ opacity: 0, y: 18, scale: 0.96 }}
             >
               <h4 className="mb-4 flex items-center gap-2 text-sm font-bold text-primary">
-                <span className="material-symbols-outlined text-sm">settings</span>
+                <MaterialSymbol name="settings" className="text-sm" />
                 Reading Settings
               </h4>
 
@@ -458,21 +457,21 @@ function DesktopReader({
               onClick={onToggleComments}
               type="button"
             >
-              <span className="material-symbols-outlined">chat_bubble</span>
+              <MaterialSymbol name="chat_bubble" />
             </button>
           )}
           <Link
             className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-background-dark shadow-lg transition-transform hover:scale-105"
             to={buildStoryHref(story.slug)}
           >
-            <span className="material-symbols-outlined">menu_book</span>
+            <MaterialSymbol name="menu_book" />
           </Link>
           <button
             className={`flex h-12 w-12 items-center justify-center rounded-full border shadow-lg transition-colors ${theme.panelSecondary}`}
             onClick={onToggleSettings}
             type="button"
           >
-            <span className="material-symbols-outlined">settings</span>
+            <MaterialSymbol name="settings" />
           </button>
         </div>
       </div>
@@ -501,7 +500,7 @@ function DesktopReader({
                   onClick={onToggleComments}
                   type="button"
                 >
-                  <span className="material-symbols-outlined">close</span>
+                  <MaterialSymbol name="close" />
                 </button>
               </div>
               <div className="flex-1 overflow-y-auto px-4 pb-8">
@@ -551,18 +550,18 @@ function MobileReader({
       <header className={`fixed left-0 right-0 top-0 z-50 flex flex-col border-b backdrop-blur-md ${theme.chrome}`}>
         <div className="flex items-center justify-between px-3 py-2.5">
           <Link className="flex size-8 items-center justify-center rounded-lg transition-colors hover:bg-primary/10" to={buildStoryHref(story.slug)}>
-            <span className="material-symbols-outlined text-lg text-primary">arrow_back</span>
+            <MaterialSymbol name="arrow_back" className="text-lg text-primary" />
           </Link>
           <h1 className={`truncate px-2 text-xs font-semibold uppercase tracking-wide ${theme.muted}`}>
             {isOfflineReading && (
               <span className="mr-1 inline-flex align-middle">
-                <span className="material-symbols-outlined text-xs text-amber-400">cloud_off</span>
+                <MaterialSymbol name="cloud_off" className="text-xs text-amber-400" />
               </span>
             )}
             {story.title}
           </h1>
           <Link className="flex size-8 items-center justify-center rounded-lg transition-colors hover:bg-primary/10" to={buildReportChapterHref(story.slug, chapter.chapterSlug)}>
-            <span className="material-symbols-outlined text-lg text-primary">flag</span>
+            <MaterialSymbol name="flag" className="text-lg text-primary" />
           </Link>
         </div>
         <div className={`h-0.5 w-full ${theme.track}`}>
@@ -611,7 +610,7 @@ function MobileReader({
                 : buildStoryHref(story.slug)
             }
           >
-            <span className="material-symbols-outlined text-base">chevron_left</span>
+            <MaterialSymbol name="chevron_left" className="text-base" />
             Previous
           </Link>
           <Link
@@ -620,7 +619,7 @@ function MobileReader({
             to={nextHref}
           >
             {nextLabel.slice(0, 12)}...
-            <span className="material-symbols-outlined text-base">chevron_right</span>
+            <MaterialSymbol name="chevron_right" className="text-base" />
           </Link>
         </nav>
       </main>
@@ -635,7 +634,7 @@ function MobileReader({
             onClick={onToggleSettings}
             type="button"
           >
-            <span className="material-symbols-outlined text-xl">format_size</span>
+            <MaterialSymbol name="format_size" className="text-xl" />
             <span className="text-[9px] font-bold uppercase tracking-tighter">Text</span>
           </button>
           {chapter.accessState === "READABLE" && !chapter.isLocked && !isOfflineReading && (
@@ -644,12 +643,12 @@ function MobileReader({
               onClick={onToggleComments}
               type="button"
             >
-              <span className="material-symbols-outlined text-xl">chat_bubble</span>
+              <MaterialSymbol name="chat_bubble" className="text-xl" />
               <span className="text-[9px] font-bold uppercase tracking-tighter">Comments</span>
             </button>
           )}
           <Link className={`flex flex-col items-center gap-0.5 transition-colors ${theme.muted}`} to={buildStoryHref(story.slug)}>
-            <span className="material-symbols-outlined text-xl">menu_book</span>
+            <MaterialSymbol name="menu_book" className="text-xl" />
             <span className="text-[9px] font-bold uppercase tracking-tighter">Index</span>
           </Link>
           <button
@@ -659,13 +658,11 @@ function MobileReader({
             onClick={onBookmarkToggle}
             type="button"
           >
-            <span className="material-symbols-outlined text-xl">
-              {chapter.isBookmarked ? "bookmark" : "bookmark_add"}
-            </span>
+            <MaterialSymbol name={chapter.isBookmarked ? "bookmark" : "bookmark_add"} className="text-xl" />
             <span className="text-[9px] font-bold uppercase tracking-tighter">Save</span>
           </button>
           <div className={`flex flex-col items-center gap-0.5 transition-colors ${theme.muted}`}>
-            <span className="material-symbols-outlined text-xl">percent</span>
+            <MaterialSymbol name="percent" className="text-xl" />
             <span className="text-[9px] font-bold uppercase tracking-tighter">{progressPercent}%</span>
           </div>
         </div>
@@ -687,7 +684,7 @@ function MobileReader({
                 onClick={onToggleComments}
                 type="button"
               >
-                <span className="material-symbols-outlined">close</span>
+                <MaterialSymbol name="close" />
               </button>
             </div>
             <div className="flex-1 overflow-y-auto overscroll-contain px-4 pb-8">
@@ -739,7 +736,7 @@ function MobileReader({
                     onClick={() => onSetFontSize(Math.max(fontSize - 1, 16))}
                     type="button"
                   >
-                    <span className="material-symbols-outlined text-xl">text_fields</span>
+                    <MaterialSymbol name="text_fields" className="text-xl" />
                   </button>
                   <span className="text-base font-bold">{fontSize}</span>
                   <button
@@ -747,7 +744,7 @@ function MobileReader({
                     onClick={() => onSetFontSize(Math.min(fontSize + 1, 24))}
                     type="button"
                   >
-                    <span className="material-symbols-outlined text-2xl">text_fields</span>
+                    <MaterialSymbol name="text_fields" className="text-2xl" />
                   </button>
                 </div>
               </div>

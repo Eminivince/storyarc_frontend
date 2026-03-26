@@ -4,6 +4,7 @@ import { AppMobileTabBar } from "../components/AppShellNav";
 import CreateReadingListModal from "../components/CreateReadingListModal";
 import ReaderStateScreen from "../components/ReaderStateScreen";
 import RouteLoadingScreen from "../components/RouteLoadingScreen";
+import MaterialSymbol from "../components/MaterialSymbol";
 import {
   buildChapterHref,
   buildSearchHref,
@@ -99,14 +100,12 @@ function DesktopReadingListDetails({
         <div className="mx-auto flex max-w-[1200px] items-center justify-between gap-8">
           <div className="flex items-center gap-8">
             <Link className="flex items-center gap-2 text-primary" to={readingListsHref}>
-              <span className="material-symbols-outlined text-3xl">layers</span>
+              <MaterialSymbol name="layers" className="text-3xl" />
               <h2 className="text-xl font-bold leading-tight tracking-tight">TaleStead</h2>
             </Link>
             <div className="hidden md:flex items-center">
               <div className="relative">
-                <span className="material-symbols-outlined absolute inset-y-0 left-0 flex items-center pl-3 text-xl text-slate-400">
-                  search
-                </span>
+                <MaterialSymbol name="search" className="absolute inset-y-0 left-0 flex items-center pl-3 text-xl text-slate-400" />
                 <input
                   className="block w-64 rounded-lg border-none bg-slate-100 py-2 pl-10 pr-3 text-sm placeholder-slate-500 focus:ring-2 focus:ring-primary dark:bg-primary/10"
                   placeholder="Search stories..."
@@ -131,10 +130,10 @@ function DesktopReadingListDetails({
           </nav>
           <div className="flex items-center gap-4">
             <Link className="rounded-lg p-2 transition-colors hover:bg-slate-200 dark:bg-primary/10 dark:hover:bg-primary/20" to="/account/notifications">
-              <span className="material-symbols-outlined">notifications</span>
+              <MaterialSymbol name="notifications" />
             </Link>
             <Link className="rounded-lg p-2 transition-colors hover:bg-slate-200 dark:bg-primary/10 dark:hover:bg-primary/20" to="/account/profile">
-              <span className="material-symbols-outlined">account_circle</span>
+              <MaterialSymbol name="account_circle" />
             </Link>
           </div>
         </div>
@@ -145,7 +144,7 @@ function DesktopReadingListDetails({
           <Link className="transition-colors hover:text-primary" to={readingListsHref}>
             Reading Lists
           </Link>
-          <span className="material-symbols-outlined text-xs">chevron_right</span>
+          <MaterialSymbol name="chevron_right" className="text-xs" />
           <span className="font-medium text-slate-900 dark:text-slate-100">{list.name}</span>
         </nav>
 
@@ -156,9 +155,7 @@ function DesktopReadingListDetails({
                 <img alt={list.name} className="h-full w-full object-cover" src={list.coverImage} />
               ) : (
                 <div className="flex h-full w-full items-center justify-center bg-slate-200 dark:bg-primary/10">
-                  <span className="material-symbols-outlined text-5xl text-slate-400">
-                    auto_stories
-                  </span>
+                  <MaterialSymbol name="auto_stories" className="text-5xl text-slate-400" />
                 </div>
               )}
             </div>
@@ -171,7 +168,7 @@ function DesktopReadingListDetails({
                   <VisibilityPill visibility={list.visibility} />
                 </div>
                 <p className="flex items-center gap-2 text-slate-500 dark:text-slate-400">
-                  <span className="material-symbols-outlined text-sm">auto_stories</span>
+                  <MaterialSymbol name="auto_stories" className="text-sm" />
                   {list.storyCount} books in this collection
                 </p>
               </div>
@@ -181,7 +178,7 @@ function DesktopReadingListDetails({
                   onClick={onShareList}
                   type="button"
                 >
-                  <span className="material-symbols-outlined text-xl">share</span>
+                  <MaterialSymbol name="share" className="text-xl" />
                   Share
                 </button>
                 <button
@@ -189,7 +186,7 @@ function DesktopReadingListDetails({
                   onClick={onEditList}
                   type="button"
                 >
-                  <span className="material-symbols-outlined text-xl">edit</span>
+                  <MaterialSymbol name="edit" className="text-xl" />
                   Edit List
                 </button>
                 <button
@@ -197,7 +194,7 @@ function DesktopReadingListDetails({
                   onClick={onDeleteList}
                   type="button"
                 >
-                  <span className="material-symbols-outlined">delete</span>
+                  <MaterialSymbol name="delete" />
                 </button>
               </div>
             </div>
@@ -269,7 +266,7 @@ function DesktopReadingListDetails({
                     onClick={() => onRemoveStory(book)}
                     type="button"
                   >
-                    <span className="material-symbols-outlined text-sm">remove_circle</span>
+                    <MaterialSymbol name="remove_circle" className="text-sm" />
                   </button>
                 </div>
                 <div className="flex flex-1 flex-col p-4">
@@ -278,7 +275,7 @@ function DesktopReadingListDetails({
                       {book.title}
                     </h3>
                     <span className="flex items-center gap-1 text-xs font-bold text-primary">
-                      <span className="material-symbols-outlined fill-1 text-xs">star</span>
+                      <MaterialSymbol name="star" filled className="text-xs" />
                       {book.averageRating.toFixed(1)}
                     </span>
                   </div>
@@ -309,9 +306,7 @@ function DesktopReadingListDetails({
           </div>
         ) : (
           <div className="rounded-3xl border border-dashed border-primary/20 bg-primary/5 p-8 text-center">
-            <span className="material-symbols-outlined text-4xl text-primary">
-              auto_stories
-            </span>
+            <MaterialSymbol name="auto_stories" className="text-4xl text-primary" />
             <h2 className="mt-3 text-xl font-bold">No books in this view</h2>
             <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
               Try another tab or add more stories to this list.
@@ -340,7 +335,7 @@ function MobileReadingListDetails({
       <header className="sticky top-0 z-50 flex items-center justify-between border-b border-slate-200 bg-background-light/80 px-2 py-2 backdrop-blur-md dark:border-primary/10 dark:bg-background-dark/80">
         <div className="flex items-center gap-2">
           <Link className="flex size-8 items-center justify-center rounded-full transition-colors hover:bg-slate-200 dark:hover:bg-primary/20" to={readingListsHref}>
-            <span className="material-symbols-outlined text-base text-slate-900 dark:text-primary">arrow_back</span>
+            <MaterialSymbol name="arrow_back" className="text-base text-slate-900 dark:text-primary" />
           </Link>
           <h1 className="text-sm font-bold leading-tight tracking-tight">Reading List</h1>
         </div>
@@ -349,7 +344,7 @@ function MobileReadingListDetails({
           onClick={onShareList}
           type="button"
         >
-          <span className="material-symbols-outlined text-base text-slate-900 dark:text-primary">share</span>
+          <MaterialSymbol name="share" className="text-base text-slate-900 dark:text-primary" />
         </button>
       </header>
 
@@ -361,9 +356,7 @@ function MobileReadingListDetails({
                 <img alt={list.name} className="h-full w-full object-cover" src={list.coverImage} />
               ) : (
                 <div className="flex h-full w-full items-center justify-center">
-                  <span className="material-symbols-outlined text-3xl text-slate-400">
-                    auto_stories
-                  </span>
+                  <MaterialSymbol name="auto_stories" className="text-3xl text-slate-400" />
                 </div>
               )}
             </div>
@@ -390,7 +383,7 @@ function MobileReadingListDetails({
               onClick={onShareList}
               type="button"
             >
-              <span className="material-symbols-outlined text-xs">share</span>
+              <MaterialSymbol name="share" className="text-xs" />
               Share
             </button>
             <button
@@ -398,7 +391,7 @@ function MobileReadingListDetails({
               onClick={onEditList}
               type="button"
             >
-              <span className="material-symbols-outlined text-xs">edit</span>
+              <MaterialSymbol name="edit" className="text-xs" />
               Edit
             </button>
           </div>
@@ -438,7 +431,7 @@ function MobileReadingListDetails({
                   onClick={() => onRemoveStory(book)}
                   type="button"
                 >
-                  <span className="material-symbols-outlined text-xs">close</span>
+                  <MaterialSymbol name="close" className="text-xs" />
                 </button>
               </div>
               <div className="flex min-w-0 flex-1 flex-col justify-between py-0.5">
@@ -448,7 +441,7 @@ function MobileReadingListDetails({
                     {book.authorName}
                   </p>
                   <div className="mb-2 flex items-center gap-1 text-primary">
-                    <span className="material-symbols-outlined fill-1 text-xs">star</span>
+                    <MaterialSymbol name="star" filled className="text-xs" />
                     <span className="text-[11px] font-bold">{book.averageRating.toFixed(1)}</span>
                   </div>
                 </div>

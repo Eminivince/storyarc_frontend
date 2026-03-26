@@ -7,6 +7,7 @@ import RouteLoadingScreen from "../components/RouteLoadingScreen";
 import UserAvatar from "../components/UserAvatar";
 import { useAuth } from "../context/AuthContext";
 import { useCreator } from "../context/CreatorContext";
+import MaterialSymbol from "../components/MaterialSymbol";
 import {
   creatorStoriesHref,
   creatorStoryCreateHref,
@@ -77,9 +78,7 @@ function DesktopStoryManagement({ onPreview, story }) {
           <header className="sticky top-0 z-10 flex items-center justify-between border-b border-primary/5 bg-background-light/80 px-8 py-4 backdrop-blur-md dark:bg-background-dark/80">
             <div className="flex flex-1 items-center gap-4">
               <label className="relative w-full max-w-md">
-                <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-primary/40">
-                  search
-                </span>
+                <MaterialSymbol name="search" className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-primary/40" />
                 <input
                   className="w-full rounded-xl border-none bg-slate-200 py-2 pl-10 pr-4 text-sm placeholder:text-slate-500 focus:ring-1 focus:ring-primary dark:bg-primary/5 dark:placeholder:text-primary/30"
                   placeholder="Search stories, chapters, or fans..."
@@ -90,7 +89,7 @@ function DesktopStoryManagement({ onPreview, story }) {
 
             <div className="flex items-center gap-4">
               <button className="relative rounded-lg p-2 text-slate-600 transition-colors hover:bg-primary/10 dark:text-primary/60" type="button">
-                <span className="material-symbols-outlined">notifications</span>
+                <MaterialSymbol name="notifications" />
                 <span className="absolute right-2 top-2 size-2 rounded-full bg-primary" />
               </button>
               <div className="mx-2 h-8 w-px bg-primary/10" />
@@ -132,19 +131,19 @@ function DesktopStoryManagement({ onPreview, story }) {
 
                   <div className="flex flex-wrap justify-center gap-6 md:justify-start">
                     <div className="flex items-center gap-2">
-                      <span className="material-symbols-outlined text-xl text-primary">visibility</span>
+                      <MaterialSymbol name="visibility" className="text-xl text-primary" />
                       <span className="text-lg font-bold">
                         {story.stats.reads} <span className="text-sm font-medium text-slate-500 dark:text-primary/40">Reads</span>
                       </span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="material-symbols-outlined text-xl text-primary fill-1">grade</span>
+                      <MaterialSymbol name="grade" filled className="text-xl text-primary" />
                       <span className="text-lg font-bold">
                         {story.stats.stars} <span className="text-sm font-medium text-slate-500 dark:text-primary/40">Stars</span>
                       </span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="material-symbols-outlined text-xl text-primary">forum</span>
+                      <MaterialSymbol name="forum" className="text-xl text-primary" />
                       <span className="text-lg font-bold">
                         {story.stats.reviews} <span className="text-sm font-medium text-slate-500 dark:text-primary/40">Reviews</span>
                       </span>
@@ -158,7 +157,7 @@ function DesktopStoryManagement({ onPreview, story }) {
                       className="flex items-center gap-2 rounded-xl bg-primary px-6 py-2.5 font-bold text-background-dark shadow-lg shadow-primary/20"
                       to={getCreatorChapterEditorHref(story.slug)}
                     >
-                      <span className="material-symbols-outlined">add_notes</span>
+                      <MaterialSymbol name="add_notes" />
                       Add Chapter
                     </Link>
                     <button
@@ -166,7 +165,7 @@ function DesktopStoryManagement({ onPreview, story }) {
                       onClick={onPreview}
                       type="button"
                     >
-                      <span className="material-symbols-outlined">open_in_new</span>
+                      <MaterialSymbol name="open_in_new" />
                       View on Site
                     </button>
                   </div>
@@ -192,7 +191,7 @@ function DesktopStoryManagement({ onPreview, story }) {
                     <Link className="group block" to={card.href}>
                       <div className="flex items-start gap-4">
                         <div className={`rounded-xl p-4 ${card.tone === "primary" ? "bg-background-dark/15" : "bg-primary/20 group-hover:bg-background-dark/20"}`}>
-                          <span className="material-symbols-outlined text-3xl">{card.icon}</span>
+                          <MaterialSymbol name={card.icon} className="text-3xl" />
                         </div>
                         <div>
                           <h4 className="text-xl font-bold">{card.title}</h4>
@@ -225,7 +224,7 @@ function DesktopStoryManagement({ onPreview, story }) {
                 </div>
                 <Link className="flex items-center gap-1 text-sm font-bold text-primary hover:underline" to={getCreatorPublishedChaptersHref(story.slug)}>
                   See All Chapters
-                  <span className="material-symbols-outlined text-sm">arrow_forward</span>
+                  <MaterialSymbol name="arrow_forward" className="text-sm" />
                 </Link>
               </div>
 
@@ -278,7 +277,7 @@ function DesktopStoryManagement({ onPreview, story }) {
                             className="rounded-lg p-2 text-slate-400 transition-all hover:bg-primary hover:text-background-dark"
                             to={getChapterEditHref(story.slug, chapter.chapterId)}
                           >
-                            <span className="material-symbols-outlined">edit</span>
+                            <MaterialSymbol name="edit" />
                           </Link>
                         </td>
                       </tr>
@@ -299,11 +298,11 @@ function MobileStoryManagement({ onPreview, story }) {
     <div className="min-h-screen bg-background-light font-display text-slate-900 dark:bg-background-dark dark:text-slate-100 md:hidden">
       <header className="sticky top-0 z-10 flex items-center justify-between border-b border-primary/10 bg-background-light/80 px-4 py-3 backdrop-blur-md dark:bg-background-dark/80">
         <Link className="flex size-9 items-center justify-center rounded-lg transition-colors hover:bg-primary/10" to={creatorStoriesHref}>
-          <span className="material-symbols-outlined text-xl text-slate-900 dark:text-slate-100">arrow_back</span>
+          <MaterialSymbol name="arrow_back" className="text-xl text-slate-900 dark:text-slate-100" />
         </Link>
         <h1 className="text-base font-bold tracking-tight">TaleStead</h1>
         <button className="flex size-9 items-center justify-center rounded-lg transition-colors hover:bg-primary/10" type="button">
-          <span className="material-symbols-outlined text-xl text-slate-900 dark:text-slate-100">more_vert</span>
+          <MaterialSymbol name="more_vert" className="text-xl text-slate-900 dark:text-slate-100" />
         </button>
       </header>
 
@@ -404,13 +403,13 @@ function MobileStoryManagement({ onPreview, story }) {
                       {chapter.status}
                     </span>
                     <span className="flex items-center gap-0.5 text-[10px] text-slate-500 dark:text-primary/50">
-                      <span className="material-symbols-outlined text-xs">visibility</span>
+                      <MaterialSymbol name="visibility" className="text-xs" />
                       {chapter.views}
                     </span>
                   </div>
                 </div>
                 <Link className="flex size-9 shrink-0 items-center justify-center rounded-lg text-slate-400 hover:bg-slate-200 dark:hover:bg-primary/10" to={getChapterEditHref(story.slug, chapter.chapterId)}>
-                  <span className="material-symbols-outlined text-lg">edit</span>
+                  <MaterialSymbol name="edit" className="text-lg" />
                 </Link>
               </Reveal>
             ))}

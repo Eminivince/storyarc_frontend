@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import RouteLoadingScreen from "../components/RouteLoadingScreen";
 import { useToast } from "../context/ToastContext";
+import MaterialSymbol from "../components/MaterialSymbol";
 import {
   useShopCatalogQuery,
   usePurchaseShopItemMutation,
@@ -80,9 +81,7 @@ function ShopItemCard({ item, onPurchase, owned }) {
           {item.iconUrl ? (
             <img src={item.iconUrl} alt="" className="h-6 w-6" />
           ) : (
-            <span className="material-symbols-outlined text-primary">
-              {CATEGORY_ICONS[item.category] ?? "shopping_bag"}
-            </span>
+            <MaterialSymbol name={CATEGORY_ICONS[item.category] ?? "shopping_bag"} className="text-primary" />
           )}
         </div>
         <span className="rounded-full bg-zinc-800 px-2 py-0.5 text-[10px] font-medium text-zinc-400">
@@ -134,9 +133,7 @@ function ShopContent({ catalog, myItems, onPurchase }) {
                   : "bg-zinc-800 text-zinc-400 hover:bg-zinc-700"
               }`}
             >
-              <span className="material-symbols-outlined text-sm">
-                {CATEGORY_ICONS[cat] ?? "category"}
-              </span>
+              <MaterialSymbol name={CATEGORY_ICONS[cat] ?? "category"} className="text-sm" />
               {CATEGORY_LABELS[cat] ?? cat}
             </button>
           ))}

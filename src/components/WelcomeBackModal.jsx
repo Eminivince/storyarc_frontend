@@ -1,6 +1,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
 import { buildStoryHref } from "../data/readerFlow";
+import MaterialSymbol from "./MaterialSymbol";
 
 const overlay = {
   hidden: { opacity: 0 },
@@ -41,9 +42,7 @@ export default function WelcomeBackModal({
             onClick={(e) => e.stopPropagation()}
           >
             <div className="bg-gradient-to-br from-primary/20 via-primary/10 to-transparent px-6 pb-4 pt-8 text-center">
-              <span className="material-symbols-outlined text-5xl text-primary">
-                waving_hand
-              </span>
+              <MaterialSymbol name="waving_hand" className="text-5xl text-primary" />
               <h2 className="mt-3 text-2xl font-black">Welcome back!</h2>
               <p className="mt-2 text-sm text-slate-400">
                 We've missed you. Here's what's new since your last visit.
@@ -79,9 +78,7 @@ export default function WelcomeBackModal({
                         </p>
                         <p className="text-[10px] text-primary">New updates</p>
                       </div>
-                      <span className="material-symbols-outlined text-sm text-slate-400">
-                        chevron_right
-                      </span>
+                      <MaterialSymbol name="chevron_right" className="text-sm text-slate-400" />
                     </Link>
                   ))}
                 </div>

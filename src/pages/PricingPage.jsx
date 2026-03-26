@@ -6,6 +6,7 @@ import Reveal from "../components/Reveal";
 import ReaderStateScreen from "../components/ReaderStateScreen";
 import RouteLoadingScreen from "../components/RouteLoadingScreen";
 import { useMonetization } from "../context/MonetizationContext";
+import MaterialSymbol from "../components/MaterialSymbol";
 import {
   buildPlanHref,
   formatPrice,
@@ -167,9 +168,7 @@ function DesktopPricing({
                         </div>
                       </div>
                       {isArcane && (
-                        <span className="material-symbols-outlined text-3xl text-primary">
-                          workspace_premium
-                        </span>
+                        <MaterialSymbol name="workspace_premium" className="text-3xl text-primary" />
                       )}
                     </div>
 
@@ -189,11 +188,9 @@ function DesktopPricing({
                     <div className="space-y-4">
                       {plan.features.map((feature) => (
                         <div className="flex items-center gap-3 text-sm" key={feature}>
-                          <span className="material-symbols-outlined text-lg text-primary">
-                            {plan.id === "free" && feature === "Ad-supported reading"
+                          <MaterialSymbol name={plan.id === "free" && feature === "Ad-supported reading"
                               ? "check_circle"
-                              : "check_circle"}
-                          </span>
+                              : "check_circle"} className="text-lg text-primary" />
                           <span className={isArcane ? "text-slate-100" : "text-slate-300"}>
                             {feature}
                           </span>
@@ -225,14 +222,14 @@ function MobilePricing({
       <div className="relative flex min-h-screen w-full flex-col overflow-x-hidden">
         <div className="sticky top-0 z-10 flex items-center justify-between border-b border-primary/10 bg-background-light px-3 py-2.5 dark:bg-background-dark">
           <Link className="flex h-10 w-10 items-center justify-start" to={returnTo}>
-            <span className="material-symbols-outlined">arrow_back</span>
+            <MaterialSymbol name="arrow_back" />
           </Link>
           <h2 className="flex-1 text-center text-base font-bold tracking-tight">
             TaleStead Premium
           </h2>
           <div className="flex w-10 items-center justify-end">
             <button className="flex h-10 w-10 items-center justify-center rounded-lg" type="button">
-              <span className="material-symbols-outlined">info</span>
+              <MaterialSymbol name="info" />
             </button>
           </div>
         </div>
@@ -306,14 +303,10 @@ function MobilePricing({
                         {plan.name}
                       </h1>
                       {isSilver && (
-                        <span className="material-symbols-outlined shrink-0 text-base text-primary">
-                          military_tech
-                        </span>
+                        <MaterialSymbol name="military_tech" className="shrink-0 text-base text-primary" />
                       )}
                       {isArcane && (
-                        <span className="material-symbols-outlined fill-1 shrink-0 text-base text-primary">
-                          auto_awesome
-                        </span>
+                        <MaterialSymbol name="auto_awesome" filled className="shrink-0 text-base text-primary" />
                       )}
                     </div>
                     <p className="flex items-baseline gap-1">
@@ -340,9 +333,7 @@ function MobilePricing({
                   <div className="relative z-10 mt-1 flex flex-col gap-1.5">
                     {plan.features.slice(0, 3).map((feature) => (
                       <div className="flex gap-2 text-xs leading-normal" key={feature}>
-                        <span className="material-symbols-outlined text-base text-primary shrink-0">
-                          check_circle
-                        </span>
+                        <MaterialSymbol name="check_circle" className="text-base text-primary shrink-0" />
                         <span className="text-slate-700 dark:text-slate-300">
                           {feature}
                         </span>

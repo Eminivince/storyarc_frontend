@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useAccount } from "../context/AccountContext";
 import { LogoBrand } from "../components/LogoBrand";
+import MaterialSymbol from "../components/MaterialSymbol";
 import {
   mfaChooseHref,
   notificationsHref,
@@ -39,7 +40,7 @@ function DesktopSuccess({
             className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary transition-colors hover:bg-primary/20"
             to={notificationsHref}
           >
-            <span className="material-symbols-outlined">close</span>
+            <MaterialSymbol name="close" />
           </Link>
         </header>
 
@@ -47,7 +48,7 @@ function DesktopSuccess({
           <div className="w-full max-w-[560px] rounded-xl border border-primary/10 bg-background-dark/50 p-8 shadow-2xl backdrop-blur-sm">
             <div className="mb-10 mt-6 flex flex-col items-center text-center">
               <div className="mb-6 flex size-20 items-center justify-center rounded-full bg-primary/20 ring-4 ring-primary/5">
-                <span className="material-symbols-outlined text-5xl text-primary">check_circle</span>
+                <MaterialSymbol name="check_circle" className="text-5xl text-primary" />
               </div>
               <h1 className="mb-2 text-3xl font-black tracking-tight text-slate-100">
                 MFA Setup Successful
@@ -68,7 +69,7 @@ function DesktopSuccess({
 
             <div className="mb-8 flex flex-col gap-4">
               <div className="flex items-center gap-2 px-1">
-                <span className="material-symbols-outlined text-xl text-primary">vpn_key</span>
+                <MaterialSymbol name="vpn_key" className="text-xl text-primary" />
                 <h3 className="text-lg font-bold text-slate-100">Backup Recovery Codes</h3>
               </div>
               {hasCodes ? (
@@ -93,7 +94,7 @@ function DesktopSuccess({
                       onClick={onCopyCodes}
                       type="button"
                     >
-                      <span className="material-symbols-outlined text-lg">content_copy</span>
+                      <MaterialSymbol name="content_copy" className="text-lg" />
                       Copy Codes
                     </button>
                     <button
@@ -101,7 +102,7 @@ function DesktopSuccess({
                       onClick={onDownloadCodes}
                       type="button"
                     >
-                      <span className="material-symbols-outlined text-lg">download</span>
+                      <MaterialSymbol name="download" className="text-lg" />
                       Download PDF
                     </button>
                   </div>
@@ -120,7 +121,7 @@ function DesktopSuccess({
                 type="button"
               >
                 Done
-                <span className="material-symbols-outlined">arrow_forward</span>
+                <MaterialSymbol name="arrow_forward" />
               </button>
               <Link
                 className="w-full py-2 text-center text-sm font-medium text-slate-400 transition-colors hover:text-primary"
@@ -153,7 +154,7 @@ function MobileSuccess({
       <div className="relative flex min-h-screen w-full flex-col overflow-x-hidden">
         <header className="sticky top-0 z-10 flex items-center justify-between border-b border-primary/10 bg-background-light px-3 py-2 dark:bg-background-dark">
           <Link className="flex size-10 items-center justify-start text-slate-900 dark:text-slate-100" to={mfaChooseHref}>
-            <span className="material-symbols-outlined text-xl">arrow_back</span>
+            <MaterialSymbol name="arrow_back" className="text-xl" />
           </Link>
           <h2 className="flex-1 pr-10 text-center text-base font-bold">Security Setup</h2>
         </header>
@@ -163,7 +164,7 @@ function MobileSuccess({
             <div className="relative flex items-center justify-center">
               <div className="absolute inset-0 rounded-full bg-primary/20 blur-2xl" />
               <div className="relative flex h-16 w-16 items-center justify-center rounded-full border-2 border-primary/30 bg-primary/10 shadow-[0_0_16px_rgba(244,192,37,0.2)]">
-                <span className="material-symbols-outlined text-4xl text-primary">verified_user</span>
+                <MaterialSymbol name="verified_user" className="text-4xl text-primary" />
               </div>
             </div>
             <div className="text-center">
@@ -185,7 +186,7 @@ function MobileSuccess({
               <div className="grid grid-cols-1 gap-2">
                 {mfa.recoveryCodes.map((code) => (
                   <div className="flex items-center gap-3 rounded-lg border border-primary/20 bg-primary/5 p-3" key={code}>
-                    <span className="material-symbols-outlined shrink-0 text-lg text-primary">key</span>
+                    <MaterialSymbol name="key" className="shrink-0 text-lg text-primary" />
                     <p className="font-mono text-sm font-medium tracking-wider">{code}</p>
                   </div>
                 ))}
@@ -205,7 +206,7 @@ function MobileSuccess({
                   onClick={onCopyCodes}
                   type="button"
                 >
-                  <span className="material-symbols-outlined text-base">content_copy</span>
+                  <MaterialSymbol name="content_copy" className="text-base" />
                   <span>Copy</span>
                 </button>
                 <button
@@ -213,7 +214,7 @@ function MobileSuccess({
                   onClick={onDownloadCodes}
                   type="button"
                 >
-                  <span className="material-symbols-outlined text-base">download</span>
+                  <MaterialSymbol name="download" className="text-base" />
                   <span>Download</span>
                 </button>
               </div>
@@ -229,7 +230,7 @@ function MobileSuccess({
 
           {hasCodes ? (
             <div className="mt-4 flex gap-2 rounded-lg border border-red-500/20 bg-red-500/10 p-3">
-              <span className="material-symbols-outlined shrink-0 text-base text-red-500">warning</span>
+              <MaterialSymbol name="warning" className="shrink-0 text-base text-red-500" />
               <p className="text-[11px] leading-normal text-red-500/90">
                 Warning: These codes are the only way to access your account if you lose
                 your MFA device. TaleStead cannot recover them for you.

@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import MaterialSymbol from "./MaterialSymbol";
 
 const SLICE_COLORS = [
   "#6b7280", // gray — 25 Points (common)
@@ -110,9 +111,7 @@ export default function RewardWheel({ isSpinning, onComplete, wheelResult }) {
 
             {/* Center circle */}
             <div className="absolute left-1/2 top-1/2 flex h-16 w-16 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border-2 border-primary/30 bg-background-dark shadow-inner">
-              <span className="material-symbols-outlined text-2xl text-primary">
-                toll
-              </span>
+              <MaterialSymbol name="toll" className="text-2xl text-primary" />
             </div>
           </motion.div>
         </div>
@@ -127,9 +126,7 @@ export default function RewardWheel({ isSpinning, onComplete, wheelResult }) {
               exit={{ opacity: 0, scale: 0.8 }}
               transition={{ duration: 0.4, ease: "easeOut" }}
             >
-              <span className="material-symbols-outlined text-4xl text-primary">
-                celebration
-              </span>
+              <MaterialSymbol name="celebration" className="text-4xl text-primary" />
               <p className="text-lg font-bold text-white">
                 {wheelResult.label}
               </p>

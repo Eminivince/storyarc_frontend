@@ -9,11 +9,12 @@ import RouteLoadingScreen from "../components/RouteLoadingScreen";
 import { buildSearchHref, buildStoryHref } from "../data/readerFlow";
 import { useCreator } from "../context/CreatorContext";
 import { useReaderSearchQuery } from "../reader/readerHooks";
+import MaterialSymbol from "../components/MaterialSymbol";
 
 function StoryCoverImage({ alt, className }) {
   return (
     <div className={`flex items-center justify-center bg-gradient-to-br from-primary/20 to-primary/5 ${className}`}>
-      <span className="material-symbols-outlined text-3xl text-primary/40">auto_stories</span>
+      <MaterialSymbol name="auto_stories" className="text-3xl text-primary/40" />
     </div>
   );
 }
@@ -59,9 +60,7 @@ function DesktopSearchResults({
           <Reveal>
             <div className="flex flex-col gap-6 xl:flex-row xl:items-center">
               <form className="relative flex-1" onSubmit={onSearchSubmit}>
-                <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
-                  search
-                </span>
+                <MaterialSymbol name="search" className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
                 <input
                   className="w-full rounded-2xl border-none bg-slate-100 py-4 pl-12 pr-4 text-lg shadow-sm focus:ring-2 focus:ring-primary dark:bg-primary/10"
                   onChange={(event) => setSearchTerm(event.target.value)}
@@ -224,7 +223,7 @@ function MobileSearchResults({
             onClick={() => navigate(-1)}
             type="button"
           >
-            <span className="material-symbols-outlined">arrow_back</span>
+            <MaterialSymbol name="arrow_back" />
           </button>
           <h1 className="flex-1 text-center text-lg font-bold tracking-tight">Search</h1>
           <div className="w-10" />
@@ -232,7 +231,7 @@ function MobileSearchResults({
 
         <form onSubmit={onSearchSubmit}>
           <div className="flex h-12 items-center rounded-2xl bg-slate-100 dark:bg-primary/10">
-            <span className="material-symbols-outlined px-4 text-slate-400">search</span>
+            <MaterialSymbol name="search" className="px-4 text-slate-400" />
             <input
               className="h-full w-full border-none bg-transparent pr-4 text-base focus:ring-0"
               onChange={(event) => setSearchTerm(event.target.value)}

@@ -6,6 +6,7 @@ import BadgeVisual from "../components/badges/BadgeVisual";
 import Reveal from "../components/Reveal";
 import { useSocketEvent } from "../context/SocketContext";
 import { useToast } from "../context/ToastContext";
+import MaterialSymbol from "../components/MaterialSymbol";
 import {
   useBadgesQuery,
   useToggleBadgeFeaturedMutation,
@@ -63,20 +64,18 @@ function BadgeCard({ badge, isFeatured, onToggleFeatured, featuredCount, showToa
             onClick={handleFeatureToggle}
             type="button"
           >
-            <span
-              className={`material-symbols-outlined text-xl ${
-                isFeatured ? "text-amber-400 fill-current" : ""
-              }`}
-            >
-              star
-            </span>
+            <MaterialSymbol
+              className={`text-xl ${isFeatured ? "text-amber-400" : ""}`}
+              filled={isFeatured}
+              name="star"
+            />
           </button>
         )}
 
         {/* Locked overlay for unearned badges */}
         {!badge.earned && (
           <div className="absolute inset-0 z-10 flex items-center justify-center rounded-xl bg-slate-900/30">
-            <span className="material-symbols-outlined text-3xl text-slate-400">lock</span>
+            <MaterialSymbol name="lock" className="text-3xl text-slate-400" />
           </div>
         )}
 
@@ -154,7 +153,7 @@ function SkeletonGrid({ columns }) {
 function ErrorState({ onRetry }) {
   return (
     <div className="flex flex-col items-center justify-center py-20 text-center">
-      <span className="material-symbols-outlined mb-4 text-5xl text-slate-400">error</span>
+      <MaterialSymbol name="error" className="mb-4 text-5xl text-slate-400" />
       <p className="mb-2 text-lg font-bold">Something went wrong</p>
       <p className="mb-6 text-sm text-slate-500">Could not load your badges. Please try again.</p>
       <button
@@ -212,13 +211,13 @@ function DesktopBadges({ badges, readerTitle, featuredBadgeIds, activeTab, setAc
               className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary transition-colors hover:bg-primary/20"
               to={rewardsHref}
             >
-              <span className="material-symbols-outlined">military_tech</span>
+              <MaterialSymbol name="military_tech" />
             </Link>
             <Link
               className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary transition-colors hover:bg-primary/20"
               to={profileHref}
             >
-              <span className="material-symbols-outlined">account_circle</span>
+              <MaterialSymbol name="account_circle" />
             </Link>
           </div>
         </header>
@@ -267,9 +266,7 @@ function DesktopBadges({ badges, readerTitle, featuredBadgeIds, activeTab, setAc
 
           {!isLoading && !isError && badges.length === 0 && (
             <div className="py-16 text-center">
-              <span className="material-symbols-outlined mb-4 text-5xl text-slate-400">
-                emoji_events
-              </span>
+              <MaterialSymbol name="emoji_events" className="mb-4 text-5xl text-slate-400" />
               <p className="text-lg font-bold">No badges in this category</p>
               <p className="mt-1 text-sm text-slate-500">
                 Try selecting a different category above.
@@ -292,7 +289,7 @@ function MobileBadges({ badges, readerTitle, featuredBadgeIds, activeTab, setAct
             className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary"
             to={profileHref}
           >
-            <span className="material-symbols-outlined">arrow_back</span>
+            <MaterialSymbol name="arrow_back" />
           </Link>
           <h2 className="flex-1 text-center text-lg font-bold uppercase tracking-widest">
             Badges
@@ -340,9 +337,7 @@ function MobileBadges({ badges, readerTitle, featuredBadgeIds, activeTab, setAct
 
           {!isLoading && !isError && badges.length === 0 && (
             <div className="py-16 text-center">
-              <span className="material-symbols-outlined mb-4 text-5xl text-slate-400">
-                emoji_events
-              </span>
+              <MaterialSymbol name="emoji_events" className="mb-4 text-5xl text-slate-400" />
               <p className="text-lg font-bold">No badges in this category</p>
               <p className="mt-1 text-sm text-slate-500">
                 Try selecting a different category above.
@@ -354,11 +349,11 @@ function MobileBadges({ badges, readerTitle, featuredBadgeIds, activeTab, setAct
         {/* Bottom nav */}
         <nav className="fixed bottom-0 left-0 right-0 z-50 flex items-end justify-around border-t border-primary/10 bg-background-dark/95 px-4 pb-6 pt-3 backdrop-blur-md">
           <Link className="flex flex-col items-center gap-1 text-slate-500" to="/dashboard">
-            <span className="material-symbols-outlined text-[24px]">home</span>
+            <MaterialSymbol name="home" className="text-[24px]" />
             <p className="text-[10px] font-bold uppercase tracking-tighter">Home</p>
           </Link>
           <Link className="flex flex-col items-center gap-1 text-slate-500" to={rewardsHref}>
-            <span className="material-symbols-outlined text-[24px]">military_tech</span>
+            <MaterialSymbol name="military_tech" className="text-[24px]" />
             <p className="text-[10px] font-bold uppercase tracking-tighter">Rewards</p>
           </Link>
           <div className="relative -top-4">
@@ -366,15 +361,15 @@ function MobileBadges({ badges, readerTitle, featuredBadgeIds, activeTab, setAct
               className="flex h-14 w-14 items-center justify-center rounded-full border-4 border-background-dark bg-primary text-background-dark shadow-lg shadow-primary/40"
               to={missionsHref}
             >
-              <span className="material-symbols-outlined text-[32px]">add</span>
+              <MaterialSymbol name="add" className="text-[32px]" />
             </Link>
           </div>
           <Link className="flex flex-col items-center gap-1 text-slate-500" to={missionsHref}>
-            <span className="material-symbols-outlined text-[24px]">assignment</span>
+            <MaterialSymbol name="assignment" className="text-[24px]" />
             <p className="text-[10px] font-bold uppercase tracking-tighter">Tasks</p>
           </Link>
           <Link className="flex flex-col items-center gap-1 text-slate-500" to={profileHref}>
-            <span className="material-symbols-outlined text-[24px]">account_circle</span>
+            <MaterialSymbol name="account_circle" className="text-[24px]" />
             <p className="text-[10px] font-bold uppercase tracking-tighter">Profile</p>
           </Link>
         </nav>

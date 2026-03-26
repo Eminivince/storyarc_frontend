@@ -2,6 +2,7 @@ import { useDeferredValue, useMemo, useState } from "react";
 import AdminPageLayout from "../components/AdminPageLayout";
 import Reveal from "../components/Reveal";
 import { useAdmin } from "../context/AdminContext";
+import MaterialSymbol from "../components/MaterialSymbol";
 
 function toneClasses(tone) {
   if (tone === "emerald") {
@@ -87,7 +88,7 @@ export default function AdminActivityLogPage() {
                   key={item.id}
                 >
                   <div className={`flex size-12 shrink-0 items-center justify-center rounded-2xl ${toneClasses(item.tone)}`}>
-                    <span className="material-symbols-outlined">{item.icon}</span>
+                    <MaterialSymbol name={item.icon} />
                   </div>
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-3">

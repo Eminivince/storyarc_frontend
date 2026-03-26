@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import MaterialSymbol from "../components/MaterialSymbol";
 import {
   Link,
   useNavigate,
@@ -94,17 +95,13 @@ function DesktopChapterEditor({
                 to={getCreatorStoryManagementHref(story.slug)}>
                 My Stories
               </Link>
-              <span className="material-symbols-outlined text-xs text-slate-500">
-                chevron_right
-              </span>
+              <MaterialSymbol name="chevron_right" className="text-xs text-slate-500" />
               <Link
                 className="text-slate-500 transition-colors hover:text-primary"
                 to={getCreatorStoryManagementHref(story.slug)}>
                 {story.title}
               </Link>
-              <span className="material-symbols-outlined text-xs text-slate-500">
-                chevron_right
-              </span>
+              <MaterialSymbol name="chevron_right" className="text-xs text-slate-500" />
               <span className="text-white">New Chapter</span>
             </nav>
 
@@ -113,9 +110,7 @@ function DesktopChapterEditor({
                 className="flex h-10 items-center gap-2 rounded-lg bg-[#393528] px-4 text-sm font-bold text-white transition-colors hover:bg-[#393528]/80"
                 onClick={onPreview}
                 type="button">
-                <span className="material-symbols-outlined text-sm">
-                  visibility
-                </span>
+                <MaterialSymbol name="visibility" className="text-sm" />
                 Preview
               </button>
               <button
@@ -144,7 +139,7 @@ function DesktopChapterEditor({
               <button
                 className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#393528] text-white transition-colors hover:bg-[#393528]/80"
                 type="button">
-                <span className="material-symbols-outlined">more_vert</span>
+                <MaterialSymbol name="more_vert" />
               </button>
             </div>
           </header>
@@ -152,9 +147,7 @@ function DesktopChapterEditor({
           {chapterBinned ? (
             <div className="flex shrink-0 flex-wrap items-center justify-between gap-3 border-b border-amber-500/25 bg-amber-500/10 px-8 py-3 text-sm text-amber-950 dark:text-amber-50">
               <p className="flex min-w-0 flex-1 items-center gap-2">
-                <span className="material-symbols-outlined shrink-0 text-amber-600 dark:text-amber-300">
-                  inventory_2
-                </span>
+                <MaterialSymbol name="inventory_2" className="shrink-0 text-amber-600 dark:text-amber-300" />
                 <span>
                   This chapter is in your studio bin. Restore it to publish or show it in your main chapter lists again.
                 </span>
@@ -181,9 +174,7 @@ function DesktopChapterEditor({
               }`}
               onClick={onToggleSettings}
               type="button">
-              <span className="material-symbols-outlined text-2xl">
-                settings
-              </span>
+              <MaterialSymbol name="settings" className="text-2xl" />
             </button>
             <section className="flex flex-1 justify-center overflow-y-auto p-10">
               <div className="flex w-full max-w-3xl flex-col gap-8">
@@ -258,9 +249,7 @@ function DesktopChapterEditor({
                       onClick={onToggleSettings}
                       type="button"
                     >
-                      <span className="material-symbols-outlined text-lg">
-                        close
-                      </span>
+                      <MaterialSymbol name="close" className="text-lg" />
                     </button>
                   </div>
 
@@ -268,9 +257,7 @@ function DesktopChapterEditor({
 
                   <div>
                     <h3 className="mb-4 flex items-center gap-2 text-sm font-bold text-white">
-                      <span className="material-symbols-outlined text-lg text-primary">
-                        calendar_month
-                      </span>
+                      <MaterialSymbol name="calendar_month" className="text-lg text-primary" />
                       Publishing Schedule
                     </h3>
                     <div className="space-y-4">
@@ -317,9 +304,7 @@ function DesktopChapterEditor({
 
                   <div>
                     <h3 className="mb-4 flex items-center gap-2 text-sm font-bold text-white">
-                      <span className="material-symbols-outlined text-lg text-primary">
-                        local_atm
-                      </span>
+                      <MaterialSymbol name="local_atm" className="text-lg text-primary" />
                       Chapter Access
                     </h3>
                     <div className="space-y-4 rounded-lg bg-[#27241b] p-4">
@@ -360,9 +345,7 @@ function DesktopChapterEditor({
 
                   <div>
                     <h3 className="mb-4 flex items-center gap-2 text-sm font-bold text-white">
-                      <span className="material-symbols-outlined text-lg text-primary">
-                        account_tree
-                      </span>
+                      <MaterialSymbol name="account_tree" className="text-lg text-primary" />
                       Story Structure
                     </h3>
                     <div className="space-y-3">
@@ -397,9 +380,7 @@ function DesktopChapterEditor({
 
                   <div>
                     <h3 className="mb-4 flex items-center gap-2 text-sm font-bold text-white">
-                      <span className="material-symbols-outlined text-lg text-primary">
-                        edit_note
-                      </span>
+                      <MaterialSymbol name="edit_note" className="text-lg text-primary" />
                       Author&apos;s Note
                     </h3>
                     <textarea
@@ -415,9 +396,7 @@ function DesktopChapterEditor({
 
                   <div>
                     <h3 className="mb-4 flex items-center gap-2 text-sm font-bold text-white">
-                      <span className="material-symbols-outlined text-lg text-primary">
-                        warning
-                      </span>
+                      <MaterialSymbol name="warning" className="text-lg text-primary" />
                       Content Warnings
                     </h3>
                     <div className="space-y-2">
@@ -441,9 +420,7 @@ function DesktopChapterEditor({
 
                   <div>
                     <h3 className="mb-4 flex items-center gap-2 text-sm font-bold text-white">
-                      <span className="material-symbols-outlined text-lg text-primary">
-                        info
-                      </span>
+                      <MaterialSymbol name="info" className="text-lg text-primary" />
                       Chapter Stats
                     </h3>
                     <div className="space-y-3 rounded-lg bg-[#27241b] p-4">
@@ -491,9 +468,7 @@ function DesktopChapterEditor({
                   className="flex items-center gap-1 text-slate-500 transition-colors hover:text-primary"
                   key={icon}
                   type="button">
-                  <span className="material-symbols-outlined text-lg">
-                    {icon}
-                  </span>
+                  <MaterialSymbol name={icon} className="text-lg" />
                 </button>
               ))}
             </div>
@@ -539,9 +514,7 @@ function MobileChapterEditor({
             className="flex size-9 items-center justify-center rounded-lg transition-colors hover:bg-slate-200 dark:hover:bg-primary/10"
             onClick={onBack}
             type="button">
-            <span className="material-symbols-outlined text-xl">
-              arrow_back
-            </span>
+            <MaterialSymbol name="arrow_back" className="text-xl" />
           </button>
           <div className="flex flex-col min-w-0">
             <h1 className="max-w-[160px] truncate text-base font-bold leading-tight">
@@ -556,7 +529,7 @@ function MobileChapterEditor({
           <button
             className="flex size-9 items-center justify-center rounded-lg transition-colors hover:bg-slate-200 dark:hover:bg-primary/10"
             type="button">
-            <span className="material-symbols-outlined text-xl">more_vert</span>
+            <MaterialSymbol name="more_vert" className="text-xl" />
           </button>
           <button
             className="rounded-lg bg-primary px-4 py-1.5 text-xs font-bold text-background-dark transition-transform active:scale-95 disabled:opacity-40"
@@ -571,9 +544,7 @@ function MobileChapterEditor({
       {chapterBinned ? (
         <div className="space-y-2 border-b border-amber-500/25 bg-amber-500/10 px-4 py-3 text-xs text-amber-950 dark:text-amber-50">
           <p className="flex items-start gap-2">
-            <span className="material-symbols-outlined shrink-0 text-base text-amber-600 dark:text-amber-300">
-              inventory_2
-            </span>
+            <MaterialSymbol name="inventory_2" className="shrink-0 text-base text-amber-600 dark:text-amber-300" />
             <span>In bin — restore to publish or show in main lists.</span>
           </p>
           <button
@@ -631,7 +602,7 @@ function MobileChapterEditor({
         }`}
         onClick={onToggleSettings}
         type="button">
-        <span className="material-symbols-outlined text-2xl">settings</span>
+        <MaterialSymbol name="settings" className="text-2xl" />
       </button>
 
       {/* <div className="fixed bottom-24 left-1/2 z-40 flex w-[90%] max-w-md -translate-x-1/2 items-center justify-around rounded-xl border border-slate-200 bg-white/90 p-1.5 shadow-2xl backdrop-blur-xl dark:border-slate-700 dark:bg-slate-800/90">
@@ -641,7 +612,7 @@ function MobileChapterEditor({
               className="p-1.5 transition-colors hover:text-primary"
               key={icon}
               type="button">
-              <span className="material-symbols-outlined text-lg">{icon}</span>
+              <MaterialSymbol name={icon} className="text-lg" />
             </button>
           ),
         )}
@@ -653,7 +624,7 @@ function MobileChapterEditor({
             }`}
             key={icon}
             type="button">
-            <span className="material-symbols-outlined text-lg">{icon}</span>
+            <MaterialSymbol name={icon} className="text-lg" />
           </button>
         ))}
       </div> */}
@@ -686,7 +657,7 @@ function MobileChapterEditor({
               onClick={onToggleSettings}
               type="button"
             >
-              <span className="material-symbols-outlined text-lg">close</span>
+              <MaterialSymbol name="close" className="text-lg" />
             </button>
           </div>
 
@@ -695,9 +666,7 @@ function MobileChapterEditor({
 
             <div className="rounded-lg border border-slate-200 p-3 dark:border-primary/10">
               <div className="mb-2 flex items-center gap-2">
-                <span className="material-symbols-outlined text-base text-primary">
-                  account_tree
-                </span>
+                <MaterialSymbol name="account_tree" className="text-base text-primary" />
                 <span className="text-sm font-medium">Story Structure</span>
               </div>
               <div className="space-y-2">
@@ -735,16 +704,12 @@ function MobileChapterEditor({
               open>
               <summary className="flex cursor-pointer list-none items-center justify-between p-3">
                 <div className="flex items-center gap-2">
-                  <span className="material-symbols-outlined text-base text-primary">
-                    edit_note
-                  </span>
+                  <MaterialSymbol name="edit_note" className="text-base text-primary" />
                   <span className="text-sm font-medium">
                     Author&apos;s Note
                   </span>
                 </div>
-                <span className="material-symbols-outlined text-lg transition-transform group-open:rotate-180">
-                  expand_more
-                </span>
+                <MaterialSymbol name="expand_more" className="text-lg transition-transform group-open:rotate-180" />
               </summary>
               <div className="px-3 pb-3">
                 <textarea
@@ -761,9 +726,7 @@ function MobileChapterEditor({
             <div className="rounded-lg border border-slate-200 p-3 dark:border-primary/10">
               <div className="mb-2 flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <span className="material-symbols-outlined text-base text-primary">
-                    calendar_month
-                  </span>
+                  <MaterialSymbol name="calendar_month" className="text-base text-primary" />
                   <span className="text-sm font-medium">Schedule Publish</span>
                 </div>
                 <span className="text-xs font-bold text-primary">
@@ -815,9 +778,7 @@ function MobileChapterEditor({
 
             <div className="rounded-lg border border-slate-200 p-3 dark:border-primary/10">
               <div className="mb-2 flex items-center gap-2">
-                <span className="material-symbols-outlined text-base text-primary">
-                  warning
-                </span>
+                <MaterialSymbol name="warning" className="text-base text-primary" />
                 <span className="text-sm font-medium">Content Warnings</span>
               </div>
               <div className="space-y-1.5">

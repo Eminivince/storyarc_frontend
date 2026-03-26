@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { buildStoryHref } from "../data/readerFlow";
 import UserAvatar from "./UserAvatar";
+import MaterialSymbol from "./MaterialSymbol";
 
 const EVENT_CONFIG = {
   STARTED_STORY: {
@@ -86,9 +87,7 @@ export default function ActivityFeedCard({ item, showUser = true }) {
       )}
       {!showUser && (
         <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10">
-          <span className={`material-symbols-outlined text-base ${color}`}>
-            {icon}
-          </span>
+          <MaterialSymbol name={icon} className={`text-base ${color}`} />
         </div>
       )}
 

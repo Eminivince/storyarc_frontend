@@ -8,6 +8,7 @@ import SkeletonBlock from "../components/SkeletonBlock";
 import { useAuth } from "../context/AuthContext";
 import { useAccount } from "../context/AccountContext";
 import { useMonetization } from "../context/MonetizationContext";
+import MaterialSymbol from "../components/MaterialSymbol";
 import {
   billingSettingsHref,
   profileHref,
@@ -299,9 +300,7 @@ function BillingSections({
           </h2>
           <div className={`flex items-center gap-3 ${compact ? "mt-3" : "mt-4"}`}>
             <div className={`rounded-xl bg-primary/10 text-primary ${compact ? "p-2" : "rounded-2xl p-3"}`}>
-              <span className={`material-symbols-outlined ${compact ? "text-lg" : ""}`}>
-                payments
-              </span>
+              <MaterialSymbol name="payments" className={`${compact ? "text-lg" : ""}`} />
             </div>
             <div>
               <p className={compact ? "text-sm font-bold" : "font-bold"}>
@@ -538,9 +537,7 @@ function MobileBillingSettings({
           <Link
             className="flex size-9 items-center justify-center rounded-lg transition-colors hover:bg-slate-200 dark:hover:bg-primary/20"
             to={profileHref}>
-            <span className="material-symbols-outlined text-xl">
-              arrow_back
-            </span>
+            <MaterialSymbol name="arrow_back" className="text-xl" />
           </Link>
           <div className="ml-2">
             <p className="text-[10px] font-bold uppercase tracking-wider text-primary">

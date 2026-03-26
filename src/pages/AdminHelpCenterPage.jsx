@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useDeferredValue, useEffect, useMemo, useState } from "react";
+import MaterialSymbol from "../components/MaterialSymbol";
 import {
   createAdminHelpCenterArticle,
   createAdminHelpCenterCategory,
@@ -564,9 +565,7 @@ export default function AdminHelpCenterPage() {
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex items-start gap-3">
                       <div className="flex size-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-                        <span className="material-symbols-outlined">
-                          {category.icon}
-                        </span>
+                        <MaterialSymbol name={category.icon} />
                       </div>
                       <div>
                         <p className="font-black">{category.title}</p>

@@ -6,6 +6,7 @@ import { AppDesktopSidebar, AppMobileTabBar } from "../components/AppShellNav";
 import ReaderStateScreen from "../components/ReaderStateScreen";
 import Reveal from "../components/Reveal";
 import RouteLoadingScreen from "../components/RouteLoadingScreen";
+import MaterialSymbol from "../components/MaterialSymbol";
 import {
   buildBrowseHref,
   buildSearchHref,
@@ -162,9 +163,7 @@ function DesktopBrowse({
           <Reveal>
             <div className="flex flex-col gap-6 xl:flex-row xl:items-center">
               <form className="relative flex-1" onSubmit={onSearchSubmit}>
-                <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
-                  search
-                </span>
+                <MaterialSymbol name="search" className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
                 <input
                   className="w-full rounded-2xl border-none bg-slate-100 py-4 pl-12 pr-4 text-lg shadow-sm focus:ring-2 focus:ring-primary dark:bg-primary/10"
                   onChange={(event) => setSearchTerm(event.target.value)}
@@ -255,7 +254,7 @@ function MobileBrowse({
             onClick={() => navigate(-1)}
             type="button"
           >
-            <span className="material-symbols-outlined text-xl">arrow_back</span>
+            <MaterialSymbol name="arrow_back" className="text-xl" />
           </button>
           <h1 className="flex-1 text-center text-base font-bold tracking-tight">
             Browse
@@ -265,9 +264,7 @@ function MobileBrowse({
 
         <form onSubmit={onSearchSubmit}>
           <div className="flex h-10 items-center rounded-xl bg-slate-100 dark:bg-primary/10">
-            <span className="material-symbols-outlined px-3 text-lg text-slate-400">
-              search
-            </span>
+            <MaterialSymbol name="search" className="px-3 text-lg text-slate-400" />
             <input
               className="h-full w-full border-none bg-transparent pr-3 text-base focus:ring-0"
               onChange={(event) => setSearchTerm(event.target.value)}

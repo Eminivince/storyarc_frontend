@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import AppFooter from "../components/AppFooter";
 import PublicNav from "../components/PublicNav";
 import Reveal from "../components/Reveal";
+import MaterialSymbol from "../components/MaterialSymbol";
 
 const readerHighlights = [
   {
@@ -153,16 +154,12 @@ function DesktopAbout() {
                   whileHover={{ scale: 1.02 }}
                 />
                 <div className="flex h-40 items-center justify-center rounded-2xl border border-primary/30 bg-primary/20">
-                  <span className="material-symbols-outlined text-6xl text-primary">
-                    lightbulb
-                  </span>
+                  <MaterialSymbol name="lightbulb" className="text-6xl text-primary" />
                 </div>
               </div>
               <div className="space-y-4">
                 <div className="flex h-40 items-center justify-center rounded-2xl border border-accent-dark bg-accent-dark">
-                  <span className="material-symbols-outlined text-6xl text-slate-400">
-                    psychology
-                  </span>
+                  <MaterialSymbol name="psychology" className="text-6xl text-slate-400" />
                 </div>
                 <motion.div
                   className="h-64 rounded-2xl bg-cover bg-center shadow-2xl"
@@ -199,9 +196,7 @@ function DesktopAbout() {
                   whileHover={{ y: -6 }}
                 >
                   <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-xl bg-primary/10 transition-colors group-hover:bg-primary">
-                    <span className="material-symbols-outlined text-primary group-hover:text-background-dark">
-                      {item.icon}
-                    </span>
+                    <MaterialSymbol name={item.icon} className="text-primary group-hover:text-background-dark" />
                   </div>
                   <h3 className="mb-4 text-2xl font-bold text-white">
                     {item.title}
@@ -248,9 +243,7 @@ function DesktopAbout() {
                   key={item.title}
                   whileHover={{ y: -6, borderColor: "rgba(244,192,37,0.35)" }}
                 >
-                  <span className="material-symbols-outlined mb-6 text-4xl text-primary">
-                    {item.icon}
-                  </span>
+                  <MaterialSymbol name={item.icon} className="mb-6 text-4xl text-primary" />
                   <h3 className="mb-3 text-xl font-bold text-white">
                     {item.title}
                   </h3>
@@ -391,9 +384,7 @@ function MobileAbout() {
               whileHover={{ y: -2 }}
             >
               <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/20 text-primary">
-                <span className="material-symbols-outlined text-2xl">
-                  {offer.icon}
-                </span>
+                <MaterialSymbol name={offer.icon} className="text-2xl" />
               </div>
               <h3 className="font-display text-base font-bold">{offer.title}</h3>
               <p className="text-sm text-slate-600 dark:text-slate-400">
@@ -405,9 +396,7 @@ function MobileAbout() {
                     className="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400"
                     key={point}
                   >
-                    <span className="material-symbols-outlined text-base text-primary">
-                      check_circle
-                    </span>
+                    <MaterialSymbol name="check_circle" className="text-base text-primary" />
                     {point}
                   </li>
                 ))}

@@ -4,6 +4,7 @@ import { useScrollHide } from "../hooks/useScrollHide";
 import { useAuth } from "../context/AuthContext";
 import { LogoBrand } from "./LogoBrand";
 import { useToast } from "../context/ToastContext";
+import MaterialSymbol from "./MaterialSymbol";
 import {
   accountSettingsHref,
   profileHref,
@@ -487,13 +488,10 @@ function DesktopNavLink({ active, href, icon, label, onClick }) {
       onMouseEnter={() => preloadRoute(href)}
       to={href}
     >
-      <span
-        className={`material-symbols-outlined ${
-          active ? "" : "text-primary"
-        }`}
-      >
-        {icon}
-      </span>
+      <MaterialSymbol
+        className={active ? "" : "text-primary"}
+        name={icon}
+      />
       <span>{label}</span>
     </Link>
   );
@@ -509,15 +507,15 @@ function MobileNavLink({ active, dot, href, icon, label, onClick }) {
       to={href}
     >
       <div className="relative">
-        <span
-          className={`material-symbols-outlined text-xl transition-all duration-300 ${
+        <MaterialSymbol
+          className={`text-xl transition-all duration-300 ${
             active
-              ? "fill-1 scale-110 text-primary"
+              ? "scale-110 text-primary"
               : "text-slate-400 dark:text-slate-500 group-hover:text-primary"
           }`}
-        >
-          {icon}
-        </span>
+          filled={active}
+          name={icon}
+        />
         {dot ? (
           <span className="absolute -right-1 -top-1 h-2 w-2 rounded-full border-2 border-background-dark bg-primary" />
         ) : null}
@@ -641,7 +639,7 @@ export function AppDesktopSidebar({
               className="text-sm text-slate-400 transition-colors hover:text-primary"
               to={settingsHref}
             >
-              <span className="material-symbols-outlined">settings</span>
+              <MaterialSymbol name="settings" />
             </Link>
             <button
               className="text-sm text-slate-400 transition-colors hover:text-primary disabled:cursor-not-allowed disabled:opacity-60"
@@ -649,7 +647,7 @@ export function AppDesktopSidebar({
               onClick={handleSignOut}
               type="button"
             >
-              <span className="material-symbols-outlined">logout</span>
+              <MaterialSymbol name="logout" />
             </button>
           </div>
         </div>

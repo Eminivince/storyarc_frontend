@@ -9,6 +9,7 @@ import PageLoadingSpinner from "../components/PageLoadingSpinner";
 import { Icon } from "../components/Icon";
 import { buildSearchHref, buildStoryHref } from "../data/readerFlow";
 import { useReaderHomeQuery } from "../reader/readerHooks";
+import MaterialSymbol from "../components/MaterialSymbol";
 
 const desktopReaderFeatures = [
   {
@@ -194,9 +195,7 @@ function DesktopHome({
                             src={story.coverImage}
                           />
                           <div className="absolute right-3 top-3 flex items-center gap-1 rounded-lg bg-black/60 px-2 py-1 text-xs font-bold text-primary backdrop-blur-md">
-                            <span className="material-symbols-outlined fill-1 text-xs">
-                              star
-                            </span>
+                            <MaterialSymbol name="star" filled className="text-xs" />
                             {story.averageRating.toFixed(1)}
                           </div>
                         </div>
@@ -235,9 +234,7 @@ function DesktopHome({
                     transition={{ duration: 0.25, delay: index * 0.04 }}
                     whileHover={{ y: -6, borderColor: "rgba(244,192,37,0.4)" }}>
                     <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                      <span className="material-symbols-outlined text-3xl">
-                        {feature.icon}
-                      </span>
+                      <MaterialSymbol name={feature.icon} className="text-3xl" />
                     </div>
                     <h3 className="mb-3 text-xl font-bold">{feature.title}</h3>
                     <p className="leading-relaxed text-slate-500 dark:text-slate-400">
@@ -281,9 +278,7 @@ function DesktopHome({
                     <ul className="space-y-6">
                       {creatorBenefits.map((benefit) => (
                         <li className="flex gap-4" key={benefit.title}>
-                          <span className="material-symbols-outlined font-bold text-primary">
-                            check_circle
-                          </span>
+                          <MaterialSymbol name="check_circle" className="font-bold text-primary" />
                           <div>
                             <h4 className="text-lg font-bold">
                               {benefit.title}
@@ -415,7 +410,7 @@ function ReaderParadiseCarousel() {
             transition={{ type: "spring", stiffness: 400, damping: 30, delay: index * 0.05 }}
           >
             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/20 text-primary">
-              <span className="material-symbols-outlined text-2xl">{feature.icon}</span>
+              <MaterialSymbol name={feature.icon} className="text-2xl" />
             </div>
             <h4 className="text-sm font-bold text-primary">{feature.title}</h4>
             <p className="text-xs leading-relaxed text-slate-400">
@@ -492,7 +487,7 @@ function MobileHome({
                   className="flex w-full items-center justify-center gap-1.5 rounded-lg bg-primary py-3 text-sm font-bold text-background-dark shadow-lg shadow-primary/20"
                   to="/auth"
                 >
-                  <span className="material-symbols-outlined text-lg">auto_stories</span>
+                  <MaterialSymbol name="auto_stories" className="text-lg" />
                   Read
                 </Link>
               </motion.div>
@@ -505,7 +500,7 @@ function MobileHome({
                   className="flex w-full items-center justify-center gap-1.5 rounded-lg border border-slate-100/20 bg-slate-100/10 py-3 text-sm font-bold text-slate-100 backdrop-blur-sm"
                   to="/writer-benefits"
                 >
-                  <span className="material-symbols-outlined text-lg">edit_note</span>
+                  <MaterialSymbol name="edit_note" className="text-lg" />
                   Write
                 </Link>
               </motion.div>
@@ -521,7 +516,7 @@ function MobileHome({
               to={trendingHref}
             >
               See All
-              <span className="material-symbols-outlined text-xs">chevron_right</span>
+              <MaterialSymbol name="chevron_right" className="text-xs" />
             </Link>
           </div>
           {isHomeLoading ? (
@@ -544,7 +539,7 @@ function MobileHome({
                         src={story.coverImage}
                       />
                       <div className="absolute right-1.5 top-1.5 flex items-center gap-0.5 rounded bg-black/60 px-1.5 py-0.5 text-[9px] font-bold text-primary backdrop-blur-md">
-                        <span className="material-symbols-outlined fill-1 text-[10px]">star</span>
+                        <MaterialSymbol name="star" filled className="text-[10px]" />
                         {story.averageRating.toFixed(1)}
                       </div>
                     </div>
@@ -589,7 +584,7 @@ function MobileHome({
                 to="/auth"
               >
                 Open Your Studio
-                <span className="material-symbols-outlined text-base">rocket_launch</span>
+                <MaterialSymbol name="rocket_launch" className="text-base" />
               </Link>
             </motion.div>
           </div>

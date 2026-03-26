@@ -2,6 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { LogoBrand } from "../components/LogoBrand";
 import Reveal from "../components/Reveal";
 import { useCreator } from "../context/CreatorContext";
+import MaterialSymbol from "../components/MaterialSymbol";
 import {
   creatorBenefits,
   creatorTimeline,
@@ -104,7 +105,7 @@ function DesktopCreatorOnboarding({ onStart, status }) {
                   key={benefit.title}
                 >
                   <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                    <span className="material-symbols-outlined text-3xl">{benefit.icon}</span>
+                    <MaterialSymbol name={benefit.icon} className="text-3xl" />
                   </div>
                   <div className="flex flex-col gap-2">
                     <h3 className="text-xl font-bold transition-colors group-hover:text-primary">
@@ -120,7 +121,7 @@ function DesktopCreatorOnboarding({ onStart, status }) {
 
             <Reveal className="mt-8 flex flex-col gap-6 rounded-xl border border-primary/10 bg-primary/5 p-8">
               <h3 className="flex items-center gap-3 text-2xl font-bold">
-                <span className="material-symbols-outlined text-primary">format_list_numbered</span>
+                <MaterialSymbol name="format_list_numbered" className="text-primary" />
                 Application Timeline
               </h3>
               <div className="space-y-0">
@@ -164,7 +165,7 @@ function DesktopCreatorOnboarding({ onStart, status }) {
                 type="button"
               >
                 {getCreatorCtaLabel(status)}
-                <span className="material-symbols-outlined">arrow_forward</span>
+                <MaterialSymbol name="arrow_forward" />
               </button>
             </Reveal>
           </div>
@@ -198,7 +199,7 @@ function MobileCreatorOnboarding({ onStart, status }) {
             className="flex size-9 items-center justify-center rounded-lg transition-colors hover:bg-slate-200 dark:hover:bg-primary/20"
             to="/dashboard"
           >
-            <span className="material-symbols-outlined text-xl">arrow_back</span>
+            <MaterialSymbol name="arrow_back" className="text-xl" />
           </Link>
           <h2 className="flex-1 pr-9 text-center text-base font-bold tracking-tight">
             Creator Program
@@ -233,7 +234,7 @@ function MobileCreatorOnboarding({ onStart, status }) {
               key={benefit.title}
             >
               <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/20 text-primary">
-                <span className="material-symbols-outlined text-xl">{benefit.icon}</span>
+                <MaterialSymbol name={benefit.icon} className="text-xl" />
               </div>
               <div className="min-w-0 flex-1">
                 <p className="text-sm font-bold leading-none">{benefit.title}</p>

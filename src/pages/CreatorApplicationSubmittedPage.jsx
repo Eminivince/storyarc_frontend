@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import Reveal from "../components/Reveal";
 import { useCreator } from "../context/CreatorContext";
 import { creatorSubmissionSteps } from "../data/creatorFlow";
+import MaterialSymbol from "../components/MaterialSymbol";
 
 function DesktopCreatorApplicationSubmitted({
   onReturn,
@@ -56,7 +57,7 @@ function DesktopCreatorApplicationSubmitted({
                   }}
                 >
                   <div className="flex size-24 items-center justify-center rounded-full bg-primary text-background-dark shadow-lg shadow-primary/20">
-                    <span className="material-symbols-outlined text-5xl font-bold">check_circle</span>
+                    <MaterialSymbol name="check_circle" className="text-5xl font-bold" />
                   </div>
                 </div>
               </div>
@@ -74,7 +75,7 @@ function DesktopCreatorApplicationSubmitted({
 
             <div className="mb-12 w-full max-w-lg rounded-xl border border-slate-200 bg-slate-100 p-6 md:p-8 dark:border-primary/10 dark:bg-slate-900/50">
               <div className="mb-4 flex items-center justify-center gap-3">
-                <span className="material-symbols-outlined text-primary">schedule</span>
+                <MaterialSymbol name="schedule" className="text-primary" />
                 <h3 className="text-sm font-bold uppercase tracking-widest">Review Process</h3>
               </div>
               <p className="text-base leading-normal text-slate-700 dark:text-slate-300">
@@ -90,7 +91,7 @@ function DesktopCreatorApplicationSubmitted({
                 onClick={onReturn}
                 type="button"
               >
-                <span className="material-symbols-outlined mr-2">dashboard</span>
+                <MaterialSymbol name="dashboard" className="mr-2" />
                 <span className="truncate">Return to Dashboard</span>
               </button>
               <button
@@ -135,7 +136,7 @@ function MobileCreatorApplicationSubmitted({
     <div className="min-h-screen bg-background-light font-display text-slate-900 dark:bg-background-dark dark:text-slate-100 md:hidden">
       <header className="flex items-center justify-between border-b border-primary/10 px-4 py-3">
         <Link className="flex size-9 items-center justify-center rounded-lg text-slate-900 transition-colors hover:bg-slate-200 dark:text-slate-100 dark:hover:bg-primary/20" to="/dashboard">
-          <span className="material-symbols-outlined text-xl">arrow_back</span>
+          <MaterialSymbol name="arrow_back" className="text-xl" />
         </Link>
         <h1 className="text-base font-bold tracking-tight">Application Status</h1>
         <div className="w-9" />
@@ -144,7 +145,7 @@ function MobileCreatorApplicationSubmitted({
       <main className="mx-auto flex w-full max-w-md flex-1 flex-col items-center px-4 py-6">
         <div className="mb-6 mt-4 flex w-full flex-col items-center text-center">
           <div className="mb-4 flex size-16 items-center justify-center rounded-full border border-primary/30 bg-primary/20">
-            <span className="material-symbols-outlined text-4xl text-primary">check_circle</span>
+            <MaterialSymbol name="check_circle" className="text-4xl text-primary" />
           </div>
           <h2 className="mb-1.5 text-[10px] font-bold uppercase tracking-wider text-primary">Success!</h2>
           <h3 className="mb-3 text-lg font-bold">Application Submitted</h3>
@@ -178,7 +179,7 @@ function MobileCreatorApplicationSubmitted({
                         : "border border-primary/50 text-primary"
                     }`}
                   >
-                    <span className="material-symbols-outlined text-xs">{step.icon}</span>
+                    <MaterialSymbol name={step.icon} className="text-xs" />
                   </div>
                   {index !== creatorSubmissionSteps.length - 1 ? (
                     <div className="my-1 h-8 w-px bg-primary/30" />

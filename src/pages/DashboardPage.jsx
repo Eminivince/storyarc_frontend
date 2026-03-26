@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import MaterialSymbol from "../components/MaterialSymbol";
 import {
   PrefetchableChapterLink,
   PrefetchableStoryLink,
@@ -232,9 +233,7 @@ function DesktopDashboard({
           <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-primary/10 bg-background-light/85 px-6 backdrop-blur-md dark:bg-background-dark/85 lg:px-10">
             <div className="max-w-xl flex-1">
               <form className="group relative" onSubmit={onSearchSubmit}>
-                <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 transition-colors group-focus-within:text-primary">
-                  search
-                </span>
+                <MaterialSymbol name="search" className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 transition-colors group-focus-within:text-primary" />
                 <input
                   className="w-full rounded-full border-none bg-slate-200/60 py-2.5 pl-11 pr-4 text-base transition-all focus:ring-2 focus:ring-primary/50 dark:bg-primary/5"
                   onChange={(event) => setSearchTerm(event.target.value)}
@@ -259,7 +258,7 @@ function DesktopDashboard({
               <Link
                 className="relative flex size-10 items-center justify-center rounded-full text-slate-600 hover:bg-primary/10 dark:text-slate-300"
                 to={notificationsHref}>
-                <span className="material-symbols-outlined">notifications</span>
+                <MaterialSymbol name="notifications" />
                 <span className="absolute right-2 top-2 size-2 rounded-full bg-primary" />
               </Link>
               <button
@@ -311,18 +310,14 @@ function DesktopDashboard({
                           data.featured.slug,
                           data.featured.firstChapterSlug || "chapter-1",
                         )}>
-                        <span className="material-symbols-outlined">
-                          play_arrow
-                        </span>
+                        <MaterialSymbol name="play_arrow" />
                         Start Reading
                       </PrefetchableChapterLink>
                       <PrefetchableStoryLink
                         className="flex items-center gap-2 rounded-xl border border-white/20 bg-white/10 px-6 py-3 font-bold text-white backdrop-blur-sm"
                         storySlug={data.featured.slug}
                         to={buildStoryHref(data.featured.slug)}>
-                        <span className="material-symbols-outlined">
-                          auto_stories
-                        </span>
+                        <MaterialSymbol name="auto_stories" />
                         View Story
                       </PrefetchableStoryLink>
                     </div>
@@ -503,9 +498,7 @@ function MobileDashboard({
     <div className="min-h-screen bg-background-light font-display text-slate-900 dark:bg-background-dark dark:text-slate-100 md:hidden">
       <main className="space-y-5 px-4 pb-24 pt-4">
         <form className="group relative" onSubmit={onSearchSubmit}>
-          <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 transition-colors group-focus-within:text-primary">
-            search
-          </span>
+          <MaterialSymbol name="search" className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 transition-colors group-focus-within:text-primary" />
           <input
             className="h-10 w-full rounded-xl border-none bg-slate-100 pl-10 pr-4 text-base focus:ring-2 focus:ring-primary/50 dark:bg-primary/10"
             onChange={(event) => setSearchTerm(event.target.value)}
@@ -526,9 +519,7 @@ function MobileDashboard({
               Open your tracked release feed
             </p>
           </div>
-          <span className="material-symbols-outlined text-slate-400">
-            chevron_right
-          </span>
+          <MaterialSymbol name="chevron_right" className="text-slate-400" />
         </Link>
 
         {data?.featured ? (

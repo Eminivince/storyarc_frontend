@@ -6,6 +6,7 @@ import ReaderStateScreen from "../components/ReaderStateScreen";
 import Reveal from "../components/Reveal";
 import RouteLoadingScreen from "../components/RouteLoadingScreen";
 import { useCreator } from "../context/CreatorContext";
+import MaterialSymbol from "../components/MaterialSymbol";
 import {
   authorDashboardHref,
   creatorStoryCreateHref,
@@ -32,7 +33,7 @@ function DesktopPublishedChapters({ onArchive, story }) {
           <header className="flex h-16 items-center justify-between border-b border-slate-200 bg-background-light/50 px-8 backdrop-blur-md dark:border-primary/10 dark:bg-background-dark/50">
             <div className="flex max-w-xl flex-1 items-center gap-4">
               <label className="relative w-full">
-                <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-sm text-slate-400">search</span>
+                <MaterialSymbol name="search" className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-slate-400" />
                 <input
                   className="w-full rounded-lg border-none bg-slate-100 py-2 pl-10 pr-4 text-sm focus:ring-1 focus:ring-primary dark:bg-primary/5"
                   placeholder="Search chapters, stories or tags..."
@@ -50,7 +51,7 @@ function DesktopPublishedChapters({ onArchive, story }) {
                 className="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-bold text-background-dark transition-opacity hover:opacity-90"
                 to={getChapterEditHref(story.slug)}
               >
-                <span className="material-symbols-outlined text-sm">add</span>
+                <MaterialSymbol name="add" className="text-sm" />
                 Create New Chapter
               </Link>
             </div>
@@ -126,13 +127,13 @@ function DesktopPublishedChapters({ onArchive, story }) {
                               className="p-2 text-slate-400 transition-colors hover:text-primary"
                               to={getChapterEditHref(story.slug, chapter.chapterId)}
                             >
-                              <span className="material-symbols-outlined text-xl">edit_note</span>
+                              <MaterialSymbol name="edit_note" className="text-xl" />
                             </Link>
                             <button className="p-2 text-slate-400 transition-colors hover:text-red-400" onClick={() => onArchive(chapter.title)} type="button">
-                              <span className="material-symbols-outlined text-xl">archive</span>
+                              <MaterialSymbol name="archive" className="text-xl" />
                             </button>
                             <button className="p-2 text-slate-400 transition-colors hover:text-slate-600 dark:hover:text-slate-100" type="button">
-                              <span className="material-symbols-outlined text-xl">more_vert</span>
+                              <MaterialSymbol name="more_vert" className="text-xl" />
                             </button>
                           </div>
                         </td>
@@ -156,17 +157,17 @@ function MobilePublishedChapters({ onArchive, story }) {
         <div className="flex items-center justify-between">
           <div className="flex min-w-0 items-center gap-2">
             <Link className="flex size-9 shrink-0 items-center justify-center rounded-lg transition-colors hover:bg-slate-200 dark:hover:bg-primary/10" to={getCreatorStoryManagementHref(story.slug)}>
-              <span className="material-symbols-outlined text-xl text-slate-900 dark:text-slate-100">arrow_back</span>
+              <MaterialSymbol name="arrow_back" className="text-xl text-slate-900 dark:text-slate-100" />
             </Link>
             <h2 className="truncate text-base font-bold tracking-tight">Published Chapters</h2>
           </div>
           <button className="flex size-9 shrink-0 items-center justify-center rounded-lg transition-colors hover:bg-primary/10" type="button">
-            <span className="material-symbols-outlined text-lg text-primary">more_vert</span>
+            <MaterialSymbol name="more_vert" className="text-lg text-primary" />
           </button>
         </div>
         <div className="mt-3">
           <label className="relative flex w-full items-center">
-            <span className="material-symbols-outlined absolute left-2.5 text-base text-slate-400 dark:text-slate-500">search</span>
+            <MaterialSymbol name="search" className="absolute left-2.5 text-base text-slate-400 dark:text-slate-500" />
             <input
               className="h-9 w-full rounded-lg border-none bg-slate-200 pl-9 pr-3 text-sm placeholder:text-slate-500 focus:ring-2 focus:ring-primary dark:bg-primary/10 dark:text-slate-100"
               placeholder="Search chapters..."
@@ -190,7 +191,7 @@ function MobilePublishedChapters({ onArchive, story }) {
       <main className="space-y-2 px-4 py-3 pb-28">
         <div className="mb-1.5 flex items-center justify-between">
           <h3 className="text-[10px] font-bold uppercase tracking-widest text-slate-500">Published ({story.publishedChapters.length})</h3>
-          <span className="material-symbols-outlined text-base text-slate-500">filter_list</span>
+          <MaterialSymbol name="filter_list" className="text-base text-slate-500" />
         </div>
 
         {story.publishedChapters.map((chapter) => (
@@ -208,24 +209,24 @@ function MobilePublishedChapters({ onArchive, story }) {
                   className="flex size-8 items-center justify-center rounded-lg text-slate-400 transition-colors hover:bg-slate-100 hover:text-primary dark:hover:bg-primary/10"
                   to={getChapterEditHref(story.slug, chapter.chapterId)}
                 >
-                  <span className="material-symbols-outlined text-base">edit</span>
+                  <MaterialSymbol name="edit" className="text-base" />
                 </Link>
                 <button className="flex size-8 items-center justify-center rounded-lg text-slate-400 transition-colors hover:bg-slate-100 hover:text-primary dark:hover:bg-primary/10" onClick={() => onArchive(chapter.title)} type="button">
-                  <span className="material-symbols-outlined text-base">archive</span>
+                  <MaterialSymbol name="archive" className="text-base" />
                 </button>
               </div>
             </div>
             <div className="flex items-center gap-3 text-[10px] font-medium text-slate-500">
               <div className="flex items-center gap-0.5">
-                <span className="material-symbols-outlined text-sm">visibility</span>
+                <MaterialSymbol name="visibility" className="text-sm" />
                 <span>{chapter.reads}</span>
               </div>
               <div className="flex items-center gap-0.5">
-                <span className="material-symbols-outlined text-sm">favorite</span>
+                <MaterialSymbol name="favorite" className="text-sm" />
                 <span>{chapter.likes}</span>
               </div>
               <div className="flex items-center gap-0.5">
-                <span className="material-symbols-outlined text-sm">chat_bubble</span>
+                <MaterialSymbol name="chat_bubble" className="text-sm" />
                 <span>{chapter.comments}</span>
               </div>
             </div>

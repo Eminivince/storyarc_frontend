@@ -1,6 +1,7 @@
 import { Link, useParams } from "react-router-dom";
 import ReaderStateScreen from "../components/ReaderStateScreen";
 import RouteLoadingScreen from "../components/RouteLoadingScreen";
+import MaterialSymbol from "../components/MaterialSymbol";
 import {
   buildSearchHref,
   buildStoryHref,
@@ -97,9 +98,7 @@ export default function SharedReadingListPage() {
               to={buildSearchHref("")}
             >
               Browse More
-              <span className="material-symbols-outlined text-sm">
-                arrow_forward
-              </span>
+              <MaterialSymbol name="arrow_forward" className="text-sm" />
             </Link>
           </div>
         </div>
@@ -113,9 +112,7 @@ export default function SharedReadingListPage() {
             </div>
           ) : (
             <div className="rounded-3xl border border-dashed border-primary/20 bg-primary/5 p-8 text-center">
-              <span className="material-symbols-outlined text-4xl text-primary">
-                auto_stories
-              </span>
+              <MaterialSymbol name="auto_stories" className="text-4xl text-primary" />
               <h2 className="mt-3 text-xl font-bold">This list is empty</h2>
               <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
                 The owner has not added any live stories to this public collection yet.

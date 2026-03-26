@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { AppDesktopSidebar, AppMobileTabBar } from "../components/AppShellNav";
 import { LogoBrand } from "../components/LogoBrand";
 import UserAvatar from "../components/UserAvatar";
+import MaterialSymbol from "../components/MaterialSymbol";
 import {
   createCreatorWithdrawalRequest,
   fetchCreatorFinance,
@@ -60,9 +61,7 @@ function CreatorDesktopHeader({ authorName }) {
           className="flex size-10 items-center justify-center rounded-lg bg-slate-200/50 transition-colors hover:bg-primary/20 dark:bg-primary/5"
           to="/account/notifications"
         >
-          <span className="material-symbols-outlined text-slate-700 dark:text-primary">
-            settings
-          </span>
+          <MaterialSymbol name="settings" className="text-slate-700 dark:text-primary" />
         </Link>
         <div className="mx-2 h-10 w-px bg-slate-300 dark:bg-primary/10" />
         <div className="flex items-center gap-3">
@@ -265,7 +264,7 @@ function WithdrawalForm({
         type="button"
       >
         {isSubmitting ? "Submitting..." : "Submit Withdrawal Request"}
-        <span className="material-symbols-outlined">north_east</span>
+        <MaterialSymbol name="north_east" />
       </button>
     </div>
   );
@@ -297,7 +296,7 @@ function DesktopWithdrawal({ authorName, amountDraft, errorMessage, finance, isL
                   className="inline-flex items-center justify-center gap-2 rounded-full border border-primary/20 px-6 py-3 text-sm font-bold text-primary"
                   to={creatorEarningsHref}
                 >
-                  <span className="material-symbols-outlined">analytics</span>
+                  <MaterialSymbol name="analytics" />
                   Back to Earnings
                 </Link>
               </div>
@@ -374,7 +373,7 @@ function MobileWithdrawal({ amountDraft, authorName, errorMessage, finance, isLo
       <div className="relative flex min-h-screen flex-col overflow-x-hidden pb-28">
         <header className="sticky top-0 z-10 flex items-center justify-between border-b border-primary/10 bg-background-light/90 px-4 py-3 backdrop-blur-md dark:bg-background-dark/90">
           <Link className="flex size-9 items-center justify-center rounded-full transition-colors hover:bg-primary/10" to={creatorEarningsHref}>
-            <span className="material-symbols-outlined text-lg">arrow_back</span>
+            <MaterialSymbol name="arrow_back" className="text-lg" />
           </Link>
           <h1 className="text-base font-bold tracking-tight">Withdraw Earnings</h1>
           <Link className="flex size-9 items-center justify-center rounded-full transition-colors hover:bg-primary/10" to="/account/profile">

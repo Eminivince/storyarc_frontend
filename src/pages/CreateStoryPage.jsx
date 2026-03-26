@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { AppDesktopSidebar, AppMobileTabBar } from "../components/AppShellNav";
 import Reveal from "../components/Reveal";
 import { useCreator } from "../context/CreatorContext";
+import MaterialSymbol from "../components/MaterialSymbol";
 import {
   authorDashboardHref,
   createStoryCallouts,
@@ -41,18 +42,14 @@ function DesktopCreateStory({
               <span className="text-slate-500 dark:text-slate-400">
                 My Stories
               </span>
-              <span className="material-symbols-outlined text-xs">
-                chevron_right
-              </span>
+              <MaterialSymbol name="chevron_right" className="text-xs" />
               <span className="font-semibold text-primary">
                 Create New Story
               </span>
             </div>
             <div className="flex items-center gap-4">
               <label className="relative hidden lg:block">
-                <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">
-                  search
-                </span>
+                <MaterialSymbol name="search" className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg" />
                 <input
                   className="w-64 rounded-lg border-none bg-slate-100 py-2 pl-10 pr-4 text-base focus:ring-1 focus:ring-primary dark:bg-slate-800"
                   placeholder="Search documentation..."
@@ -62,7 +59,7 @@ function DesktopCreateStory({
               <button
                 className="relative p-2 text-slate-500 transition-colors hover:text-primary dark:text-slate-400"
                 type="button">
-                <span className="material-symbols-outlined">notifications</span>
+                <MaterialSymbol name="notifications" />
                 <span className="absolute right-2 top-2 size-2 rounded-full bg-primary" />
               </button>
             </div>
@@ -102,9 +99,7 @@ function DesktopCreateStory({
                     ) : null}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
                     <div className="relative flex h-full flex-col items-center justify-center gap-4 p-6 text-center">
-                      <span className="material-symbols-outlined text-4xl text-primary/70">
-                        add_photo_alternate
-                      </span>
+                      <MaterialSymbol name="add_photo_alternate" className="text-4xl text-primary/70" />
                       <div>
                         <p className="text-sm font-medium">
                           {isUploadingCover
@@ -124,9 +119,7 @@ function DesktopCreateStory({
                       <div
                         className="flex items-start gap-2 text-xs text-slate-500 dark:text-slate-400"
                         key={item}>
-                        <span className="material-symbols-outlined text-sm text-primary">
-                          info
-                        </span>
+                        <MaterialSymbol name="info" className="text-sm text-primary" />
                         <p>{item}</p>
                       </div>
                     ))}
@@ -194,9 +187,7 @@ function DesktopCreateStory({
                             </option>
                           ))}
                         </select>
-                        <span className="material-symbols-outlined pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-400">
-                          expand_more
-                        </span>
+                        <MaterialSymbol name="expand_more" className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-400" />
                       </div>
                     </div>
 
@@ -238,9 +229,7 @@ function DesktopCreateStory({
                           onClick={() => onTagToggle(tag)}
                           type="button">
                           {tag}
-                          <span className="material-symbols-outlined text-[14px]">
-                            close
-                          </span>
+                          <MaterialSymbol name="close" className="text-[14px]" />
                         </button>
                       ))}
                     </div>
@@ -297,9 +286,7 @@ function DesktopCreateStory({
                       disabled={isCreating || !form.termsAccepted}
                       onClick={onSubmit}
                       type="button">
-                      <span className="material-symbols-outlined font-bold">
-                        auto_awesome
-                      </span>
+                      <MaterialSymbol name="auto_awesome" className="font-bold" />
                       {isCreating ? "Creating..." : "Create Story"}
                     </button>
                   </div>
@@ -330,16 +317,14 @@ function MobileCreateStory({
           <Link
             className="flex size-9 items-center justify-center rounded-lg text-slate-900 transition-colors hover:bg-slate-200 dark:text-slate-100 dark:hover:bg-primary/20"
             to={authorDashboardHref}>
-            <span className="material-symbols-outlined text-xl">
-              arrow_back
-            </span>
+            <MaterialSymbol name="arrow_back" className="text-xl" />
           </Link>
           <h2 className="text-base font-bold tracking-tight text-primary">
             TaleStead
           </h2>
         </div>
         <div className="flex size-9 items-center justify-center rounded-full bg-primary/10 text-primary">
-          <span className="material-symbols-outlined text-lg">person</span>
+          <MaterialSymbol name="person" className="text-lg" />
         </div>
       </header>
 
@@ -363,9 +348,7 @@ function MobileCreateStory({
               />
             ) : null}
             <div className="relative z-10 flex h-full flex-col items-center justify-center p-4 text-center">
-              <span className="material-symbols-outlined mb-1 text-3xl text-primary">
-                add_a_photo
-              </span>
+              <MaterialSymbol name="add_a_photo" className="mb-1 text-3xl text-primary" />
               <p className="text-xs font-medium text-slate-600 dark:text-slate-400">
                 {isUploadingCover ? "Uploading..." : "Tap to upload"}
               </p>
@@ -469,9 +452,7 @@ function MobileCreateStory({
                   onClick={() => onTagToggle(tag)}
                   type="button">
                   {tag}
-                  <span className="material-symbols-outlined text-xs">
-                    close
-                  </span>
+                  <MaterialSymbol name="close" className="text-xs" />
                 </button>
               ))}
             </div>
@@ -525,9 +506,7 @@ function MobileCreateStory({
               disabled={isCreating || !form.termsAccepted}
               onClick={onSubmit}
               type="button">
-              <span className="material-symbols-outlined text-lg">
-                auto_stories
-              </span>
+              <MaterialSymbol name="auto_stories" className="text-lg" />
               {isCreating ? "Creating..." : "Create Story"}
             </button>
           </div>

@@ -5,6 +5,7 @@ import Reveal from "../components/Reveal";
 import UserAvatar from "../components/UserAvatar";
 import { useAccount } from "../context/AccountContext";
 import { useAuth } from "../context/AuthContext";
+import MaterialSymbol from "../components/MaterialSymbol";
 import {
   leaderboardHref,
   missionsHref,
@@ -73,10 +74,10 @@ function DesktopMissions({
           <div className="flex flex-1 items-center justify-end gap-4 lg:gap-8">
             <div className="flex gap-2">
               <Link className="flex h-10 w-10 items-center justify-center rounded-lg border border-primary/20 bg-primary/10 text-primary transition-colors hover:bg-primary/20" to={rewardsHref}>
-                <span className="material-symbols-outlined">notifications</span>
+                <MaterialSymbol name="notifications" />
               </Link>
               <Link className="flex h-10 w-10 items-center justify-center rounded-lg border border-primary/20 bg-primary/10 text-primary transition-colors hover:bg-primary/20" to={profileHref}>
-                <span className="material-symbols-outlined">account_circle</span>
+                <MaterialSymbol name="account_circle" />
               </Link>
             </div>
             <Link to={profileHref}>
@@ -95,25 +96,25 @@ function DesktopMissions({
             <aside className="flex flex-col gap-2 lg:col-span-1">
               <nav className="flex flex-col gap-1">
                 <Link className="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-400 transition-all hover:bg-primary/5 hover:text-primary" to="/dashboard">
-                  <span className="material-symbols-outlined">home</span>
+                  <MaterialSymbol name="home" />
                   <span className="font-medium">Dashboard</span>
                 </Link>
                 <Link className="flex items-center gap-3 rounded-xl border border-primary/20 bg-primary/10 px-4 py-3 text-primary shadow-lg shadow-primary/5" to={missionsHref}>
-                  <span className="material-symbols-outlined fill-1">task_alt</span>
+                  <MaterialSymbol name="task_alt" filled />
                   <span className="font-medium">Missions</span>
                 </Link>
                 <Link className="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-400 transition-all hover:bg-primary/5 hover:text-primary" to={profileHref}>
-                  <span className="material-symbols-outlined">library_books</span>
+                  <MaterialSymbol name="library_books" />
                   <span className="font-medium">Library</span>
                 </Link>
                 <Link className="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-400 transition-all hover:bg-primary/5 hover:text-primary" to={leaderboardHref}>
-                  <span className="material-symbols-outlined">military_tech</span>
+                  <MaterialSymbol name="military_tech" />
                   <span className="font-medium">Leaderboard</span>
                 </Link>
               </nav>
               <div className="mt-6 rounded-xl border border-primary/20 bg-gradient-to-br from-primary/20 to-transparent p-4">
                 <div className="mb-2 flex items-center gap-2">
-                  <span className="material-symbols-outlined text-primary">stars</span>
+                  <MaterialSymbol name="stars" className="text-primary" />
                   <span className="text-sm font-bold uppercase tracking-wider text-slate-100">
                     Your Balance
                   </span>
@@ -144,7 +145,7 @@ function DesktopMissions({
               <div className="flex flex-col gap-4">
                 <div className="flex items-center justify-between">
                   <h3 className="flex items-center gap-2 text-lg font-bold text-slate-100">
-                    <span className="material-symbols-outlined text-primary">event</span>
+                    <MaterialSymbol name="event" className="text-primary" />
                     Today's Missions
                   </h3>
                   <MissionRefreshCountdown />
@@ -159,9 +160,7 @@ function DesktopMissions({
                       key={mission.id}
                     >
                       <div className="relative flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
-                        <span className="material-symbols-outlined text-3xl">
-                          {mission.icon}
-                        </span>
+                        <MaterialSymbol name={mission.icon} className="text-3xl" />
                         {mission.poolOnly && (
                           <span className="absolute -right-1 -top-1 rounded-full bg-amber-500 px-1.5 py-0.5 text-[8px] font-bold text-black">
                             NEW
@@ -222,7 +221,7 @@ function DesktopMissions({
 
               <div className="mt-6 flex flex-col gap-4">
                 <h3 className="flex items-center gap-2 text-lg font-bold text-slate-100">
-                  <span className="material-symbols-outlined text-primary">edit_note</span>
+                  <MaterialSymbol name="edit_note" className="text-primary" />
                   Author Missions
                 </h3>
                 {authorMissions.map((mission) => {
@@ -234,9 +233,7 @@ function DesktopMissions({
                       key={mission.id}
                     >
                       <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
-                        <span className="material-symbols-outlined text-3xl">
-                          {mission.icon}
-                        </span>
+                        <MaterialSymbol name={mission.icon} className="text-3xl" />
                       </div>
                       <div className="w-full flex-1">
                         <div className="mb-2 flex items-start justify-between">
@@ -297,12 +294,12 @@ function MobileMissions({
         <div className="flex items-center justify-between p-4">
           <div className="flex items-center gap-3">
             <Link className="text-slate-900 dark:text-slate-100" to={rewardsHref}>
-              <span className="material-symbols-outlined">arrow_back</span>
+              <MaterialSymbol name="arrow_back" />
             </Link>
             <h1 className="text-xl font-bold tracking-tight">Missions & Tasks</h1>
           </div>
           <div className="flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-3 py-1">
-            <span className="material-symbols-outlined text-sm text-primary">payments</span>
+            <MaterialSymbol name="payments" className="text-sm text-primary" />
             <span className="text-sm font-bold text-primary">{points}</span>
           </div>
         </div>
@@ -367,9 +364,7 @@ function MobileMissions({
                 key={mission.id}
               >
                 <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10">
-                  <span className="material-symbols-outlined text-2xl text-primary">
-                    {mission.icon}
-                  </span>
+                  <MaterialSymbol name={mission.icon} className="text-2xl text-primary" />
                 </div>
                 <div className="min-w-0 flex-1">
                   <div className="mb-1 flex items-start justify-between">
@@ -467,19 +462,19 @@ function MobileMissions({
       <nav className="fixed bottom-0 left-0 right-0 border-t border-slate-200 bg-background-light px-6 py-3 dark:border-slate-800 dark:bg-slate-900/95">
         <div className="mx-auto flex max-w-lg items-center justify-between">
           <Link className="flex flex-col items-center gap-1 text-slate-400" to="/dashboard">
-            <span className="material-symbols-outlined">home</span>
+            <MaterialSymbol name="home" />
             <span className="text-[10px] font-medium">Home</span>
           </Link>
           <Link className="flex flex-col items-center gap-1 text-primary" to={missionsHref}>
-            <span className="material-symbols-outlined fill-[1]">target</span>
+            <MaterialSymbol name="target" className="fill-[1]" />
             <span className="text-[10px] font-bold">Missions</span>
           </Link>
           <Link className="flex flex-col items-center gap-1 text-slate-400" to={rewardsHref}>
-            <span className="material-symbols-outlined">account_balance_wallet</span>
+            <MaterialSymbol name="account_balance_wallet" />
             <span className="text-[10px] font-medium">Wallet</span>
           </Link>
           <Link className="flex flex-col items-center gap-1 text-slate-400" to={profileHref}>
-            <span className="material-symbols-outlined">person</span>
+            <MaterialSymbol name="person" />
             <span className="text-[10px] font-medium">Profile</span>
           </Link>
         </div>
@@ -493,7 +488,7 @@ function MissionRefreshCountdown() {
 
   return (
     <span className="flex items-center gap-1 text-xs font-medium text-primary">
-      <span className="material-symbols-outlined text-sm">schedule</span>
+      <MaterialSymbol name="schedule" className="text-sm" />
       Refreshes in {timeLeft}
     </span>
   );
@@ -505,7 +500,7 @@ function MissionRefreshBanner() {
   return (
     <div className="flex items-center justify-center rounded-xl border border-dashed border-primary/20 bg-primary/5 p-5">
       <div className="flex items-center gap-2 text-center">
-        <span className="material-symbols-outlined text-sm text-primary">autorenew</span>
+        <MaterialSymbol name="autorenew" className="text-sm text-primary" />
         <p className="text-sm italic text-slate-400">
           New missions in {timeLeft}
         </p>

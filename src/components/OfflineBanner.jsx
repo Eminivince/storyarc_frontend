@@ -2,6 +2,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { useOnlineStatus } from "../hooks/useOnlineStatus";
 import { getQueueSize } from "../lib/offlineQueue";
+import MaterialSymbol from "./MaterialSymbol";
 
 export default function OfflineBanner() {
   const { isOnline } = useOnlineStatus();
@@ -46,9 +47,7 @@ export default function OfflineBanner() {
           initial={{ opacity: 0, y: -40 }}
           transition={{ duration: 0.3 }}
         >
-          <span className="material-symbols-outlined text-base">
-            {isOnline ? "wifi" : "wifi_off"}
-          </span>
+          <MaterialSymbol name={isOnline ? "wifi" : "wifi_off"} className="text-base" />
           {message}
         </motion.div>
       )}

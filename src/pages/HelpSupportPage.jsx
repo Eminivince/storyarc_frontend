@@ -7,6 +7,7 @@ import RouteLoadingScreen from "../components/RouteLoadingScreen";
 import SkeletonBlock from "../components/SkeletonBlock";
 import { useToast } from "../context/ToastContext";
 import { profileHref } from "../data/accountFlow";
+import MaterialSymbol from "../components/MaterialSymbol";
 import {
   createSupportTicket,
   fetchSupportHelpCenter,
@@ -225,7 +226,7 @@ function TicketComposerModal({
             onClick={onClose}
             type="button"
           >
-            <span className="material-symbols-outlined">close</span>
+            <MaterialSymbol name="close" />
           </button>
         </div>
 
@@ -453,7 +454,7 @@ function CategorySection({
             type="button"
           >
             <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary transition-transform group-hover:scale-105">
-              <span className="material-symbols-outlined text-[28px]">dashboard</span>
+              <MaterialSymbol name="dashboard" className="text-[28px]" />
             </div>
             <div className="flex items-start justify-between gap-3">
               <h4 className="text-base font-black">All topics</h4>
@@ -478,9 +479,7 @@ function CategorySection({
                   type="button"
                 >
                   <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary transition-transform group-hover:scale-105">
-                    <span className="material-symbols-outlined text-[28px]">
-                      {category.icon}
-                    </span>
+                    <MaterialSymbol name={category.icon} className="text-[28px]" />
                   </div>
                   <div className="flex items-start justify-between gap-3">
                     <h4 className="text-base font-black">{category.title}</h4>
@@ -569,9 +568,7 @@ function ArticleDirectory({
                       {article.excerpt}
                     </p>
                   </div>
-                  <span className="material-symbols-outlined text-slate-400">
-                    arrow_outward
-                  </span>
+                  <MaterialSymbol name="arrow_outward" className="text-slate-400" />
                 </div>
               </button>
             );
@@ -683,7 +680,7 @@ function SupportActionBanner({
                 onClick={() => onOpenComposer(action, null)}
                 type="button"
               >
-                <span className="material-symbols-outlined text-base">{action.icon}</span>
+                <MaterialSymbol name={action.icon} className="text-base" />
                 {action.title}
               </button>
             ))}
@@ -726,9 +723,7 @@ function MobileHelpLayout({ children, footer }) {
             className="flex h-10 w-10 items-center justify-center rounded-full transition-colors hover:bg-slate-200 dark:hover:bg-primary/10"
             to={profileHref}
           >
-            <span className="material-symbols-outlined text-slate-900 dark:text-primary">
-              arrow_back
-            </span>
+            <MaterialSymbol name="arrow_back" className="text-slate-900 dark:text-primary" />
           </Link>
           <h1 className="flex-1 text-center text-lg font-black">Help & Support</h1>
           <div className="w-10" />
@@ -900,9 +895,7 @@ export default function HelpSupportPage() {
 
           <div className="w-full max-w-2xl">
             <label className="relative block">
-              <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
-                search
-              </span>
+              <MaterialSymbol name="search" className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
               <input
                 className="h-14 w-full rounded-full border border-slate-200 bg-white pl-12 pr-4 text-base shadow-sm outline-none transition focus:border-primary/30 focus:ring-2 focus:ring-primary/20 dark:border-border-dark dark:bg-[#27241b] dark:text-slate-100"
                 onChange={(event) => setSearchValue(event.target.value)}
@@ -971,9 +964,7 @@ export default function HelpSupportPage() {
           Read the help center first, then contact support with the right context attached.
         </p>
         <label className="relative mt-5 block">
-          <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
-            search
-          </span>
+          <MaterialSymbol name="search" className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
           <input
             className="h-14 w-full rounded-full border border-slate-200 bg-white pl-12 pr-4 text-base shadow-sm outline-none transition focus:border-primary/30 focus:ring-2 focus:ring-primary/20 dark:border-border-dark dark:bg-[#27241b] dark:text-slate-100"
             onChange={(event) => setSearchValue(event.target.value)}
@@ -1030,9 +1021,7 @@ export default function HelpSupportPage() {
             onClick={() => handleOpenComposer(primarySupportAction, selectedArticle)}
             type="button"
           >
-            <span className="material-symbols-outlined">
-              {primarySupportAction?.icon ?? "support_agent"}
-            </span>
+            <MaterialSymbol name={primarySupportAction?.icon ?? "support_agent"} />
             {primarySupportAction?.title ?? "Contact Support"}
           </button>
         }

@@ -4,6 +4,7 @@ import { AppDesktopSidebar, AppMobileTabBar } from "../components/AppShellNav";
 import { LogoBrand } from "../components/LogoBrand";
 import Reveal from "../components/Reveal";
 import UserAvatar from "../components/UserAvatar";
+import MaterialSymbol from "../components/MaterialSymbol";
 import {
   useCreatorScorecardQuery,
   useStudioAnalyticsQuery,
@@ -273,7 +274,7 @@ function AnalyticsEmptyPanel({ onCreateStory }) {
         onClick={onCreateStory}
         type="button"
       >
-        <span className="material-symbols-outlined text-lg">add_circle</span>
+        <MaterialSymbol name="add_circle" className="text-lg" />
         Create New Story
       </button>
     </div>
@@ -340,9 +341,7 @@ function AnalyticsMetricGrid({ analytics }) {
               </p>
               <p className="mt-3 text-3xl font-black tracking-tight">{metric.value}</p>
             </div>
-            <span className="material-symbols-outlined text-2xl text-primary">
-              {metric.icon}
-            </span>
+            <MaterialSymbol name={metric.icon} className="text-2xl text-primary" />
           </div>
           <p className="mt-3 text-sm leading-relaxed text-slate-500 dark:text-primary/60">
             {metric.detail}
@@ -715,9 +714,7 @@ function DesktopAuthorDashboard({
             <LogoBrand textClassName="text-slate-900 dark:text-slate-100" />
             <label className="hidden min-w-64 md:flex">
               <div className="flex h-10 w-full items-center rounded-lg bg-slate-200/50 px-4 dark:bg-primary/5">
-                <span className="material-symbols-outlined text-[20px] text-slate-500 dark:text-primary/60">
-                  analytics
-                </span>
+                <MaterialSymbol name="analytics" className="text-[20px] text-slate-500 dark:text-primary/60" />
                 <span className="ml-3 text-sm text-slate-500 dark:text-primary/60">
                   Creator analytics now update from live reader progress.
                 </span>
@@ -731,17 +728,13 @@ function DesktopAuthorDashboard({
                 className="flex size-10 items-center justify-center rounded-lg bg-slate-200/50 transition-colors hover:bg-primary/20 dark:bg-primary/5"
                 type="button"
               >
-                <span className="material-symbols-outlined text-slate-700 dark:text-primary">
-                  notifications
-                </span>
+                <MaterialSymbol name="notifications" className="text-slate-700 dark:text-primary" />
               </button>
               <Link
                 className="flex size-10 items-center justify-center rounded-lg bg-slate-200/50 transition-colors hover:bg-primary/20 dark:bg-primary/5"
                 to="/account/notifications"
               >
-                <span className="material-symbols-outlined text-slate-700 dark:text-primary">
-                  settings
-                </span>
+                <MaterialSymbol name="settings" className="text-slate-700 dark:text-primary" />
               </Link>
             </div>
             <div className="mx-2 h-10 w-px bg-slate-300 dark:bg-primary/10" />
@@ -783,7 +776,7 @@ function DesktopAuthorDashboard({
                     className="flex items-center gap-2 rounded-2xl border border-primary/15 px-4 py-2.5 text-sm font-bold transition-colors hover:bg-primary/5"
                     to={creatorEarningsHref}
                   >
-                    <span className="material-symbols-outlined text-lg">payments</span>
+                    <MaterialSymbol name="payments" className="text-lg" />
                     Earnings
                   </Link>
                   <button
@@ -791,7 +784,7 @@ function DesktopAuthorDashboard({
                     onClick={onCreateStory}
                     type="button"
                   >
-                    <span className="material-symbols-outlined text-lg">add_circle</span>
+                    <MaterialSymbol name="add_circle" className="text-lg" />
                     <span>Create New Story</span>
                   </button>
                 </div>
@@ -818,16 +811,12 @@ function DesktopAuthorDashboard({
                       <p className="text-sm font-medium uppercase tracking-wider text-slate-500 dark:text-primary/60">
                         {stat.label}
                       </p>
-                      <span className="material-symbols-outlined text-primary">
-                        {stat.icon}
-                      </span>
+                      <MaterialSymbol name={stat.icon} className="text-primary" />
                     </div>
                     <div className="flex items-baseline gap-2">
                       <p className="text-3xl font-bold">{stat.value}</p>
                       <span className="flex items-center text-sm font-bold text-emerald-500">
-                        <span className="material-symbols-outlined text-sm">
-                          trending_up
-                        </span>
+                        <MaterialSymbol name="trending_up" className="text-sm" />
                         {stat.delta}
                       </span>
                     </div>
@@ -922,9 +911,7 @@ function DesktopAuthorDashboard({
                           onClick={onCreateStory}
                           type="button"
                         >
-                          <span className="material-symbols-outlined text-lg">
-                            add_circle
-                          </span>
+                          <MaterialSymbol name="add_circle" className="text-lg" />
                           Create New Story
                         </button>
                       </Reveal>
@@ -943,9 +930,7 @@ function DesktopAuthorDashboard({
                           to={action.href}
                         >
                           <div className="flex items-center gap-3">
-                            <span className="material-symbols-outlined text-primary transition-transform group-hover:scale-110">
-                              {action.icon}
-                            </span>
+                            <MaterialSymbol name={action.icon} className="text-primary transition-transform group-hover:scale-110" />
                             <div>
                               <p className="text-sm font-bold">{action.title}</p>
                               <p className="text-xs text-slate-500 dark:text-primary/60">
@@ -969,9 +954,7 @@ function DesktopAuthorDashboard({
                               key={`${item.title}-${item.time}`}
                             >
                               <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary/20">
-                                <span className="material-symbols-outlined text-sm text-primary">
-                                  {item.icon}
-                                </span>
+                                <MaterialSymbol name={item.icon} className="text-sm text-primary" />
                               </div>
                               <div>
                                 <p className="text-sm">{item.title}</p>
@@ -1032,9 +1015,7 @@ function MobileAuthorDashboard({
                 src={user?.avatarUrl}
               />
               <div className="absolute bottom-0 right-0 flex size-3 items-center justify-center rounded-full border-2 border-background-dark bg-primary">
-                <span className="material-symbols-outlined text-[8px] font-bold text-background-dark">
-                  check
-                </span>
+                <MaterialSymbol name="check" className="text-[8px] font-bold text-background-dark" />
               </div>
             </div>
             <div className="min-w-0">
@@ -1049,13 +1030,13 @@ function MobileAuthorDashboard({
               className="flex size-9 items-center justify-center rounded-full bg-slate-100 text-slate-700 dark:bg-primary/10 dark:text-primary"
               type="button"
             >
-              <span className="material-symbols-outlined text-lg">notifications</span>
+              <MaterialSymbol name="notifications" className="text-lg" />
             </button>
             <Link
               className="flex size-9 items-center justify-center rounded-full bg-slate-100 text-slate-700 dark:bg-primary/10 dark:text-primary"
               to="/account/notifications"
             >
-              <span className="material-symbols-outlined text-lg">settings</span>
+              <MaterialSymbol name="settings" className="text-lg" />
             </Link>
           </div>
         </header>
@@ -1107,9 +1088,7 @@ function MobileAuthorDashboard({
                         <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-400">
                           {metric.label}
                         </p>
-                        <span className="material-symbols-outlined text-lg text-primary">
-                          {metric.icon}
-                        </span>
+                        <MaterialSymbol name={metric.icon} className="text-lg text-primary" />
                       </div>
                       <p className="mt-3 text-2xl font-black">{metric.value}</p>
                       <p className="mt-2 text-xs text-slate-500 dark:text-primary/60">
@@ -1164,7 +1143,7 @@ function MobileAuthorDashboard({
                 </p>
                 <p className="text-lg font-bold">{stat.value}</p>
                 <p className="flex items-center gap-0.5 text-[10px] font-bold text-emerald-500">
-                  <span className="material-symbols-outlined text-[10px]">trending_up</span>
+                  <MaterialSymbol name="trending_up" className="text-[10px]" />
                   {stat.delta}
                 </p>
               </Reveal>
@@ -1186,9 +1165,7 @@ function MobileAuthorDashboard({
                   key={action.title}
                   to={action.href}
                 >
-                  <span className="material-symbols-outlined text-lg">
-                    {action.icon}
-                  </span>
+                  <MaterialSymbol name={action.icon} className="text-lg" />
                   {action.title}
                 </Link>
               ))}
@@ -1292,9 +1269,7 @@ function MobileAuthorDashboard({
                 recentActivity.map((item) => (
                   <Reveal className="flex gap-2.5" key={`${item.title}-${item.time}`}>
                     <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary/20 text-primary">
-                      <span className="material-symbols-outlined text-sm">
-                        {item.icon}
-                      </span>
+                      <MaterialSymbol name={item.icon} className="text-sm" />
                     </div>
                     <div className="min-w-0 flex-1 border-b border-slate-200 pb-2.5 dark:border-white/5">
                       <p className="text-xs leading-relaxed">{item.title}</p>
@@ -1406,7 +1381,7 @@ function CreatorScorecardWidget() {
           <h3 className="text-lg font-bold">Weekly Performance</h3>
           <p className="text-xs text-slate-400">{weekRange}</p>
         </div>
-        <span className="material-symbols-outlined text-primary">insights</span>
+        <MaterialSymbol name="insights" className="text-primary" />
       </div>
       <div className="grid grid-cols-2 gap-4">
         {metrics.map((metric) => (
@@ -1418,9 +1393,7 @@ function CreatorScorecardWidget() {
               <span className="text-xs font-medium uppercase tracking-wider text-slate-400">
                 {metric.label}
               </span>
-              <span className="material-symbols-outlined text-sm text-primary/60">
-                {metric.icon}
-              </span>
+              <MaterialSymbol name={metric.icon} className="text-sm text-primary/60" />
             </div>
             <div className="flex items-center gap-2">
               <span className="text-xl font-bold">{formatCompactNumber(metric.value)}</span>

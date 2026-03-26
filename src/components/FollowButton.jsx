@@ -1,3 +1,4 @@
+import MaterialSymbol from "./MaterialSymbol";
 export default function FollowButton({
   active = false,
   compact = false,
@@ -21,9 +22,7 @@ export default function FollowButton({
       onClick={onClick}
       type="button"
     >
-      <span className={`material-symbols-outlined ${compact ? "text-base" : "text-lg"}`}>
-        {pending ? "progress_activity" : icon}
-      </span>
+      <MaterialSymbol name={pending ? "progress_activity" : icon} className={`${compact ? "text-base" : "text-lg"}`} />
       <span>{label}</span>
     </button>
   );

@@ -3,6 +3,7 @@ import { AppDesktopSidebar, AppMobileTabBar } from "../components/AppShellNav";
 import NotificationInboxPanel from "../components/NotificationInboxPanel";
 import Reveal from "../components/Reveal";
 import { useAccount } from "../context/AccountContext";
+import MaterialSymbol from "../components/MaterialSymbol";
 import {
   notificationSettingsHref,
   notificationsHref,
@@ -114,7 +115,7 @@ function MobileNotificationsPage({
             className="flex size-9 items-center justify-center rounded-lg transition-colors hover:bg-slate-200 dark:hover:bg-primary/20"
             to={profileHref}
           >
-            <span className="material-symbols-outlined text-xl">arrow_back</span>
+            <MaterialSymbol name="arrow_back" className="text-xl" />
           </Link>
           <div className="ml-2 min-w-0 flex-1">
             <p className="text-[10px] font-bold uppercase tracking-wider text-primary">

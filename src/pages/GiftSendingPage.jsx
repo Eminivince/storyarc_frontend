@@ -11,6 +11,7 @@ import { buildGiftSendingHref } from "../data/communityFlow";
 import { buildCoinStoreHref } from "../data/monetization";
 import { buildStoryHref } from "../data/readerFlow";
 import { useStoryDetailsQuery } from "../reader/readerHooks";
+import MaterialSymbol from "../components/MaterialSymbol";
 
 function getAuthorFirstName(authorName) {
   return authorName?.trim()?.split(/\s+/)[0] || "creator";
@@ -106,7 +107,7 @@ function DesktopGiftSending({
             className="flex size-11 items-center justify-center rounded-full transition-colors hover:bg-primary/10"
             to={storyHref}
           >
-            <span className="material-symbols-outlined">arrow_back</span>
+            <MaterialSymbol name="arrow_back" />
           </Link>
           <div className="text-center">
             <p className="text-[11px] font-bold uppercase tracking-[0.3em] text-primary">
@@ -118,7 +119,7 @@ function DesktopGiftSending({
             className="flex size-11 items-center justify-center rounded-full transition-colors hover:bg-primary/10"
             type="button"
           >
-            <span className="material-symbols-outlined">help</span>
+            <MaterialSymbol name="help" />
           </button>
         </div>
       </header>
@@ -176,12 +177,10 @@ function DesktopGiftSending({
                       whileTap={{ scale: 0.98 }}
                     >
                       <div className="relative flex aspect-square items-center justify-center rounded-2xl bg-[radial-gradient(circle_at_top,_rgba(244,192,37,0.25),_transparent_60%),linear-gradient(135deg,rgba(244,192,37,0.14),rgba(15,23,42,0.85))]">
-                        <span className="material-symbols-outlined text-6xl text-primary">
-                          {gift.icon}
-                        </span>
+                        <MaterialSymbol name={gift.icon} className="text-6xl text-primary" />
                         {active ? (
                           <span className="absolute right-3 top-3 rounded-full bg-primary p-1 text-background-dark">
-                            <span className="material-symbols-outlined text-sm">check</span>
+                            <MaterialSymbol name="check" className="text-sm" />
                           </span>
                         ) : null}
                       </div>
@@ -216,7 +215,7 @@ function DesktopGiftSending({
               />
             </label>
             <div className="mt-4 flex items-center gap-3 rounded-2xl border border-primary/10 bg-primary/5 p-4 text-sm text-slate-500 dark:text-slate-400">
-              <span className="material-symbols-outlined text-primary">info</span>
+              <MaterialSymbol name="info" className="text-primary" />
               Gifts help authors unlock bonus rewards and keep premium chapters coming.
             </div>
           </section>
@@ -245,7 +244,7 @@ function DesktopGiftSending({
             onClick={onSend}
             type="button"
           >
-            <span className="material-symbols-outlined">card_giftcard</span>
+            <MaterialSymbol name="card_giftcard" />
             Send Gift
           </button>
           <p className="mt-3 text-center text-xs text-slate-500 dark:text-slate-400">
@@ -280,14 +279,14 @@ function MobileGiftSending({
             className="flex size-9 items-center justify-center rounded-full transition-colors hover:bg-primary/10"
             to={storyHref}
           >
-            <span className="material-symbols-outlined text-lg">close</span>
+            <MaterialSymbol name="close" className="text-lg" />
           </Link>
           <h1 className="text-base font-bold tracking-tight">Send a Gift</h1>
           <button
             className="flex size-9 items-center justify-center rounded-full transition-colors hover:bg-primary/10"
             type="button"
           >
-            <span className="material-symbols-outlined text-lg">help</span>
+            <MaterialSymbol name="help" className="text-lg" />
           </button>
         </header>
 
@@ -328,12 +327,10 @@ function MobileGiftSending({
                         type="button"
                       >
                         <div className="relative flex aspect-square items-center justify-center rounded-xl bg-[radial-gradient(circle_at_top,_rgba(244,192,37,0.25),_transparent_60%),linear-gradient(135deg,rgba(244,192,37,0.14),rgba(15,23,42,0.85))]">
-                          <span className="material-symbols-outlined text-4xl text-primary">
-                            {gift.icon}
-                          </span>
+                          <MaterialSymbol name={gift.icon} className="text-4xl text-primary" />
                           {active ? (
                             <div className="absolute right-1.5 top-1.5 rounded-full bg-primary p-0.5 text-background-dark">
-                              <span className="material-symbols-outlined text-xs">check</span>
+                              <MaterialSymbol name="check" className="text-xs" />
                             </div>
                           ) : null}
                         </div>
@@ -365,7 +362,7 @@ function MobileGiftSending({
                 />
               </label>
               <div className="mt-2 flex items-center gap-2 rounded-xl border border-primary/10 bg-primary/5 p-2.5 text-[11px] text-slate-500 dark:text-slate-400">
-                <span className="material-symbols-outlined text-base text-primary">info</span>
+                <MaterialSymbol name="info" className="text-base text-primary" />
                 Gifts help authors unlock rewards and keep creating.
               </div>
             </section>
@@ -395,7 +392,7 @@ function MobileGiftSending({
             onClick={onSend}
             type="button"
           >
-            <span className="material-symbols-outlined text-lg">card_giftcard</span>
+            <MaterialSymbol name="card_giftcard" className="text-lg" />
             Send Gift to {authorFirstName}
           </button>
         </footer>

@@ -4,6 +4,7 @@ import AccountSettingsNav from "../components/AccountSettingsNav";
 import { AppDesktopSidebar, AppMobileTabBar } from "../components/AppShellNav";
 import Reveal from "../components/Reveal";
 import { useAccount } from "../context/AccountContext";
+import MaterialSymbol from "../components/MaterialSymbol";
 import {
   mfaChooseHref,
   mfaSuccessHref,
@@ -129,9 +130,7 @@ function TwoFactorSection({ compact = false, enabled }) {
           <div className={`rounded-full bg-primary/15 text-primary ${
             compact ? "p-2" : "p-3"
           }`}>
-            <span className={`material-symbols-outlined ${compact ? "text-lg" : ""}`}>
-              app_shortcut
-            </span>
+            <MaterialSymbol name="app_shortcut" className={`${compact ? "text-lg" : ""}`} />
           </div>
           <div className="min-w-0 flex-1">
             <h3 className={compact ? "text-sm font-bold" : "font-bold"}>Authenticator App</h3>
@@ -181,9 +180,7 @@ function SessionsSection({ compact = false, onRevoke }) {
               <div className={`shrink-0 rounded-xl bg-primary/10 text-primary ${
                 compact ? "p-2" : "rounded-2xl p-3"
               }`}>
-                <span className={`material-symbols-outlined ${compact ? "text-lg" : ""}`}>
-                  {session.icon}
-                </span>
+                <MaterialSymbol name={session.icon} className={`${compact ? "text-lg" : ""}`} />
               </div>
               <div className="min-w-0">
                 <div className="flex flex-wrap items-center gap-1.5">
@@ -288,7 +285,7 @@ function MobileSecuritySettings({
             className="flex size-9 items-center justify-center rounded-lg transition-colors hover:bg-slate-200 dark:hover:bg-primary/20"
             to={profileHref}
           >
-            <span className="material-symbols-outlined text-xl">arrow_back</span>
+            <MaterialSymbol name="arrow_back" className="text-xl" />
           </Link>
           <div className="ml-2">
             <p className="text-[10px] font-bold uppercase tracking-wider text-primary">
@@ -304,7 +301,7 @@ function MobileSecuritySettings({
 
             <section className="rounded-xl border border-primary/20 bg-primary/10 p-3">
               <div className="flex items-start gap-2.5">
-                <span className="material-symbols-outlined text-primary text-lg">shield</span>
+                <MaterialSymbol name="shield" className="text-primary text-lg" />
                 <div>
                   <h2 className="text-sm font-bold text-primary">Security Checkup</h2>
                   <div className="mt-1.5 space-y-0.5">

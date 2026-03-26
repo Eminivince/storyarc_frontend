@@ -6,6 +6,7 @@ import ReaderStateScreen from "../components/ReaderStateScreen";
 import RouteLoadingScreen from "../components/RouteLoadingScreen";
 import { useToast } from "../context/ToastContext";
 import { profileHref } from "../data/accountFlow";
+import MaterialSymbol from "../components/MaterialSymbol";
 import {
   buildChapterHref,
   buildSearchHref,
@@ -67,12 +68,16 @@ function AverageStars({ rating, starClassName = "text-primary" }) {
   return (
     <div className="flex gap-1">
       {Array.from({ length: 5 }).map((_, index) => (
-        <span
-          className={`material-symbols-outlined ${index < Math.round(rating) ? `fill-1 ${starClassName}` : "text-slate-300 dark:text-slate-600"}`}
+        <MaterialSymbol
+          className={
+            index < Math.round(rating)
+              ? starClassName
+              : "text-slate-300 dark:text-slate-600"
+          }
+          filled={index < Math.round(rating)}
           key={index}
-        >
-          star
-        </span>
+          name="star"
+        />
       ))}
     </div>
   );
@@ -92,9 +97,9 @@ function RatingStars({
         return (
           <button
             aria-label={`Rate this book ${value} star${value === 1 ? "" : "s"}`}
-            className={`material-symbols-outlined transition-colors ${
+            className={`transition-colors ${
               value <= currentRating
-                ? "fill-1 text-primary"
+                ? "text-primary"
                 : "text-slate-300 dark:text-slate-600"
             } ${sizeClassName} ${disabled ? "cursor-not-allowed opacity-70" : "hover:text-primary"}`}
             disabled={disabled}
@@ -102,7 +107,7 @@ function RatingStars({
             onClick={() => onRate(value)}
             type="button"
           >
-            star
+            <MaterialSymbol filled={value <= currentRating} name="star" />
           </button>
         );
       })}
@@ -164,13 +169,13 @@ function DesktopChapterComplete({
               className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary transition-colors hover:bg-primary/20"
               type="button"
             >
-              <span className="material-symbols-outlined">share</span>
+              <MaterialSymbol name="share" />
             </button>
             <Link
               className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary transition-colors hover:bg-primary/20"
               to={buildStoryHref(story.slug)}
             >
-              <span className="material-symbols-outlined">menu_book</span>
+              <MaterialSymbol name="menu_book" />
             </Link>
           </div>
         </header>
@@ -222,11 +227,10 @@ function DesktopChapterComplete({
                       onClick={() => setSelectedReaction(reaction.label)}
                       type="button"
                     >
-                      <span
-                        className={`material-symbols-outlined transition-transform group-hover:scale-110 ${reaction.color}`}
-                      >
-                        {reaction.icon}
-                      </span>
+                      <MaterialSymbol
+                        className={`transition-transform group-hover:scale-110 ${reaction.color}`}
+                        name={reaction.icon}
+                      />
                       <span className="text-xs font-bold text-slate-500 dark:text-primary/80">
                         {reaction.label}
                       </span>
@@ -258,9 +262,7 @@ function DesktopChapterComplete({
                       ~{completionStats.nextChapter.estimatedMinutes} min read
                     </span>
                   )}
-                  <span className="material-symbols-outlined transition-transform group-hover:translate-x-1">
-                    arrow_forward
-                  </span>
+                  <MaterialSymbol name="arrow_forward" className="transition-transform group-hover:translate-x-1" />
                 </Link>
               </motion.div>
             </Reveal>
@@ -309,12 +311,12 @@ function DesktopChapterComplete({
                   </p>
                 </div>
                 <div className="flex flex-col items-center justify-center rounded-2xl border border-primary/10 bg-primary/5 p-6">
-                  <span className="material-symbols-outlined mb-2 text-3xl text-primary">group</span>
+                  <MaterialSymbol name="group" className="mb-2 text-3xl text-primary" />
                   <p className="text-2xl font-bold">{(completionStats.totalReaders ?? 0).toLocaleString()}</p>
                   <p className="text-sm text-slate-400">readers finished this chapter</p>
                 </div>
                 <div className="flex flex-col items-center justify-center rounded-2xl border border-primary/10 bg-primary/5 p-6">
-                  <span className="material-symbols-outlined mb-2 text-3xl text-primary">local_fire_department</span>
+                  <MaterialSymbol name="local_fire_department" className="mb-2 text-3xl text-primary" />
                   <p className="text-2xl font-bold">{completionStats.streakDays ?? 0}-day streak</p>
                   <p className="text-sm text-slate-400">{completionStats.streakMultiplier ?? 1}x multiplier</p>
                 </div>
@@ -331,9 +333,9 @@ function DesktopChapterComplete({
                       key={mission.id ?? mission.title}
                     >
                       {mission.current >= mission.target ? (
-                        <span className="material-symbols-outlined text-2xl text-green-500">check_circle</span>
+                        <MaterialSymbol name="check_circle" className="text-2xl text-green-500" />
                       ) : (
-                        <span className="material-symbols-outlined text-2xl text-primary">flag</span>
+                        <MaterialSymbol name="flag" className="text-2xl text-primary" />
                       )}
                       <div className="flex-1">
                         <p className="text-sm font-bold">{mission.title}</p>
@@ -378,7 +380,7 @@ function DesktopChapterComplete({
                           />
                           <div className="absolute inset-0 flex items-end bg-gradient-to-t from-background-dark/80 to-transparent p-4 opacity-0 transition-opacity group-hover:opacity-100">
                             <span className="rounded-full bg-primary p-2 text-background-dark">
-                              <span className="material-symbols-outlined">menu_book</span>
+                              <MaterialSymbol name="menu_book" />
                             </span>
                           </div>
                         </div>
@@ -450,14 +452,14 @@ function MobileChapterComplete({
           className="flex h-10 w-10 items-center justify-center text-slate-900 dark:text-slate-100"
           to={chapterHref}
         >
-          <span className="material-symbols-outlined">arrow_back</span>
+          <MaterialSymbol name="arrow_back" />
         </Link>
         <h2 className="flex-1 text-center text-lg font-bold tracking-tight">
           Chapter {chapter.chapterNumber} Complete
         </h2>
         <div className="flex w-10 items-center justify-end">
           <button className="flex items-center justify-center rounded-lg text-slate-900 dark:text-slate-100" type="button">
-            <span className="material-symbols-outlined">share</span>
+            <MaterialSymbol name="share" />
           </button>
         </div>
       </header>
@@ -465,9 +467,7 @@ function MobileChapterComplete({
       <main className="flex-1 pb-24">
         <Reveal as="section" className="px-4 pb-6 pt-8 text-center">
           <div className="mb-4 inline-flex h-20 w-20 items-center justify-center rounded-full bg-primary/20">
-            <span className="material-symbols-outlined text-5xl text-primary">
-              check_circle
-            </span>
+            <MaterialSymbol name="check_circle" className="text-5xl text-primary" />
           </div>
           <h2 className="mb-2 text-3xl font-black leading-tight">Great Reading!</h2>
           <p className="text-sm text-slate-600 dark:text-slate-400">
@@ -492,15 +492,14 @@ function MobileChapterComplete({
                       : "bg-slate-200 dark:bg-slate-800"
                   }`}
                 >
-                  <span
-                    className={`material-symbols-outlined transition-colors ${
+                  <MaterialSymbol
+                    className={
                       selectedReaction === reaction.label
                         ? "text-primary"
                         : "text-slate-500 dark:text-slate-400"
-                    }`}
-                  >
-                    {reaction.icon}
-                  </span>
+                    }
+                    name={reaction.icon}
+                  />
                 </div>
                 <p className="text-xs font-bold text-slate-500 dark:text-slate-400">
                   {reaction.label}
@@ -554,12 +553,12 @@ function MobileChapterComplete({
                 <p className="text-center text-[10px] font-bold text-slate-400">Percentile</p>
               </div>
               <div className="flex flex-col items-center justify-center rounded-xl border border-primary/10 bg-primary/5 p-3">
-                <span className="material-symbols-outlined mb-1 text-xl text-primary">group</span>
+                <MaterialSymbol name="group" className="mb-1 text-xl text-primary" />
                 <p className="text-lg font-bold">{(completionStats.totalReaders ?? 0).toLocaleString()}</p>
                 <p className="text-center text-[10px] font-bold text-slate-400">Readers</p>
               </div>
               <div className="flex flex-col items-center justify-center rounded-xl border border-primary/10 bg-primary/5 p-3">
-                <span className="material-symbols-outlined mb-1 text-xl text-primary">local_fire_department</span>
+                <MaterialSymbol name="local_fire_department" className="mb-1 text-xl text-primary" />
                 <p className="text-lg font-bold">{completionStats.streakDays ?? 0}d</p>
                 <p className="text-center text-[10px] font-bold text-slate-400">{completionStats.streakMultiplier ?? 1}x</p>
               </div>
@@ -573,9 +572,11 @@ function MobileChapterComplete({
             <div className="space-y-2">
               {completionStats.missionProgress.slice(0, 3).map((mission) => (
                 <div className="flex items-center gap-3 rounded-xl border border-primary/10 bg-primary/5 p-3" key={mission.id ?? mission.title}>
-                  <span className={`material-symbols-outlined text-lg ${mission.current >= mission.target ? "text-green-500" : "text-primary"}`}>
-                    {mission.current >= mission.target ? "check_circle" : "flag"}
-                  </span>
+                  <MaterialSymbol
+                    className={`text-lg ${mission.current >= mission.target ? "text-green-500" : "text-primary"}`}
+                    filled={mission.current >= mission.target}
+                    name={mission.current >= mission.target ? "check_circle" : "flag"}
+                  />
                   <div className="flex-1">
                     <p className="text-xs font-bold">{mission.title}</p>
                     <div className="mt-1 h-1 w-full overflow-hidden rounded-full bg-slate-700">
@@ -598,13 +599,13 @@ function MobileChapterComplete({
             {completionStats?.nextChapter?.estimatedMinutes && (
               <span className="text-xs font-normal opacity-70">~{completionStats.nextChapter.estimatedMinutes} min</span>
             )}
-            <span className="material-symbols-outlined">arrow_forward</span>
+            <MaterialSymbol name="arrow_forward" />
           </Link>
           <Link
             className="flex w-full items-center justify-center gap-2 rounded-xl bg-slate-200 py-4 font-bold text-slate-900 dark:bg-slate-800 dark:text-slate-100"
             to={buildStoryHref(story.slug)}
           >
-            <span className="material-symbols-outlined">menu_book</span>
+            <MaterialSymbol name="menu_book" />
             Back to Story
           </Link>
         </Reveal>
@@ -687,19 +688,19 @@ function MobileChapterComplete({
 
       <nav className="fixed bottom-0 left-0 right-0 mx-auto flex max-w-md items-center justify-between border-t border-primary/10 bg-background-light/95 px-4 py-3 backdrop-blur-md dark:bg-background-dark/95">
         <Link className="flex flex-col items-center gap-1 text-primary" to="/dashboard">
-          <span className="material-symbols-outlined fill-1">home</span>
+          <MaterialSymbol name="home" filled />
           <span className="text-[10px] font-bold">Home</span>
         </Link>
         <Link className="flex flex-col items-center gap-1 text-slate-400" to={buildStoryHref(story.slug)}>
-          <span className="material-symbols-outlined">library_books</span>
+          <MaterialSymbol name="library_books" />
           <span className="text-[10px] font-bold">Story</span>
         </Link>
         <Link className="flex flex-col items-center gap-1 text-slate-400" to={searchHref}>
-          <span className="material-symbols-outlined">explore</span>
+          <MaterialSymbol name="explore" />
           <span className="text-[10px] font-bold">Discover</span>
         </Link>
         <Link className="flex flex-col items-center gap-1 text-slate-400" to={profileHref}>
-          <span className="material-symbols-outlined">person</span>
+          <MaterialSymbol name="person" />
           <span className="text-[10px] font-bold">Profile</span>
         </Link>
       </nav>

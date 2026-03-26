@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import MaterialSymbol from "./MaterialSymbol";
 
 function toneClasses(tone) {
   if (tone === "success") {
@@ -52,7 +53,7 @@ export default function PaymentStatusLayout({
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(244,192,37,0.18),_transparent_55%)]" />
             <div className="relative flex flex-col gap-5">
               <div className={`inline-flex w-fit items-center gap-2 rounded-full border px-3 py-1 text-xs font-bold uppercase tracking-[0.25em] ${styles.badge}`}>
-                <span className="material-symbols-outlined text-sm">{icon}</span>
+                <MaterialSymbol name={icon} className="text-sm" />
                 <span>Payment {tone}</span>
               </div>
               <div>

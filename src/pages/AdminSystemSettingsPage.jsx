@@ -3,6 +3,7 @@ import AdminPageLayout from "../components/AdminPageLayout";
 import Reveal from "../components/Reveal";
 import { useAdmin } from "../context/AdminContext";
 import { maintenanceActions } from "../data/adminFlow";
+import MaterialSymbol from "../components/MaterialSymbol";
 
 function formatSettingDraft(setting) {
   if (typeof setting?.valueCents !== "number") {
@@ -224,9 +225,7 @@ export default function AdminSystemSettingsPage() {
                   type="button"
                 >
                   <span className="font-bold">{action.label}</span>
-                  <span className="material-symbols-outlined text-primary">
-                    bolt
-                  </span>
+                  <MaterialSymbol name="bolt" className="text-primary" />
                 </button>
               ))}
             </div>

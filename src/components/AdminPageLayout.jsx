@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { AppDesktopSidebar, AppMobileTabBar } from "./AppShellNav";
 import { adminDashboardHref } from "../data/adminFlow";
+import MaterialSymbol from "./MaterialSymbol";
 
 const adminConsoleLabel = "TaleStead Admin";
 
@@ -11,7 +12,7 @@ function IconAction({ icon, label, onClick, to }) {
   if (to) {
     return (
       <Link aria-label={label} className={classes} to={to}>
-        <span className="material-symbols-outlined">{icon}</span>
+        <MaterialSymbol name={icon} />
       </Link>
     );
   }
@@ -23,7 +24,7 @@ function IconAction({ icon, label, onClick, to }) {
       onClick={onClick}
       type="button"
     >
-      <span className="material-symbols-outlined">{icon}</span>
+      <MaterialSymbol name={icon} />
     </button>
   );
 }
@@ -35,7 +36,7 @@ function SearchField({ onSearchChange, placeholder, searchTerm }) {
         className="inline-flex items-center gap-3 rounded-full border border-primary/10 bg-primary/5 px-4 py-2 text-sm font-semibold text-primary"
         to={adminDashboardHref}
       >
-        <span className="material-symbols-outlined text-base">admin_panel_settings</span>
+        <MaterialSymbol name="admin_panel_settings" className="text-base" />
         TaleStead Admin Console
       </Link>
     );
@@ -43,9 +44,7 @@ function SearchField({ onSearchChange, placeholder, searchTerm }) {
 
   return (
     <label className="group relative block w-full max-w-2xl">
-      <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 transition-colors group-focus-within:text-primary">
-        search
-      </span>
+      <MaterialSymbol name="search" className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 transition-colors group-focus-within:text-primary" />
       <input
         className="w-full rounded-full border border-primary/10 bg-slate-200/60 py-3 pl-12 pr-4 text-base transition-all focus:border-primary/30 focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-primary/5"
         onChange={(event) => onSearchChange(event.target.value)}

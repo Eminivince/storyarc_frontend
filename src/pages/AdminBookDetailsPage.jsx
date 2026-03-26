@@ -6,6 +6,7 @@ import Reveal from "../components/Reveal";
 import RouteLoadingScreen from "../components/RouteLoadingScreen";
 import { fetchAdminBookDetails, updateAdminBookConfig } from "../admin/adminApi";
 import { useAdmin } from "../context/AdminContext";
+import MaterialSymbol from "../components/MaterialSymbol";
 import {
   adminBookLockWindowOptions,
   adminBookVisibilityModes,
@@ -461,9 +462,7 @@ export default function AdminBookDetailsPage() {
       <section className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <Reveal className="rounded-[24px] border border-primary/10 bg-white p-6 shadow-sm dark:bg-primary/5">
           <div className="flex items-center gap-3">
-            <span className="material-symbols-outlined rounded-lg bg-primary/10 p-2 text-primary">
-              history_toggle_off
-            </span>
+            <MaterialSymbol name="history_toggle_off" className="rounded-lg bg-primary/10 p-2 text-primary" />
             <h2 className="text-lg font-black tracking-tight">Global Lock Window</h2>
           </div>
           <p className="mt-4 text-sm text-slate-500 dark:text-slate-400">
@@ -498,9 +497,7 @@ export default function AdminBookDetailsPage() {
 
         <Reveal className="rounded-[24px] border border-primary/10 bg-white p-6 shadow-sm dark:bg-primary/5">
           <div className="flex items-center gap-3">
-            <span className="material-symbols-outlined rounded-lg bg-primary/10 p-2 text-primary">
-              toll
-            </span>
+            <MaterialSymbol name="toll" className="rounded-lg bg-primary/10 p-2 text-primary" />
             <h2 className="text-lg font-black tracking-tight">Default Coin Cap</h2>
           </div>
           <p className="mt-4 text-sm text-slate-500 dark:text-slate-400">
@@ -536,7 +533,7 @@ export default function AdminBookDetailsPage() {
       <section className="overflow-hidden rounded-[28px] border border-primary/10 bg-white shadow-sm dark:bg-primary/5">
         <div className="flex flex-col gap-4 border-b border-primary/10 bg-primary/5 px-4 py-5 sm:px-6 lg:flex-row lg:items-center lg:justify-between">
           <h2 className="flex items-center gap-2 text-lg font-black tracking-tight">
-            <span className="material-symbols-outlined text-primary">list_alt</span>
+            <MaterialSymbol name="list_alt" className="text-primary" />
             Chapter Management ({draft.chapterCount} Chapters)
           </h2>
 
@@ -550,7 +547,7 @@ export default function AdminBookDetailsPage() {
             }
             type="button"
           >
-            <span className="material-symbols-outlined text-sm">filter_list</span>
+            <MaterialSymbol name="filter_list" className="text-sm" />
             {unsavedCount ? `${unsavedCount} Unsaved` : "Filters"}
           </button>
         </div>
@@ -580,9 +577,7 @@ export default function AdminBookDetailsPage() {
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-2">
-                      <span className="material-symbols-outlined text-sm text-primary">
-                        {chapter.authorLockState === "locked" ? "lock" : "lock_open"}
-                      </span>
+                      <MaterialSymbol name={chapter.authorLockState === "locked" ? "lock" : "lock_open"} className="text-sm text-primary" />
                       <span className="text-xs font-medium text-slate-600 dark:text-slate-400">
                         {chapter.authorLockLabel}
                       </span>
@@ -672,7 +667,7 @@ export default function AdminBookDetailsPage() {
                         }
                         type="button"
                       >
-                        <span className="material-symbols-outlined text-sm">edit</span>
+                        <MaterialSymbol name="edit" className="text-sm" />
                       </button>
                     </div>
                   </td>

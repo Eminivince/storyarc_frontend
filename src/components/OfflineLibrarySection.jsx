@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { getOfflineStories, getOfflineStorageEstimate, removeOfflineStory } from "../lib/offlineStorage";
 import { useToast } from "../context/ToastContext";
 import { buildStoryHref } from "../data/readerFlow";
+import MaterialSymbol from "./MaterialSymbol";
 
 function formatBytes(bytes) {
   if (bytes < 1024) return `${bytes} B`;
@@ -48,7 +49,7 @@ export default function OfflineLibrarySection({ mobile = false }) {
       <section className="space-y-2">
         <div className="flex items-center justify-between gap-2">
           <h2 className="text-sm font-bold">
-            <span className="material-symbols-outlined mr-1 align-middle text-sm text-green-400">download_done</span>
+            <MaterialSymbol name="download_done" className="mr-1 align-middle text-sm text-green-400" />
             Downloaded
           </h2>
           <span className="text-[9px] font-black uppercase tracking-wider text-slate-400">
@@ -80,7 +81,7 @@ export default function OfflineLibrarySection({ mobile = false }) {
                   onClick={(e) => handleRemove(e, story.storySlug)}
                   type="button"
                 >
-                  <span className="material-symbols-outlined text-base">delete</span>
+                  <MaterialSymbol name="delete" className="text-base" />
                 </button>
               </motion.article>
             </Link>
@@ -94,7 +95,7 @@ export default function OfflineLibrarySection({ mobile = false }) {
     <section className="space-y-5">
       <div className="flex items-center justify-between gap-4">
         <h2 className="flex items-center gap-2 text-2xl font-bold">
-          <span className="material-symbols-outlined text-green-400">download_done</span>
+          <MaterialSymbol name="download_done" className="text-green-400" />
           Downloaded for offline
         </h2>
         <span className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-400">
@@ -115,7 +116,7 @@ export default function OfflineLibrarySection({ mobile = false }) {
                   />
                 ) : (
                   <div className="flex h-full items-center justify-center bg-slate-100 dark:bg-slate-800">
-                    <span className="material-symbols-outlined text-4xl text-slate-400">menu_book</span>
+                    <MaterialSymbol name="menu_book" className="text-4xl text-slate-400" />
                   </div>
                 )}
                 <span className="absolute bottom-2 right-2 rounded-lg bg-green-500/90 px-2 py-0.5 text-[10px] font-bold text-white">
@@ -136,7 +137,7 @@ export default function OfflineLibrarySection({ mobile = false }) {
                   onClick={(e) => handleRemove(e, story.storySlug)}
                   type="button"
                 >
-                  <span className="material-symbols-outlined text-lg">delete</span>
+                  <MaterialSymbol name="delete" className="text-lg" />
                 </button>
               </div>
             </motion.article>

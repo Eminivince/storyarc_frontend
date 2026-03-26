@@ -5,6 +5,7 @@ import UserAvatar from "../components/UserAvatar";
 import { LogoBrand } from "../components/LogoBrand";
 import { useAccount } from "../context/AccountContext";
 import { useToast } from "../context/ToastContext";
+import MaterialSymbol from "../components/MaterialSymbol";
 import {
   useReferralDashboardQuery,
   useReferralWithdrawalMutation,
@@ -84,7 +85,7 @@ function WithdrawalModal({ availableBalanceCents, onClose, onWithdraw }) {
         <div className="flex items-center justify-between">
           <h3 className="text-lg font-bold">Withdraw Earnings</h3>
           <button onClick={onClose} type="button">
-            <span className="material-symbols-outlined text-slate-400">close</span>
+            <MaterialSymbol name="close" className="text-slate-400" />
           </button>
         </div>
 
@@ -188,7 +189,7 @@ function WithdrawalHistory({ history }) {
   return (
     <section className="space-y-4">
       <h3 className="flex items-center gap-2 text-lg font-bold">
-        <span className="material-symbols-outlined text-primary">receipt_long</span>
+        <MaterialSymbol name="receipt_long" className="text-primary" />
         Withdrawal History
       </h3>
       <div className="space-y-2">
@@ -240,7 +241,7 @@ function DesktopReferrals({
               <Link className="border-b-2 border-primary pb-1 text-sm font-bold text-primary" to={referralsHref}>Referrals</Link>
             </nav>
             <Link className="flex h-10 w-10 items-center justify-center rounded-lg border border-primary/20 bg-primary/10 text-primary transition-colors hover:bg-primary/20" to={notificationsHref}>
-              <span className="material-symbols-outlined">settings</span>
+              <MaterialSymbol name="settings" />
             </Link>
           </div>
         </header>
@@ -249,7 +250,7 @@ function DesktopReferrals({
           <Reveal className="overflow-hidden rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/30 to-background-dark p-8">
             <div className="relative">
               <div className="pointer-events-none absolute right-0 top-0 opacity-20">
-                <span className="material-symbols-outlined text-[120px] text-primary">auto_awesome</span>
+                <MaterialSymbol name="auto_awesome" className="text-[120px] text-primary" />
               </div>
               <span className="mb-4 inline-flex rounded-full bg-primary px-3 py-1 text-xs font-black uppercase tracking-widest text-background-dark">
                 Affiliate Program
@@ -277,7 +278,7 @@ function DesktopReferrals({
           <div className="grid gap-6 md:grid-cols-2">
             <Reveal className="flex flex-col gap-4 rounded-2xl border border-primary/10 bg-background-light p-6 dark:bg-primary/5">
               <h3 className="flex items-center gap-2 text-lg font-bold">
-                <span className="material-symbols-outlined text-primary">qr_code_2</span>
+                <MaterialSymbol name="qr_code_2" className="text-primary" />
                 Your Referral Code
               </h3>
               <div className="flex items-center gap-2 rounded-xl border border-primary/20 bg-white p-1 dark:bg-background-dark">
@@ -292,7 +293,7 @@ function DesktopReferrals({
                   onClick={onCopyCode}
                   type="button"
                 >
-                  <span className="material-symbols-outlined text-sm">content_copy</span>
+                  <MaterialSymbol name="content_copy" className="text-sm" />
                   Copy
                 </button>
               </div>
@@ -300,7 +301,7 @@ function DesktopReferrals({
 
             <Reveal className="flex flex-col gap-4 rounded-2xl border border-primary/10 bg-background-light p-6 dark:bg-primary/5">
               <h3 className="flex items-center gap-2 text-lg font-bold">
-                <span className="material-symbols-outlined text-primary">share</span>
+                <MaterialSymbol name="share" className="text-primary" />
                 Quick Share
               </h3>
               <div className="grid grid-cols-4 gap-4 pt-2">
@@ -312,7 +313,7 @@ function DesktopReferrals({
                     type="button"
                   >
                     <div className={`flex size-12 items-center justify-center rounded-full transition-all ${shareAccentClasses[channel.label]}`}>
-                      <span className="material-symbols-outlined">{channel.icon}</span>
+                      <MaterialSymbol name={channel.icon} />
                     </div>
                     <span className="text-xs font-medium">{channel.label}</span>
                   </button>
@@ -324,7 +325,7 @@ function DesktopReferrals({
           <section className="space-y-6">
             <div className="flex items-center justify-between border-b border-primary/20 pb-4">
               <h3 className="flex items-center gap-2 text-2xl font-bold">
-                <span className="material-symbols-outlined text-primary">group</span>
+                <MaterialSymbol name="group" className="text-primary" />
                 Referred Users
               </h3>
             </div>
@@ -361,7 +362,7 @@ function MobileReferrals({
       <div className="mx-auto flex min-h-screen w-full max-w-md flex-col overflow-x-hidden border-primary/10">
         <header className="sticky top-0 z-30 flex items-center border-b border-primary/10 bg-background-light p-4 dark:bg-background-dark">
           <Link className="flex size-10 items-center justify-center rounded-full transition-colors hover:bg-primary/10" to={rewardsHref}>
-            <span className="material-symbols-outlined">arrow_back</span>
+            <MaterialSymbol name="arrow_back" />
           </Link>
           <h1 className="flex-1 pr-10 text-center text-lg font-bold uppercase tracking-wide">
             Refer &amp; Earn
@@ -409,7 +410,7 @@ function MobileReferrals({
                 onClick={onCopyCode}
                 type="button"
               >
-                <span className="material-symbols-outlined text-sm">content_copy</span>
+                <MaterialSymbol name="content_copy" className="text-sm" />
                 COPY
               </button>
             </div>
@@ -421,7 +422,7 @@ function MobileReferrals({
               {referralShareChannels.map((channel) => (
                 <button className="flex flex-col items-center gap-2" key={channel.label} onClick={() => onShare(channel.label)} type="button">
                   <div className="flex size-12 items-center justify-center rounded-full bg-slate-100 text-primary transition-colors hover:bg-primary/20 dark:bg-primary/10">
-                    <span className="material-symbols-outlined">{channel.icon}</span>
+                    <MaterialSymbol name={channel.icon} />
                   </div>
                   <span className="text-[10px] font-medium text-slate-400">{channel.label}</span>
                 </button>
@@ -442,19 +443,19 @@ function MobileReferrals({
         <nav className="fixed bottom-0 left-0 right-0 z-30 flex justify-center">
           <div className="flex w-full max-w-md gap-2 border-t border-primary/20 bg-background-dark px-4 pb-4 pt-3">
             <Link className="flex flex-1 flex-col items-center gap-1 text-slate-500" to="/dashboard">
-              <span className="material-symbols-outlined">home</span>
+              <MaterialSymbol name="home" />
               <span className="text-[10px] font-medium">Home</span>
             </Link>
             <Link className="flex flex-1 flex-col items-center gap-1 text-slate-500" to={rewardsHref}>
-              <span className="material-symbols-outlined">card_giftcard</span>
+              <MaterialSymbol name="card_giftcard" />
               <span className="text-[10px] font-medium">Rewards</span>
             </Link>
             <Link className="flex flex-1 flex-col items-center gap-1 text-primary" to={referralsHref}>
-              <span className="material-symbols-outlined">share</span>
+              <MaterialSymbol name="share" />
               <span className="text-[10px] font-medium">Refer</span>
             </Link>
             <Link className="flex flex-1 flex-col items-center gap-1 text-slate-500" to={profileHref}>
-              <span className="material-symbols-outlined">person</span>
+              <MaterialSymbol name="person" />
               <span className="text-[10px] font-medium">Profile</span>
             </Link>
           </div>

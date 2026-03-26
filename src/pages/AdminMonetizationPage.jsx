@@ -1,6 +1,7 @@
 import AdminPageLayout from "../components/AdminPageLayout";
 import Reveal from "../components/Reveal";
 import { useAdmin } from "../context/AdminContext";
+import MaterialSymbol from "../components/MaterialSymbol";
 
 const trendBars = [
   { label: "Mon", value: "56%" },
@@ -61,7 +62,7 @@ export default function AdminMonetizationPage() {
                 <p className="mt-3 text-3xl font-black tracking-tight">{stat.value}</p>
               </div>
               <div className="flex size-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-                <span className="material-symbols-outlined">{stat.icon}</span>
+                <MaterialSymbol name={stat.icon} />
               </div>
             </div>
             <p className="mt-4 text-sm font-bold text-emerald-500">{stat.delta}</p>

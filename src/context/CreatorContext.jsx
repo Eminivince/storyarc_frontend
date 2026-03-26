@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import {
   fetchCreatorApplication,
   saveCreatorApplicationDraft as saveCreatorApplicationDraftRequest,
@@ -32,10 +32,9 @@ import {
   getStoredAppMode,
   persistAppMode,
 } from "../lib/appMode";
+import { CreatorContext } from "./creatorContextBase";
 import { useAuth } from "./AuthContext";
 import { useToast } from "./ToastContext";
-
-const CreatorContext = createContext(null);
 
 function mapCreatorStatus(role, applicationStatus) {
   if (role === "CREATOR" || role === "ADMIN") {

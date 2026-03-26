@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import MaterialSymbol from "../components/MaterialSymbol";
 import {
   useCreator,
 } from "../context/CreatorContext";
@@ -223,7 +224,7 @@ function DesktopCreatorApplication({
                 className="flex min-w-[200px] items-center justify-center rounded-lg border border-primary/20 bg-slate-200 px-6 py-3 text-sm font-bold text-slate-900 transition-colors hover:bg-primary/20 dark:bg-primary/10 dark:text-primary"
                 to="/account/help"
               >
-                <span className="material-symbols-outlined mr-2 text-lg">description</span>
+                <MaterialSymbol name="description" className="mr-2 text-lg" />
                 Author Guidelines
               </Link>
             </div>
@@ -306,9 +307,7 @@ function DesktopCreatorApplication({
                   </label>
                   <div className="group relative">
                     <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
-                      <span className="material-symbols-outlined text-primary/60 group-focus-within:text-primary">
-                        link
-                      </span>
+                      <MaterialSymbol name="link" className="text-primary/60 group-focus-within:text-primary" />
                     </div>
                     <input
                       className="block h-12 w-full rounded-lg border border-slate-300 bg-slate-50 pl-12 pr-4 text-slate-900 transition-all placeholder:text-slate-400 focus:border-primary focus:ring-primary dark:border-primary/20 dark:bg-background-dark dark:text-white dark:placeholder:text-slate-600 disabled:cursor-not-allowed disabled:opacity-70"
@@ -378,7 +377,7 @@ function DesktopCreatorApplication({
                       to={creatorSubmittedHref}
                     >
                       View Application Status
-                      <span className="material-symbols-outlined ml-2">arrow_forward</span>
+                      <MaterialSymbol name="arrow_forward" className="ml-2" />
                     </Link>
                   ) : (
                     <>
@@ -396,7 +395,7 @@ function DesktopCreatorApplication({
                         type="submit"
                       >
                         {isSubmitting ? "Submitting..." : "Submit Application"}
-                        <span className="material-symbols-outlined ml-2">send</span>
+                        <MaterialSymbol name="send" className="ml-2" />
                       </button>
                     </>
                   )}
@@ -409,14 +408,14 @@ function DesktopCreatorApplication({
                 className="flex items-center gap-2 text-sm font-medium text-slate-500 transition-colors hover:text-primary dark:text-slate-400"
                 to="/account/help"
               >
-                <span className="material-symbols-outlined text-base">help</span>
+                <MaterialSymbol name="help" className="text-base" />
                 Need help with your application?
               </Link>
               <Link
                 className="flex items-center gap-2 text-sm font-medium text-slate-500 transition-colors hover:text-primary dark:text-slate-400"
                 to="/account/help"
               >
-                <span className="material-symbols-outlined text-base">mail</span>
+                <MaterialSymbol name="mail" className="text-base" />
                 Contact Support
               </Link>
             </div>
@@ -446,7 +445,7 @@ function MobileCreatorApplication({
       <div className="relative flex min-h-screen w-full flex-col overflow-x-hidden bg-background-light dark:bg-background-dark">
         <header className="flex items-center justify-between border-b border-primary/10 px-4 py-3">
           <Link className="flex size-9 items-center justify-center rounded-lg text-primary transition-colors hover:bg-slate-200 dark:hover:bg-primary/20" to="/creator">
-            <span className="material-symbols-outlined text-xl">arrow_back</span>
+            <MaterialSymbol name="arrow_back" className="text-xl" />
           </Link>
           <h2 className="flex-1 pr-9 text-center text-base font-bold tracking-tight">
             Become an Author
@@ -613,7 +612,7 @@ function MobileCreatorApplication({
                 to={creatorSubmittedHref}
               >
                 View Application Status
-                <span className="material-symbols-outlined ml-2 text-base">arrow_forward</span>
+                <MaterialSymbol name="arrow_forward" className="ml-2 text-base" />
               </Link>
             ) : (
               <>

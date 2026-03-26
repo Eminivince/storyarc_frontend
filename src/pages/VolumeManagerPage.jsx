@@ -5,6 +5,7 @@ import ReaderStateScreen from "../components/ReaderStateScreen";
 import Reveal from "../components/Reveal";
 import RouteLoadingScreen from "../components/RouteLoadingScreen";
 import { useCreator } from "../context/CreatorContext";
+import MaterialSymbol from "../components/MaterialSymbol";
 import {
   authorDashboardHref,
   creatorStoryCreateHref,
@@ -46,7 +47,7 @@ function DesktopVolumeManager({
           <header className="sticky top-0 z-10 flex items-center justify-between border-b border-primary/10 bg-background-dark/80 px-8 py-4 backdrop-blur-md">
             <div className="flex items-center gap-8">
               <h2 className="flex items-center gap-2 text-xl font-bold text-slate-100">
-                <span className="material-symbols-outlined text-primary">account_tree</span>
+                <MaterialSymbol name="account_tree" className="text-primary" />
                 Volume Manager
               </h2>
               <nav className="flex items-center gap-6">
@@ -64,9 +65,7 @@ function DesktopVolumeManager({
 
             <div className="flex items-center gap-4">
               <label className="group relative">
-                <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 transition-colors group-focus-within:text-primary">
-                  search
-                </span>
+                <MaterialSymbol name="search" className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 transition-colors group-focus-within:text-primary" />
                 <input
                   className="w-64 rounded-lg border-none bg-[#2a271e] py-2 pl-10 pr-4 text-sm text-slate-200 placeholder:text-slate-600 focus:ring-1 focus:ring-primary"
                   placeholder="Search arcs or chapters..."
@@ -88,9 +87,9 @@ function DesktopVolumeManager({
               <div>
                 <div className="mb-2 flex items-center gap-2 text-sm text-slate-500">
                   <span>Projects</span>
-                  <span className="material-symbols-outlined text-xs">chevron_right</span>
+                  <MaterialSymbol name="chevron_right" className="text-xs" />
                   <span>{story.title}</span>
-                  <span className="material-symbols-outlined text-xs">chevron_right</span>
+                  <MaterialSymbol name="chevron_right" className="text-xs" />
                   <span className="font-medium text-primary">Volume Manager</span>
                 </div>
                 <h1 className="text-3xl font-black tracking-tight text-slate-100">Narrative Architecture</h1>
@@ -102,7 +101,7 @@ function DesktopVolumeManager({
                 onClick={onAddVolume}
                 type="button"
               >
-                <span className="material-symbols-outlined text-sm">add_circle</span>
+                <MaterialSymbol name="add_circle" className="text-sm" />
                 New Volume
               </button>
             </div>
@@ -110,7 +109,7 @@ function DesktopVolumeManager({
             <div className="space-y-10">
               {!story.volumes?.length ? (
                 <div className="flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-primary/20 bg-[#221e10] p-12 text-center">
-                  <span className="material-symbols-outlined mb-4 text-5xl text-primary/40">format_list_numbered</span>
+                  <MaterialSymbol name="format_list_numbered" className="mb-4 text-5xl text-primary/40" />
                   <h3 className="text-lg font-bold text-slate-300">Flat Chapter Ordering</h3>
                   <p className="mt-2 max-w-md text-sm text-slate-500">
                     This story uses flat chapter ordering. Create a volume to start organizing chapters into structured volumes and arcs.
@@ -120,7 +119,7 @@ function DesktopVolumeManager({
                     onClick={onAddVolume}
                     type="button"
                   >
-                    <span className="material-symbols-outlined text-sm">add_circle</span>
+                    <MaterialSymbol name="add_circle" className="text-sm" />
                     Organize into Volumes
                   </button>
                 </div>
@@ -138,7 +137,7 @@ function DesktopVolumeManager({
                       </span>
                     </div>
                     <button className="p-2 text-slate-500 transition-colors hover:text-primary" type="button">
-                      <span className="material-symbols-outlined">{index === 0 ? "more_vert" : "expand_more"}</span>
+                      <MaterialSymbol name={index === 0 ? "more_vert" : "expand_more"} />
                     </button>
                   </div>
 
@@ -148,7 +147,7 @@ function DesktopVolumeManager({
                         <Reveal className="flex flex-col overflow-hidden rounded-xl border border-primary/10 bg-[#221e10] transition-all hover:border-primary/30" key={arc.id}>
                           <div className="flex items-center justify-between border-b border-primary/10 bg-primary/5 p-4">
                             <div className="flex items-center gap-2">
-                              <span className="material-symbols-outlined text-lg text-primary">drag_indicator</span>
+                              <MaterialSymbol name="drag_indicator" className="text-lg text-primary" />
                               <h3 className="text-sm font-bold text-slate-200">{arc.title}</h3>
                             </div>
                             <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
@@ -163,7 +162,7 @@ function DesktopVolumeManager({
                                     <span className="text-xs font-medium text-slate-600">{chapter.number}</span>
                                     <span className="text-sm text-slate-300">{chapter.title}</span>
                                   </div>
-                                  <span className="material-symbols-outlined text-sm text-slate-700">reorder</span>
+                                  <MaterialSymbol name="reorder" className="text-sm text-slate-700" />
                                 </div>
                               ))
                             ) : (
@@ -176,7 +175,7 @@ function DesktopVolumeManager({
                             className="flex items-center justify-center gap-2 border-t border-primary/5 p-3 text-center text-xs text-slate-500 transition-all hover:bg-primary/5 hover:text-primary"
                             to={getCreatorChapterEditorHref(story.slug)}
                           >
-                            <span className="material-symbols-outlined text-sm">add</span>
+                            <MaterialSymbol name="add" className="text-sm" />
                             Add Chapter
                           </Link>
                         </Reveal>
@@ -187,7 +186,7 @@ function DesktopVolumeManager({
                         onClick={() => onAddArc(volume.id)}
                         type="button"
                       >
-                        <span className="material-symbols-outlined mb-2 text-3xl text-primary">add_circle</span>
+                        <MaterialSymbol name="add_circle" className="mb-2 text-3xl text-primary" />
                         <span className="text-sm font-bold text-slate-400 transition-colors hover:text-primary">Create New Arc</span>
                         <p className="mt-1 text-[10px] uppercase tracking-tighter text-slate-600">Volume {volume.number}</p>
                       </button>
@@ -228,11 +227,11 @@ function MobileVolumeManager({ onAddVolume, story }) {
     <div className="min-h-screen bg-background-light font-display text-slate-900 dark:bg-background-dark dark:text-slate-100 md:hidden">
       <header className="sticky top-0 z-10 flex items-center justify-between border-b border-primary/10 bg-background-light/80 px-4 py-4 backdrop-blur-md dark:bg-background-dark/80">
         <div className="flex items-center gap-3">
-          <span className="material-symbols-outlined text-primary">menu_book</span>
+          <MaterialSymbol name="menu_book" className="text-primary" />
           <h1 className="text-xl font-bold tracking-tight">Manuscript Manager</h1>
         </div>
         <button className="rounded-full bg-primary/10 p-2 text-primary transition-colors hover:bg-primary/20" type="button">
-          <span className="material-symbols-outlined">search</span>
+          <MaterialSymbol name="search" />
         </button>
       </header>
 
@@ -244,7 +243,7 @@ function MobileVolumeManager({ onAddVolume, story }) {
             onClick={onAddVolume}
             type="button"
           >
-            <span className="material-symbols-outlined text-[20px]">add</span>
+            <MaterialSymbol name="add" className="text-[20px]" />
             New Volume
           </button>
         </div>
@@ -252,7 +251,7 @@ function MobileVolumeManager({ onAddVolume, story }) {
         <div className="space-y-4">
           {!story.volumes?.length ? (
             <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-primary/20 bg-primary/5 p-8 text-center">
-              <span className="material-symbols-outlined mb-3 text-4xl text-primary/40">format_list_numbered</span>
+              <MaterialSymbol name="format_list_numbered" className="mb-3 text-4xl text-primary/40" />
               <h3 className="font-bold">Flat Chapter Ordering</h3>
               <p className="mt-1 text-sm text-slate-500">Chapters are listed in order without volume grouping.</p>
               <button
@@ -260,7 +259,7 @@ function MobileVolumeManager({ onAddVolume, story }) {
                 onClick={onAddVolume}
                 type="button"
               >
-                <span className="material-symbols-outlined text-sm">add_circle</span>
+                <MaterialSymbol name="add_circle" className="text-sm" />
                 Organize into Volumes
               </button>
             </div>
@@ -268,20 +267,20 @@ function MobileVolumeManager({ onAddVolume, story }) {
           {(story.volumes ?? []).map((volume) => (
             <Reveal className="overflow-hidden rounded-xl border border-slate-200 bg-slate-100 dark:border-primary/10 dark:bg-primary/5" key={volume.id}>
               <div className="flex items-center gap-3 p-4">
-                <span className="material-symbols-outlined text-slate-400 dark:text-primary/40">drag_indicator</span>
+                <MaterialSymbol name="drag_indicator" className="text-slate-400 dark:text-primary/40" />
                 <div className="flex-1">
                   <h3 className="font-bold">{volume.title}</h3>
                   <p className="text-xs text-slate-500 dark:text-primary/60">
                     {volume.arcCount} Arcs • {volume.chapterCount} Chapters
                   </p>
                 </div>
-                <span className="material-symbols-outlined text-slate-400 dark:text-primary/60">expand_more</span>
+                <MaterialSymbol name="expand_more" className="text-slate-400 dark:text-primary/60" />
               </div>
               <div className="space-y-2 px-4 pb-4">
                 {volume.arcs.map((arc) => (
                   <div className="ml-8 flex items-center justify-between rounded-lg border border-slate-200 bg-white p-3 dark:border-primary/5 dark:bg-background-dark/40" key={arc.id}>
                     <div className="flex items-center gap-2">
-                      <span className="material-symbols-outlined text-xs text-primary">circle</span>
+                      <MaterialSymbol name="circle" className="text-xs text-primary" />
                       <span className="text-sm font-medium">{arc.title}</span>
                     </div>
                     <span className="text-xs italic text-slate-500">{arc.chapterCount} Ch.</span>

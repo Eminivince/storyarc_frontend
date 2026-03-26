@@ -22,6 +22,9 @@ import {
 const MonetizationContext = createContext(null);
 const monetizationStatusQueryKey = ["monetization", "status"];
 
+/** Omitted from checkout provider picker; server may still report them for billing / pending flows. */
+const HIDDEN_CHECKOUT_PROVIDER_IDS = new Set(["paystack", "cryptomus"]);
+
 function createIdempotencyKey(scope, parts = []) {
   const suffix = globalThis.crypto?.randomUUID
     ? globalThis.crypto.randomUUID()
@@ -91,10 +94,23 @@ export function MonetizationProvider({ children }) {
   const billingCycle = statusQuery.data?.billingCycle ?? "monthly";
   const currency =
     catalogQuery.data?.currency ?? statusQuery.data?.currency ?? "USD";
-  const availableProviders =
-    catalogQuery.data?.availableProviders ??
-    statusQuery.data?.availableProviders ??
-    [];
+  const rawAvailableProviders = useMemo(() => {
+    return (
+      catalogQuery.data?.availableProviders ??
+      statusQuery.data?.availableProviders ??
+      []
+    );
+  }, [
+    catalogQuery.data?.availableProviders,
+    statusQuery.data?.availableProviders,
+  ]);
+  const availableProviders = useMemo(
+    () =>
+      rawAvailableProviders.filter(
+        (p) => p?.id && !HIDDEN_CHECKOUT_PROVIDER_IDS.has(p.id),
+      ),
+    [rawAvailableProviders],
+  );
   const checkoutProvider =
     catalogQuery.data?.checkoutProvider ??
     statusQuery.data?.checkoutProvider ??

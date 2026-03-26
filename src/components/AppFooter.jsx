@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { LogoBrand } from "./LogoBrand";
+import MaterialSymbol from "./MaterialSymbol";
 
 /**
  * Shared footer used across the app. Based on the Reading Lists / dashboard footer.
@@ -26,7 +27,7 @@ export default function AppFooter({ className = "", variant = "default" }) {
                     href="#"
                     key={icon}
                   >
-                    <span className="material-symbols-outlined">{icon}</span>
+                    <MaterialSymbol name={icon} />
                   </a>
                 ))}
               </div>

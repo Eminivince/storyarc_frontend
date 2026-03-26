@@ -3,6 +3,7 @@ import { useMemo, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import FollowButton from "../components/FollowButton";
 import { LogoBrand } from "../components/LogoBrand";
+import MaterialSymbol from "../components/MaterialSymbol";
 import {
   PrefetchableChapterLink,
   PrefetchableStoryLink,
@@ -176,7 +177,7 @@ function AddToReadingListModal({
               onClick={onClose}
               type="button"
             >
-              <span className="material-symbols-outlined">close</span>
+              <MaterialSymbol name="close" />
             </button>
           </div>
 
@@ -221,9 +222,7 @@ function AddToReadingListModal({
               })
             ) : (
               <div className="rounded-3xl border border-dashed border-primary/20 bg-primary/5 px-5 py-10 text-center">
-                <span className="material-symbols-outlined text-4xl text-primary">
-                  format_list_bulleted
-                </span>
+                <MaterialSymbol name="format_list_bulleted" className="text-4xl text-primary" />
                 <h3 className="mt-3 text-lg font-bold">No reading lists yet</h3>
                 <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
                   Create your first custom list, then come back to save this story.
@@ -254,9 +253,9 @@ function RatingStars({ compact = false, currentRating, disabled, onRate }) {
         return (
           <button
             aria-label={`Rate this book ${value} star${value === 1 ? "" : "s"}`}
-            className={`material-symbols-outlined ${iconCls} transition-colors ${
+            className={`${iconCls} transition-colors ${
               value <= currentRating
-                ? "fill-1 text-primary"
+                ? "text-primary"
                 : "text-slate-300 dark:text-slate-600"
             } ${disabled ? "cursor-not-allowed opacity-70" : "hover:text-primary"}`}
             disabled={disabled}
@@ -264,7 +263,7 @@ function RatingStars({ compact = false, currentRating, disabled, onRate }) {
             onClick={() => onRate(value)}
             type="button"
           >
-            star
+            <MaterialSymbol filled={value <= currentRating} name="star" />
           </button>
         );
       })}
@@ -525,7 +524,7 @@ function DesktopStoryDetails({
 
           <form className="hidden min-w-56 md:block" onSubmit={onSearchSubmit}>
             <div className="flex h-11 items-center rounded-xl bg-slate-100 dark:bg-primary/10">
-              <span className="material-symbols-outlined px-4 text-slate-400">search</span>
+              <MaterialSymbol name="search" className="px-4 text-slate-400" />
               <input
                 className="h-full w-full border-none bg-transparent pr-4 text-base focus:ring-0"
                 onChange={(event) => setSearchTerm(event.target.value)}
@@ -634,12 +633,12 @@ function DesktopStoryDetails({
                       prefetchChapter={{ chapterSlug: primaryChapterSlug, storySlug: story.slug }}
                       to={buildChapterHref(story.slug, primaryChapterSlug)}
                     >
-                      <span className="material-symbols-outlined">menu_book</span>
+                      <MaterialSymbol name="menu_book" />
                       {storyData.continueReading ? "Continue Reading" : "Start Reading"}
                     </StoryAction>
                   ) : null}
                   <StoryAction to={buildGiftSendingHref(story.slug)} tone="secondary">
-                    <span className="material-symbols-outlined">card_giftcard</span>
+                    <MaterialSymbol name="card_giftcard" />
                     Send Gift
                   </StoryAction>
                   <StoryAction
@@ -647,9 +646,7 @@ function DesktopStoryDetails({
                     onClick={onOpenReadingListModal}
                     tone="secondary"
                   >
-                    <span className="material-symbols-outlined">
-                      format_list_bulleted
-                    </span>
+                    <MaterialSymbol name="format_list_bulleted" />
                     {getReadingListActionLabel(readingListCount)}
                   </StoryAction>
                 </div>
@@ -718,9 +715,7 @@ function DesktopStoryDetails({
                                   Continue here
                                 </span>
                               ) : null}
-                              <span className="material-symbols-outlined text-slate-400">
-                                {isSequenceBlocked ? "lock" : "chevron_right"}
-                              </span>
+                              <MaterialSymbol name={isSequenceBlocked ? "lock" : "chevron_right"} className="text-slate-400" />
                             </div>
                           </motion.article>
                         );
@@ -786,9 +781,7 @@ function DesktopStoryDetails({
                             Continue here
                           </span>
                         ) : null}
-                        <span className="material-symbols-outlined text-slate-400">
-                          {isSequenceBlocked ? "lock" : "chevron_right"}
-                        </span>
+                        <MaterialSymbol name={isSequenceBlocked ? "lock" : "chevron_right"} className="text-slate-400" />
                       </div>
                     </motion.article>
                   );
@@ -879,7 +872,7 @@ function MobileStoryDetails({
             className="inline-flex items-center gap-1 text-xs font-medium text-primary"
             to="/dashboard"
           >
-            <span className="material-symbols-outlined text-sm">arrow_back</span>
+            <MaterialSymbol name="arrow_back" className="text-sm" />
             <span>Back</span>
           </Link>
         </Reveal>
@@ -951,14 +944,14 @@ function MobileStoryDetails({
               prefetchChapter={{ chapterSlug: primaryChapterSlug, storySlug: story.slug }}
               to={buildChapterHref(story.slug, primaryChapterSlug)}
             >
-              <span className="material-symbols-outlined text-sm">menu_book</span>
+              <MaterialSymbol name="menu_book" className="text-sm" />
               <span className="text-sm">
                 {storyData.continueReading ? "Continue Reading" : "Start Reading"}
               </span>
             </StoryAction>
           ) : null}
           <StoryAction compact to={buildGiftSendingHref(story.slug)} tone="secondary">
-            <span className="material-symbols-outlined text-sm">card_giftcard</span>
+            <MaterialSymbol name="card_giftcard" className="text-sm" />
             <span className="text-sm">Send Gift</span>
           </StoryAction>
           <StoryAction
@@ -967,9 +960,7 @@ function MobileStoryDetails({
             onClick={onOpenReadingListModal}
             tone="secondary"
           >
-            <span className="material-symbols-outlined text-sm">
-              format_list_bulleted
-            </span>
+            <MaterialSymbol name="format_list_bulleted" className="text-sm" />
             <span className="text-sm">
               {getReadingListActionLabel(readingListCount)}
             </span>
@@ -994,10 +985,10 @@ function MobileStoryDetails({
               {isChapterListExpanded ? "Hide" : "Show"}
               <motion.span
                 animate={{ rotate: isChapterListExpanded ? 180 : 0 }}
-                className="material-symbols-outlined text-base"
+                className="inline-flex text-base"
                 transition={{ type: "spring", damping: 25, stiffness: 300 }}
               >
-                expand_more
+                <MaterialSymbol name="expand_more" />
               </motion.span>
             </span>
           </button>
@@ -1046,9 +1037,7 @@ function MobileStoryDetails({
                           </span>
                         ) : null}
                         {isSequenceBlocked ? (
-                          <span className="material-symbols-outlined text-sm text-slate-400">
-                            lock
-                          </span>
+                          <MaterialSymbol name="lock" className="text-sm text-slate-400" />
                         ) : null}
                       </div>
                     </div>

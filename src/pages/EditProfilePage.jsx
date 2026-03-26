@@ -6,6 +6,7 @@ import UserAvatar from "../components/UserAvatar";
 import { useAccount } from "../context/AccountContext";
 import { useOnboarding } from "../context/OnboardingContext";
 import { profileHref } from "../data/accountFlow";
+import MaterialSymbol from "../components/MaterialSymbol";
 
 const MAX_PROFILE_PICTURE_SIZE_BYTES = 5 * 1024 * 1024;
 
@@ -71,9 +72,7 @@ function DesktopEditProfile({
                       onClick={onProfilePictureClick}
                       type="button"
                     >
-                      <span className="material-symbols-outlined text-3xl text-white">
-                        {isUploadingProfilePicture ? "progress_activity" : "add_a_photo"}
-                      </span>
+                      <MaterialSymbol name={isUploadingProfilePicture ? "progress_activity" : "add_a_photo"} className="text-3xl text-white" />
                     </button>
                   </div>
                   <div className="mb-2 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
@@ -89,9 +88,7 @@ function DesktopEditProfile({
                       onClick={onProfilePictureClick}
                       type="button"
                     >
-                      <span className="material-symbols-outlined text-sm">
-                        {isUploadingProfilePicture ? "progress_activity" : "upload"}
-                      </span>
+                      <MaterialSymbol name={isUploadingProfilePicture ? "progress_activity" : "upload"} className="text-sm" />
                       {isUploadingProfilePicture
                         ? "Uploading..."
                         : form.avatar
@@ -180,7 +177,7 @@ function DesktopEditProfile({
                           key={key}
                         >
                           <div className="flex h-10 w-10 items-center justify-center rounded-md bg-white text-primary/70 dark:bg-surface-dark dark:text-primary/60">
-                            <span className="material-symbols-outlined">{icon}</span>
+                            <MaterialSymbol name={icon} />
                           </div>
                           <input
                             className="flex-1 bg-transparent py-2 text-sm outline-none"
@@ -198,9 +195,7 @@ function DesktopEditProfile({
 
                 <div className="space-y-6">
                   <Reveal className="space-y-4 rounded-2xl border border-primary/10 bg-primary/5 p-6">
-                    <span className="material-symbols-outlined text-3xl text-primary">
-                      lightbulb
-                    </span>
+                    <MaterialSymbol name="lightbulb" className="text-3xl text-primary" />
                     <h5 className="font-bold">Profile Tips</h5>
                     <ul className="space-y-3 text-sm text-primary/70 dark:text-primary/60">
                       <li className="flex gap-2">
@@ -319,9 +314,7 @@ function MobileEditProfile({
                 onClick={onProfilePictureClick}
                 type="button"
               >
-                <span className="material-symbols-outlined text-sm">
-                  {isUploadingProfilePicture ? "progress_activity" : "edit"}
-                </span>
+                <MaterialSymbol name={isUploadingProfilePicture ? "progress_activity" : "edit"} className="text-sm" />
               </button>
             </div>
             <div className="mt-2 text-center">
@@ -334,9 +327,7 @@ function MobileEditProfile({
                 onClick={onProfilePictureClick}
                 type="button"
               >
-                <span className="material-symbols-outlined text-sm">
-                  {isUploadingProfilePicture ? "progress_activity" : "upload"}
-                </span>
+                <MaterialSymbol name={isUploadingProfilePicture ? "progress_activity" : "upload"} className="text-sm" />
                 {isUploadingProfilePicture
                   ? "Uploading..."
                   : form.avatar
@@ -369,9 +360,7 @@ function MobileEditProfile({
                 Location
               </label>
               <div className="relative">
-                <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-lg text-primary/60">
-                  location_on
-                </span>
+                <MaterialSymbol name="location_on" className="absolute left-3 top-1/2 -translate-y-1/2 text-lg text-primary/60" />
                 <input
                   className="w-full rounded-lg border-none bg-primary/5 py-3 pl-10 pr-4 text-neutral-900 transition-all focus:ring-2 focus:ring-primary dark:bg-primary/5 dark:text-neutral-100"
                   disabled={isProfileSaving}
@@ -426,9 +415,7 @@ function MobileEditProfile({
               <div className="flex-shrink-0" key={key}>
                 <label className="flex flex-col items-center gap-2">
                   <div className="flex h-14 w-14 items-center justify-center rounded-full border-2 border-primary/20 bg-primary/5 dark:bg-primary/5">
-                    <span className="material-symbols-outlined text-2xl text-primary">
-                      {icon}
-                    </span>
+                    <MaterialSymbol name={icon} className="text-2xl text-primary" />
                   </div>
                   <span className="text-[10px] font-medium">{label}</span>
                 </label>
@@ -482,7 +469,7 @@ function MobileEditProfile({
 
         <section className="mt-12 px-4 pb-10">
           <button className="flex w-full items-center justify-center gap-2 rounded-lg border border-red-500/30 bg-red-500/5 py-4 font-bold text-red-500" type="button">
-            <span className="material-symbols-outlined">no_accounts</span>
+            <MaterialSymbol name="no_accounts" />
             Deactivate Account
           </button>
           <p className="mt-3 px-8 text-center text-[11px] text-primary/70">

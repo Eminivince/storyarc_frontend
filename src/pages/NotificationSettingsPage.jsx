@@ -4,6 +4,7 @@ import AccountSettingsNav from "../components/AccountSettingsNav";
 import { AppDesktopSidebar, AppMobileTabBar } from "../components/AppShellNav";
 import Reveal from "../components/Reveal";
 import { useAccount } from "../context/AccountContext";
+import MaterialSymbol from "../components/MaterialSymbol";
 import {
   notificationSections,
   notificationsHref,
@@ -74,9 +75,7 @@ function SettingsSections({ compact = false, draft, toggleDraft }) {
           key={section.id}
         >
           <div className={`flex items-center gap-2 ${compact ? "mb-4" : "mb-5"}`}>
-            <span className="material-symbols-outlined text-primary">
-              {section.icon}
-            </span>
+            <MaterialSymbol name={section.icon} className="text-primary" />
             <h2 className={compact ? "text-base font-bold" : "text-xl font-bold"}>
               {section.title}
             </h2>
@@ -167,7 +166,7 @@ function MobileNotificationSettings({ draft, toggleDraft }) {
             className="flex size-9 items-center justify-center rounded-lg transition-colors hover:bg-slate-200 dark:hover:bg-primary/20"
             to={profileHref}
           >
-            <span className="material-symbols-outlined text-xl">arrow_back</span>
+            <MaterialSymbol name="arrow_back" className="text-xl" />
           </Link>
           <div className="ml-2">
             <p className="text-[10px] font-bold uppercase tracking-wider text-primary">

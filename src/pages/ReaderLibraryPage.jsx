@@ -6,6 +6,7 @@ import OfflineLibrarySection from "../components/OfflineLibrarySection";
 import Reveal from "../components/Reveal";
 import SkeletonBlock from "../components/SkeletonBlock";
 import { useAccount } from "../context/AccountContext";
+import MaterialSymbol from "../components/MaterialSymbol";
 import {
   buildChapterHref,
   buildSearchHref,
@@ -19,9 +20,7 @@ function SectionEmptyState({ body, compact = false, ctaHref, ctaLabel, title }) 
         compact ? "p-4" : "rounded-3xl p-6"
       }`}
     >
-      <span className={`material-symbols-outlined text-primary ${compact ? "text-2xl" : "text-3xl"}`}>
-        auto_stories
-      </span>
+      <MaterialSymbol name="auto_stories" className={`text-primary ${compact ? "text-2xl" : "text-3xl"}`} />
       <h3 className={`font-bold ${compact ? "mt-2 text-base" : "mt-3 text-xl"}`}>{title}</h3>
       <p className={`text-slate-500 dark:text-slate-400 ${compact ? "mt-1.5 text-xs" : "mt-2 text-sm"}`}>{body}</p>
       {ctaHref && ctaLabel ? (
@@ -141,9 +140,7 @@ function ContinueReadingCard({ currentReading, mobile = false }) {
               mobile ? "mt-2 px-2.5 py-1 text-[9px] tracking-wider" : "mt-5 rounded-xl px-4 py-2 text-xs tracking-widest"
             }`}>
               Continue Reading
-              <span className={`material-symbols-outlined ${mobile ? "text-[10px]" : "text-sm"}`}>
-                menu_book
-              </span>
+              <MaterialSymbol name="menu_book" className={`${mobile ? "text-[10px]" : "text-sm"}`} />
             </div>
           </div>
         </div>
@@ -194,9 +191,7 @@ function DesktopLibrary({ currentReading, isLoading, profile, readingList }) {
                     to={buildSearchHref("")}
                   >
                     Discover More
-                    <span className="material-symbols-outlined text-sm">
-                      arrow_forward
-                    </span>
+                    <MaterialSymbol name="arrow_forward" className="text-sm" />
                   </Link>
                 </div>
               </div>
@@ -360,9 +355,7 @@ function MobileLibrary({ currentReading, isLoading, profile, readingList }) {
                         </p>
                         <div className="mt-1.5 inline-flex items-center gap-1 text-[9px] font-black uppercase tracking-wider text-primary">
                           Open Story
-                          <span className="material-symbols-outlined text-[10px]">
-                            arrow_forward
-                          </span>
+                          <MaterialSymbol name="arrow_forward" className="text-[10px]" />
                         </div>
                         </div>
                       </motion.article>

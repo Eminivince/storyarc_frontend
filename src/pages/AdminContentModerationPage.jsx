@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useDeferredValue, useMemo, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import MaterialSymbol from "../components/MaterialSymbol";
 import {
   fetchAdminComments,
   fetchAdminReviews,
@@ -508,7 +509,7 @@ export default function AdminContentModerationPage() {
                 <p className="mt-3 text-3xl font-black tracking-tight">{stat.value}</p>
               </div>
               <div className={`flex size-12 items-center justify-center rounded-2xl ${toneClasses(stat.tone)}`}>
-                <span className="material-symbols-outlined">{stat.icon}</span>
+                <MaterialSymbol name={stat.icon} />
               </div>
             </div>
           </Reveal>

@@ -6,6 +6,7 @@ import Reveal from "../components/Reveal";
 import UserAvatar from "../components/UserAvatar";
 import { fetchLeaderboard } from "../engagement/engagementApi";
 import { useAuth } from "../context/AuthContext";
+import MaterialSymbol from "../components/MaterialSymbol";
 import {
   leaderboard as fallbackLeaderboard,
   leaderboardHref,
@@ -73,7 +74,7 @@ function DesktopLeaderboard({
             <div className="flex items-center gap-4">
               <label className="group relative">
                 <span className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
-                  <span className="material-symbols-outlined text-[20px]">search</span>
+                  <MaterialSymbol name="search" className="text-[20px]" />
                 </span>
                 <input
                   className="w-64 rounded-xl border border-primary/20 bg-primary/5 py-2 pl-10 pr-4 text-sm text-slate-100 placeholder-slate-500 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
@@ -87,7 +88,7 @@ function DesktopLeaderboard({
                 className="rounded-xl bg-slate-100 p-2 text-slate-600 dark:bg-primary/10 dark:text-slate-300"
                 to={notificationsHref}
               >
-                <span className="material-symbols-outlined">notifications</span>
+                <MaterialSymbol name="notifications" />
               </Link>
               <Link to={profileHref}>
                 <UserAvatar
@@ -144,9 +145,7 @@ function DesktopLeaderboard({
                   >
                     <div className="relative">
                       {isChampion ? (
-                        <span className="material-symbols-outlined absolute -top-8 left-1/2 -translate-x-1/2 fill-1 text-4xl text-primary">
-                          crown
-                        </span>
+                        <MaterialSymbol name="crown" filled className="absolute -top-8 left-1/2 -translate-x-1/2 text-4xl text-primary" />
                       ) : null}
                       <UserAvatar
                         className={`rounded-full border-4 ${
@@ -257,11 +256,11 @@ function MobileLeaderboard({ activeTab, leaderboardData, onTabChange }) {
             className="flex size-10 items-center justify-center rounded-full bg-primary/10 text-primary"
             to={rewardsHref}
           >
-            <span className="material-symbols-outlined">chevron_left</span>
+            <MaterialSymbol name="chevron_left" />
           </Link>
           <h2 className="flex-1 text-center text-lg font-bold tracking-tight">Leaderboard</h2>
           <div className="flex size-10 items-center justify-center text-primary">
-            <span className="material-symbols-outlined">military_tech</span>
+            <MaterialSymbol name="military_tech" />
           </div>
         </header>
 
@@ -311,9 +310,7 @@ function MobileLeaderboard({ activeTab, leaderboardData, onTabChange }) {
                 >
                   <div className="relative mb-2">
                     {isChampion ? (
-                      <span className="material-symbols-outlined absolute -top-8 left-1/2 -translate-x-1/2 fill-1 text-3xl text-primary">
-                        workspace_premium
-                      </span>
+                      <MaterialSymbol name="workspace_premium" filled className="absolute -top-8 left-1/2 -translate-x-1/2 text-3xl text-primary" />
                     ) : null}
                     <UserAvatar
                       className={`${sizeClass} rounded-full border-4 ${borderClass}`.trim()}

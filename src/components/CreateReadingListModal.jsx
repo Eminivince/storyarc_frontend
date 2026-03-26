@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { motion } from "framer-motion";
+import MaterialSymbol from "./MaterialSymbol";
 
 const VISIBILITY_OPTIONS = [
   { value: "private", label: "Private", icon: "lock", description: "Only you can see this list" },
@@ -33,14 +34,14 @@ function DesktopCreateReadingListModal({
           <header className="flex items-center justify-between border-b border-primary/10 px-6 py-4">
             <div className="flex items-center gap-3">
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-background-dark">
-                <span className="material-symbols-outlined text-xl font-bold">add_circle</span>
+                <MaterialSymbol name="add_circle" className="text-xl font-bold" />
               </div>
               <h2 id="create-list-title" className="text-xl font-bold leading-tight">
                 {heading}
               </h2>
             </div>
             <button className="flex h-10 w-10 items-center justify-center rounded-lg text-slate-500 transition-colors hover:bg-primary/10 hover:text-slate-700 dark:text-slate-400 dark:hover:text-primary" onClick={onClose} type="button" aria-label="Close">
-              <span className="material-symbols-outlined">close</span>
+              <MaterialSymbol name="close" />
             </button>
           </header>
 
@@ -89,13 +90,17 @@ function DesktopCreateReadingListModal({
                       onClick={() => onVisibilityChange(opt.value)}
                       type="button"
                     >
-                      <span className={`material-symbols-outlined text-primary ${isSelected ? "fill-1" : ""}`}>{opt.icon}</span>
+                      <MaterialSymbol
+                        className="text-primary"
+                        filled={isSelected}
+                        name={opt.icon}
+                      />
                       <div className="flex flex-1 flex-col">
                         <span className="text-sm font-semibold">{opt.label}</span>
                         <span className="text-xs text-slate-500 dark:text-slate-400">{opt.description}</span>
                       </div>
                       {isSelected && (
-                        <span className="material-symbols-outlined text-primary">check_circle</span>
+                        <MaterialSymbol name="check_circle" className="text-primary" />
                       )}
                     </button>
                   );
@@ -148,7 +153,7 @@ function MobileCreateReadingListModal({
       >
         <div className="flex items-center justify-between border-b border-slate-200 px-4 py-3 dark:border-primary/10">
           <div className="flex items-center gap-2">
-            <span className="material-symbols-outlined text-lg text-primary">add_circle</span>
+            <MaterialSymbol name="add_circle" className="text-lg text-primary" />
             <h1 id="create-list-title-mobile" className="text-base text-primary font-bold tracking-tight">
               {heading}
             </h1>
@@ -159,7 +164,7 @@ function MobileCreateReadingListModal({
             type="button"
             aria-label="Close"
           >
-            <span className="material-symbols-outlined text-xl">close</span>
+            <MaterialSymbol name="close" className="text-xl" />
           </button>
         </div>
 
@@ -211,7 +216,11 @@ function MobileCreateReadingListModal({
                     onClick={() => onVisibilityChange(opt.value)}
                     type="button"
                   >
-                    <span className={`material-symbols-outlined text-base ${isSelected ? "fill-1" : ""}`}>{opt.icon}</span>
+                    <MaterialSymbol
+                      className="text-base"
+                      filled={isSelected}
+                      name={opt.icon}
+                    />
                     <span className="text-xs font-semibold">{opt.label}</span>
                   </button>
                 );

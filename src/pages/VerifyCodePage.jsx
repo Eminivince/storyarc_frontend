@@ -2,6 +2,7 @@ import { useMutation } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import MaterialSymbol from "../components/MaterialSymbol";
 import {
   clearPendingPasswordReset,
   clearPendingVerification,
@@ -114,7 +115,7 @@ function DesktopVerifyCode({
         >
           <div className="mb-10 flex flex-col items-center text-center">
           <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
-              <span className="material-symbols-outlined text-4xl text-primary">mark_email_read</span>
+              <MaterialSymbol name="mark_email_read" className="text-4xl text-primary" />
             </div>
             <h1 className="mb-3 text-3xl font-bold tracking-tight">Verify Your Email</h1>
             <p className="leading-relaxed text-slate-600 dark:text-slate-400">
@@ -144,7 +145,7 @@ function DesktopVerifyCode({
                   : flow === "register"
                     ? "Verify Account"
                     : "Verify Code"}
-                <span className="material-symbols-outlined">arrow_forward</span>
+                <MaterialSymbol name="arrow_forward" />
               </button>
               <div className="text-center">
                 <p className="text-sm text-slate-500 dark:text-slate-400">
@@ -164,11 +165,11 @@ function DesktopVerifyCode({
 
           <div className="mt-12 flex items-center justify-center gap-6 border-t border-slate-200 pt-8 text-sm text-slate-400 dark:border-primary/10">
             <Link className="flex items-center gap-1 transition-colors hover:text-primary" to="/account/help">
-              <span className="material-symbols-outlined text-sm">help</span>
+              <MaterialSymbol name="help" className="text-sm" />
               Support
             </Link>
             <Link className="flex items-center gap-1 transition-colors hover:text-primary" to="/about">
-              <span className="material-symbols-outlined text-sm">lock</span>
+              <MaterialSymbol name="lock" className="text-sm" />
               Privacy
             </Link>
           </div>
@@ -203,7 +204,7 @@ function MobileVerifyCode({
           state={backState}
           to={backHref}
         >
-          <span className="material-symbols-outlined text-xl">arrow_back</span>
+          <MaterialSymbol name="arrow_back" className="text-xl" />
         </Link>
         <h2 className="flex-1 text-center text-base font-bold leading-tight tracking-tight">
           {flow === "register" ? "Verify Account" : "Reset Password"}

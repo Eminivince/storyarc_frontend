@@ -5,6 +5,7 @@ import AdminPageLayout from "../components/AdminPageLayout";
 import ReaderStateScreen from "../components/ReaderStateScreen";
 import Reveal from "../components/Reveal";
 import RouteLoadingScreen from "../components/RouteLoadingScreen";
+import MaterialSymbol from "../components/MaterialSymbol";
 import {
   fetchAdminBooks,
   updateAdminBookPolicy,
@@ -120,9 +121,7 @@ function MobileBookCard({ book, isBusy, onManage, onToggle }) {
               >
                 {book.status === "Pending Approval" ? "Pending" : book.status}
               </span>
-              <span className="material-symbols-outlined text-lg text-slate-400">
-                more_vert
-              </span>
+              <MaterialSymbol name="more_vert" className="text-lg text-slate-400" />
             </div>
             <h3 className="mt-2 line-clamp-1 text-lg font-black">{book.title}</h3>
             <p className="text-sm italic text-slate-500 dark:text-slate-400">
@@ -131,7 +130,7 @@ function MobileBookCard({ book, isBusy, onManage, onToggle }) {
           </div>
 
           <div className="mt-3 flex items-center gap-1.5 rounded-md bg-primary/10 px-2 py-1 text-xs text-primary">
-            <span className="material-symbols-outlined text-sm">lock</span>
+            <MaterialSymbol name="lock" className="text-sm" />
             <span className="font-medium tracking-tight">{book.authorLockSummary}</span>
           </div>
         </div>
@@ -160,7 +159,7 @@ function MobileBookCard({ book, isBusy, onManage, onToggle }) {
           onClick={() => onManage(book.id)}
           type="button"
         >
-          <span className="material-symbols-outlined text-sm">settings</span>
+          <MaterialSymbol name="settings" className="text-sm" />
           Manage Locks
         </button>
       </div>
@@ -468,7 +467,7 @@ export default function AdminBookManagementPage() {
         <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
           <div>
             <h2 className="flex items-center gap-2 text-lg font-black tracking-tight">
-              <span className="material-symbols-outlined text-primary">lock_clock</span>
+              <MaterialSymbol name="lock_clock" className="text-primary" />
               Global Admin Lock Controls
             </h2>
             <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
@@ -582,7 +581,7 @@ export default function AdminBookManagementPage() {
                 }
                 type="button"
               >
-                <span className="material-symbols-outlined text-[20px]">filter_list</span>
+                <MaterialSymbol name="filter_list" className="text-[20px]" />
               </button>
               <button
                 className="rounded-lg p-2 transition-colors hover:bg-primary/10"
@@ -594,7 +593,7 @@ export default function AdminBookManagementPage() {
                 }
                 type="button"
               >
-                <span className="material-symbols-outlined text-[20px]">download</span>
+                <MaterialSymbol name="download" className="text-[20px]" />
               </button>
             </div>
           </div>
@@ -663,7 +662,7 @@ export default function AdminBookManagementPage() {
                   <td className="px-6 py-4">
                     {book.status === "Pending Approval" ? (
                       <span className="inline-flex items-center gap-1 text-xs font-bold text-primary">
-                        <span className="material-symbols-outlined text-[16px]">pending</span>
+                        <MaterialSymbol name="pending" className="text-[16px]" />
                         Pending Approval
                       </span>
                     ) : (
@@ -679,9 +678,7 @@ export default function AdminBookManagementPage() {
                   </td>
                   <td className="px-6 py-4">
                     <span className="inline-flex items-center gap-1 text-xs font-bold text-slate-500">
-                      <span className="material-symbols-outlined text-[14px]">
-                        {book.visibility === "Public" ? "public" : "lock"}
-                      </span>
+                      <MaterialSymbol name={book.visibility === "Public" ? "public" : "lock"} className="text-[14px]" />
                       {book.visibility}
                     </span>
                   </td>
@@ -712,7 +709,7 @@ export default function AdminBookManagementPage() {
                           title="Hide"
                           type="button"
                         >
-                          <span className="material-symbols-outlined text-[18px]">close</span>
+                          <MaterialSymbol name="close" className="text-[18px]" />
                         </button>
                       </div>
                     ) : (
@@ -723,7 +720,7 @@ export default function AdminBookManagementPage() {
                           title="Review chapters"
                           type="button"
                         >
-                          <span className="material-symbols-outlined text-[18px]">visibility</span>
+                          <MaterialSymbol name="visibility" className="text-[18px]" />
                         </button>
                         <button
                           className="rounded p-1.5 transition-colors hover:bg-primary/20 hover:text-primary"
@@ -731,9 +728,7 @@ export default function AdminBookManagementPage() {
                           title="Settings"
                           type="button"
                         >
-                          <span className="material-symbols-outlined text-[18px]">
-                            settings_suggest
-                          </span>
+                          <MaterialSymbol name="settings_suggest" className="text-[18px]" />
                         </button>
                       </div>
                     )}
@@ -804,7 +799,7 @@ export default function AdminBookManagementPage() {
       <section className="grid grid-cols-1 gap-6 xl:grid-cols-2">
         <Reveal className="rounded-[28px] border border-primary/10 bg-white p-6 shadow-sm dark:bg-primary/5">
           <h2 className="flex items-center gap-2 text-lg font-black tracking-tight">
-            <span className="material-symbols-outlined text-primary">analytics</span>
+            <MaterialSymbol name="analytics" className="text-primary" />
             Content Visibility Trends
           </h2>
           <div className="mt-6 flex h-48 items-end gap-2">
@@ -826,9 +821,7 @@ export default function AdminBookManagementPage() {
 
         <Reveal className="rounded-[28px] border border-primary/10 bg-white p-6 shadow-sm dark:bg-primary/5">
           <h2 className="flex items-center gap-2 text-lg font-black tracking-tight">
-            <span className="material-symbols-outlined text-primary">
-              notifications_active
-            </span>
+            <MaterialSymbol name="notifications_active" className="text-primary" />
             Recent Book Signals
           </h2>
 
@@ -838,9 +831,7 @@ export default function AdminBookManagementPage() {
                 <div
                   className={`flex size-8 shrink-0 items-center justify-center rounded-full ${activityToneClasses(item.tone)}`}
                 >
-                  <span className="material-symbols-outlined text-[18px]">
-                    {item.icon}
-                  </span>
+                  <MaterialSymbol name={item.icon} className="text-[18px]" />
                 </div>
                 <div className="min-w-0 flex-1">
                   <p className="text-sm">{item.text}</p>

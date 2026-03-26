@@ -8,6 +8,7 @@ import UserAvatar from "../components/UserAvatar";
 import { fetchCreatorFinance } from "../creator/creatorApi";
 import { useAuth } from "../context/AuthContext";
 import { useCreator } from "../context/CreatorContext";
+import MaterialSymbol from "../components/MaterialSymbol";
 import {
   authorDashboardHref,
   creatorWithdrawalHref,
@@ -66,9 +67,7 @@ function CreatorDesktopHeader({ authorName }) {
           className="flex size-10 items-center justify-center rounded-lg bg-slate-200/50 transition-colors hover:bg-primary/20 dark:bg-primary/5"
           to="/account/notifications"
         >
-          <span className="material-symbols-outlined text-slate-700 dark:text-primary">
-            settings
-          </span>
+          <MaterialSymbol name="settings" className="text-slate-700 dark:text-primary" />
         </Link>
         <div className="mx-2 h-10 w-px bg-slate-300 dark:bg-primary/10" />
         <div className="flex items-center gap-3">
@@ -103,7 +102,7 @@ function OverviewCard({ accentClass, compact, icon, label, subtext, value }) {
         <div
           className={`flex shrink-0 items-center justify-center rounded-lg ${accentClass} ${compact ? "size-8" : "size-12 rounded-2xl"}`}
         >
-          <span className={`material-symbols-outlined ${compact ? "text-base" : ""}`}>{icon}</span>
+          <MaterialSymbol name={icon} className={`${compact ? "text-base" : ""}`} />
         </div>
       </div>
     </Reveal>
@@ -263,7 +262,7 @@ function TransactionsTable({ compact, items }) {
                 <div
                   className={`flex shrink-0 items-center justify-center rounded-lg ${tone.iconClass} ${compact ? "size-8" : "size-11 rounded-2xl"}`}
                 >
-                  <span className={`material-symbols-outlined ${compact ? "text-sm" : ""}`}>{tone.icon}</span>
+                  <MaterialSymbol name={tone.icon} className={`${compact ? "text-sm" : ""}`} />
                 </div>
                 <div className="min-w-0 flex-1">
                   <p className={`font-bold ${compact ? "text-xs" : ""}`}>{item.description}</p>
@@ -386,7 +385,7 @@ function DesktopEarnings({ authorName, errorMessage, finance, isLoading }) {
                   className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-bold text-background-dark"
                   to={creatorWithdrawalHref}
                 >
-                  <span className="material-symbols-outlined">account_balance_wallet</span>
+                  <MaterialSymbol name="account_balance_wallet" />
                   Request Withdrawal
                 </Link>
               </div>
@@ -487,7 +486,7 @@ function MobileEarnings({ authorName, errorMessage, finance, isLoading }) {
       <div className="relative flex min-h-screen flex-col overflow-x-hidden pb-20">
         <header className="sticky top-0 z-10 flex items-center justify-between border-b border-primary/10 bg-background-light/90 px-2 py-1.5 backdrop-blur-md dark:bg-background-dark/90">
           <Link className="flex size-8 items-center justify-center rounded-full transition-colors hover:bg-primary/10" to={authorDashboardHref}>
-            <span className="material-symbols-outlined text-base">arrow_back</span>
+            <MaterialSymbol name="arrow_back" className="text-base" />
           </Link>
           <h1 className="text-sm font-bold tracking-tight">Creator Earnings</h1>
           <Link className="flex size-8 items-center justify-center rounded-full transition-colors hover:bg-primary/10" to="/account/profile">
@@ -553,7 +552,7 @@ function MobileEarnings({ authorName, errorMessage, finance, isLoading }) {
                     className="flex w-full items-center justify-center gap-1.5 rounded-lg bg-primary px-3 py-2.5 text-xs font-bold text-background-dark"
                     to={creatorWithdrawalHref}
                   >
-                    <span className="material-symbols-outlined text-base">account_balance_wallet</span>
+                    <MaterialSymbol name="account_balance_wallet" className="text-base" />
                     Request Withdrawal
                   </Link>
                 </>

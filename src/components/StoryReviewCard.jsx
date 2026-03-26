@@ -1,5 +1,6 @@
 import { useState } from "react";
 import UserAvatar from "./UserAvatar";
+import MaterialSymbol from "./MaterialSymbol";
 
 function truncateCopy(value, maxLength) {
   if (!value || value.length <= maxLength) {
@@ -18,13 +19,11 @@ export function ReviewStars({ rating, size = "base" }) {
         const value = index + 1;
 
         return (
-          <span
-            className={`material-symbols-outlined ${value <= rating ? "fill-1" : ""}`}
+          <MaterialSymbol
+            filled={value <= rating}
             key={value}
-            style={value <= rating ? { fontVariationSettings: "'FILL' 1" } : undefined}
-          >
-            star
-          </span>
+            name="star"
+          />
         );
       })}
     </div>

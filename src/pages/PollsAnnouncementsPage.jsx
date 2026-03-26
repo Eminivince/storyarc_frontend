@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { AppDesktopSidebar, AppMobileTabBar } from "../components/AppShellNav";
 import Reveal from "../components/Reveal";
 import { useCreator } from "../context/CreatorContext";
+import MaterialSymbol from "../components/MaterialSymbol";
 import {
   creatorCommunityActions,
   creatorCommunityTabs,
@@ -125,7 +126,7 @@ function QuickActions({ compact = false, onTrigger }) {
           onClick={() => onTrigger(action)}
           type="button"
         >
-          <span className={`material-symbols-outlined text-primary ${compact ? "text-lg" : ""}`}>{action.icon}</span>
+          <MaterialSymbol name={action.icon} className={`text-primary ${compact ? "text-lg" : ""}`} />
           <div className="min-w-0 flex-1">
             <p className={`font-bold text-primary ${compact ? "text-xs" : "text-sm"}`}>{action.title}</p>
             <p className={`text-slate-500 dark:text-slate-400 ${compact ? "text-[10px] line-clamp-1" : "text-xs"}`}>{action.detail}</p>
@@ -142,9 +143,7 @@ function FeedCard({ compact = false, item }) {
       <div className={`flex items-center justify-between ${compact ? "gap-2" : "gap-4"}`}>
         <div className={`flex items-center gap-2 ${compact ? "" : "gap-3"}`}>
           <div className={`flex items-center justify-center rounded-full bg-primary/15 text-primary ${compact ? "size-8" : "size-10"}`}>
-            <span className={`material-symbols-outlined ${compact ? "text-lg" : ""}`}>
-              {item.type === "Poll" ? "poll" : "campaign"}
-            </span>
+            <MaterialSymbol name={item.type === "Poll" ? "poll" : "campaign"} className={`${compact ? "text-lg" : ""}`} />
           </div>
           <div>
             <p className={`font-bold ${compact ? "text-xs" : ""}`}>{item.author}</p>
@@ -154,7 +153,7 @@ function FeedCard({ compact = false, item }) {
           </div>
         </div>
         <button className="text-slate-500" type="button">
-          <span className={`material-symbols-outlined ${compact ? "text-lg" : ""}`}>more_horiz</span>
+          <MaterialSymbol name="more_horiz" className={`${compact ? "text-lg" : ""}`} />
         </button>
       </div>
 
@@ -185,13 +184,11 @@ function FeedCard({ compact = false, item }) {
       <div className={`flex items-center justify-between ${compact ? "mt-2 gap-2 text-[10px]" : "mt-5 gap-4 text-sm"} text-slate-500 dark:text-slate-400`}>
         <div className={`flex items-center ${compact ? "gap-2" : "gap-4"}`}>
           <span className="flex items-center gap-1.5">
-            <span className={`material-symbols-outlined ${compact ? "text-sm" : "text-base"}`}>favorite</span>
+            <MaterialSymbol name="favorite" className={`${compact ? "text-sm" : "text-base"}`} />
             {item.likes ?? "856"}
           </span>
           <span className="flex items-center gap-1.5">
-            <span className={`material-symbols-outlined ${compact ? "text-sm" : "text-base"}`}>
-              {item.type === "Poll" ? "poll" : "chat_bubble"}
-            </span>
+            <MaterialSymbol name={item.type === "Poll" ? "poll" : "chat_bubble"} className={`${compact ? "text-sm" : "text-base"}`} />
             {item.votes ?? item.comments}
           </span>
         </div>
@@ -351,10 +348,10 @@ function MobileCommunity({
             </div>
             <div className="flex items-center gap-0.5">
               <button className="rounded-full p-1.5 transition-colors hover:bg-primary/10" type="button">
-                <span className="material-symbols-outlined text-lg">search</span>
+                <MaterialSymbol name="search" className="text-lg" />
               </button>
               <button className="rounded-full p-1.5 transition-colors hover:bg-primary/10" type="button">
-                <span className="material-symbols-outlined text-lg">notifications</span>
+                <MaterialSymbol name="notifications" className="text-lg" />
               </button>
             </div>
           </div>

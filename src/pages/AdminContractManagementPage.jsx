@@ -8,6 +8,7 @@ import Reveal from "../components/Reveal";
 import RouteLoadingScreen from "../components/RouteLoadingScreen";
 import { useAdmin } from "../context/AdminContext";
 import { adminContractFilters } from "../data/adminContractFlow";
+import MaterialSymbol from "../components/MaterialSymbol";
 import {
   adminContractTemplatesHref,
   adminNewContractHref,
@@ -107,9 +108,7 @@ function MobileContractCard({ contract, onEdit, onView }) {
 
       <div className="mt-4 space-y-3">
         <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
-          <span className="material-symbols-outlined text-base text-primary">
-            auto_stories
-          </span>
+          <MaterialSymbol name="auto_stories" className="text-base text-primary" />
           <span className="font-semibold italic">{contract.storyTitle}</span>
         </div>
         <div className="text-xs text-slate-500 dark:text-slate-400">
@@ -132,7 +131,7 @@ function MobileContractCard({ contract, onEdit, onView }) {
             type="button"
           >
             Edit
-            <span className="material-symbols-outlined text-base">chevron_right</span>
+            <MaterialSymbol name="chevron_right" className="text-base" />
           </button>
         </div>
       </div>
@@ -229,14 +228,14 @@ export default function AdminContractManagementPage() {
             className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-2 text-sm font-bold text-primary transition-colors hover:bg-primary/10"
             to={adminContractTemplatesHref}
           >
-            <span className="material-symbols-outlined text-base">library_books</span>
+            <MaterialSymbol name="library_books" className="text-base" />
             Manage Templates
           </Link>
           <Link
             className="inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-bold text-background-dark transition-opacity hover:opacity-90"
             to={adminNewContractHref}
           >
-            <span className="material-symbols-outlined text-base">add</span>
+            <MaterialSymbol name="add" className="text-base" />
             Create New Contract
           </Link>
         </>
@@ -269,9 +268,7 @@ export default function AdminContractManagementPage() {
 
         <div className="mt-5 flex flex-col gap-3 lg:flex-row">
           <label className="group relative flex-1">
-            <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 transition-colors group-focus-within:text-primary">
-              search
-            </span>
+            <MaterialSymbol name="search" className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 transition-colors group-focus-within:text-primary" />
             <input
               className="w-full rounded-xl border border-primary/10 bg-slate-950/50 py-3 pl-12 pr-4 text-sm text-slate-100 placeholder:text-slate-600 focus:border-primary/30 focus:outline-none focus:ring-2 focus:ring-primary/20"
               onChange={(event) => setSearchTerm(event.target.value)}
@@ -284,7 +281,7 @@ export default function AdminContractManagementPage() {
             className="inline-flex items-center justify-center gap-2 rounded-xl border border-primary/10 bg-slate-950/50 px-4 py-3 text-sm font-semibold text-slate-300 transition-colors hover:text-primary"
             to={adminContractTemplatesHref}
           >
-            <span className="material-symbols-outlined text-base">description</span>
+            <MaterialSymbol name="description" className="text-base" />
             Template Library
           </Link>
         </div>
@@ -386,9 +383,7 @@ export default function AdminContractManagementPage() {
                               title="View details"
                               type="button"
                             >
-                              <span className="material-symbols-outlined text-xl">
-                                visibility
-                              </span>
+                              <MaterialSymbol name="visibility" className="text-xl" />
                             </button>
                             <button
                               className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-primary/20 hover:text-primary"
@@ -396,7 +391,7 @@ export default function AdminContractManagementPage() {
                               title="Edit contract"
                               type="button"
                             >
-                              <span className="material-symbols-outlined text-xl">edit</span>
+                              <MaterialSymbol name="edit" className="text-xl" />
                             </button>
                             <button
                               className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-primary/20 hover:text-primary"
@@ -404,7 +399,7 @@ export default function AdminContractManagementPage() {
                               title="Download PDF"
                               type="button"
                             >
-                              <span className="material-symbols-outlined text-xl">download</span>
+                              <MaterialSymbol name="download" className="text-xl" />
                             </button>
                           </div>
                         </td>

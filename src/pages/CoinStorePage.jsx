@@ -4,6 +4,7 @@ import Reveal from "../components/Reveal";
 import ReaderStateScreen from "../components/ReaderStateScreen";
 import RouteLoadingScreen from "../components/RouteLoadingScreen";
 import { useMonetization } from "../context/MonetizationContext";
+import MaterialSymbol from "../components/MaterialSymbol";
 import {
   buildCoinStoreHref,
   buildCheckoutHref,
@@ -20,16 +21,14 @@ function DesktopCoinStore({ coinBalance, currency, packages, returnTo }) {
         <header className="sticky top-0 z-50 flex items-center justify-between border-b border-primary/10 bg-background-light px-6 py-4 backdrop-blur-md dark:bg-background-dark/95 md:px-20 lg:px-40">
           <Link className="flex items-center gap-3" to="/dashboard">
             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-background-dark">
-              <span className="material-symbols-outlined font-bold">menu_book</span>
+              <MaterialSymbol name="menu_book" className="font-bold" />
             </div>
             <h2 className="text-xl font-bold tracking-tight">TaleStead</h2>
           </Link>
 
           <div className="flex items-center gap-4">
             <div className="hidden items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-3 py-1.5 sm:flex">
-              <span className="material-symbols-outlined text-sm text-primary">
-                database
-              </span>
+              <MaterialSymbol name="database" className="text-sm text-primary" />
               <span className="text-sm font-bold text-primary">
                 {coinBalance} Coins
               </span>
@@ -38,13 +37,13 @@ function DesktopCoinStore({ coinBalance, currency, packages, returnTo }) {
               className="flex h-10 w-10 items-center justify-center rounded-lg border border-transparent bg-slate-200 text-slate-700 transition-colors hover:border-primary/20 hover:text-primary dark:bg-primary/10 dark:text-primary"
               to={pricingHref}
             >
-              <span className="material-symbols-outlined">workspace_premium</span>
+              <MaterialSymbol name="workspace_premium" />
             </Link>
             <button
               className="flex h-10 w-10 items-center justify-center rounded-lg border border-transparent bg-slate-200 text-slate-700 transition-colors hover:border-primary/20 hover:text-primary dark:bg-primary/10 dark:text-primary"
               type="button"
             >
-              <span className="material-symbols-outlined">help_outline</span>
+              <MaterialSymbol name="help_outline" />
             </button>
           </div>
         </header>
@@ -53,7 +52,7 @@ function DesktopCoinStore({ coinBalance, currency, packages, returnTo }) {
           <div className="mb-12 flex flex-col justify-between gap-6 md:flex-row md:items-end">
             <div className="max-w-2xl">
               <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-primary/20 px-3 py-1 text-xs font-bold uppercase tracking-wider text-primary">
-                <span className="material-symbols-outlined text-xs">auto_awesome</span>
+                <MaterialSymbol name="auto_awesome" className="text-xs" />
                 <span>Premium Access</span>
               </div>
               <h1 className="mb-4 text-4xl font-bold leading-tight md:text-5xl">
@@ -70,9 +69,7 @@ function DesktopCoinStore({ coinBalance, currency, packages, returnTo }) {
                 Your Balance
               </p>
               <div className="flex items-center gap-2">
-                <span className="material-symbols-outlined text-3xl text-primary">
-                  database
-                </span>
+                <MaterialSymbol name="database" className="text-3xl text-primary" />
                 <span className="text-3xl font-bold">{coinBalance}</span>
               </div>
             </Reveal>
@@ -107,9 +104,7 @@ function DesktopCoinStore({ coinBalance, currency, packages, returnTo }) {
                         : "bg-slate-200 dark:bg-slate-800"
                     }`}
                   >
-                    <span className="material-symbols-outlined text-5xl text-primary">
-                      {item.icon}
-                    </span>
+                    <MaterialSymbol name={item.icon} className="text-5xl text-primary" />
                   </div>
                   <h3 className="mb-1 text-xl font-bold">{item.name}</h3>
                   <p className="mb-6 text-sm font-medium text-primary">
@@ -143,9 +138,7 @@ function DesktopCoinStore({ coinBalance, currency, packages, returnTo }) {
           <div className="mt-16 grid grid-cols-1 gap-8 md:grid-cols-2">
             <Reveal className="flex gap-6 rounded-2xl border border-slate-200 bg-slate-100 p-8 dark:border-slate-700 dark:bg-slate-800/30">
               <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-primary/20 text-primary">
-                <span className="material-symbols-outlined text-3xl">
-                  verified_user
-                </span>
+                <MaterialSymbol name="verified_user" className="text-3xl" />
               </div>
               <div>
                 <h4 className="mb-2 text-lg font-bold">Secure Transactions</h4>
@@ -158,7 +151,7 @@ function DesktopCoinStore({ coinBalance, currency, packages, returnTo }) {
 
             <Reveal className="flex gap-6 rounded-2xl border border-slate-200 bg-slate-100 p-8 dark:border-slate-700 dark:bg-slate-800/30">
               <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-primary/20 text-primary">
-                <span className="material-symbols-outlined text-3xl">redeem</span>
+                <MaterialSymbol name="redeem" className="text-3xl" />
               </div>
               <div>
                 <h4 className="mb-2 text-lg font-bold">Premium Alternative</h4>
@@ -171,9 +164,7 @@ function DesktopCoinStore({ coinBalance, currency, packages, returnTo }) {
                   to={pricingHref}
                 >
                   Compare premium plans
-                  <span className="material-symbols-outlined text-sm">
-                    arrow_forward
-                  </span>
+                  <MaterialSymbol name="arrow_forward" className="text-sm" />
                 </Link>
               </div>
             </Reveal>
@@ -184,9 +175,7 @@ function DesktopCoinStore({ coinBalance, currency, packages, returnTo }) {
           <div className="flex flex-col items-center justify-between gap-6 md:flex-row">
             <div className="flex items-center gap-2">
               <div className="flex h-6 w-6 items-center justify-center rounded bg-primary/20">
-                <span className="material-symbols-outlined text-xs font-bold text-primary">
-                  menu_book
-                </span>
+                <MaterialSymbol name="menu_book" className="text-xs font-bold text-primary" />
               </div>
               <span className="text-sm font-bold text-slate-400">
                 © 2024 TaleStead Reader. All rights reserved.
@@ -218,7 +207,7 @@ function MobileCoinStore({ coinBalance, currency, packages, returnTo }) {
           className="flex h-10 w-10 items-center justify-center rounded-full transition-colors hover:bg-primary/10"
           to={returnTo}
         >
-          <span className="material-symbols-outlined">arrow_back</span>
+          <MaterialSymbol name="arrow_back" />
         </Link>
         <h2 className="flex-1 text-center text-base font-bold tracking-tight">
           Coin Shop
@@ -228,7 +217,7 @@ function MobileCoinStore({ coinBalance, currency, packages, returnTo }) {
             className="flex h-10 w-10 items-center justify-center rounded-lg transition-colors hover:bg-primary/10"
             to={pricingHref}
           >
-            <span className="material-symbols-outlined text-primary">history</span>
+            <MaterialSymbol name="history" className="text-primary" />
           </Link>
         </div>
       </nav>
@@ -238,9 +227,7 @@ function MobileCoinStore({ coinBalance, currency, packages, returnTo }) {
           <Reveal className="relative flex aspect-[3/1] w-full items-center justify-start overflow-hidden rounded-lg border border-primary/20 bg-gradient-to-br from-primary/40 to-background-dark">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(248,214,90,0.32),_transparent_55%)] opacity-80" />
             <div className="relative z-10 flex items-center gap-3 px-4">
-              <span className="material-symbols-outlined text-3xl text-primary shrink-0">
-                stars
-              </span>
+              <MaterialSymbol name="stars" className="text-3xl text-primary shrink-0" />
               <div>
                 <h1 className="text-lg font-bold text-slate-100 leading-tight">
                   Get TaleStead Coins
@@ -256,9 +243,7 @@ function MobileCoinStore({ coinBalance, currency, packages, returnTo }) {
         <div className="mx-3 mb-5 flex items-center justify-between rounded-lg border border-primary/20 bg-primary/10 p-3">
           <div className="flex items-center gap-2.5">
             <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary">
-              <span className="material-symbols-outlined text-lg font-bold text-background-dark">
-                payments
-              </span>
+              <MaterialSymbol name="payments" className="text-lg font-bold text-background-dark" />
             </div>
             <div>
               <p className="text-[10px] font-medium uppercase tracking-wider text-slate-400">
@@ -304,9 +289,7 @@ function MobileCoinStore({ coinBalance, currency, packages, returnTo }) {
                     featured ? "bg-primary/30" : "bg-slate-700/50"
                   }`}
                 >
-                  <span className="material-symbols-outlined text-xl">
-                    {item.mobileIcon}
-                  </span>
+                  <MaterialSymbol name={item.mobileIcon} className="text-xl" />
                 </div>
                 <h4 className="truncate w-full text-xs font-bold text-slate-100">{item.name}</h4>
                 <p className="mb-2 text-[10px] font-medium text-primary">
@@ -341,22 +324,22 @@ function MobileCoinStore({ coinBalance, currency, packages, returnTo }) {
 
       <div className="fixed bottom-0 left-0 right-0 z-20 flex items-center justify-around border-t border-primary/10 bg-background-dark/95 px-3 pb-safe pt-2 backdrop-blur-md">
         <Link className="flex flex-col items-center gap-1 text-slate-400 transition-colors hover:text-primary" to={readerLibraryHref}>
-          <span className="material-symbols-outlined">menu_book</span>
+          <MaterialSymbol name="menu_book" />
           <p className="text-[10px] font-medium leading-none">Library</p>
         </Link>
         <Link
           className="flex flex-col items-center gap-1 text-slate-400 transition-colors hover:text-primary"
           to={buildSearchHref("Fantasy")}
         >
-          <span className="material-symbols-outlined">explore</span>
+          <MaterialSymbol name="explore" />
           <p className="text-[10px] font-medium leading-none">Discover</p>
         </Link>
         <Link className="flex flex-col items-center gap-1 text-primary" to={buildCoinStoreHref(returnTo)}>
-          <span className="material-symbols-outlined fill-1">storefront</span>
+          <MaterialSymbol name="storefront" filled />
           <p className="text-[10px] font-medium leading-none">Shop</p>
         </Link>
         <Link className="flex flex-col items-center gap-1 text-slate-400 transition-colors hover:text-primary" to="/dashboard">
-          <span className="material-symbols-outlined">person</span>
+          <MaterialSymbol name="person" />
           <p className="text-[10px] font-medium leading-none">Profile</p>
         </Link>
       </div>

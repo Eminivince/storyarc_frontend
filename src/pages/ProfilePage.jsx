@@ -10,6 +10,7 @@ import { useBadgesQuery } from "../engagement/engagementHooks";
 import { useAuth } from "../context/AuthContext";
 import { useMonetization } from "../context/MonetizationContext";
 import { useToast } from "../context/ToastContext";
+import MaterialSymbol from "../components/MaterialSymbol";
 import {
   accountQuickLinks,
   billingSettingsHref,
@@ -33,7 +34,7 @@ function SectionEmptyState({
 }) {
   return (
     <div className="rounded-2xl border border-primary/10 bg-primary/5 p-6 text-center">
-      <span className="material-symbols-outlined text-3xl text-primary">{icon}</span>
+      <MaterialSymbol name={icon} className="text-3xl text-primary" />
       <h4 className="mt-3 text-lg font-bold">{title}</h4>
       <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">{body}</p>
       {ctaHref && ctaLabel ? (
@@ -234,9 +235,7 @@ function WalletSection({ coinBalance, isLoading = false, mobile = false }) {
           </p>
         </div>
         <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary text-background-dark shadow-lg shadow-primary/20">
-          <span className="material-symbols-outlined text-2xl">
-            monetization_on
-          </span>
+          <MaterialSymbol name="monetization_on" className="text-2xl" />
         </div>
       </div>
       <Link
@@ -244,7 +243,7 @@ function WalletSection({ coinBalance, isLoading = false, mobile = false }) {
         to={billingSettingsHref}
       >
         Manage Billing
-        <span className="material-symbols-outlined text-sm">chevron_right</span>
+        <MaterialSymbol name="chevron_right" className="text-sm" />
       </Link>
     </div>
   );
@@ -253,9 +252,7 @@ function WalletSection({ coinBalance, isLoading = false, mobile = false }) {
     return (
       <div className="px-4 py-4">
         <h3 className="mb-4 flex items-center gap-2 text-lg font-bold">
-          <span className="material-symbols-outlined text-primary">
-            monetization_on
-          </span>
+          <MaterialSymbol name="monetization_on" className="text-primary" />
           Wallet
         </h3>
         {content}
@@ -359,9 +356,7 @@ function MobileCurrentReading({ currentReading, isLoading }) {
     return (
       <div className="px-4 py-4">
         <h3 className="mb-4 flex items-center gap-2 text-lg font-bold">
-          <span className="material-symbols-outlined text-primary">
-            auto_stories
-          </span>
+          <MaterialSymbol name="auto_stories" className="text-primary" />
           Currently Reading
         </h3>
         <ProfileMediaSkeleton mobile />
@@ -372,9 +367,7 @@ function MobileCurrentReading({ currentReading, isLoading }) {
   return (
     <div className="px-4 py-4">
       <h3 className="mb-4 flex items-center gap-2 text-lg font-bold">
-        <span className="material-symbols-outlined text-primary">
-          auto_stories
-        </span>
+        <MaterialSymbol name="auto_stories" className="text-primary" />
         Currently Reading
       </h3>
       {currentReading ? (
@@ -505,7 +498,7 @@ function MobileReadingList({ isLoading, readingList }) {
       <div className="px-4 py-4">
         <div className="mb-4 flex items-center justify-between">
           <h3 className="flex items-center gap-2 text-lg font-bold">
-            <span className="material-symbols-outlined text-primary">bookmark</span>
+            <MaterialSymbol name="bookmark" className="text-primary" />
             Reading List
           </h3>
           <Link
@@ -524,7 +517,7 @@ function MobileReadingList({ isLoading, readingList }) {
     <div className="px-4 py-4">
       <div className="mb-4 flex items-center justify-between">
         <h3 className="flex items-center gap-2 text-lg font-bold">
-          <span className="material-symbols-outlined text-primary">bookmark</span>
+          <MaterialSymbol name="bookmark" className="text-primary" />
           Reading List
         </h3>
         <Link
@@ -592,7 +585,7 @@ function RecentActivityList({ isLoading, items, mobile = false }) {
         {items.map((item, index) => (
           <div className="flex items-start gap-3" key={`${item.title}-${index}`}>
             <div className="rounded-full bg-primary/10 p-2 text-primary dark:bg-primary/20">
-              <span className="material-symbols-outlined text-sm">{item.icon}</span>
+              <MaterialSymbol name={item.icon} className="text-sm" />
             </div>
             <div className="w-full border-b border-slate-200 pb-3 dark:border-primary/5">
               <p className="text-sm">{item.title}</p>
@@ -616,9 +609,7 @@ function RecentActivityList({ isLoading, items, mobile = false }) {
         >
           <div className="flex gap-3">
             <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-primary/20">
-              <span className="material-symbols-outlined text-lg text-primary">
-                {item.icon}
-              </span>
+              <MaterialSymbol name={item.icon} className="text-lg text-primary" />
             </div>
             <div>
               <p className="mb-1 text-xs text-slate-500 dark:text-slate-400">
@@ -644,7 +635,7 @@ function MobileLogoutSection({ isLoggingOut, onLogout }) {
       <div className="rounded-2xl border border-red-500/20 bg-red-500/5 p-4 dark:border-red-400/20 dark:bg-red-500/10">
         <div className="flex items-start gap-3">
           <div className="rounded-full bg-red-500/10 p-2 text-red-500 dark:bg-red-500/15">
-            <span className="material-symbols-outlined text-lg">logout</span>
+            <MaterialSymbol name="logout" className="text-lg" />
           </div>
           <div className="flex-1">
             <h3 className="text-sm font-black uppercase tracking-widest">
@@ -664,7 +655,7 @@ function MobileLogoutSection({ isLoggingOut, onLogout }) {
           whileHover={{ scale: 1.01 }}
           whileTap={{ scale: 0.98 }}
         >
-          <span className="material-symbols-outlined text-base">logout</span>
+          <MaterialSymbol name="logout" className="text-base" />
           {isLoggingOut ? "Signing Out..." : "Log Out"}
         </motion.button>
       </div>
@@ -776,9 +767,7 @@ function DesktopProfile({
                   src={profile.avatar}
                 />
                 <div className="absolute bottom-0 right-0 rounded-full border-2 border-background-dark bg-primary p-1 text-background-dark">
-                  <span className="material-symbols-outlined text-xs font-bold">
-                    verified
-                  </span>
+                  <MaterialSymbol name="verified" className="text-xs font-bold" />
                 </div>
               </div>
 
@@ -814,7 +803,7 @@ function DesktopProfile({
                 className="shrink-0 flex items-center gap-1.5 rounded-lg border border-slate-300 bg-slate-200 px-3 py-2 text-xs font-bold transition-all hover:bg-primary/20 hover:text-primary dark:border-white/10 dark:bg-white/5"
                 to={editProfileHref}
               >
-                <span className="material-symbols-outlined text-sm">edit</span>
+                <MaterialSymbol name="edit" className="text-sm" />
                 Edit Profile
               </Link>
             </header>
@@ -880,14 +869,10 @@ function DesktopProfile({
                         to={item.href}
                       >
                         <div className="flex items-center gap-2">
-                          <span className="material-symbols-outlined text-lg text-primary">
-                            {item.icon}
-                          </span>
+                          <MaterialSymbol name={item.icon} className="text-lg text-primary" />
                           <span className="font-medium">{item.label}</span>
                         </div>
-                        <span className="material-symbols-outlined text-slate-400">
-                          chevron_right
-                        </span>
+                        <MaterialSymbol name="chevron_right" className="text-slate-400" />
                       </Link>
                     ))}
                   </div>
@@ -905,7 +890,7 @@ function MobileBadgesTab({ badgesData, isBadgesLoading }) {
   return (
     <div className="px-4 py-4">
       <h3 className="flex items-center gap-2 text-lg font-bold">
-        <span className="material-symbols-outlined text-primary">military_tech</span>
+        <MaterialSymbol name="military_tech" className="text-primary" />
         Badges
       </h3>
       {badgesData ? (
@@ -972,14 +957,14 @@ function MobileProfile({
       <div className="relative mx-auto flex min-h-screen max-w-md flex-col overflow-x-hidden bg-background-light shadow-2xl dark:bg-background-dark">
         <div className="sticky top-0 z-10 flex items-center justify-between bg-background-light p-4 pb-2 dark:bg-background-dark">
           <Link className="flex h-12 w-12 items-center justify-center" to={notificationsHref}>
-            <span className="material-symbols-outlined text-2xl">settings</span>
+            <MaterialSymbol name="settings" className="text-2xl" />
           </Link>
           <h2 className="flex-1 text-center text-lg font-bold uppercase tracking-widest">
             TaleStead
           </h2>
           <div className="flex w-12 items-center justify-end">
             <button className="flex h-12 items-center justify-center rounded-lg bg-transparent" type="button">
-              <span className="material-symbols-outlined text-2xl">share</span>
+              <MaterialSymbol name="share" className="text-2xl" />
             </button>
           </div>
         </div>
@@ -1085,7 +1070,7 @@ function MobileProfile({
 
           <div className="px-4 py-4">
             <h3 className="mb-4 flex items-center gap-2 text-lg font-bold">
-              <span className="material-symbols-outlined text-primary">bolt</span>
+              <MaterialSymbol name="bolt" className="text-primary" />
               Account Center
             </h3>
             <div className="space-y-3">
@@ -1096,14 +1081,10 @@ function MobileProfile({
                   to={item.href}
                 >
                   <div className="flex items-center gap-3">
-                    <span className="material-symbols-outlined text-primary">
-                      {item.icon}
-                    </span>
+                    <MaterialSymbol name={item.icon} className="text-primary" />
                     <span className="text-sm font-semibold">{item.label}</span>
                   </div>
-                  <span className="material-symbols-outlined text-slate-400">
-                    chevron_right
-                  </span>
+                  <MaterialSymbol name="chevron_right" className="text-slate-400" />
                 </Link>
               ))}
             </div>
@@ -1111,7 +1092,7 @@ function MobileProfile({
 
           <div className="px-4 py-4">
             <h3 className="mb-4 flex items-center gap-2 text-lg font-bold">
-              <span className="material-symbols-outlined text-primary">history</span>
+              <MaterialSymbol name="history" className="text-primary" />
               Recent Activity
             </h3>
             <RecentActivityList

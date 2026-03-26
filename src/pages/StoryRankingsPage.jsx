@@ -6,6 +6,7 @@ import { AppDesktopSidebar, AppMobileTabBar } from "../components/AppShellNav";
 import ReaderStateScreen from "../components/ReaderStateScreen";
 import RouteLoadingScreen from "../components/RouteLoadingScreen";
 import UserAvatar from "../components/UserAvatar";
+import MaterialSymbol from "../components/MaterialSymbol";
 import {
   buildBrowseHref,
   buildChapterHref,
@@ -105,27 +106,19 @@ function StoryRankCard({ story }) {
 
               <div className="mt-4 flex flex-wrap gap-3 text-xs font-semibold text-slate-500 dark:text-slate-400">
                 <span className="inline-flex items-center gap-1.5">
-                  <span className="material-symbols-outlined fill-1 text-sm text-primary">
-                    star
-                  </span>
+                  <MaterialSymbol name="star" filled className="text-sm text-primary" />
                   {story.averageRating.toFixed(1)} • {story.reviewCount.toLocaleString()} ratings
                 </span>
                 <span className="inline-flex items-center gap-1.5">
-                  <span className="material-symbols-outlined text-sm text-primary">
-                    visibility
-                  </span>
+                  <MaterialSymbol name="visibility" className="text-sm text-primary" />
                   {story.readsLabel} readers
                 </span>
                 <span className="inline-flex items-center gap-1.5">
-                  <span className="material-symbols-outlined text-sm text-primary">
-                    favorite
-                  </span>
+                  <MaterialSymbol name="favorite" className="text-sm text-primary" />
                   {story.followerCountLabel} followers
                 </span>
                 <span className="inline-flex items-center gap-1.5">
-                  <span className="material-symbols-outlined text-sm text-primary">
-                    menu_book
-                  </span>
+                  <MaterialSymbol name="menu_book" className="text-sm text-primary" />
                   {story.chapterCount} chapters
                 </span>
               </div>
@@ -147,7 +140,7 @@ function StoryRankCard({ story }) {
                     storySlug={story.slug}
                     to={chapterHref}
                   >
-                    <span className="material-symbols-outlined text-lg">play_arrow</span>
+                    <MaterialSymbol name="play_arrow" className="text-lg" />
                     Read Now
                   </PrefetchableChapterLink>
                 ) : (
@@ -156,7 +149,7 @@ function StoryRankCard({ story }) {
                     storySlug={story.slug}
                     to={buildStoryHref(story.slug)}
                   >
-                    <span className="material-symbols-outlined text-lg">visibility</span>
+                    <MaterialSymbol name="visibility" className="text-lg" />
                     Open Story
                   </PrefetchableStoryLink>
                 )}
@@ -166,7 +159,7 @@ function StoryRankCard({ story }) {
                   storySlug={story.slug}
                   to={buildStoryHref(story.slug)}
                 >
-                  <span className="material-symbols-outlined text-lg">auto_stories</span>
+                  <MaterialSymbol name="auto_stories" className="text-lg" />
                   Story Details
                 </PrefetchableStoryLink>
               </div>
@@ -295,9 +288,7 @@ function DesktopRankings({
 
             <div className="flex items-center gap-4">
               <form className="relative" onSubmit={onSearchSubmit}>
-                <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-lg text-slate-400">
-                  search
-                </span>
+                <MaterialSymbol name="search" className="absolute left-3 top-1/2 -translate-y-1/2 text-lg text-slate-400" />
                 <input
                   className="w-72 rounded-full border border-primary/10 bg-white py-2 pl-10 pr-4 text-sm outline-none transition-all focus:border-primary focus:ring-1 focus:ring-primary dark:bg-primary/5"
                   onChange={(event) => setSearchTerm(event.target.value)}
@@ -310,9 +301,7 @@ function DesktopRankings({
                 className="flex size-9 items-center justify-center rounded-full border border-primary/20 transition-colors hover:bg-primary/10"
                 to="/account/notifications"
               >
-                <span className="material-symbols-outlined text-slate-500">
-                  notifications
-                </span>
+                <MaterialSymbol name="notifications" className="text-slate-500" />
               </Link>
               <Link
                 className="flex size-9 overflow-hidden rounded-full border border-primary/20"
@@ -519,7 +508,7 @@ function MobileRankings({
                     storySlug={story.slug}
                     to={buildChapterHref(story.slug, story.firstChapterSlug)}
                   >
-                    <span className="material-symbols-outlined text-base">play_arrow</span>
+                    <MaterialSymbol name="play_arrow" className="text-base" />
                     Read Now
                   </PrefetchableChapterLink>
                 ) : (
@@ -528,7 +517,7 @@ function MobileRankings({
                     storySlug={story.slug}
                     to={buildStoryHref(story.slug)}
                   >
-                    <span className="material-symbols-outlined text-base">visibility</span>
+                    <MaterialSymbol name="visibility" className="text-base" />
                     Open Story
                   </PrefetchableStoryLink>
                 )}

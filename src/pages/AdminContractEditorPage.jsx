@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import MaterialSymbol from "../components/MaterialSymbol";
 import {
   useMutation,
   useQuery,
@@ -46,7 +47,7 @@ import {
 function SectionHeading({ icon, title }) {
   return (
     <div className="flex items-center gap-2 border-b border-primary/10 pb-3">
-      <span className="material-symbols-outlined text-primary">{icon}</span>
+      <MaterialSymbol name={icon} className="text-primary" />
       <h2 className="text-lg font-black tracking-tight">{title}</h2>
     </div>
   );
@@ -60,7 +61,7 @@ function ToolbarButton({ icon, label, onClick }) {
       onClick={onClick}
       type="button"
     >
-      <span className="material-symbols-outlined text-[18px]">{icon}</span>
+      <MaterialSymbol name={icon} className="text-[18px]" />
     </button>
   );
 }
@@ -391,7 +392,7 @@ export default function AdminContractEditorPage() {
                 className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs font-black uppercase tracking-[0.18em] text-slate-200 transition-colors hover:bg-white/10"
                 to={adminContractTemplatesHref}
               >
-                <span className="material-symbols-outlined text-base">description</span>
+                <MaterialSymbol name="description" className="text-base" />
                 Template Library
               </Link>
             </div>
@@ -683,7 +684,7 @@ export default function AdminContractEditorPage() {
           <Reveal className="rounded-[28px] border border-primary/10 bg-white p-6 shadow-[0_24px_60px_-36px_rgba(13,15,22,0.35)] dark:bg-primary/5">
             <div className="flex items-center justify-between gap-3 border-b border-primary/10 pb-3">
               <div className="flex items-center gap-2">
-                <span className="material-symbols-outlined text-primary">edit_note</span>
+                <MaterialSymbol name="edit_note" className="text-primary" />
                 <h2 className="text-lg font-black tracking-tight">Contract Body Editor</h2>
               </div>
               <span className="rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-xs font-black uppercase tracking-[0.18em] text-primary">

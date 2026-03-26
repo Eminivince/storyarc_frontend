@@ -1,12 +1,11 @@
 import Reveal from "./Reveal";
 import ActivityFeedCard from "./ActivityFeedCard";
+import MaterialSymbol from "./MaterialSymbol";
 
 function EmptyFeed({ own = false }) {
   return (
     <div className="rounded-xl border border-primary/10 bg-primary/5 p-5 text-center">
-      <span className="material-symbols-outlined text-2xl text-primary">
-        {own ? "history" : "group"}
-      </span>
+      <MaterialSymbol name={own ? "history" : "group"} className="text-2xl text-primary" />
       <p className="mt-2 text-sm font-bold">
         {own ? "No activity yet" : "No updates from people you follow"}
       </p>
@@ -48,7 +47,7 @@ export default function ActivityFeedSection({
   return (
     <Reveal as="section" className={className}>
       <h3 className="mb-4 flex items-center gap-2 text-lg font-bold">
-        <span className="material-symbols-outlined text-primary">{icon}</span>
+        <MaterialSymbol name={icon} className="text-primary" />
         {title}
       </h3>
 

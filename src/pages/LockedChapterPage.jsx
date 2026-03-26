@@ -8,6 +8,7 @@ import Reveal from "../components/Reveal";
 import SeoMetadata, { createSeoDescription } from "../components/SeoMetadata";
 import { useMonetization } from "../context/MonetizationContext";
 import { useToast } from "../context/ToastContext";
+import MaterialSymbol from "../components/MaterialSymbol";
 import {
   buildCoinStoreHref,
   buildPlanHref,
@@ -230,21 +231,19 @@ function DesktopLockedChapter({
               className="flex h-10 w-10 items-center justify-center rounded-lg border border-primary/20 bg-primary/10 text-primary transition-colors hover:bg-primary/20"
               type="button"
             >
-              <span className="material-symbols-outlined">share</span>
+              <MaterialSymbol name="share" />
             </button>
             <Link
               className="flex h-10 w-10 items-center justify-center rounded-lg border border-primary/20 bg-primary/10 text-primary transition-colors hover:bg-primary/20"
               to={pricingHref}
             >
-              <span className="material-symbols-outlined">workspace_premium</span>
+              <MaterialSymbol name="workspace_premium" />
             </Link>
             <Link
               className="flex h-10 items-center justify-center gap-2 rounded-lg bg-primary px-4 text-sm font-bold text-background-dark"
               to={coinStoreTo}
             >
-              <span className="material-symbols-outlined text-[20px]">
-                monetization_on
-              </span>
+              <MaterialSymbol name="monetization_on" className="text-[20px]" />
               <span>{coinBalance}</span>
             </Link>
           </div>
@@ -256,9 +255,7 @@ function DesktopLockedChapter({
               <Link className="transition-colors hover:text-primary" to={storyTo}>
                 {storyTitle}
               </Link>
-              <span className="material-symbols-outlined text-sm">
-                chevron_right
-              </span>
+              <MaterialSymbol name="chevron_right" className="text-sm" />
               <span className="text-slate-100">Chapter {chapterNumber}</span>
             </nav>
 
@@ -301,9 +298,7 @@ function DesktopLockedChapter({
                     viewport={{ amount: 0.25, once: true }}
                   >
                     <div className="mb-6 inline-flex rounded-full bg-primary/20 p-4">
-                      <span className="material-symbols-outlined text-4xl text-primary">
-                        {chapterUnlocked ? "lock_open" : "lock"}
-                      </span>
+                      <MaterialSymbol name={chapterUnlocked ? "lock_open" : "lock"} className="text-4xl text-primary" />
                     </div>
                     <h3 className="mb-2 text-2xl font-bold">
                       {chapterUnlocked ? "Chapter Ready" : "Continue Reading"}
@@ -320,9 +315,7 @@ function DesktopLockedChapter({
                           Wallet
                         </p>
                         <p className="mt-2 flex items-center gap-2 text-lg font-bold text-primary">
-                          <span className="material-symbols-outlined text-base">
-                            monetization_on
-                          </span>
+                          <MaterialSymbol name="monetization_on" className="text-base" />
                           {coinBalance}
                         </p>
                       </div>
@@ -343,11 +336,9 @@ function DesktopLockedChapter({
                         onClick={handlePrimaryAction}
                         type="button"
                       >
-                        <span className="material-symbols-outlined">
-                          {chapterUnlocked || canUnlockWithCoins
+                        <MaterialSymbol name={chapterUnlocked || canUnlockWithCoins
                             ? "menu_book"
-                            : "shopping_bag"}
-                        </span>
+                            : "shopping_bag"} />
                         {primaryLabel}
                       </button>
 
@@ -365,9 +356,7 @@ function DesktopLockedChapter({
                         className="flex w-full items-center justify-center gap-3 rounded-lg border-2 border-slate-700 py-4 font-bold text-slate-200 transition-all hover:border-primary/50 hover:bg-white/5"
                         to={premiumHref}
                       >
-                        <span className="material-symbols-outlined">
-                          workspace_premium
-                        </span>
+                        <MaterialSymbol name="workspace_premium" />
                         {premiumLabel}
                       </Link>
 
@@ -378,9 +367,7 @@ function DesktopLockedChapter({
                       to={pricingHref}
                     >
                       Compare all premium plans
-                      <span className="material-symbols-outlined text-sm">
-                        arrow_forward
-                      </span>
+                      <MaterialSymbol name="arrow_forward" className="text-sm" />
                     </Link>
 
                     <div className="mt-8 flex items-center justify-center gap-2">
@@ -439,7 +426,7 @@ function MobileLockedChapter({
       <header className="sticky top-0 z-10 flex items-center border-b border-slate-200 bg-background-light px-4 py-3 dark:border-primary/10 dark:bg-background-dark/95">
         <div className="flex items-center gap-3">
           <Link className="transition-colors hover:text-primary" to={chapterCompleteTo}>
-            <span className="material-symbols-outlined">arrow_back</span>
+            <MaterialSymbol name="arrow_back" />
           </Link>
           <div>
             <h1 className="text-sm font-bold leading-tight">
@@ -453,10 +440,10 @@ function MobileLockedChapter({
         <div className="flex-1" />
         <div className="flex items-center gap-4">
           <Link className="transition-colors hover:text-primary" to={pricingHref}>
-            <span className="material-symbols-outlined text-xl">workspace_premium</span>
+            <MaterialSymbol name="workspace_premium" className="text-xl" />
           </Link>
           <Link className="transition-colors hover:text-primary" to={coinStoreTo}>
-            <span className="material-symbols-outlined text-xl">more_vert</span>
+            <MaterialSymbol name="more_vert" className="text-xl" />
           </Link>
         </div>
       </header>
@@ -495,9 +482,7 @@ function MobileLockedChapter({
                 viewport={{ amount: 0.4, once: true }}
               >
                 <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
-                  <span className="material-symbols-outlined fill-1 text-4xl text-primary">
-                    {chapterUnlocked ? "lock_open" : "lock"}
-                  </span>
+                  <MaterialSymbol name={chapterUnlocked ? "lock_open" : "lock"} filled className="text-4xl text-primary" />
                 </div>
                 <h2 className="mb-2 text-xl font-bold">
                   {chapterUnlocked
@@ -516,9 +501,7 @@ function MobileLockedChapter({
                       Your Balance
                     </span>
                     <div className="flex items-center gap-1">
-                      <span className="material-symbols-outlined text-sm text-primary">
-                        monetization_on
-                      </span>
+                      <MaterialSymbol name="monetization_on" className="text-sm text-primary" />
                       <span className="font-bold">{coinBalance}</span>
                     </div>
                   </div>
@@ -528,9 +511,7 @@ function MobileLockedChapter({
                       Chapter Cost
                     </span>
                     <div className="flex items-center gap-1">
-                      <span className="material-symbols-outlined text-sm text-primary">
-                        monetization_on
-                      </span>
+                      <MaterialSymbol name="monetization_on" className="text-sm text-primary" />
                       <span className="font-bold">{lockedChapterCost}</span>
                     </div>
                   </div>
@@ -558,9 +539,7 @@ function MobileLockedChapter({
                   className="mt-4 flex w-full items-center justify-center gap-2 rounded-lg border border-primary/20 bg-primary/5 py-4 text-sm font-bold text-primary transition-colors hover:bg-primary/10"
                   to={premiumHref}
                 >
-                  <span className="material-symbols-outlined text-base">
-                    workspace_premium
-                  </span>
+                  <MaterialSymbol name="workspace_premium" className="text-base" />
                   {premiumLabel}
                 </Link>
                 <Link
@@ -568,9 +547,7 @@ function MobileLockedChapter({
                   to={pricingHref}
                 >
                   Compare plans
-                  <span className="material-symbols-outlined text-sm">
-                    arrow_forward
-                  </span>
+                  <MaterialSymbol name="arrow_forward" className="text-sm" />
                 </Link>
               </motion.div>
             </div>
@@ -581,39 +558,29 @@ function MobileLockedChapter({
       <footer className="sticky bottom-0 z-10 w-full border-t border-slate-200 bg-background-light px-2 pb-4 pt-2 backdrop-blur-sm dark:border-primary/10 dark:bg-background-dark/95">
         <div className="mx-auto flex max-w-lg justify-around items-end">
           <Link className="group flex flex-col items-center gap-1" to={storyTo}>
-            <span className="material-symbols-outlined text-slate-400 transition-colors group-hover:text-primary">
-              library_books
-            </span>
+            <MaterialSymbol name="library_books" className="text-slate-400 transition-colors group-hover:text-primary" />
             <span className="text-[10px] font-medium text-slate-400 group-hover:text-primary">
               Library
             </span>
           </Link>
           <Link className="group flex flex-col items-center gap-1" to={buildSearchHref("Fantasy")}>
-            <span className="material-symbols-outlined text-slate-400 transition-colors group-hover:text-primary">
-              explore
-            </span>
+            <MaterialSymbol name="explore" className="text-slate-400 transition-colors group-hover:text-primary" />
             <span className="text-[10px] font-medium text-slate-400 group-hover:text-primary">
               Discover
             </span>
           </Link>
           <Link className="group flex flex-col items-center gap-1" to={chapterCompleteTo}>
-            <span className="material-symbols-outlined fill-1 text-primary">
-              auto_stories
-            </span>
+            <MaterialSymbol name="auto_stories" filled className="text-primary" />
             <span className="text-[10px] font-medium text-primary">Reading</span>
           </Link>
           <Link className="group flex flex-col items-center gap-1" to={pricingHref}>
-            <span className="material-symbols-outlined text-slate-400 transition-colors group-hover:text-primary">
-              notifications
-            </span>
+            <MaterialSymbol name="notifications" className="text-slate-400 transition-colors group-hover:text-primary" />
             <span className="text-[10px] font-medium text-slate-400 group-hover:text-primary">
               Plans
             </span>
           </Link>
           <Link className="group flex flex-col items-center gap-1" to="/dashboard">
-            <span className="material-symbols-outlined text-slate-400 transition-colors group-hover:text-primary">
-              person
-            </span>
+            <MaterialSymbol name="person" className="text-slate-400 transition-colors group-hover:text-primary" />
             <span className="text-[10px] font-medium text-slate-400 group-hover:text-primary">
               Profile
             </span>

@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import AppFooter from "../components/AppFooter";
 import PublicNav from "../components/PublicNav";
 import SeoMetadata from "../components/SeoMetadata";
+import MaterialSymbol from "../components/MaterialSymbol";
 
 const monetizationFeatures = [
   {
@@ -104,7 +105,7 @@ export default function WriterBenefitsPage() {
                 className="glass-card group flex flex-col gap-3 rounded-xl p-5 transition-all hover:border-primary/40 md:gap-4 md:rounded-2xl md:p-8"
               >
                 <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary transition-all group-hover:bg-primary group-hover:text-background-dark md:h-12 md:w-12 md:rounded-xl">
-                  <span className="material-symbols-outlined text-2xl md:text-3xl">{feature.icon}</span>
+                  <MaterialSymbol name={feature.icon} className="text-2xl md:text-3xl" />
                 </div>
                 <h3 className="text-base font-bold text-white md:text-xl">{feature.title}</h3>
                 <p className="text-xs leading-relaxed text-slate-400 md:text-sm">
@@ -138,21 +139,15 @@ export default function WriterBenefitsPage() {
                 </p>
                 <ul className="mb-5 flex-grow space-y-2 md:mb-8 md:space-y-4">
                   <li className="flex items-center gap-2 text-xs text-slate-300 md:gap-3 md:text-sm">
-                    <span className="material-symbols-outlined text-xs text-primary md:text-sm">
-                      check_circle
-                    </span>
+                    <MaterialSymbol name="check_circle" className="text-xs text-primary md:text-sm" />
                     30% Net Revenue Share
                   </li>
                   <li className="flex items-center gap-2 text-xs text-slate-300 md:gap-3 md:text-sm">
-                    <span className="material-symbols-outlined text-xs text-primary md:text-sm">
-                      check_circle
-                    </span>
+                    <MaterialSymbol name="check_circle" className="text-xs text-primary md:text-sm" />
                     Keep all IP rights
                   </li>
                   <li className="flex items-center gap-2 text-xs text-slate-300 md:gap-3 md:text-sm">
-                    <span className="material-symbols-outlined text-xs text-primary md:text-sm">
-                      check_circle
-                    </span>
+                    <MaterialSymbol name="check_circle" className="text-xs text-primary md:text-sm" />
                     No posting restrictions
                   </li>
                 </ul>
@@ -176,27 +171,19 @@ export default function WriterBenefitsPage() {
                 </p>
                 <ul className="mb-5 flex-grow space-y-2 md:mb-8 md:space-y-4">
                   <li className="flex items-center gap-2 text-xs text-slate-300 md:gap-3 md:text-sm">
-                    <span className="material-symbols-outlined text-xs text-primary md:text-sm">
-                      check_circle
-                    </span>
+                    <MaterialSymbol name="check_circle" className="text-xs text-primary md:text-sm" />
                     50% Net Revenue Share
                   </li>
                   <li className="flex items-center gap-2 text-xs text-slate-300 md:gap-3 md:text-sm">
-                    <span className="material-symbols-outlined text-xs text-primary md:text-sm">
-                      check_circle
-                    </span>
+                    <MaterialSymbol name="check_circle" className="text-xs text-primary md:text-sm" />
                     Priority platform placement
                   </li>
                   <li className="flex items-center gap-2 text-xs text-slate-300 md:gap-3 md:text-sm">
-                    <span className="material-symbols-outlined text-xs text-primary md:text-sm">
-                      check_circle
-                    </span>
+                    <MaterialSymbol name="check_circle" className="text-xs text-primary md:text-sm" />
                     Dedicated Editor support
                   </li>
                   <li className="flex items-center gap-2 text-xs text-slate-300 md:gap-3 md:text-sm">
-                    <span className="material-symbols-outlined text-xs text-primary md:text-sm">
-                      check_circle
-                    </span>
+                    <MaterialSymbol name="check_circle" className="text-xs text-primary md:text-sm" />
                     Marketing spend allocation
                   </li>
                 </ul>
@@ -219,21 +206,15 @@ export default function WriterBenefitsPage() {
                 </p>
                 <ul className="mb-5 flex-grow space-y-2 md:mb-8 md:space-y-4">
                   <li className="flex items-center gap-2 text-xs text-slate-300 md:gap-3 md:text-sm">
-                    <span className="material-symbols-outlined text-xs text-primary md:text-sm">
-                      check_circle
-                    </span>
+                    <MaterialSymbol name="check_circle" className="text-xs text-primary md:text-sm" />
                     Custom signing bonuses
                   </li>
                   <li className="flex items-center gap-2 text-xs text-slate-300 md:gap-3 md:text-sm">
-                    <span className="material-symbols-outlined text-xs text-primary md:text-sm">
-                      check_circle
-                    </span>
+                    <MaterialSymbol name="check_circle" className="text-xs text-primary md:text-sm" />
                     Advanced royalty advances
                   </li>
                   <li className="flex items-center gap-2 text-xs text-slate-300 md:gap-3 md:text-sm">
-                    <span className="material-symbols-outlined text-xs text-primary md:text-sm">
-                      check_circle
-                    </span>
+                    <MaterialSymbol name="check_circle" className="text-xs text-primary md:text-sm" />
                     Brand partnership access
                   </li>
                 </ul>
@@ -272,7 +253,7 @@ export default function WriterBenefitsPage() {
             <div className="space-y-4 md:space-y-6">
               <div className="flex gap-3 md:gap-4">
                 <div className="mt-0.5 text-primary md:mt-1">
-                  <span className="material-symbols-outlined text-2xl md:text-3xl">gavel</span>
+                  <MaterialSymbol name="gavel" className="text-2xl md:text-3xl" />
                 </div>
                 <div>
                   <h4 className="text-sm font-bold text-white md:text-base">IP Ownership</h4>
@@ -284,7 +265,7 @@ export default function WriterBenefitsPage() {
               </div>
               <div className="flex gap-3 md:gap-4">
                 <div className="mt-0.5 text-primary md:mt-1">
-                  <span className="material-symbols-outlined text-2xl md:text-3xl">palette</span>
+                  <MaterialSymbol name="palette" className="text-2xl md:text-3xl" />
                 </div>
                 <div>
                   <h4 className="text-sm font-bold text-white md:text-base">Creative Freedom</h4>
@@ -315,9 +296,7 @@ export default function WriterBenefitsPage() {
                 key={tool.label}
                 className="flex flex-col items-center gap-2 rounded-lg border border-neutral-border bg-neutral-dark p-4 text-center md:gap-3 md:rounded-xl md:p-6"
               >
-                <span className="material-symbols-outlined text-2xl text-primary md:text-3xl">
-                  {tool.icon}
-                </span>
+                <MaterialSymbol name={tool.icon} className="text-2xl text-primary md:text-3xl" />
                 <span className="text-xs font-bold text-white md:text-sm">{tool.label}</span>
               </div>
             ))}

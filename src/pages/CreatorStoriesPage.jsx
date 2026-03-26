@@ -5,6 +5,7 @@ import RouteLoadingScreen from "../components/RouteLoadingScreen";
 import UserAvatar from "../components/UserAvatar";
 import { useAuth } from "../context/AuthContext";
 import { useCreator } from "../context/CreatorContext";
+import MaterialSymbol from "../components/MaterialSymbol";
 import {
   authorDashboardHref,
   creatorStoryCreateHref,
@@ -28,7 +29,7 @@ function StoryCover({ image, title }) {
 
   return (
     <div className="flex size-full items-center justify-center bg-gradient-to-br from-primary/30 via-primary/10 to-transparent">
-      <span className="material-symbols-outlined text-5xl text-primary/80">auto_stories</span>
+      <MaterialSymbol name="auto_stories" className="text-5xl text-primary/80" />
     </div>
   );
 }
@@ -61,7 +62,7 @@ function DesktopStoryCard({ onOpenStory, story }) {
             <p className="text-sm font-medium text-primary/80">{story.genre || story.subtitle}</p>
           </div>
           <button className="text-slate-500 transition-colors hover:text-white" type="button">
-            <span className="material-symbols-outlined">more_vert</span>
+            <MaterialSymbol name="more_vert" />
           </button>
         </div>
         <div className="my-6 grid grid-cols-2 gap-4">
@@ -109,16 +110,14 @@ function MobileStoryCard({ onOpenStory, story }) {
         <div className="relative aspect-[3/4] w-24 flex-shrink-0 overflow-hidden rounded-lg bg-slate-800 shadow-lg">
           <StoryCover image={story.image ?? story.coverImage} title={story.title} />
           <div className="absolute inset-0 flex items-center justify-center bg-black/40">
-            <span className="material-symbols-outlined text-3xl text-primary/40">
-              {isPending ? "menu_book" : "rocket_launch"}
-            </span>
+            <MaterialSymbol name={isPending ? "menu_book" : "rocket_launch"} className="text-3xl text-primary/40" />
           </div>
         </div>
         <div className="flex flex-1 flex-col justify-between py-1">
           <div className="space-y-1">
             <div className="flex items-start justify-between">
               <h3 className="line-clamp-2 text-lg font-bold leading-tight">{story.title}</h3>
-              <span className="material-symbols-outlined text-xl text-slate-500">more_vert</span>
+              <MaterialSymbol name="more_vert" className="text-xl text-slate-500" />
             </div>
             <div className="flex flex-wrap gap-2 pt-1">
               <span
@@ -151,14 +150,14 @@ function MobileStoryCard({ onOpenStory, story }) {
           onClick={() => onOpenStory(story.slug)}
           type="button"
         >
-          <span className="material-symbols-outlined text-lg">edit</span>
+          <MaterialSymbol name="edit" className="text-lg" />
           Open Studio
         </button>
         <Link
           className="flex items-center justify-center gap-2 border-l border-white/5 py-3.5 text-sm font-semibold text-slate-300 transition-colors hover:bg-white/5"
           to={getCreatorChapterEditorHref(story.slug)}
         >
-          <span className="material-symbols-outlined text-lg">add_circle</span>
+          <MaterialSymbol name="add_circle" className="text-lg" />
           Add Chapter
         </Link>
       </div>
@@ -186,9 +185,7 @@ function DesktopCreatorStories({ memberName, onOpenStory, searchTerm, setSearchT
           <header className="flex h-16 shrink-0 items-center justify-between border-b border-primary/10 px-8 dark:border-accent-dark/30">
             <div className="flex max-w-xl flex-1 items-center">
               <div className="relative w-full">
-                <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
-                  search
-                </span>
+                <MaterialSymbol name="search" className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                 <input
                   className="w-full rounded-lg border-none bg-slate-200 py-2 pl-10 pr-4 text-sm placeholder:text-slate-500 focus:ring-1 focus:ring-primary dark:bg-primary/5 dark:text-slate-100 dark:placeholder:text-primary/30"
                   onChange={(e) => setSearchTerm(e.target.value)}
@@ -203,13 +200,13 @@ function DesktopCreatorStories({ memberName, onOpenStory, searchTerm, setSearchT
                 className="rounded-lg p-2 text-slate-400 transition-colors hover:text-primary"
                 to="/account/notifications"
               >
-                <span className="material-symbols-outlined">notifications</span>
+                <MaterialSymbol name="notifications" />
               </Link>
               <Link
                 className="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-bold text-background-dark shadow-lg shadow-primary/10 transition-all hover:bg-primary/90"
                 to={creatorStoryCreateHref}
               >
-                <span className="material-symbols-outlined text-[18px]">add</span>
+                <MaterialSymbol name="add" className="text-[18px]" />
                 Start a New Story
               </Link>
             </div>
@@ -271,9 +268,7 @@ function DesktopCreatorStories({ memberName, onOpenStory, searchTerm, setSearchT
                   to={creatorStoryCreateHref}
                 >
                   <div className="mb-4 flex size-16 items-center justify-center rounded-full bg-primary/10 transition-colors group-hover:bg-primary/20 dark:bg-accent-dark/30">
-                    <span className="material-symbols-outlined text-4xl text-slate-500 transition-colors group-hover:text-primary">
-                      add
-                    </span>
+                    <MaterialSymbol name="add" className="text-4xl text-slate-500 transition-colors group-hover:text-primary" />
                   </div>
                   <p className="text-lg font-bold text-slate-400 transition-colors group-hover:text-slate-200">
                     Start a New Story
@@ -287,7 +282,7 @@ function DesktopCreatorStories({ memberName, onOpenStory, searchTerm, setSearchT
 
             <aside className="hidden w-80 shrink-0 overflow-y-auto border-l border-primary/10 p-8 dark:border-accent-dark/30 2xl:block">
               <h3 className="mb-6 flex items-center gap-2 text-lg font-bold">
-                <span className="material-symbols-outlined text-primary">analytics</span>
+                <MaterialSymbol name="analytics" className="text-primary" />
                 Author Insights
               </h3>
               <div className="space-y-4">
@@ -297,7 +292,7 @@ function DesktopCreatorStories({ memberName, onOpenStory, searchTerm, setSearchT
                       Weekly Growth
                     </span>
                     <span className="flex items-center text-xs text-green-500">
-                      +12% <span className="material-symbols-outlined text-[14px]">trending_up</span>
+                      +12% <MaterialSymbol name="trending_up" className="text-[14px]" />
                     </span>
                   </div>
                   <p className="text-2xl font-bold">2,482</p>
@@ -319,7 +314,7 @@ function DesktopCreatorStories({ memberName, onOpenStory, searchTerm, setSearchT
                 </div>
               </div>
               <h3 className="mb-6 mt-10 flex items-center gap-2 text-lg font-bold">
-                <span className="material-symbols-outlined text-primary">history</span>
+                <MaterialSymbol name="history" className="text-primary" />
                 Recent Activity
               </h3>
               <div className="space-y-6">
@@ -361,7 +356,7 @@ function MobileCreatorStories({ memberName, onOpenStory, stories }) {
             className="flex size-9 items-center justify-center rounded-lg transition-colors hover:bg-primary/10"
             to={authorDashboardHref}
           >
-            <span className="material-symbols-outlined text-slate-100">menu</span>
+            <MaterialSymbol name="menu" className="text-slate-100" />
           </Link>
           <h2 className="text-xl font-bold leading-tight tracking-tight text-primary">
             TaleStead
@@ -393,7 +388,7 @@ function MobileCreatorStories({ memberName, onOpenStory, stories }) {
             className="flex w-full items-center justify-center gap-3 rounded-lg border-2 border-dashed border-primary/20 bg-primary/5 py-6 font-bold text-primary transition-all hover:bg-primary/10"
             to={creatorStoryCreateHref}
           >
-            <span className="material-symbols-outlined">add_circle</span>
+            <MaterialSymbol name="add_circle" />
             Start a New Story
           </Link>
         </div>

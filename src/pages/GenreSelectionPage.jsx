@@ -4,6 +4,7 @@ import { LogoBrand } from "../components/LogoBrand";
 import Reveal from "../components/Reveal";
 import { useOnboarding } from "../context/OnboardingContext";
 import { useToast } from "../context/ToastContext";
+import MaterialSymbol from "../components/MaterialSymbol";
 
 const desktopGenres = [
   { name: "Fantasy", icon: "storm", description: "Magic & Dragons" },
@@ -107,7 +108,7 @@ function DesktopGenreSelection() {
             className="flex h-10 w-10 items-center justify-center rounded-lg bg-slate-200 text-slate-900 dark:bg-primary/10 dark:text-primary"
             to="/auth"
           >
-            <span className="material-symbols-outlined">close</span>
+            <MaterialSymbol name="close" />
           </Link>
         </header>
 
@@ -150,20 +151,17 @@ function DesktopGenreSelection() {
                 <div
                   className={selected ? "text-primary" : "text-slate-400 dark:text-primary/60"}
                 >
-                  <span
-                    className="material-symbols-outlined text-3xl"
-                    style={selected ? { fontVariationSettings: "'FILL' 1" } : undefined}
-                  >
-                    {genre.icon}
-                  </span>
+                  <MaterialSymbol
+                    className="text-3xl"
+                    filled={selected}
+                    name={genre.icon}
+                  />
                 </div>
                 <div className="flex flex-col gap-1">
                   <div className="flex items-center justify-between">
                     <h2 className="text-lg font-bold leading-tight">{genre.name}</h2>
                     {selected && (
-                      <span className="material-symbols-outlined text-xl text-primary">
-                        check_circle
-                      </span>
+                      <MaterialSymbol name="check_circle" className="text-xl text-primary" />
                     )}
                   </div>
                   <p className="text-sm text-slate-600 dark:text-slate-400">
@@ -233,9 +231,7 @@ function MobileGenreSelection() {
           className="flex size-10 items-center justify-center rounded-full transition-colors hover:bg-slate-100 dark:hover:bg-slate-800"
           to="/auth"
         >
-          <span className="material-symbols-outlined text-slate-900 dark:text-slate-100">
-            arrow_back
-          </span>
+          <MaterialSymbol name="arrow_back" className="text-slate-900 dark:text-slate-100" />
         </Link>
         <h2 className="flex-1 pr-10 text-center text-lg font-bold tracking-tight">
           Select Genres
@@ -291,15 +287,11 @@ function MobileGenreSelection() {
                 />
                 {selected && (
                   <div className="absolute right-2 top-2 flex size-6 items-center justify-center rounded-full bg-primary text-background-dark">
-                    <span className="material-symbols-outlined text-sm font-bold">
-                      check
-                    </span>
+                    <MaterialSymbol name="check" className="text-sm font-bold" />
                   </div>
                 )}
                 <div className="absolute bottom-0 left-0 right-0 p-4">
-                  <span className="material-symbols-outlined mb-1 text-primary">
-                    {genre.icon}
-                  </span>
+                  <MaterialSymbol name={genre.icon} className="mb-1 text-primary" />
                   <p className="text-base font-bold leading-tight text-white">
                     {genre.name}
                   </p>

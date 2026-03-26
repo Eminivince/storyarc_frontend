@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useOfflineChapters } from "../hooks/useOfflineChapters";
 import { useToast } from "../context/ToastContext";
+import MaterialSymbol from "./MaterialSymbol";
 
 export default function DownloadForOfflineButton({ storySlug, chapters, storyMeta, size = "sm" }) {
   const { isDownloading, progress, downloadedSlugs, downloadStory, removeStory } =
@@ -51,7 +52,7 @@ export default function DownloadForOfflineButton({ storySlug, chapters, storyMet
 
     return (
       <span className={`${baseClass} cursor-wait border-primary/20 bg-primary/5 text-primary`}>
-        <span className="material-symbols-outlined animate-spin text-sm">progress_activity</span>
+        <MaterialSymbol name="progress_activity" className="animate-spin text-sm" />
         {percent}%
       </span>
     );
@@ -68,9 +69,7 @@ export default function DownloadForOfflineButton({ storySlug, chapters, storyMet
         onClick={handleClick}
         type="button"
       >
-        <span className="material-symbols-outlined text-sm">
-          {confirmRemove ? "delete" : "download_done"}
-        </span>
+        <MaterialSymbol name={confirmRemove ? "delete" : "download_done"} className="text-sm" />
         {confirmRemove ? "Remove?" : "Saved"}
       </button>
     );
@@ -82,7 +81,7 @@ export default function DownloadForOfflineButton({ storySlug, chapters, storyMet
       onClick={handleClick}
       type="button"
     >
-      <span className="material-symbols-outlined text-sm">download</span>
+      <MaterialSymbol name="download" className="text-sm" />
       Download
     </button>
   );

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Link, Navigate, useLocation, useSearchParams } from "react-router-dom";
 import { LogoBrand } from "../components/LogoBrand";
 import ReaderStateScreen from "../components/ReaderStateScreen";
@@ -6,6 +6,7 @@ import Reveal from "../components/Reveal";
 import RouteLoadingScreen from "../components/RouteLoadingScreen";
 import { useMonetization } from "../context/MonetizationContext";
 import { useToast } from "../context/ToastContext";
+import MaterialSymbol from "../components/MaterialSymbol";
 import {
   buildCheckoutStatusHref,
   buildCoinStoreHref,
@@ -99,17 +100,13 @@ function ProviderSelector({ availableProviders, selectedProvider, onSelectProvid
                     : "bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400"
                 }`}
               >
-                <span className="material-symbols-outlined text-lg">
-                  {meta.icon}
-                </span>
+                <MaterialSymbol name={meta.icon} className="text-lg" />
               </div>
               <span className={`flex-1 text-sm font-semibold ${isSelected ? "text-primary" : ""}`}>
                 {meta.label}
               </span>
               {isSelected && (
-                <span className="material-symbols-outlined text-primary">
-                  check_circle
-                </span>
+                <MaterialSymbol name="check_circle" className="text-primary" />
               )}
             </button>
           );
@@ -233,9 +230,7 @@ function DesktopCheckout({
             <div className="space-y-6 lg:col-span-5">
               <Reveal className="rounded-xl border border-primary/20 bg-primary/5 p-6 dark:bg-primary/10">
                 <h3 className="mb-6 flex items-center gap-2 text-xl font-bold">
-                  <span className="material-symbols-outlined text-primary">
-                    shopping_bag
-                  </span>
+                  <MaterialSymbol name="shopping_bag" className="text-primary" />
                   Order Summary
                 </h3>
                 <div className="space-y-4">
@@ -281,7 +276,7 @@ function DesktopCheckout({
                     className="flex items-center gap-2 text-slate-500 opacity-70 grayscale dark:text-slate-400"
                     key={label}
                   >
-                    <span className="material-symbols-outlined">{icon}</span>
+                    <MaterialSymbol name={icon} />
                     <span className="text-xs font-bold uppercase tracking-widest">
                       {label}
                     </span>
@@ -305,9 +300,7 @@ function DesktopCheckout({
                 <div className="mb-8 rounded-2xl border border-primary/20 bg-primary/5 p-5 dark:bg-primary/10">
                   <div className="flex items-start gap-4">
                     <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/15 text-primary">
-                      <span className="material-symbols-outlined">
-                        {providerMeta.icon}
-                      </span>
+                      <MaterialSymbol name={providerMeta.icon} />
                     </div>
                     <div className="space-y-2">
                       <p className="text-sm font-bold uppercase tracking-[0.25em] text-primary">
@@ -326,9 +319,7 @@ function DesktopCheckout({
                 <form className="space-y-6" onSubmit={onSubmit}>
                   <div className="grid gap-4 rounded-2xl border border-slate-200 bg-slate-50 p-5 dark:border-slate-800 dark:bg-background-dark/70">
                     <div className="flex items-start gap-3">
-                      <span className="material-symbols-outlined text-primary">
-                        verified_user
-                      </span>
+                      <MaterialSymbol name="verified_user" className="text-primary" />
                       <div>
                         <p className="font-semibold">Provider-hosted flow</p>
                         <p className="text-sm text-slate-500 dark:text-slate-400">
@@ -337,9 +328,7 @@ function DesktopCheckout({
                       </div>
                     </div>
                     <div className="flex items-start gap-3">
-                      <span className="material-symbols-outlined text-primary">
-                        account_balance_wallet
-                      </span>
+                      <MaterialSymbol name="account_balance_wallet" className="text-primary" />
                       <div>
                         <p className="font-semibold">Choose payment details there</p>
                         <p className="text-sm text-slate-500 dark:text-slate-400">
@@ -348,9 +337,7 @@ function DesktopCheckout({
                       </div>
                     </div>
                     <div className="flex items-start gap-3">
-                      <span className="material-symbols-outlined text-primary">
-                        sync_lock
-                      </span>
+                      <MaterialSymbol name="sync_lock" className="text-primary" />
                       <div>
                         <p className="font-semibold">Automatic access refresh</p>
                         <p className="text-sm text-slate-500 dark:text-slate-400">
@@ -365,7 +352,7 @@ function DesktopCheckout({
                     disabled={isBusy}
                     type="submit"
                   >
-                    <span className="material-symbols-outlined">lock</span>
+                    <MaterialSymbol name="lock" />
                     {isBusy
                       ? `Opening ${providerMeta.label}...`
                       : `Continue to ${providerMeta.label} • ${formatPrice(details.total, currency)}`}
@@ -428,7 +415,7 @@ function MobileCheckout({
             className="flex h-12 w-12 items-center justify-start text-slate-900 dark:text-slate-100"
             to={returnTo}
           >
-            <span className="material-symbols-outlined text-2xl">arrow_back</span>
+            <MaterialSymbol name="arrow_back" className="text-2xl" />
           </Link>
           <h2 className="flex-1 text-center text-lg font-bold tracking-tight">
             Checkout
@@ -480,9 +467,7 @@ function MobileCheckout({
           </div>
           <div className="mb-6 rounded-xl border border-primary/20 bg-primary/5 p-4 dark:border-primary/30 dark:bg-primary/10">
             <div className="flex items-start gap-3">
-              <span className="material-symbols-outlined text-primary">
-                {providerMeta.icon}
-              </span>
+              <MaterialSymbol name={providerMeta.icon} className="text-primary" />
               <div>
                 <p className="font-semibold">{providerMeta.label}</p>
                 <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">
@@ -496,17 +481,13 @@ function MobileCheckout({
         <form className="space-y-4 px-4 pb-10" onSubmit={onSubmit}>
           <div className="space-y-3 rounded-xl border border-slate-200 bg-white px-4 py-4 dark:border-primary/20 dark:bg-primary/5">
             <div className="flex items-start gap-3">
-              <span className="material-symbols-outlined text-primary">
-                verified_user
-              </span>
+              <MaterialSymbol name="verified_user" className="text-primary" />
               <p className="text-sm text-slate-600 dark:text-slate-300">
                 A secure {providerMeta.label} window opens to complete the payment.
               </p>
             </div>
             <div className="flex items-start gap-3">
-              <span className="material-symbols-outlined text-primary">
-                account_balance_wallet
-              </span>
+              <MaterialSymbol name="account_balance_wallet" className="text-primary" />
               <p className="text-sm text-slate-600 dark:text-slate-300">
                 {providerMeta.note}
               </p>
@@ -515,9 +496,7 @@ function MobileCheckout({
 
           <div className="sticky bottom-0 border-t border-slate-200 bg-background-light p-4 dark:border-primary/10 dark:bg-background-dark">
             <div className="mb-4 flex items-center justify-center gap-2">
-              <span className="material-symbols-outlined text-sm text-slate-400 dark:text-primary/60">
-                lock
-              </span>
+              <MaterialSymbol name="lock" className="text-sm text-slate-400 dark:text-primary/60" />
               <span className="text-xs text-slate-400 dark:text-primary/60">
                 Secure SSL Encrypted Payment
               </span>
@@ -532,7 +511,7 @@ function MobileCheckout({
                   ? `Opening ${providerMeta.label}...`
                   : `Continue to ${providerMeta.label} • ${formatPrice(details.total, currency)}`}
               </span>
-              <span className="material-symbols-outlined">arrow_forward</span>
+              <MaterialSymbol name="arrow_forward" />
             </button>
           </div>
         </form>
@@ -587,13 +566,38 @@ export default function CheckoutPage() {
 
   const [selectedProvider, setSelectedProvider] = useState(null);
 
-  useEffect(() => {
-    if (!selectedProvider && availableProviders.length > 0) {
-      setSelectedProvider(availableProviders[0].id);
-    }
-  }, [availableProviders, selectedProvider]);
+  const providerIdSet = useMemo(
+    () => new Set(availableProviders.map((p) => p.id)),
+    [availableProviders],
+  );
 
-  const activeProvider = selectedProvider || checkoutProvider;
+  const defaultVisibleProvider = useMemo(() => {
+    if (providerIdSet.has(checkoutProvider)) {
+      return checkoutProvider;
+    }
+    return availableProviders[0]?.id ?? "flutterwave";
+  }, [availableProviders, checkoutProvider, providerIdSet]);
+
+  useEffect(() => {
+    if (availableProviders.length === 0) {
+      return;
+    }
+    const selectionOk =
+      selectedProvider != null && providerIdSet.has(selectedProvider);
+    if (!selectionOk) {
+      setSelectedProvider(defaultVisibleProvider);
+    }
+  }, [
+    availableProviders,
+    defaultVisibleProvider,
+    providerIdSet,
+    selectedProvider,
+  ]);
+
+  const activeProvider =
+    selectedProvider != null && providerIdSet.has(selectedProvider)
+      ? selectedProvider
+      : defaultVisibleProvider;
   const providerMeta = getCheckoutProviderMeta(activeProvider);
   const unavailableReturnLink =
     kind === "coins" ? buildCoinStoreHref(returnTo) : pricingHref;

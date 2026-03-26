@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import MaterialSymbol from "./MaterialSymbol";
 
 export default function ReaderStateScreen({
   ctaLabel = "Back to Dashboard",
@@ -24,9 +25,7 @@ export default function ReaderStateScreen({
         transition={{ duration: 0.28 }}
       >
         <div className={`mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full border ${toneClass}`}>
-          <span className="material-symbols-outlined text-3xl">
-            {tone === "error" ? "error" : "auto_stories"}
-          </span>
+          <MaterialSymbol name={tone === "error" ? "error" : "auto_stories"} className="text-3xl" />
         </div>
         <h1 className="text-3xl font-black tracking-tight">{title}</h1>
         <p className="mt-4 text-sm leading-relaxed text-slate-600 dark:text-slate-400">

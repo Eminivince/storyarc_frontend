@@ -3,6 +3,7 @@ import AdminPageLayout from "../components/AdminPageLayout";
 import Reveal from "../components/Reveal";
 import UserAvatar from "../components/UserAvatar";
 import { useAdmin } from "../context/AdminContext";
+import MaterialSymbol from "../components/MaterialSymbol";
 import {
   adminQuickLinks,
   adminMessagesHref,
@@ -69,7 +70,7 @@ export default function AdminDashboardPage() {
                 </p>
               </div>
               <div className={`flex size-12 items-center justify-center rounded-2xl ${getToneClasses(stat.tone)}`}>
-                <span className="material-symbols-outlined">{stat.icon}</span>
+                <MaterialSymbol name={stat.icon} />
               </div>
             </div>
             <div className="mt-5 flex items-center justify-between">
@@ -142,7 +143,7 @@ export default function AdminDashboardPage() {
               </p>
               <h2 className="mt-2 text-xl font-black tracking-tight">Focus lanes</h2>
             </div>
-            <span className="material-symbols-outlined text-primary">rocket_launch</span>
+            <MaterialSymbol name="rocket_launch" className="text-primary" />
           </div>
 
           <div className="mt-5 space-y-3">
@@ -154,7 +155,7 @@ export default function AdminDashboardPage() {
               >
                 <div className="flex items-center gap-3">
                   <div className="flex size-11 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-                    <span className="material-symbols-outlined">{link.icon}</span>
+                    <MaterialSymbol name={link.icon} />
                   </div>
                   <div>
                     <p className="font-bold">{link.title}</p>
@@ -163,9 +164,7 @@ export default function AdminDashboardPage() {
                     </p>
                   </div>
                 </div>
-                <span className="material-symbols-outlined text-slate-400">
-                  arrow_forward
-                </span>
+                <MaterialSymbol name="arrow_forward" className="text-slate-400" />
               </Link>
             ))}
           </div>

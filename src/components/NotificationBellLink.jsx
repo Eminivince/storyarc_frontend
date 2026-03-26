@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAccount } from "../context/AccountContext";
+import MaterialSymbol from "./MaterialSymbol";
 import {
   notificationSettingsHref,
   notificationsHref,
@@ -126,9 +127,10 @@ export default function NotificationBellLink({
         onClick={() => setIsOpen((current) => !current)}
         type="button"
       >
-        <span className={`material-symbols-outlined ${iconClassName}`.trim()}>
-          notifications
-        </span>
+        <MaterialSymbol
+          className={iconClassName.trim()}
+          name="notifications"
+        />
         {shouldShowBadge ? (
           <span
             className={`absolute -right-1 -top-1 inline-flex min-h-4 min-w-4 items-center justify-center rounded-full bg-primary px-1 text-[9px] font-bold leading-none text-background-dark ${badgeClassName}`.trim()}
@@ -200,9 +202,7 @@ export default function NotificationBellLink({
                           <span>{item.ctaLabel || "Open notification"}</span>
                         </div>
                       </div>
-                      <span className="material-symbols-outlined shrink-0 text-base text-slate-400">
-                        chevron_right
-                      </span>
+                      <MaterialSymbol name="chevron_right" className="shrink-0 text-base text-slate-400" />
                     </div>
                   </button>
                 );

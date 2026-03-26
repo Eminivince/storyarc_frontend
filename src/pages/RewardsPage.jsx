@@ -7,6 +7,7 @@ import { useAccount } from "../context/AccountContext";
 import { useAuth } from "../context/AuthContext";
 import { usePurchaseStreakShieldMutation } from "../engagement/engagementHooks";
 import { useToast } from "../context/ToastContext";
+import MaterialSymbol from "../components/MaterialSymbol";
 import {
   editProfileHref,
   leaderboardHref,
@@ -84,7 +85,7 @@ function DesktopRewards({
           </div>
           <div className="flex items-center gap-4">
             <Link className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary transition-colors hover:bg-primary/20" to={missionsHref}>
-              <span className="material-symbols-outlined">assignment</span>
+              <MaterialSymbol name="assignment" />
             </Link>
             <Link to={profileHref}>
               <UserAvatar
@@ -123,15 +124,13 @@ function DesktopRewards({
                   Current Arc Points
                 </p>
                 <div className="mt-1 flex items-center gap-2">
-                  <span className="material-symbols-outlined text-3xl text-primary">
-                    toll
-                  </span>
+                  <MaterialSymbol name="toll" className="text-3xl text-primary" />
                   <p className="text-4xl font-bold">{points}</p>
                 </div>
               </div>
               <div className="mt-4 border-t border-primary/10 pt-4">
                 <p className="flex items-center gap-1 text-xs font-medium text-green-500">
-                  <span className="material-symbols-outlined text-sm">trending_up</span>
+                  <MaterialSymbol name="trending_up" className="text-sm" />
                   +{weeklyEarned} earned this week
                 </p>
               </div>
@@ -144,11 +143,11 @@ function DesktopRewards({
                 <h2 className="text-xl font-bold">Daily Check-in</h2>
                 <div className="flex items-center gap-4">
                   <button className="rounded-lg p-2 text-slate-500 hover:bg-primary/10" type="button">
-                    <span className="material-symbols-outlined">chevron_left</span>
+                    <MaterialSymbol name="chevron_left" />
                   </button>
                   <p className="font-bold">{rewardCalendar.month}</p>
                   <button className="rounded-lg p-2 text-slate-500 hover:bg-primary/10" type="button">
-                    <span className="material-symbols-outlined">chevron_right</span>
+                    <MaterialSymbol name="chevron_right" />
                   </button>
                 </div>
               </div>
@@ -161,9 +160,7 @@ function DesktopRewards({
             <div className="flex flex-col gap-6">
               <Reveal className="relative overflow-hidden rounded-xl border border-primary/30 bg-gradient-to-br from-slate-900 to-slate-800 p-6 text-white">
                 <div className="absolute -bottom-4 -right-4 rotate-12 text-primary/10">
-                  <span className="material-symbols-outlined text-9xl">
-                    workspace_premium
-                  </span>
+                  <MaterialSymbol name="workspace_premium" className="text-9xl" />
                 </div>
                 <h3 className="mb-4 text-lg font-bold">Streak Reward</h3>
                 <div className="mb-2 flex items-center justify-between">
@@ -178,9 +175,7 @@ function DesktopRewards({
                 </div>
                 <div className="flex items-center gap-3">
                   <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/20">
-                    <span className="material-symbols-outlined text-primary">
-                      redeem
-                    </span>
+                    <MaterialSymbol name="redeem" className="text-primary" />
                   </div>
                   <div>
                     <p className="font-bold">Golden Ticket</p>
@@ -216,14 +211,14 @@ function DesktopRewards({
                   <h3 className="font-bold">Streak Shields</h3>
                   <div className="flex gap-1">
                     {[0, 1].map((i) => (
-                      <span
-                        className={`material-symbols-outlined text-lg ${
-                          i < streakShields ? "text-primary fill-1" : "text-slate-600"
+                      <MaterialSymbol
+                        className={`text-lg ${
+                          i < streakShields ? "text-primary" : "text-slate-600"
                         }`}
+                        filled={i < streakShields}
                         key={i}
-                      >
-                        shield
-                      </span>
+                        name="shield"
+                      />
                     ))}
                   </div>
                 </div>
@@ -264,9 +259,7 @@ function DesktopRewards({
                           <div className={`flex h-8 w-8 items-center justify-center rounded-full border border-primary/30 ${
                             claimed ? "bg-green-500/20 text-green-500" : "text-primary"
                           }`}>
-                            <span className="material-symbols-outlined text-sm">
-                              {claimed ? "check" : task.icon}
-                            </span>
+                            <MaterialSymbol name={claimed ? "check" : task.icon} className="text-sm" />
                           </div>
                           <div>
                             <p className="text-sm font-semibold">{task.title}</p>
@@ -302,12 +295,10 @@ function DesktopRewards({
                     to={href}
                   >
                     <div className="flex items-center gap-3">
-                      <span className="material-symbols-outlined text-primary">{icon}</span>
+                      <MaterialSymbol name={icon} className="text-primary" />
                       <span className="font-semibold">{label}</span>
                     </div>
-                    <span className="material-symbols-outlined text-slate-400">
-                      chevron_right
-                    </span>
+                    <MaterialSymbol name="chevron_right" className="text-slate-400" />
                   </Link>
                 ))}
               </Reveal>
@@ -342,14 +333,14 @@ function MobileRewards({
       <div className="relative flex min-h-screen w-full flex-col overflow-x-hidden">
         <header className="sticky top-0 z-10 flex items-center justify-between border-b border-primary/10 bg-background-light p-4 pb-2 dark:bg-background-dark">
           <Link className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary" to={profileHref}>
-            <span className="material-symbols-outlined">arrow_back</span>
+            <MaterialSymbol name="arrow_back" />
           </Link>
           <h2 className="flex-1 text-center text-lg font-bold uppercase tracking-widest">
             Rewards
           </h2>
           <div className="flex h-10 w-10 items-center justify-end">
             <Link className="flex h-10 w-10 items-center justify-center rounded-full bg-transparent text-primary" to={missionsHref}>
-              <span className="material-symbols-outlined">help</span>
+              <MaterialSymbol name="help" />
             </Link>
           </div>
         </header>
@@ -389,13 +380,13 @@ function MobileRewards({
             <div className="rounded-xl border border-primary/10 bg-primary/5 p-4">
               <div className="mb-4 flex items-center justify-between">
                 <button className="text-slate-400 transition-colors hover:text-primary" type="button">
-                  <span className="material-symbols-outlined text-xl">chevron_left</span>
+                  <MaterialSymbol name="chevron_left" className="text-xl" />
                 </button>
                 <p className="text-sm font-bold uppercase tracking-widest text-slate-200">
                   {rewardCalendar.month}
                 </p>
                 <button className="text-slate-400 transition-colors hover:text-primary" type="button">
-                  <span className="material-symbols-outlined text-xl">chevron_right</span>
+                  <MaterialSymbol name="chevron_right" className="text-xl" />
                 </button>
               </div>
               <RewardsCalendar
@@ -431,11 +422,7 @@ function MobileRewards({
                   <div className={`mb-3 flex h-12 w-12 items-center justify-center rounded-lg ${
                     reward.unlocked ? "bg-primary/20" : "bg-slate-700"
                   }`}>
-                    <span className={`material-symbols-outlined ${
-                      reward.unlocked ? "text-primary" : "text-slate-500"
-                    }`}>
-                      {reward.icon}
-                    </span>
+                    <MaterialSymbol name={reward.icon} className={`${ reward.unlocked ? "text-primary" : "text-slate-500" }`} />
                   </div>
                   <p className="text-xs font-bold text-slate-400">{reward.title}</p>
                   <p className="mt-1 text-sm font-bold">{reward.reward}</p>
@@ -465,14 +452,14 @@ function MobileRewards({
                 <p className="text-xs font-bold uppercase tracking-wider text-slate-400">Shields</p>
                 <div className="mt-1 flex gap-1">
                   {[0, 1].map((i) => (
-                    <span
-                      className={`material-symbols-outlined text-2xl ${
-                        i < streakShields ? "text-primary fill-1" : "text-slate-600"
+                    <MaterialSymbol
+                      className={`text-2xl ${
+                        i < streakShields ? "text-primary" : "text-slate-600"
                       }`}
+                      filled={i < streakShields}
                       key={i}
-                    >
-                      shield
-                    </span>
+                      name="shield"
+                    />
                   ))}
                 </div>
                 <button
@@ -511,9 +498,7 @@ function MobileRewards({
                     <div className={`flex h-10 w-10 items-center justify-center rounded-full ${
                       claimed ? "bg-primary/20 text-primary" : "bg-blue-500/20 text-blue-400"
                     }`}>
-                      <span className="material-symbols-outlined">
-                        {claimed ? "check_circle" : task.icon}
-                      </span>
+                      <MaterialSymbol name={claimed ? "check_circle" : task.icon} />
                     </div>
                     <div className="flex-1">
                       <p className={`text-sm font-bold ${claimed ? "line-through" : ""}`}>
@@ -524,9 +509,7 @@ function MobileRewards({
                       </p>
                     </div>
                     {claimed ? (
-                      <span className="material-symbols-outlined text-primary">
-                        verified
-                      </span>
+                      <MaterialSymbol name="verified" className="text-primary" />
                     ) : (
                       <Link className="rounded-full bg-primary/10 px-3 py-1.5 text-[10px] font-bold uppercase text-primary" to={href}>
                         Go
@@ -541,13 +524,11 @@ function MobileRewards({
 
         <nav className="fixed bottom-0 left-0 right-0 z-50 flex items-end justify-around border-t border-primary/10 bg-background-dark/95 px-4 pb-6 pt-3 backdrop-blur-md">
           <Link className="flex flex-col items-center gap-1 text-slate-500" to="/dashboard">
-            <span className="material-symbols-outlined text-[24px]">home</span>
+            <MaterialSymbol name="home" className="text-[24px]" />
             <p className="text-[10px] font-bold uppercase tracking-tighter">Home</p>
           </Link>
           <Link className="flex flex-col items-center gap-1 text-primary" to={rewardsHref}>
-            <span className="material-symbols-outlined text-[24px] fill-current">
-              military_tech
-            </span>
+            <MaterialSymbol name="military_tech" className="text-[24px]" />
             <p className="text-[10px] font-bold uppercase tracking-tighter">Rewards</p>
           </Link>
           <div className="relative -top-4">
@@ -555,15 +536,15 @@ function MobileRewards({
               className="flex h-14 w-14 items-center justify-center rounded-full border-4 border-background-dark bg-primary text-background-dark shadow-lg shadow-primary/40"
               to={missionsHref}
             >
-              <span className="material-symbols-outlined text-[32px]">add</span>
+              <MaterialSymbol name="add" className="text-[32px]" />
             </Link>
           </div>
           <Link className="flex flex-col items-center gap-1 text-slate-500" to={missionsHref}>
-            <span className="material-symbols-outlined text-[24px]">assignment</span>
+            <MaterialSymbol name="assignment" className="text-[24px]" />
             <p className="text-[10px] font-bold uppercase tracking-tighter">Tasks</p>
           </Link>
           <Link className="flex flex-col items-center gap-1 text-slate-500" to={profileHref}>
-            <span className="material-symbols-outlined text-[24px]">account_circle</span>
+            <MaterialSymbol name="account_circle" className="text-[24px]" />
             <p className="text-[10px] font-bold uppercase tracking-tighter">Profile</p>
           </Link>
         </nav>

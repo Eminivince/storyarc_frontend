@@ -2,6 +2,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { LogoBrand } from "./LogoBrand";
+import MaterialSymbol from "./MaterialSymbol";
 
 const NAV_ITEMS = [
   { label: "Home", href: "/" },
@@ -75,9 +76,7 @@ export default function PublicNav({
             whileTap={{ scale: 0.92 }}
             type="button"
           >
-            <span className={`material-symbols-outlined ${compact ? "text-2xl" : ""}`}>
-              {mobileMenuOpen ? "close" : "menu"}
-            </span>
+            <MaterialSymbol name={mobileMenuOpen ? "close" : "menu"} className={`${compact ? "text-2xl" : ""}`} />
           </motion.button>
         </div>
       </div>

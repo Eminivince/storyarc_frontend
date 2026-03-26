@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import FollowButton from "../components/FollowButton";
 import { AppDesktopSidebar, AppMobileTabBar } from "../components/AppShellNav";
+import MaterialSymbol from "../components/MaterialSymbol";
 import {
   PrefetchableChapterLink,
   PrefetchableStoryLink,
@@ -239,9 +240,7 @@ function FeedList({ compact = false, items }) {
                   )}
                 </div>
                 <div className="hidden shrink-0 items-center text-slate-400 md:flex">
-                  <span className="material-symbols-outlined text-2xl">
-                    chevron_right
-                  </span>
+                  <MaterialSymbol name="chevron_right" className="text-2xl" />
                 </div>
               </div>
             </article>
@@ -277,7 +276,7 @@ function DesktopFollowing({
               className="relative flex size-10 items-center justify-center rounded-full text-slate-600 hover:bg-primary/10 dark:text-slate-300"
               to={notificationsHref}
             >
-              <span className="material-symbols-outlined">notifications</span>
+              <MaterialSymbol name="notifications" />
             </Link>
           </header>
 
@@ -346,7 +345,7 @@ function MobileFollowing({
               className="flex size-9 shrink-0 items-center justify-center rounded-full border border-primary/10 bg-white dark:bg-primary/5"
               to={notificationsHref}
             >
-              <span className="material-symbols-outlined text-lg">notifications</span>
+              <MaterialSymbol name="notifications" className="text-lg" />
             </Link>
           </div>
           <p className="mt-1.5 line-clamp-2 text-xs text-slate-600 dark:text-slate-400">

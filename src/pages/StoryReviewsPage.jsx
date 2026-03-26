@@ -5,6 +5,7 @@ import RouteLoadingScreen from "../components/RouteLoadingScreen";
 import StoryReviewCard, { ReviewStars } from "../components/StoryReviewCard";
 import { useToast } from "../context/ToastContext";
 import { buildStoryHref } from "../data/readerFlow";
+import MaterialSymbol from "../components/MaterialSymbol";
 import {
   useDeleteStoryReviewMutation,
   useStoryDetailsQuery,
@@ -21,9 +22,9 @@ function RatingPicker({ disabled, onChange, rating }) {
         return (
           <button
             aria-label={`Set rating to ${value}`}
-            className={`material-symbols-outlined text-2xl transition-colors sm:text-3xl ${
+            className={`text-2xl transition-colors sm:text-3xl ${
               value <= rating
-                ? "fill-1 text-primary"
+                ? "text-primary"
                 : "text-slate-300 dark:text-slate-600"
             } ${disabled ? "cursor-not-allowed opacity-70" : "hover:text-primary"}`}
             disabled={disabled}
@@ -31,7 +32,7 @@ function RatingPicker({ disabled, onChange, rating }) {
             onClick={() => onChange(value)}
             type="button"
           >
-            star
+            <MaterialSymbol filled={value <= rating} name="star" />
           </button>
         );
       })}
@@ -166,7 +167,7 @@ export default function StoryReviewsPage() {
               className="inline-flex items-center gap-1.5 text-xs font-bold text-primary sm:gap-2 sm:text-sm"
               to={buildStoryHref(story.slug)}
             >
-              <span className="material-symbols-outlined text-sm sm:text-base">arrow_back</span>
+              <MaterialSymbol name="arrow_back" className="text-sm sm:text-base" />
               Back to story
             </Link>
             <h1 className="mt-2 line-clamp-2 text-xl font-black tracking-tight sm:mt-3 sm:text-3xl sm:line-clamp-none lg:text-4xl">

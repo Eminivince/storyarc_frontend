@@ -6,6 +6,7 @@ import AdminPageLayout from "../components/AdminPageLayout";
 import ReaderStateScreen from "../components/ReaderStateScreen";
 import Reveal from "../components/Reveal";
 import RouteLoadingScreen from "../components/RouteLoadingScreen";
+import MaterialSymbol from "../components/MaterialSymbol";
 import {
   adminContractTemplatesHref,
   adminContractsHref,
@@ -160,9 +161,7 @@ export default function AdminContractTemplatesPage() {
     >
       <section className="space-y-5">
         <label className="group relative block">
-          <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 transition-colors group-focus-within:text-primary">
-            search
-          </span>
+          <MaterialSymbol name="search" className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 transition-colors group-focus-within:text-primary" />
           <input
             className="w-full rounded-2xl border border-primary/10 bg-white py-3 pl-12 pr-4 text-sm shadow-sm focus:border-primary/30 focus:outline-none focus:ring-2 focus:ring-primary/20 dark:bg-primary/5"
             onChange={(event) => setSearchTerm(event.target.value)}

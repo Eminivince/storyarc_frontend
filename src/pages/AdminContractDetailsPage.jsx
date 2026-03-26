@@ -6,6 +6,7 @@ import AdminPageLayout from "../components/AdminPageLayout";
 import ReaderStateScreen from "../components/ReaderStateScreen";
 import Reveal from "../components/Reveal";
 import RouteLoadingScreen from "../components/RouteLoadingScreen";
+import MaterialSymbol from "../components/MaterialSymbol";
 import {
   buildContractPreview,
   formatAdvancePaymentLabel,
@@ -184,7 +185,7 @@ export default function AdminContractDetailsPage() {
 
         <Reveal className="xl:col-span-2 rounded-[28px] border border-primary/10 bg-white p-6 shadow-[0_24px_60px_-36px_rgba(13,15,22,0.35)] dark:bg-primary/5">
           <div className="flex items-center gap-2 border-b border-primary/10 pb-3">
-            <span className="material-symbols-outlined text-primary">visibility</span>
+            <MaterialSymbol name="visibility" className="text-primary" />
             <h2 className="text-lg font-black tracking-tight">Saved Contract Preview</h2>
           </div>
           <div className="mt-4 rounded-[24px] border border-primary/10 bg-slate-950/90 p-5 font-mono text-sm leading-7 text-slate-100">

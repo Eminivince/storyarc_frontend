@@ -2,6 +2,7 @@ import { useMutation } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import MaterialSymbol from "../components/MaterialSymbol";
 import {
   desktopReportReasons,
   buildChapterHref,
@@ -55,9 +56,7 @@ function DesktopReportModal({
           <header className="flex items-center justify-between border-b border-primary/10 px-6 py-4">
             <div className="flex items-center gap-3">
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-background-dark">
-                <span className="material-symbols-outlined text-xl font-bold">
-                  flag
-                </span>
+                <MaterialSymbol name="flag" className="text-xl font-bold" />
               </div>
               <h2 className="text-xl font-bold leading-tight">
                 Report This Content
@@ -68,7 +67,7 @@ function DesktopReportModal({
               onClick={onClose}
               type="button"
             >
-              <span className="material-symbols-outlined">close</span>
+              <MaterialSymbol name="close" />
             </button>
           </header>
 
@@ -100,13 +99,11 @@ function DesktopReportModal({
                           {reason.description}
                         </p>
                       </div>
-                      <span
-                        className={`material-symbols-outlined text-primary ${
-                          isSelected ? "fill-1" : ""
-                        }`}
-                      >
-                        radio_button_checked
-                      </span>
+                      <MaterialSymbol
+                        className="text-primary"
+                        filled={isSelected}
+                        name="radio_button_checked"
+                      />
                     </button>
                   );
                 })}
@@ -163,9 +160,7 @@ function MobileReportModal({
       >
         <div className="flex items-center justify-between border-b border-slate-200 px-4 py-3 dark:border-primary/10">
           <div className="flex items-center gap-2">
-            <span className="material-symbols-outlined text-lg text-primary">
-              report_problem
-            </span>
+            <MaterialSymbol name="report_problem" className="text-lg text-primary" />
             <h1 className="text-base font-bold tracking-tight">Report Content</h1>
           </div>
           <button
@@ -173,7 +168,7 @@ function MobileReportModal({
             onClick={onClose}
             type="button"
           >
-            <span className="material-symbols-outlined text-xl">close</span>
+            <MaterialSymbol name="close" className="text-xl" />
           </button>
         </div>
 
@@ -198,13 +193,11 @@ function MobileReportModal({
                     onClick={() => onReasonChange(reason)}
                     type="button"
                   >
-                    <span
-                      className={`material-symbols-outlined mr-2 text-lg text-primary ${
-                        isSelected ? "fill-1" : ""
-                      }`}
-                    >
-                      radio_button_checked
-                    </span>
+                    <MaterialSymbol
+                      className="mr-2 text-lg text-primary"
+                      filled={isSelected}
+                      name="radio_button_checked"
+                    />
                     <span className="text-sm font-medium transition-colors">
                       {reason}
                     </span>
@@ -249,7 +242,7 @@ function MobileReportModal({
         </div>
 
         <div className="flex items-center justify-center gap-1.5 pb-4 opacity-60">
-          <span className="material-symbols-outlined text-sm">security</span>
+          <MaterialSymbol name="security" className="text-sm" />
           <span className="text-[9px] font-bold uppercase tracking-wider">
             Encrypted Moderation Link
           </span>

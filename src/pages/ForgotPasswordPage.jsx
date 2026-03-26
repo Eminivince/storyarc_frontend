@@ -7,6 +7,7 @@ import { LogoBrand } from "../components/LogoBrand";
 import { sanitizeEmail } from "../lib/formSanitize";
 import { persistPendingVerification } from "../auth/authFlowStorage";
 import { useToast } from "../context/ToastContext";
+import MaterialSymbol from "../components/MaterialSymbol";
 
 const verifyCodeHref = "/auth/verify-code";
 
@@ -54,7 +55,7 @@ function DesktopForgotPassword({ email, error, onChange, onSubmit, pending }) {
         >
           <div className="mb-8 flex flex-col items-center text-center">
             <div className="mb-4 flex size-16 items-center justify-center rounded-full bg-primary/20">
-              <span className="material-symbols-outlined text-3xl text-primary">lock_reset</span>
+              <MaterialSymbol name="lock_reset" className="text-3xl text-primary" />
             </div>
             <h1 className="mb-2 text-2xl font-bold">Forgot Password?</h1>
             <p className="max-w-[280px] text-sm leading-relaxed text-slate-500 dark:text-slate-400">
@@ -66,7 +67,7 @@ function DesktopForgotPassword({ email, error, onChange, onSubmit, pending }) {
           <form className="space-y-6" onSubmit={onSubmit}>
             {error && (
               <div className="flex items-start gap-3 rounded-lg border border-red-200 bg-red-50 p-4 text-red-800 dark:border-red-900/50 dark:bg-red-950/30 dark:text-red-200">
-                <span className="material-symbols-outlined shrink-0 text-xl">error</span>
+                <MaterialSymbol name="error" className="shrink-0 text-xl" />
                 <p className="text-base font-medium">{error}</p>
               </div>
             )}
@@ -79,7 +80,7 @@ function DesktopForgotPassword({ email, error, onChange, onSubmit, pending }) {
               </label>
               <div className="group relative">
                 <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400 transition-colors group-focus-within:text-primary">
-                  <span className="material-symbols-outlined text-lg">mail</span>
+                  <MaterialSymbol name="mail" className="text-lg" />
                 </div>
                 <input
                   className="w-full rounded-lg border border-primary/20 bg-background-light py-3.5 pl-11 pr-4 text-base text-slate-900 outline-none transition-all placeholder:text-slate-500 focus:border-primary focus:ring-2 focus:ring-primary/40 dark:bg-background-dark dark:text-slate-100"
@@ -99,9 +100,7 @@ function DesktopForgotPassword({ email, error, onChange, onSubmit, pending }) {
               type="submit"
             >
               <span>{pending ? "Sending Code..." : "Send Reset Link"}</span>
-              <span className="material-symbols-outlined text-lg transition-transform group-hover:translate-x-1">
-                arrow_forward
-              </span>
+              <MaterialSymbol name="arrow_forward" className="text-lg transition-transform group-hover:translate-x-1" />
             </button>
           </form>
 
@@ -110,7 +109,7 @@ function DesktopForgotPassword({ email, error, onChange, onSubmit, pending }) {
               className="inline-flex items-center gap-2 text-sm font-medium text-slate-500 transition-colors hover:text-primary dark:text-slate-400"
               to="/auth"
             >
-              <span className="material-symbols-outlined text-base">arrow_back</span>
+              <MaterialSymbol name="arrow_back" className="text-base" />
               <span>Back to Login</span>
             </Link>
           </div>
@@ -157,7 +156,7 @@ function MobileForgotPassword({ email, error, onChange, onSubmit, pending }) {
             className="flex size-12 items-center justify-center rounded-full transition-colors hover:bg-primary/10"
             to="/auth"
           >
-            <span className="material-symbols-outlined text-[24px]">arrow_back</span>
+            <MaterialSymbol name="arrow_back" className="text-[24px]" />
           </Link>
           <h2 className="flex-1 pr-12 text-center text-lg font-bold tracking-[-0.015em]">
             Forgot Password
@@ -169,9 +168,7 @@ function MobileForgotPassword({ email, error, onChange, onSubmit, pending }) {
             <div className="flex min-h-[200px] w-full flex-col items-center justify-center rounded-lg bg-background-light py-8 dark:bg-background-dark">
               <div className="flex flex-col items-center gap-4">
                 <div className="flex size-20 items-center justify-center rounded-xl bg-primary shadow-lg shadow-primary/20">
-                  <span className="material-symbols-outlined text-5xl font-bold text-background-dark">
-                    menu_book
-                  </span>
+                  <MaterialSymbol name="menu_book" className="text-5xl font-bold text-background-dark" />
                 </div>
                 <h1 className="text-2xl font-bold tracking-tight text-primary">TaleStead</h1>
               </div>
@@ -192,7 +189,7 @@ function MobileForgotPassword({ email, error, onChange, onSubmit, pending }) {
         <form className="flex flex-col gap-6 px-6 py-8" onSubmit={onSubmit}>
           {error && (
             <div className="flex items-start gap-3 rounded-lg border border-red-200 bg-red-50 p-4 text-red-800 dark:border-red-900/50 dark:bg-red-950/30 dark:text-red-200">
-              <span className="material-symbols-outlined shrink-0 text-xl">error</span>
+              <MaterialSymbol name="error" className="shrink-0 text-xl" />
               <p className="text-base font-medium">{error}</p>
             </div>
           )}
@@ -204,9 +201,7 @@ function MobileForgotPassword({ email, error, onChange, onSubmit, pending }) {
               Email Address
             </label>
             <div className="relative flex items-center">
-              <span className="material-symbols-outlined absolute left-4 text-slate-400">
-                mail
-              </span>
+              <MaterialSymbol name="mail" className="absolute left-4 text-slate-400" />
               <input
                 className="form-input h-14 w-full rounded-lg border border-primary/20 bg-white pl-12 pr-4 text-base font-normal text-slate-900 placeholder:text-slate-400 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/50 dark:bg-primary/5 dark:text-slate-100"
                 id="forgot-email-mobile"
@@ -225,7 +220,7 @@ function MobileForgotPassword({ email, error, onChange, onSubmit, pending }) {
             type="submit"
           >
             <span>{pending ? "Sending Code..." : "Send Reset Link"}</span>
-            <span className="material-symbols-outlined">send</span>
+            <MaterialSymbol name="send" />
           </button>
         </form>
 

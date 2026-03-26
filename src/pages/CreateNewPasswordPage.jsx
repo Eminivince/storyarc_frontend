@@ -4,6 +4,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { resetPasswordWithToken } from "../auth/authApi";
 import { sanitizePassword, isPasswordValid } from "../lib/formSanitize";
+import MaterialSymbol from "../components/MaterialSymbol";
 import {
   clearPendingPasswordReset,
   getPendingPasswordReset,
@@ -103,7 +104,7 @@ function DesktopCreateNewPassword({ email, onSubmit, pending, resetToken }) {
                   onClick={() => setShowPassword(!showPassword)}
                   type="button"
                 >
-                  <span className="material-symbols-outlined">{showPassword ? "visibility_off" : "visibility"}</span>
+                  <MaterialSymbol name={showPassword ? "visibility_off" : "visibility"} />
                 </button>
               </div>
             </div>
@@ -127,7 +128,7 @@ function DesktopCreateNewPassword({ email, onSubmit, pending, resetToken }) {
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                   type="button"
                 >
-                  <span className="material-symbols-outlined">{showConfirmPassword ? "visibility_off" : "visibility"}</span>
+                  <MaterialSymbol name={showConfirmPassword ? "visibility_off" : "visibility"} />
                 </button>
               </div>
             </div>
@@ -143,7 +144,7 @@ function DesktopCreateNewPassword({ email, onSubmit, pending, resetToken }) {
               ].map(([label, met]) => (
                 <div className={`flex items-center gap-3 ${met ? "" : "opacity-50"}`} key={label}>
                   <div className={`flex h-5 w-5 items-center justify-center rounded border-2 ${met ? "border-primary bg-primary text-background-dark" : "border-slate-300 bg-white dark:border-primary/30 dark:bg-background-dark"}`}>
-                    {met ? <span className="material-symbols-outlined text-[14px]">check</span> : null}
+                    {met ? <MaterialSymbol name="check" className="text-[14px]" /> : null}
                   </div>
                   <span className="text-sm font-medium text-slate-700 dark:text-slate-200">{label}</span>
                 </div>
@@ -161,7 +162,7 @@ function DesktopCreateNewPassword({ email, onSubmit, pending, resetToken }) {
 
             <div className="text-center">
               <Link className="inline-flex items-center gap-2 text-sm font-bold text-slate-500 transition-colors hover:text-primary dark:text-primary/70" to="/auth">
-                <span className="material-symbols-outlined text-base">arrow_back</span>
+                <MaterialSymbol name="arrow_back" className="text-base" />
                 Back to Login
               </Link>
             </div>
@@ -188,7 +189,7 @@ function MobileCreateNewPassword({ email, onSubmit, pending, resetToken }) {
     <div className="relative flex min-h-screen w-full flex-col overflow-x-hidden bg-background-light font-display text-slate-900 antialiased dark:bg-background-dark dark:text-slate-100 md:hidden">
       <div className="flex items-center justify-between bg-transparent p-4">
         <Link className="flex h-10 w-10 items-center justify-center rounded-full transition-colors hover:bg-primary/10" to={verifyCodeHref}>
-          <span className="material-symbols-outlined">arrow_back</span>
+          <MaterialSymbol name="arrow_back" />
         </Link>
         <div className="flex-1 px-4">
           <h2 className="text-center text-sm font-semibold uppercase tracking-wider opacity-70">Security</h2>
@@ -200,7 +201,7 @@ function MobileCreateNewPassword({ email, onSubmit, pending, resetToken }) {
         <div className="mb-10 mt-8">
           <div className="mb-6 flex justify-center">
             <div className="rounded-full bg-primary/20 p-4">
-              <span className="material-symbols-outlined text-4xl text-primary">lock_reset</span>
+              <MaterialSymbol name="lock_reset" className="text-4xl text-primary" />
             </div>
           </div>
           <h1 className="text-center text-3xl font-bold leading-tight">Create New Password</h1>
@@ -237,7 +238,7 @@ function MobileCreateNewPassword({ email, onSubmit, pending, resetToken }) {
                 onClick={() => setShowPassword(!showPassword)}
                 type="button"
               >
-                <span className="material-symbols-outlined">{showPassword ? "visibility_off" : "visibility"}</span>
+                <MaterialSymbol name={showPassword ? "visibility_off" : "visibility"} />
               </button>
             </div>
             <div className="flex items-center gap-1 px-1">
@@ -265,7 +266,7 @@ function MobileCreateNewPassword({ email, onSubmit, pending, resetToken }) {
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                 type="button"
               >
-                <span className="material-symbols-outlined">{showConfirmPassword ? "visibility_off" : "visibility"}</span>
+                <MaterialSymbol name={showConfirmPassword ? "visibility_off" : "visibility"} />
               </button>
             </div>
           </div>
@@ -280,9 +281,7 @@ function MobileCreateNewPassword({ email, onSubmit, pending, resetToken }) {
                 ["No spaces", checks.noSpaces],
               ].map(([label, met]) => (
                 <li className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400" key={label}>
-                  <span className={`material-symbols-outlined text-lg ${met ? "text-primary" : "text-slate-400 dark:text-slate-600"}`}>
-                    {met ? "check_circle" : "radio_button_unchecked"}
-                  </span>
+                  <MaterialSymbol name={met ? "check_circle" : "radio_button_unchecked"} className={`text-lg ${met ? "text-primary" : "text-slate-400 dark:text-slate-600"}`} />
                   {label}
                 </li>
               ))}
@@ -296,7 +295,7 @@ function MobileCreateNewPassword({ email, onSubmit, pending, resetToken }) {
               type="submit"
             >
               {pending ? "Resetting Password..." : "Reset Password"}
-              <span className="material-symbols-outlined">arrow_forward</span>
+              <MaterialSymbol name="arrow_forward" />
             </button>
           </div>
         </form>

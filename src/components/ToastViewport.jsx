@@ -1,4 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
+import MaterialSymbol from "./MaterialSymbol";
 
 const toneStyles = {
   error: {
@@ -37,9 +38,7 @@ export default function ToastViewport({ onDismiss, toasts }) {
               >
                 <div className={`h-1.5 w-full ${tone.accent}`} />
                 <div className="flex items-start gap-3 px-4 py-4">
-                  <span className={`material-symbols-outlined mt-0.5 ${tone.iconClass}`}>
-                    {tone.icon}
-                  </span>
+                  <MaterialSymbol name={tone.icon} className={`mt-0.5 ${tone.iconClass}`} />
                   <div className="min-w-0 flex-1">
                     {toast.title ? (
                       <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">
@@ -55,7 +54,7 @@ export default function ToastViewport({ onDismiss, toasts }) {
                     onClick={() => onDismiss(toast.id)}
                     type="button"
                   >
-                    <span className="material-symbols-outlined text-[18px]">close</span>
+                    <MaterialSymbol name="close" className="text-[18px]" />
                   </button>
                 </div>
               </motion.div>

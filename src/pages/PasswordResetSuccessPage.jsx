@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import MaterialSymbol from "../components/MaterialSymbol";
 
 function DesktopPasswordResetSuccess() {
   return (
@@ -63,9 +64,7 @@ function DesktopPasswordResetSuccess() {
                 <div className="relative">
                   <div className="absolute inset-0 scale-125 rounded-full bg-primary/20 blur-xl" />
                   <div className="relative flex h-20 w-20 items-center justify-center rounded-full border-2 border-primary bg-primary/10">
-                    <span className="material-symbols-outlined text-5xl font-bold text-primary">
-                      verified_user
-                    </span>
+                    <MaterialSymbol name="verified_user" className="text-5xl font-bold text-primary" />
                   </div>
                 </div>
               </div>
@@ -98,14 +97,14 @@ function DesktopPasswordResetSuccess() {
 
             <div className="mt-8 flex items-center justify-center gap-6">
               <div className="flex items-center gap-2 text-slate-400 dark:text-slate-500">
-                <span className="material-symbols-outlined text-sm">lock</span>
+                <MaterialSymbol name="lock" className="text-sm" />
                 <span className="text-xs font-semibold uppercase tracking-widest">
                   Secure Encryption
                 </span>
               </div>
               <div className="h-1 w-1 rounded-full bg-slate-400 dark:bg-slate-700" />
               <div className="flex items-center gap-2 text-slate-400 dark:text-slate-500">
-                <span className="material-symbols-outlined text-sm">verified</span>
+                <MaterialSymbol name="verified" className="text-sm" />
                 <span className="text-xs font-semibold uppercase tracking-widest">
                   Identity Verified
                 </span>
@@ -137,15 +136,9 @@ function DesktopPasswordResetSuccess() {
           </div>
           <div className="flex flex-col items-center gap-4">
             <div className="flex items-center gap-4 text-slate-400 dark:text-slate-600">
-              <span className="material-symbols-outlined text-xl transition-colors hover:text-primary">
-                social_leaderboard
-              </span>
-              <span className="material-symbols-outlined text-xl transition-colors hover:text-primary">
-                language
-              </span>
-              <span className="material-symbols-outlined text-xl transition-colors hover:text-primary">
-                share
-              </span>
+              <MaterialSymbol name="social_leaderboard" className="text-xl transition-colors hover:text-primary" />
+              <MaterialSymbol name="language" className="text-xl transition-colors hover:text-primary" />
+              <MaterialSymbol name="share" className="text-xl transition-colors hover:text-primary" />
             </div>
             <p className="text-sm font-normal text-slate-500 dark:text-slate-500">
               © 2024 TaleStead Webnovels. All rights reserved.
@@ -162,7 +155,7 @@ function MobilePasswordResetSuccess() {
     <div className="min-h-screen bg-background-light font-display text-slate-900 dark:bg-background-dark dark:text-slate-100 md:hidden">
       <header className="sticky top-0 z-10 flex items-center bg-background-light p-4 pb-2 dark:bg-background-dark">
         <Link className="flex size-12 items-center justify-start" to="/auth">
-          <span className="material-symbols-outlined text-2xl">arrow_back</span>
+          <MaterialSymbol name="arrow_back" className="text-2xl" />
         </Link>
         <h2 className="flex-1 pr-12 text-center text-lg font-bold tracking-tight">
           Password Reset
@@ -175,9 +168,7 @@ function MobilePasswordResetSuccess() {
             <div className="absolute h-48 w-48 animate-pulse rounded-full bg-primary/10" />
             <div className="absolute h-36 w-36 rounded-full bg-primary/20" />
             <div className="relative flex h-24 w-24 items-center justify-center rounded-full bg-primary shadow-[0_0_30px_rgba(244,192,37,0.4)]">
-              <span className="material-symbols-outlined text-5xl font-bold text-background-dark">
-                check
-              </span>
+              <MaterialSymbol name="check" className="text-5xl font-bold text-background-dark" />
             </div>
           </div>
 
@@ -191,9 +182,7 @@ function MobilePasswordResetSuccess() {
 
           <div className="relative flex h-48 w-full items-center justify-center overflow-hidden rounded-xl border border-primary/20 bg-primary/5 dark:bg-primary/10">
             <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-primary/5" />
-            <span className="material-symbols-outlined text-6xl text-primary/40">
-              verified_user
-            </span>
+            <MaterialSymbol name="verified_user" className="text-6xl text-primary/40" />
           </div>
         </div>
       </main>

@@ -6,6 +6,7 @@ import Reveal from "../components/Reveal";
 import ReaderStateScreen from "../components/ReaderStateScreen";
 import RouteLoadingScreen from "../components/RouteLoadingScreen";
 import { useMonetization } from "../context/MonetizationContext";
+import MaterialSymbol from "../components/MaterialSymbol";
 import {
   buildCheckoutHref,
   formatPrice,
@@ -57,10 +58,10 @@ function DesktopSubscription({
           </nav>
           <div className="flex items-center gap-4">
             <button className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary transition-all hover:bg-primary/20" type="button">
-              <span className="material-symbols-outlined text-xl">notifications</span>
+              <MaterialSymbol name="notifications" className="text-xl" />
             </button>
             <button className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary transition-all hover:bg-primary/20" type="button">
-              <span className="material-symbols-outlined text-xl">person</span>
+              <MaterialSymbol name="person" className="text-xl" />
             </button>
             <div
               className="h-10 w-10 overflow-hidden rounded-full border-2 border-primary/30 bg-cover bg-center"
@@ -111,9 +112,7 @@ function DesktopSubscription({
                     <div className="rounded-full bg-primary px-4 py-1 text-xs font-bold uppercase tracking-wider text-background-dark">
                       {plan.id === "silver" ? "Reader Favorite" : "Most Popular"}
                     </div>
-                    <span className="material-symbols-outlined text-4xl text-primary">
-                      workspace_premium
-                    </span>
+                    <MaterialSymbol name="workspace_premium" className="text-4xl text-primary" />
                   </div>
                   <h3 className="mb-2 text-3xl font-bold">{plan.name} Premium</h3>
                   <div className="mb-8 flex items-baseline gap-2">
@@ -125,9 +124,7 @@ function DesktopSubscription({
                   <ul className="mb-8 space-y-4">
                     {plan.perks.map((perk) => (
                       <li className="flex items-center gap-3" key={perk.title}>
-                        <span className="material-symbols-outlined text-primary">
-                          {perk.icon}
-                        </span>
+                        <MaterialSymbol name={perk.icon} className="text-primary" />
                         <span className="text-slate-200">{perk.title}</span>
                       </li>
                     ))}
@@ -149,9 +146,7 @@ function DesktopSubscription({
                     {plan.reasons.map((reason) => (
                       <div className="flex gap-4" key={reason.title}>
                         <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-primary/20 text-primary">
-                          <span className="material-symbols-outlined">
-                            {reason.icon}
-                          </span>
+                          <MaterialSymbol name={reason.icon} />
                         </div>
                         <div>
                           <p className="mb-1 font-bold">{reason.title}</p>
@@ -165,9 +160,7 @@ function DesktopSubscription({
                 </Reveal>
 
                 <Reveal className="relative overflow-hidden rounded-xl border border-primary/10 bg-primary/5 p-6 italic">
-                  <span className="material-symbols-outlined absolute -bottom-4 -right-4 text-8xl text-primary/5 opacity-50">
-                    format_quote
-                  </span>
+                  <MaterialSymbol name="format_quote" className="absolute -bottom-4 -right-4 text-8xl text-primary/5 opacity-50" />
                   <div className="mb-4 flex items-center gap-4">
                     <div className="h-10 w-10 overflow-hidden rounded-full border border-primary/50 bg-primary/30">
                       <img
@@ -229,14 +222,14 @@ function MobileSubscription({
       <div className="relative flex min-h-screen flex-col overflow-x-hidden">
         <div className="sticky top-0 z-50 flex items-center justify-between border-b border-primary/10 bg-background-light/90 p-4 backdrop-blur-md dark:bg-background-dark/90">
           <Link className="flex h-10 w-10 items-center justify-center" to={returnTo}>
-            <span className="material-symbols-outlined">arrow_back</span>
+            <MaterialSymbol name="arrow_back" />
           </Link>
           <h2 className="flex-1 text-center text-lg font-bold tracking-tight">
             {plan.name} Membership
           </h2>
           <div className="flex w-10 items-center justify-end">
             <button className="flex h-10 w-10 items-center justify-center rounded-lg bg-transparent" type="button">
-              <span className="material-symbols-outlined">share</span>
+              <MaterialSymbol name="share" />
             </button>
           </div>
         </div>
@@ -252,9 +245,7 @@ function MobileSubscription({
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background-dark/80 to-background-dark" />
           <div className="absolute bottom-0 left-0 right-0 p-6 text-center">
             <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/20 px-3 py-1">
-              <span className="material-symbols-outlined text-sm text-primary">
-                auto_awesome
-              </span>
+              <MaterialSymbol name="auto_awesome" className="text-sm text-primary" />
               <span className="text-xs font-bold uppercase tracking-widest text-primary">
                 Premium Tier
               </span>
@@ -312,9 +303,7 @@ function MobileSubscription({
               to={cta.to}
             >
               {cta.label}
-              <span className="material-symbols-outlined">
-                {hasPremium && activePlanId === plan.id ? "settings" : "bolt"}
-              </span>
+              <MaterialSymbol name={hasPremium && activePlanId === plan.id ? "settings" : "bolt"} />
             </Link>
           </div>
         </div>
@@ -327,9 +316,7 @@ function MobileSubscription({
             {plan.perks.map((perk) => (
               <div className="flex items-start gap-4" key={perk.title}>
                 <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-primary/20 bg-primary/10">
-                  <span className="material-symbols-outlined text-2xl text-primary">
-                    {perk.icon}
-                  </span>
+                  <MaterialSymbol name={perk.icon} className="text-2xl text-primary" />
                 </div>
                 <div>
                   <h5 className="text-lg font-bold leading-tight">{perk.title}</h5>

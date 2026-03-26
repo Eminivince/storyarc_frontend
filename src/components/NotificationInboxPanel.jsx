@@ -1,3 +1,4 @@
+import MaterialSymbol from "./MaterialSymbol";
 function formatNotificationTimestamp(value) {
   const date = new Date(value);
 
@@ -131,9 +132,7 @@ export default function NotificationInboxPanel({
                     <span>{item.ctaLabel || "Open notification"}</span>
                   </div>
                 </div>
-                <span className="material-symbols-outlined text-slate-400">
-                  chevron_right
-                </span>
+                <MaterialSymbol name="chevron_right" className="text-slate-400" />
               </div>
             </button>
           );

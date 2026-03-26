@@ -6,6 +6,7 @@ import ReaderStateScreen from "../components/ReaderStateScreen";
 import Reveal from "../components/Reveal";
 import RouteLoadingScreen from "../components/RouteLoadingScreen";
 import { useCreator } from "../context/CreatorContext";
+import MaterialSymbol from "../components/MaterialSymbol";
 import {
   authorDashboardHref,
   creatorStoryCreateHref,
@@ -31,12 +32,12 @@ function DesktopScheduledChapters({ onReschedule, story }) {
         <main className="flex min-w-0 flex-1 flex-col overflow-hidden">
           <header className="flex h-16 items-center justify-between border-b border-primary/10 bg-background-light px-8 dark:bg-background-dark/50">
             <div className="flex items-center gap-2">
-              <span className="material-symbols-outlined text-primary">auto_stories</span>
+              <MaterialSymbol name="auto_stories" className="text-primary" />
               <h2 className="text-lg font-bold tracking-tight">Scheduled Releases</h2>
             </div>
             <div className="flex items-center gap-4">
               <label className="relative hidden lg:block">
-                <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-sm text-slate-400">search</span>
+                <MaterialSymbol name="search" className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-slate-400" />
                 <input
                   className="h-10 w-64 rounded-lg border-none bg-slate-100 pl-10 pr-4 text-sm placeholder:text-slate-500 focus:ring-1 focus:ring-primary dark:bg-primary/5"
                   placeholder="Search chapters..."
@@ -63,7 +64,7 @@ function DesktopScheduledChapters({ onReschedule, story }) {
                 className="flex h-11 items-center gap-2 rounded-lg border border-primary/30 bg-primary/10 px-6 text-sm font-bold text-primary transition-all hover:bg-primary/20"
                 to={getChapterEditHref(story.slug)}
               >
-                <span className="material-symbols-outlined">calendar_month</span>
+                <MaterialSymbol name="calendar_month" />
                 Schedule New
               </Link>
             </div>
@@ -104,7 +105,7 @@ function DesktopScheduledChapters({ onReschedule, story }) {
                         </td>
                         <td className="px-6 py-5 text-sm text-slate-400">
                           <div className="flex items-center gap-2">
-                            <span className="material-symbols-outlined text-base text-primary/60">auto_awesome</span>
+                            <MaterialSymbol name="auto_awesome" className="text-base text-primary/60" />
                             {chapter.storySeries}
                           </div>
                         </td>
@@ -130,7 +131,7 @@ function DesktopScheduledChapters({ onReschedule, story }) {
                               Reschedule
                             </button>
                             <button className="flex size-8 items-center justify-center rounded text-slate-400 transition-colors hover:bg-white/5 hover:text-white" type="button">
-                              <span className="material-symbols-outlined text-lg">more_vert</span>
+                              <MaterialSymbol name="more_vert" className="text-lg" />
                             </button>
                           </div>
                         </td>
@@ -154,7 +155,7 @@ function MobileScheduledChapters({ onReschedule, story }) {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Link className="flex size-8 items-center justify-center rounded-full transition-colors hover:bg-primary/10" to={getCreatorStoryManagementHref(story.slug)}>
-              <span className="material-symbols-outlined text-base text-slate-900 dark:text-slate-100">arrow_back</span>
+              <MaterialSymbol name="arrow_back" className="text-base text-slate-900 dark:text-slate-100" />
             </Link>
             <h1 className="text-sm font-bold tracking-tight">Scheduled Chapters</h1>
           </div>
@@ -162,7 +163,7 @@ function MobileScheduledChapters({ onReschedule, story }) {
             className="flex items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-xs font-bold text-background-dark transition-colors hover:bg-primary/90"
             to={getChapterEditHref(story.slug)}
           >
-            <span className="material-symbols-outlined text-base">add</span>
+            <MaterialSymbol name="add" className="text-base" />
             Schedule New
           </Link>
         </div>
@@ -191,7 +192,7 @@ function MobileScheduledChapters({ onReschedule, story }) {
               </div>
               <div className="mt-1.5 flex items-center justify-between gap-2">
                 <div className="flex min-w-0 items-center gap-1 text-[10px] font-medium text-primary">
-                  <span className="material-symbols-outlined shrink-0 text-xs">calendar_today</span>
+                  <MaterialSymbol name="calendar_today" className="shrink-0 text-xs" />
                   <span className="truncate">{chapter.scheduledDate}, {chapter.scheduledTime.replace(" (Local)", "")}</span>
                 </div>
                 <button
@@ -211,7 +212,7 @@ function MobileScheduledChapters({ onReschedule, story }) {
           <div className="grid grid-cols-1 gap-2">
             <div className="flex items-start gap-2 rounded-lg border border-primary/20 bg-gradient-to-br from-primary/20 to-transparent p-2.5 dark:from-primary/10">
               <div className="rounded-md bg-primary/20 p-1.5">
-                <span className="material-symbols-outlined text-base text-primary">auto_awesome</span>
+                <MaterialSymbol name="auto_awesome" className="text-base text-primary" />
               </div>
               <div className="min-w-0 flex-1">
                 <h4 className="text-xs font-bold">Smart Scheduling</h4>
@@ -219,13 +220,13 @@ function MobileScheduledChapters({ onReschedule, story }) {
                   AI-driven slots based on reader activity.
                 </p>
                 <button className="mt-1 flex items-center gap-1 text-[10px] font-bold text-primary" type="button">
-                  Optimize Queue <span className="material-symbols-outlined text-xs">chevron_right</span>
+                  Optimize Queue <MaterialSymbol name="chevron_right" className="text-xs" />
                 </button>
               </div>
             </div>
             <div className="flex items-start gap-2 rounded-lg border border-slate-200 bg-white p-2.5 dark:border-primary/10 dark:bg-primary/5">
               <div className="rounded-md bg-slate-100 p-1.5 dark:bg-primary/10">
-                <span className="material-symbols-outlined text-base text-slate-600 dark:text-primary">sync</span>
+                <MaterialSymbol name="sync" className="text-base text-slate-600 dark:text-primary" />
               </div>
               <div className="min-w-0 flex-1">
                 <h4 className="text-xs font-bold">Cross-Platform Sync</h4>
@@ -233,7 +234,7 @@ function MobileScheduledChapters({ onReschedule, story }) {
                   Push scheduled posts to audience channels.
                 </p>
                 <button className="mt-1 flex items-center gap-1 text-[10px] font-bold text-primary" type="button">
-                  Manage Integrations <span className="material-symbols-outlined text-xs">chevron_right</span>
+                  Manage Integrations <MaterialSymbol name="chevron_right" className="text-xs" />
                 </button>
               </div>
             </div>

@@ -5,6 +5,7 @@ import { EditorContent, useEditor } from "@tiptap/react";
 import { useEffect } from "react";
 import { normalizeRichTextBody } from "../editor/richText";
 import "./RichTextEditor.css";
+import MaterialSymbol from "./MaterialSymbol";
 
 function ToolbarButton({ active = false, disabled = false, icon, label, onClick }) {
   return (
@@ -20,7 +21,7 @@ function ToolbarButton({ active = false, disabled = false, icon, label, onClick 
       title={label}
       type="button"
     >
-      <span className="material-symbols-outlined text-[18px]">{icon}</span>
+      <MaterialSymbol name={icon} className="text-[18px]" />
     </button>
   );
 }

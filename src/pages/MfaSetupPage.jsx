@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAccount } from "../context/AccountContext";
+import MaterialSymbol from "../components/MaterialSymbol";
 import {
   helpHref,
   mfaChooseHref,
@@ -57,14 +58,14 @@ function DesktopSetup({
               className="flex items-center gap-1 text-sm font-medium text-slate-600 transition-colors hover:text-primary dark:text-slate-400"
               to={mfaChooseHref}
             >
-              <span className="material-symbols-outlined text-lg">arrow_back</span>
+              <MaterialSymbol name="arrow_back" className="text-lg" />
               Back
             </Link>
             <Link
               className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary transition-colors hover:bg-primary/20"
               to={helpHref}
             >
-              <span className="material-symbols-outlined">help</span>
+              <MaterialSymbol name="help" />
             </Link>
           </div>
         </header>
@@ -128,7 +129,7 @@ function DesktopSetup({
                         onClick={onCopySecret}
                         type="button"
                       >
-                        <span className="material-symbols-outlined text-sm">content_copy</span>
+                        <MaterialSymbol name="content_copy" className="text-sm" />
                         COPY
                       </button>
                     </div>
@@ -169,12 +170,12 @@ function DesktopSetup({
                 type="button"
               >
                 Complete Setup
-                <span className="material-symbols-outlined">verified_user</span>
+                <MaterialSymbol name="verified_user" />
               </button>
             </div>
 
             <div className="flex items-start gap-3 rounded-lg border border-primary/20 bg-primary/10 p-4">
-              <span className="material-symbols-outlined text-primary">security</span>
+              <MaterialSymbol name="security" className="text-primary" />
               <p className="text-xs leading-relaxed text-slate-600 dark:text-slate-300">
                 <strong className="text-primary">Important:</strong> Save your backup
                 recovery codes in a secure place. If you lose access to your device,
@@ -212,7 +213,7 @@ function MobileSetup({
     <div className="min-h-screen bg-background-light font-display text-slate-900 dark:bg-background-dark dark:text-slate-100 md:hidden">
       <header className="flex items-center justify-between bg-transparent px-3 py-2">
         <Link className="flex size-10 items-center justify-start text-slate-900 dark:text-slate-100" to={mfaChooseHref}>
-          <span className="material-symbols-outlined text-xl">arrow_back</span>
+          <MaterialSymbol name="arrow_back" className="text-xl" />
         </Link>
         <h2 className="flex-1 pr-10 text-center text-base font-bold">Two-Factor Auth</h2>
       </header>
@@ -279,7 +280,7 @@ function MobileSetup({
                     onClick={onCopySecret}
                     type="button"
                   >
-                    <span className="material-symbols-outlined text-sm">content_copy</span>
+                    <MaterialSymbol name="content_copy" className="text-sm" />
                     Copy
                   </button>
                 </div>
@@ -327,7 +328,7 @@ function MobileSetup({
 
         <div className="mb-4 rounded-lg border border-primary/10 bg-primary/5 p-3">
           <div className="flex items-start gap-2">
-            <span className="material-symbols-outlined text-lg text-primary">help_outline</span>
+            <MaterialSymbol name="help_outline" className="text-lg text-primary" />
             <div>
               <h4 className="text-xs font-bold">Having trouble?</h4>
               <p className="mt-0.5 text-[11px] leading-relaxed text-slate-500 dark:text-slate-400">
@@ -347,7 +348,7 @@ function MobileSetup({
           type="button"
         >
           Complete Setup
-          <span className="material-symbols-outlined text-lg">check_circle</span>
+          <MaterialSymbol name="check_circle" className="text-lg" />
         </button>
         <p className="mt-2 text-center text-[11px] text-slate-500 dark:text-slate-500">
           Security powered by TaleStead Gold standard
