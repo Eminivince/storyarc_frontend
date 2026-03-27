@@ -465,17 +465,7 @@ function MobileCheckout({
               onSelectProvider={onSelectProvider}
             />
           </div>
-          <div className="mb-6 rounded-xl border border-primary/20 bg-primary/5 p-4 dark:border-primary/30 dark:bg-primary/10">
-            <div className="flex items-start gap-3">
-              <MaterialSymbol name={providerMeta.icon} className="text-primary" />
-              <div>
-                <p className="font-semibold">{providerMeta.label}</p>
-                <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">
-                  {providerMeta.description}
-                </p>
-              </div>
-            </div>
-          </div>
+          
         </div>
 
         <form className="space-y-4 px-4 pb-10" onSubmit={onSubmit}>

@@ -475,7 +475,7 @@ function MobileHome({
               </>
             </h2>
             <p className="mx-auto max-w-[260px] text-xs leading-relaxed text-slate-400">
-              Immerse yourself in worlds crafted by AI and boundless human imagination.
+              Immerse yourself in thousands of worlds crafted by the world's most talented independent storytellers.
             </p>
             <div className="flex w-full flex-row gap-2 pt-2">
               <motion.div
