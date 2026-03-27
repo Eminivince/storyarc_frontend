@@ -22,7 +22,7 @@ const writerPaths = [
     recommended: true,
     sections: [
       {
-        title: "Revenue & IP",
+        title: "Revenue Share",
         bullets: [
           "Up to **70% net revenue share**.",
           "**Payouts:** Per-book balance; amounts below the **$100** minimum roll over month to month until the threshold is met.",
